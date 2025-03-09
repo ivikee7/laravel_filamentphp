@@ -2,23 +2,20 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\UserResource\Pages;
-use App\Filament\Resources\UserResource\RelationManagers;
-use App\Models\User;
+use App\Filament\Resources\StudentClassResource\Pages;
+use App\Filament\Resources\StudentClassResource\RelationManagers;
+use App\Models\StudentClass;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class UserResource extends Resource
+class StudentClassResource extends Resource
 {
-    protected static ?string $model = User::class;
-
-    protected static ?string $navigationGroup = 'Profiles';
+    protected static ?string $model = StudentClass::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -29,19 +26,6 @@ class UserResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('email')
-                    ->email()
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\DateTimePicker::make('email_verified_at'),
-                Forms\Components\TextInput::make('password')
-                    ->password()
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\Select::make('roles')->multiple()->relationship('roles', 'name')
-                    ->multiple()
-                    ->preload()
-                    ->searchable(),
             ]);
     }
 
@@ -49,34 +33,26 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')
-                    ->sortable()
-                    ->searchable(isIndividual: true)
-                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('name')
-                    ->sortable()
-                    ->searchable(isIndividual: true),
-                Tables\Columns\TextColumn::make('email')
-                    ->sortable()
-                    ->searchable(isIndividual: true),
-                Tables\Columns\TextColumn::make('roles.name')
-                    ->sortable()
                     ->searchable(isIndividual: true)
-                    ->badge(),
-                Tables\Columns\TextColumn::make('email_verified_at')
-                    ->searchable(isIndividual: true)
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->searchable(isIndividual: true)
                     ->dateTime()
+                    ->searchable(isIndividual: true)
                     ->sortable()
+                    ->label('Created At')
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
-                    ->searchable(isIndividual: true)
                     ->dateTime()
+                    ->searchable(isIndividual: true)
                     ->sortable()
+                    ->label('Updated At')
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('deleted_at')
+                    ->dateTime()
+                    ->searchable(isIndividual: true)
+                    ->sortable()
+                    ->label('Deleted At')
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
@@ -85,7 +61,6 @@ class UserResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -106,10 +81,10 @@ class UserResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListUsers::route('/'),
-            'create' => Pages\CreateUser::route('/create'),
-            'view' => Pages\ViewUser::route('/{record}'),
-            'edit' => Pages\EditUser::route('/{record}/edit'),
+            'index' => Pages\ListStudentClasses::route('/'),
+            'create' => Pages\CreateStudentClass::route('/create'),
+            'view' => Pages\ViewStudentClass::route('/{record}'),
+            'edit' => Pages\EditStudentClass::route('/{record}/edit'),
         ];
     }
 
