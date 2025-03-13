@@ -1,9 +1,11 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\Resources\School;
 
-use App\Filament\Resources\UserResource\Pages;
-use App\Filament\Resources\UserResource\RelationManagers;
+use App\Filament\Resources\School\AdmissionResource\Pages;
+use App\Filament\Resources\School\AdmissionResource\RelationManagers;
+use App\Models\School\AcadamicSession;
+use App\Models\School\Admission;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
@@ -14,9 +16,9 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class UserResource extends Resource
+class AdmissionResource extends Resource
 {
-    protected static ?string $model = User::class;
+    protected static ?string $model = Admission::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -24,16 +26,24 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
+                Select::make('student_id')
+                    ->options(User::all()->pluck('name', 'id'))
                     ->required(),
-                Forms\Components\TextInput::make('email')
-                    ->email()
+                Select::make('acadamic_session_id')
+                    ->options(AcadamicSession::all()->pluck('name', 'id'))
                     ->required(),
-                Forms\Components\DateTimePicker::make('email_verified_at'),
-                Forms\Components\TextInput::make('password')
-                    ->password()
-                    ->required(),
-                Select::make('roles')->multiple()->relationship('roles', 'name'),
+                Forms\Components\TextInput::make('class_id')
+                    ->required()
+                    ->numeric(),
+                Forms\Components\TextInput::make('section_id')
+                    ->required()
+                    ->numeric(),
+                Forms\Components\TextInput::make('creator_id')
+                    ->required()
+                    ->numeric(),
+                Forms\Components\TextInput::make('updater_id')
+                    ->required()
+                    ->numeric(),
             ]);
     }
 
@@ -41,15 +51,23 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('email')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('roles.name')
-                    ->badge()
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('email_verified_at')
-                    ->dateTime()
+                Tables\Columns\TextColumn::make('student_id')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('acadamic_session_id')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('class_id')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('section_id')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('creator_id')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('updater_id')
+                    ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -90,10 +108,10 @@ class UserResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListUsers::route('/'),
-            'create' => Pages\CreateUser::route('/create'),
-            'view' => Pages\ViewUser::route('/{record}'),
-            'edit' => Pages\EditUser::route('/{record}/edit'),
+            'index' => Pages\ListAdmissions::route('/'),
+            'create' => Pages\CreateAdmission::route('/create'),
+            'view' => Pages\ViewAdmission::route('/{record}'),
+            'edit' => Pages\EditAdmission::route('/{record}/edit'),
         ];
     }
 

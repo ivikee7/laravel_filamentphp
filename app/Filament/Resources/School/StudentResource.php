@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\Resources\School;
 
-use App\Filament\Resources\UserResource\Pages;
-use App\Filament\Resources\UserResource\RelationManagers;
+use App\Filament\Resources\School\StudentResource\Pages;
+use App\Filament\Resources\School\StudentResource\RelationManagers;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
@@ -14,26 +14,39 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class UserResource extends Resource
+class StudentResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-user-group';
+
+    protected static ?string $navigationGroup = 'Student Management System';
+    protected static ?string $modelLabel = 'Student';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required(),
-                Forms\Components\TextInput::make('email')
-                    ->email()
-                    ->required(),
-                Forms\Components\DateTimePicker::make('email_verified_at'),
-                Forms\Components\TextInput::make('password')
-                    ->password()
-                    ->required(),
-                Select::make('roles')->multiple()->relationship('roles', 'name'),
+                Forms\Components\Section::make('Student Info')
+                    ->schema([
+                        Forms\Components\TextInput::make('name')
+                            ->required(),
+                        Forms\Components\TextInput::make('email')
+                            ->email()
+                            ->required(),
+                        Forms\Components\TextInput::make('password')
+                            ->password()
+                            ->required(),
+                    ])->columns(3),
+                Forms\Components\Section::make('Admission Info')
+                    ->schema([
+                        Select::make('admission.acadamic_admission.session_id')
+                            ->relationship('admission.session', 'name'),
+                        Select::make('admission.class_id')
+                            ->relationship('admission.class', 'name'),
+                        Select::make('admission.section_id')
+                            ->relationship('admission.section', 'name'),
+                    ])->columns(3)
             ]);
     }
 
@@ -45,12 +58,6 @@ class UserResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('roles.name')
-                    ->badge()
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('email_verified_at')
-                    ->dateTime()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -90,10 +97,10 @@ class UserResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListUsers::route('/'),
-            'create' => Pages\CreateUser::route('/create'),
-            'view' => Pages\ViewUser::route('/{record}'),
-            'edit' => Pages\EditUser::route('/{record}/edit'),
+            'index' => Pages\ListStudents::route('/'),
+            'create' => Pages\CreateStudent::route('/create'),
+            'view' => Pages\ViewStudent::route('/{record}'),
+            'edit' => Pages\EditStudent::route('/{record}/edit'),
         ];
     }
 
