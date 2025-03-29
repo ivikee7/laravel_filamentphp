@@ -26,6 +26,7 @@ return new class extends Migration
             $table->integer('pin_code')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('avatar')->nullable();
             $table->rememberToken();
             //
             $table->foreignId('creator_id')->nullable();

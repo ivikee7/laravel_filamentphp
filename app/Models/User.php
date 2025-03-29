@@ -36,6 +36,7 @@ class User extends Authenticatable
         'city',
         'state',
         'pin_code',
+        'avatar',
     ];
 
     /**
