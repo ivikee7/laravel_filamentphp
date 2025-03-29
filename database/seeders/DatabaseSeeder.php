@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         Role::create(['name' => 'Super Admin']);
+        Role::create(['name' => 'Admin']);
         Role::create(['name' => 'Teacher']);
         Role::create(['name' => 'Student']);
 
@@ -56,6 +57,11 @@ class DatabaseSeeder extends Seeder
             'email' => 'ivikee7@gmail.com',
             'password' => 'admin@123...!@',
         ])->assignRole('Super Admin');
+        User::factory()->create([
+            'name' => 'Chanchal Jha',
+            'email' => 'chanchaljha@srcspatna.com.com',
+            'password' => 'password',
+        ])->assignRole('Admin');
         User::factory()->create([
             'name' => 'Teacher',
             'email' => 'Teacher@gmail.com',
