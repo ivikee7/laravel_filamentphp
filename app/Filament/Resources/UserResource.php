@@ -33,7 +33,9 @@ class UserResource extends Resource
                     ->disk('public')
                     ->directory('media/avatar')
                     ->image()
-                    ->visibility('public'),
+                    ->visibility('public')
+                    ->imageEditor()
+                    ->hiddenLabel(),
                 Forms\Components\TextInput::make('name')
                     ->required(),
                 Forms\Components\TextInput::make('email')
@@ -51,7 +53,9 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\ImageColumn::make('avatar'),
+                Tables\Columns\ImageColumn::make('avatar')
+                    ->circular()
+                    ->label('Image'),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
