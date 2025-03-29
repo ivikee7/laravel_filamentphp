@@ -31,7 +31,7 @@ class UserResource extends Resource
                 Forms\Components\FileUpload::make('avatar')
                     ->avatar()
                     ->disk('public')
-                    ->directory('avatar')
+                    ->directory('media/avatar')
                     ->image()
                     ->visibility('public'),
                 Forms\Components\TextInput::make('name')
