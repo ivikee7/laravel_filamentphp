@@ -102,6 +102,7 @@ class UserResource extends Resource
             'view' => Pages\ViewUser::route('/{record}'),
             'edit' => Pages\EditUser::route('/{record}/edit'),
             'id-card' => Pages\IDCard::route('/{record}/id-card'),
+            'transport' => Pages\Transport::route('/{record}/transport'),
         ];
     }
 
