@@ -59,7 +59,7 @@ class DatabaseSeeder extends Seeder
         ])->assignRole('Super Admin');
         User::factory()->create([
             'name' => 'Chanchal Jha',
-            'email' => 'chanchaljha@srcspatna.com.com',
+            'email' => 'chanchaljha@srcspatna.com',
             'password' => 'password',
         ])->assignRole('Admin');
         User::factory()->create([
