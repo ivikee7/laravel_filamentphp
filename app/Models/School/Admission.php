@@ -12,13 +12,29 @@ class Admission extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'name',
-        'start_date',
-        'end_date',
         'user_id',
+        'class_id',
+        'section_id',
+        'acadamic_session_id',
         'creator_id',
         'updater_id',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (auth()->check()) {
+                $model->creator_id = auth()->id();
+            }
+        });
+        static::updating(function ($model) {
+            if (auth()->check()) {
+                $model->updater_id = auth()->id();
+            }
+        });
+    }
 
     // relationship
     function creator(): BelongsTo

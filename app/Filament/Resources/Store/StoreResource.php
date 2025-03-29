@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Filament\Resources\School;
+namespace App\Filament\Resources\Store;
 
-use App\Filament\Resources\School\AdmissionResource\Pages;
-use App\Filament\Resources\School\AdmissionResource\RelationManagers;
-use App\Models\School\AcadamicSession;
-use App\Models\School\Admission;
-use App\Models\User;
+use App\Filament\Resources\Store\StoreResource\Pages;
+use App\Filament\Resources\Store\StoreResource\RelationManagers;
+use App\Filament\Resources\Store\StoreResource\RelationManagers\ProductsRelationManager;
+use App\Filament\Resources\Store\StoreResource\RelationManagers\StudentsRelationManager;
+use App\Models\Store\Store;
+use App\Models\Store\StoreProduct;
 use Filament\Forms;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -16,34 +16,35 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class AdmissionResource extends Resource
+
+class StoreResource extends Resource
 {
-    protected static ?string $model = Admission::class;
+    protected static ?string $model = Store::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    protected static ?string $navigationGroup = 'Store Management System';
+    // protected static ?string $modelLabel = 'Student';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Select::make('student_id')
-                    ->options(User::all()->pluck('name', 'id'))
-                    ->required(),
-                Select::make('acadamic_session_id')
-                    ->options(AcadamicSession::all()->pluck('name', 'id'))
-                    ->required(),
-                Forms\Components\TextInput::make('class_id')
+                Forms\Components\TextInput::make('name')
                     ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('section_id')
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('address')
                     ->required()
-                    ->numeric(),
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('contact')
+                    ->required()
+                    ->maxLength(255),
                 Forms\Components\TextInput::make('creator_id')
                     ->required()
                     ->numeric(),
                 Forms\Components\TextInput::make('updater_id')
-                    ->required()
-                    ->numeric(),
+                    ->numeric()
+                    ->default(null),
             ]);
     }
 
@@ -51,18 +52,12 @@ class AdmissionResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('student_id')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('acadamic_session_id')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('class_id')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('section_id')
-                    ->numeric()
-                    ->sortable(),
+                Tables\Columns\TextColumn::make('name')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('address')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('contact')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('creator_id')
                     ->numeric()
                     ->sortable(),
@@ -101,17 +96,18 @@ class AdmissionResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            StudentsRelationManager::class,
+            ProductsRelationManager::class,
         ];
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListAdmissions::route('/'),
-            'create' => Pages\CreateAdmission::route('/create'),
-            'view' => Pages\ViewAdmission::route('/{record}'),
-            'edit' => Pages\EditAdmission::route('/{record}/edit'),
+            'index' => Pages\ListStores::route('/'),
+            'create' => Pages\CreateStore::route('/create'),
+            'view' => Pages\ViewStore::route('/{record}'),
+            'edit' => Pages\EditStore::route('/{record}/edit'),
         ];
     }
 

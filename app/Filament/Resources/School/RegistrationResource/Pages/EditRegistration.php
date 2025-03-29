@@ -1,19 +1,18 @@
 <?php
 
-namespace App\Filament\Resources\School\AdmissionResource\Pages;
+namespace App\Filament\Resources\School\RegistrationResource\Pages;
 
-use App\Filament\Resources\School\AdmissionResource;
+use App\Filament\Resources\School\RegistrationResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
-class EditAdmission extends EditRecord
+class EditRegistration extends EditRecord
 {
-    protected static string $resource = AdmissionResource::class;
+    protected static string $resource = RegistrationResource::class;
 
     protected function getHeaderActions(): array
     {
         return [
-            Actions\ViewAction::make(),
             Actions\DeleteAction::make(),
             Actions\ForceDeleteAction::make(),
             Actions\RestoreAction::make(),

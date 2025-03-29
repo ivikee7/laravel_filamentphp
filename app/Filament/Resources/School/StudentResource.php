@@ -12,6 +12,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class StudentResource extends Resource
@@ -31,21 +32,47 @@ class StudentResource extends Resource
                     ->schema([
                         Forms\Components\TextInput::make('name')
                             ->required(),
+                        Forms\Components\TextInput::make('father_name')
+                            ->required(),
+                        Forms\Components\TextInput::make('mother_name')
+                            ->required(),
+                        Forms\Components\TextInput::make('father_contact_number')
+                            ->numeric()
+                            ->minLength(10)
+                            ->maxLength(10)
+                            ->required(),
+                        Forms\Components\TextInput::make('mother_contact_number')
+                            ->numeric()
+                            ->minLength(10)
+                            ->maxLength(10)
+                            ->required(),
+                        Forms\Components\TextInput::make('address')
+                            ->required(),
+                        Forms\Components\TextInput::make('city')
+                            ->required(),
+                        Forms\Components\TextInput::make('state')
+                            ->required(),
+                        Forms\Components\TextInput::make('pin_code')
+                            ->numeric()
+                            ->required(),
                         Forms\Components\TextInput::make('email')
                             ->email()
                             ->required(),
                         Forms\Components\TextInput::make('password')
                             ->password()
+                            ->visibleOn('create')
                             ->required(),
                     ])->columns(3),
                 Forms\Components\Section::make('Admission Info')
+                    ->label('Admission Info')
+                    ->relationship('admission')
                     ->schema([
-                        Select::make('admission.acadamic_admission.session_id')
-                            ->relationship('admission.session', 'name'),
-                        Select::make('admission.class_id')
-                            ->relationship('admission.class', 'name'),
-                        Select::make('admission.section_id')
-                            ->relationship('admission.section', 'name'),
+                        Select::make('acadamic_session_id')
+                            ->relationship('session', 'name'),
+                        Select::make('class_id')
+                            ->relationship('class', 'name'),
+                        Select::make('section_id')
+                            ->relationship('section', 'name'),
                     ])->columns(3)
             ]);
     }
@@ -57,6 +84,10 @@ class StudentResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('admission.class.name')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('admission.section.name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -71,6 +102,9 @@ class StudentResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->modifyQueryUsing(function (Builder $query) {
+                $query->role('Student');
+            })
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
             ])

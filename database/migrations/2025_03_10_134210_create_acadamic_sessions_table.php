@@ -17,9 +17,10 @@ return new class extends Migration
             $table->string('name');
             $table->date('start_date');
             $table->date('end_date');
+            $table->boolean('is_active');
             //
             $table->foreignId('creator_id');
-            $table->foreignId('updater_id');
+            $table->foreignId('updater_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

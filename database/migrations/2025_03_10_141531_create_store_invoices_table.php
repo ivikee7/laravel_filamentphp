@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('store_invoices', function (Blueprint $table) {
             $table->id();
+            //
             $table->double('gross_total', 10, 2);
             $table->double('discount', 10, 2);
             $table->double('net_total', 10, 2);
@@ -20,8 +21,9 @@ return new class extends Migration
             $table->string('rematks');
             $table->foreignId('store_id');
             $table->foreignId('buyer_id');
+            //
             $table->foreignId('creator_id');
-            $table->foreignId('updater_id');
+            $table->foreignId('updater_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

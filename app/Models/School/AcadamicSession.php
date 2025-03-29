@@ -20,6 +20,22 @@ class AcadamicSession extends Model
         'updater_id',
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (auth()->check()) {
+                $model->creator_id = auth()->id();
+            }
+        });
+        static::updating(function ($model) {
+            if (auth()->check()) {
+                $model->updater_id = auth()->id();
+            }
+        });
+    }
+
     // relationship
     function creator(): BelongsTo
     {

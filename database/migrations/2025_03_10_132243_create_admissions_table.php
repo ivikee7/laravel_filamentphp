@@ -20,7 +20,7 @@ return new class extends Migration
             $table->foreignId('section_id');
             //
             $table->foreignId('creator_id');
-            $table->foreignId('updater_id');
+            $table->foreignId('updater_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

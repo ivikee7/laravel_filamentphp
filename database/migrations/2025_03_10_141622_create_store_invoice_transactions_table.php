@@ -13,12 +13,14 @@ return new class extends Migration
     {
         Schema::create('store_invoice_transactions', function (Blueprint $table) {
             $table->id();
+            //
             $table->double('paid', 10, 2);
             $table->string('rematks');
             $table->foreignId('store_id');
             $table->foreignId('store_invoice_id');
+            //
             $table->foreignId('creator_id');
-            $table->foreignId('updater_id');
+            $table->foreignId('updater_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

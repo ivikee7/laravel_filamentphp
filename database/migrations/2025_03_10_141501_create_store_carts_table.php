@@ -13,12 +13,14 @@ return new class extends Migration
     {
         Schema::create('store_carts', function (Blueprint $table) {
             $table->id();
+            //
             $table->double('price', 10, 2);
             $table->integer('quantity');
             $table->foreignId('store_id');
             $table->foreignId('store_product_id');
+            //
             $table->foreignId('creator_id');
-            $table->foreignId('updater_id');
+            $table->foreignId('updater_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

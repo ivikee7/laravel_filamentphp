@@ -20,6 +20,9 @@ class UserResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static ?string $navigationGroup = 'Employee Management System';
+    protected static ?string $modelLabel = 'Employee';
+
     public static function form(Form $form): Form
     {
         return $form
@@ -64,6 +67,9 @@ class UserResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->modifyQueryUsing(function (Builder $query) {
+                $query->withoutRole('Student');
+            })
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
             ])

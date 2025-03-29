@@ -13,11 +13,13 @@ return new class extends Migration
     {
         Schema::create('store_invoice_items', function (Blueprint $table) {
             $table->id();
-            $table->integer('quantity')->nullable()->unsigned();
-            $table->foreignId('creator_id')->nullable()->unsigned();
-            $table->foreignId('updater_id')->nullable()->unsigned();
-            $table->foreignId('product_invoice_id')->nullable()->unsigned();
+            //
+            $table->integer('quantity');
+            $table->foreignId('product_invoice_id');
             $table->double('price', 10, 2);
+            //
+            $table->foreignId('creator_id');
+            $table->foreignId('updater_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

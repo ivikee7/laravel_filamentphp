@@ -7,6 +7,7 @@ namespace App\Models;
 use Althinect\FilamentSpatieRolesPermissions\Concerns\HasSuperAdmin;
 use App\Models\School\Admission;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -27,6 +28,14 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'father_name',
+        'mother_name',
+        'father_contact_number',
+        'mother_contact_number',
+        'address',
+        'city',
+        'state',
+        'pin_code',
     ];
 
     /**
@@ -52,8 +61,29 @@ class User extends Authenticatable
         ];
     }
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (auth()->check()) {
+                $model->creator_id = auth()->id();
+            }
+        });
+        static::updating(function ($model) {
+            if (auth()->check()) {
+                $model->updater_id = auth()->id();
+            }
+        });
+    }
+
     function admission(): HasOne
     {
         return $this->hasOne(Admission::class);
+    }
+
+    public function attendance(): HasMany
+    {
+        return $this->hasMany(Attendance::class, 'user_id', 'id');
     }
 }

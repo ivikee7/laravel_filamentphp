@@ -13,13 +13,15 @@ return new class extends Migration
     {
         Schema::create('store_products', function (Blueprint $table) {
             $table->id();
+            //
             $table->string('name');
             $table->string('price');
             $table->foreignId('class_id');
             $table->foreignId('session_id');
             $table->foreignId('store_id');
+            //
             $table->foreignId('creator_id');
-            $table->foreignId('updater_id');
+            $table->foreignId('updater_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
