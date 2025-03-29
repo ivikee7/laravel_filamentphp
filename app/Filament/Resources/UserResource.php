@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserResource\Pages;
+use App\Filament\Resources\UserResource\Pages\IDCard;
 use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
 use Filament\Forms;
@@ -20,8 +21,8 @@ class UserResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $navigationGroup = 'Employee Management System';
-    protected static ?string $modelLabel = 'Employee';
+    protected static ?string $navigationGroup = 'User Management System';
+    protected static ?string $modelLabel = 'User';
 
     public static function form(Form $form): Form
     {
@@ -67,9 +68,9 @@ class UserResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->modifyQueryUsing(function (Builder $query) {
-                $query->withoutRole('Student');
-            })
+            // ->modifyQueryUsing(function (Builder $query) {
+            //     $query->withoutRole('Student');
+            // })
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
             ])
@@ -100,6 +101,7 @@ class UserResource extends Resource
             'create' => Pages\CreateUser::route('/create'),
             'view' => Pages\ViewUser::route('/{record}'),
             'edit' => Pages\EditUser::route('/{record}/edit'),
+            'id-card' => Pages\IDCard::route('/{record}/id-card'),
         ];
     }
 

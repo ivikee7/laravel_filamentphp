@@ -14,6 +14,8 @@ class ViewUser extends ViewRecord
     {
         return [
             Actions\EditAction::make(),
+            Actions\Action::make('ID-Card')
+                ->url(fn(): string => route('filament.admin.resources.users.id-card', $this->record->id)),
         ];
     }
 }
