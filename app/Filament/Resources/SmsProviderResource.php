@@ -19,6 +19,8 @@ class SmsProviderResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static ?string $navigationGroup = 'SMS Service Provider';
+
     public static function form(Form $form): Form
     {
         return $form
