@@ -1,23 +1,22 @@
 <?php
 
-namespace App\Models\School;
+namespace App\Models;
 
+use App\Models\Admission;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class AcadamicSession extends Model
+class Store extends Model
 {
     use SoftDeletes;
 
     protected $fillable = [
         'name',
-        'start_date',
-        'end_date',
-        'creator_id',
-        'updater_id',
+        'address',
+        'contact',
     ];
 
     protected static function boot()
@@ -35,18 +34,16 @@ class AcadamicSession extends Model
             }
         });
     }
-
-    // relationship
-    function creator(): BelongsTo
+    function products(): HasMany
     {
-        return $this->belongsTo(User::class, 'creator_id');
+        return $this->hasMany(StoreProduct::class);
     }
-    function updater(): BelongsTo
+    function students(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'updater_id');
+        return $this->belongsTo(User::class);
     }
-    function admissions(): HasMany
+    public function student() : array
     {
-        return $this->hasMany(Admission::class);
+        return User::get();
     }
 }

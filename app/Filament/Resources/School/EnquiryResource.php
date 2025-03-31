@@ -4,7 +4,7 @@ namespace App\Filament\Resources\School;
 
 use App\Filament\Resources\School\EnquiryResource\Pages;
 use App\Filament\Resources\School\EnquiryResource\RelationManagers;
-use App\Models\School\Enquiry;
+use App\Models\Enquiry;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Form;

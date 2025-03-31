@@ -11,14 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('attendances', function (Blueprint $table) {
+        Schema::create('sms_providers', function (Blueprint $table) {
             $table->id();
             //
-            $table->foreignId('user_id');
-            $table->foreignId('creator_id')->nullable();
-            $table->timestamp('created_at');
-            $table->string('type', 20)->nullable();
+            $table->string('name');
+            $table->string('api_url');
+            $table->string('api_key');
+            $table->string('sender_id');
+            $table->boolean('is_active')->default(true); // ✅ Toggle active providers
             //
+            $table->timestamps();
             $table->softDeletes();
         });
     }
@@ -28,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('attendances');
+        Schema::dropIfExists('sms_providers');
     }
 };

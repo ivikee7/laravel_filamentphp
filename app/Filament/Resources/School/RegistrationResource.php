@@ -4,7 +4,7 @@ namespace App\Filament\Resources\School;
 
 use App\Filament\Resources\School\RegistrationResource\Pages;
 use App\Filament\Resources\School\RegistrationResource\RelationManagers;
-use App\Models\School\Registration;
+use App\Models\Registration;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Form;

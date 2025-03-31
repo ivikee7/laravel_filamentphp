@@ -13,15 +13,13 @@ class Attendance extends Model
 
     protected $fillable = [
         'user_id',
-        'date',
-        'in',
-        'out',
-        'entred_in_bus',
-        'exit_from_bus',
-        'is_absent',
         'creator_id',
-        'updater_id',
+        'created_at',
+        'type',
     ];
+
+    // Timestamps none
+    public $timestamps = false;
 
     protected static function boot()
     {
@@ -30,27 +28,18 @@ class Attendance extends Model
         static::creating(function ($model) {
             if (auth()->check()) {
                 $model->creator_id = auth()->id();
-                $model->date = today();
-            }
-        });
-        static::updating(function ($model) {
-            if (auth()->check()) {
-                $model->updater_id = auth()->id();
+                $model->created_at = now();
             }
         });
     }
 
     function creator(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'creator_id');
-    }
-    function updater(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'updater_id');
+        return $this->belongsTo(User::class, 'creator_id', 'id');
     }
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'id', 'user_id');
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 }

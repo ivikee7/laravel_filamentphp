@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\School\AcadamicSession;
-use App\Models\School\AdmissionClass;
-use App\Models\School\AdmissionSection;
+use App\Models\AcadamicSession;
+use App\Models\AdmissionClass;
+use App\Models\AdmissionSection;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;

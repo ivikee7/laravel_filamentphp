@@ -55,6 +55,7 @@ class UserResource extends Resource
             ->columns([
                 Tables\Columns\ImageColumn::make('avatar')
                     ->circular()
+                    ->size(50)
                     ->label('Image'),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
@@ -110,6 +111,8 @@ class UserResource extends Resource
         return [
             'index' => Pages\ListUsers::route('/'),
             'create' => Pages\CreateUser::route('/create'),
+            'monthly-attendance' => Pages\MonthlyAttendance::route('/monthly-attendance'),
+            'minimal-test' => Pages\MinimalTest::route('/minimal-test'),
             'view' => Pages\ViewUser::route('/{record}'),
             'edit' => Pages\EditUser::route('/{record}/edit'),
             'id-card' => Pages\IDCard::route('/{record}/id-card'),

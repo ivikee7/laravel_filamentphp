@@ -4,7 +4,7 @@ namespace App\Filament\Resources\School;
 
 use App\Filament\Resources\School\AcadamicSessionResource\Pages;
 use App\Filament\Resources\School\AcadamicSessionResource\RelationManagers;
-use App\Models\School\AcadamicSession;
+use App\Models\AcadamicSession;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -32,6 +32,10 @@ class AcadamicSessionResource extends Resource
                     ->required(),
                 Forms\Components\DatePicker::make('end_date')
                     ->required(),
+                Forms\Components\Toggle::make('is_active')
+                    ->label('Active')
+                    ->inline(false)
+                    ->required(),
             ]);
     }
 
@@ -47,12 +51,16 @@ class AcadamicSessionResource extends Resource
                 Tables\Columns\TextColumn::make('end_date')
                     ->date()
                     ->sortable(),
+                Tables\Columns\ToggleColumn::make('is_active')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('creator.name')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updater.name')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

@@ -1,22 +1,21 @@
 <?php
 
-namespace App\Models\Store;
+namespace App\Models;
 
-use App\Models\School\Admission;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Store extends Model
+class AdmissionSection extends Model
 {
     use SoftDeletes;
 
     protected $fillable = [
         'name',
-        'address',
-        'contact',
+        'creator_id',
+        'updater_id',
     ];
 
     protected static function boot()
@@ -26,6 +25,7 @@ class Store extends Model
         static::creating(function ($model) {
             if (auth()->check()) {
                 $model->creator_id = auth()->id();
+                $model->updater_id = auth()->id();
             }
         });
         static::updating(function ($model) {
@@ -34,16 +34,18 @@ class Store extends Model
             }
         });
     }
-    function products(): HasMany
+
+    // relationship
+    function creator(): BelongsTo
     {
-        return $this->hasMany(StoreProduct::class);
+        return $this->belongsTo(User::class, 'creator_id');
     }
-    function students(): BelongsTo
+    function updater(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'updater_id');
     }
-    public function student() : array
+    function admissions(): HasMany
     {
-        return User::get();
+        return $this->hasMany(Admission::class);
     }
 }

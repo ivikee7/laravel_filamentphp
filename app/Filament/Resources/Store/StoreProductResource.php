@@ -4,7 +4,7 @@ namespace App\Filament\Resources\Store;
 
 use App\Filament\Resources\Store\StoreProductResource\Pages;
 use App\Filament\Resources\Store\StoreProductResource\RelationManagers;
-use App\Models\Store\StoreProduct;
+use App\Models\StoreProduct;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;

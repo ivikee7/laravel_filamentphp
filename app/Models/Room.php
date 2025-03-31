@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Models\Store;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class StoreInvoiceTransaction extends Model
+class Room extends Model
 {
     use SoftDeletes;
 
@@ -16,6 +16,7 @@ class StoreInvoiceTransaction extends Model
         static::creating(function ($model) {
             if (auth()->check()) {
                 $model->creator_id = auth()->id();
+                $model->updater_id = auth()->id();
             }
         });
         static::updating(function ($model) {

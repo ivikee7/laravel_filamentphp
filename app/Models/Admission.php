@@ -1,33 +1,21 @@
 <?php
 
-namespace App\Models\School;
+namespace App\Models;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Enquiry extends Model
+class Admission extends Model
 {
     use SoftDeletes;
 
     protected $fillable = [
-        'name',
-        'gender',
-        'date_of_birth',
-        'father_name',
-        'mother_name',
-        'father_contact_name',
-        'mother_contact_name',
+        'user_id',
         'class_id',
-        'message',
-        'address',
-        'city',
-        'state',
-        'pin_code',
-        'last_attended_school',
-        'last_attended_class_id',
-        'source',
+        'section_id',
+        'acadamic_session_id',
         'creator_id',
         'updater_id',
     ];
@@ -48,6 +36,7 @@ class Enquiry extends Model
         });
     }
 
+    // relationship
     function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'creator_id');
@@ -56,9 +45,20 @@ class Enquiry extends Model
     {
         return $this->belongsTo(User::class, 'updater_id');
     }
-
-    public function class(): BelongsTo
+    function session(): BelongsTo
     {
-        return $this->belongsTo(AdmissionClass::class, 'class_id', 'id');
+        return $this->belongsTo(AcadamicSession::class, 'acadamic_session_id');
+    }
+    function class(): BelongsTo
+    {
+        return $this->belongsTo(AdmissionClass::class, 'class_id');
+    }
+    function section(): BelongsTo
+    {
+        return $this->belongsTo(AdmissionSection::class, 'section_id');
+    }
+    function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 }

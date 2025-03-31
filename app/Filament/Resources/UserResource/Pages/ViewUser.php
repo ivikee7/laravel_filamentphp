@@ -15,9 +15,11 @@ class ViewUser extends ViewRecord
         return [
             Actions\EditAction::make(),
             Actions\Action::make('ID-Card')
-                ->url(fn(): string => route('filament.admin.resources.users.id-card', $this->record->id)),
+                ->url(fn(): string => UserResource::getUrl('id-card', [$this->record->id])),
             Actions\Action::make('Transport')
-                ->url(fn(): string => route('filament.admin.resources.users.transport', $this->record->id)),
+                ->url(fn(): string => UserResource::getUrl('transport', [$this->record->id])),
+            Actions\Action::make('MonthlyAttendance')
+                ->url(fn(): string => UserResource::getUrl('monthly-attendance', [$this->record->id])),
         ];
     }
 }

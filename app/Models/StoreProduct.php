@@ -1,38 +1,25 @@
 <?php
 
-namespace App\Models\School;
+namespace App\Models;
 
+use App\Models\AcadamicSession;
+use App\Models\AdmissionClass;
+use App\Models\AdmissionSection;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Registration extends Model
+class StoreProduct extends Model
 {
     use SoftDeletes;
 
     protected $fillable = [
         'name',
-        'date_of_birth',
-        'gender',
-        'father_name',
-        'father_qualification',
-        'father_occupation',
-        'father_contact_number',
-        'mother_name',
-        'mother_qualification',
-        'mother_occupation',
-        'mother_contact_number',
-        'address',
-        'city',
-        'state',
-        'pin_code',
+        'price',
         'class_id',
-        'last_attended_school',
-        'last_attended_class_id',
-        'payment_mode',
-        'creator_id',
-        'updater_id',
+        'session_id',
+        'store_id',
     ];
 
     protected static function boot()
@@ -59,14 +46,16 @@ class Registration extends Model
     {
         return $this->belongsTo(User::class, 'updater_id');
     }
-
-    public function class(): BelongsTo
+    function store(): BelongsTo
     {
-        return $this->belongsTo(AdmissionClass::class, 'class_id', 'id');
+        return $this->belongsTo(Store::class);
     }
-
-    public function lastAttendedClass(): BelongsTo
+    function class(): BelongsTo
     {
-        return $this->belongsTo(AdmissionClass::class, 'class_id', 'id');
+        return $this->belongsTo(AdmissionClass::class);
+    }
+    function session(): BelongsTo
+    {
+        return $this->belongsTo(AcadamicSession::class);
     }
 }

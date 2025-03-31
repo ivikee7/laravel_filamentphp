@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Models\Store;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class StoreInvoice extends Model
+class StoreInvoiceItem extends Model
 {
     use SoftDeletes;
 

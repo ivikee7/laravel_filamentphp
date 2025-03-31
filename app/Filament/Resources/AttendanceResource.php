@@ -7,6 +7,7 @@ use App\Filament\Resources\AttendanceResource\RelationManagers;
 use App\Filament\Resources\AttendanceResource\RelationManagers\AttendanceRelationManager;
 use App\Models\Attendance;
 use App\Models\User;
+use Filament\Actions\Action;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -114,7 +115,7 @@ class AttendanceResource extends Resource
     public static function getRelations(): array
     {
         return [
-            AttendanceRelationManager::class,
+            //
         ];
     }
 
@@ -123,6 +124,7 @@ class AttendanceResource extends Resource
         return [
             'index' => Pages\ListAttendances::route('/'),
             'create' => Pages\CreateAttendance::route('/create'),
+            'monthly-attendance' => Pages\MonthlyAttendance::route('/monthly-attendance'),
             'view' => Pages\ViewAttendance::route('/{record}'),
             'edit' => Pages\EditAttendance::route('/{record}/edit'),
         ];

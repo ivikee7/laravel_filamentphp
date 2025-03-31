@@ -5,7 +5,9 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use Althinect\FilamentSpatieRolesPermissions\Concerns\HasSuperAdmin;
-use App\Models\School\Admission;
+use App\Models\Admission;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -83,8 +85,58 @@ class User extends Authenticatable
         return $this->hasOne(Admission::class);
     }
 
-    public function attendance(): HasMany
+    public function attendances()
     {
-        return $this->hasMany(Attendance::class, 'user_id', 'id');
+        return $this->hasMany(Attendance::class);
+    }
+
+    protected function formattedAttendance(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                $attendanceData = [];
+                $daysInMonth = Carbon::now()->daysInMonth; // Get days in the current month
+
+                for ($day = 1; $day <= $daysInMonth; $day++) {
+                    $date = Carbon::now()->format("Y-m-{$day}");
+
+                    // Fetch records for this user on the specific date
+                    $records = $this->attendances
+                        ->whereBetween('created_at', ["{$date} 00:00:00", "{$date} 23:59:59"]);
+
+                    // Group by type
+                    $entries = [
+                        // 'entredInBus' => [],
+                        'entredInCampus' => [],
+                        'exitFromCampus' => [],
+                        // 'exitFromBus' => [],
+                    ];
+
+                    foreach ($records as $record) {
+                        $time = Carbon::parse($record->created_at)->format('H:i');
+                        if (isset($entries[$record->type])) {
+                            $entries[$record->type][] = $time;
+                        }
+                    }
+
+                    // Format the output
+                    $attendanceData[$date] = '';
+                    // if (!empty($entries['entredInBus'])) {
+                    //     $attendanceData[$date] .= '🚌 In Bus: ' . implode(', ', $entries['entredInBus']) . '<br>';
+                    // }
+                    if (!empty($entries['entredInCampus'])) {
+                        $attendanceData[$date] .= '' . implode(', ', $entries['entredInCampus']) . '<br>';
+                    }
+                    if (!empty($entries['exitFromCampus'])) {
+                        $attendanceData[$date] .= '' . implode(', ', $entries['exitFromCampus']) . '<br>';
+                    }
+                    // if (!empty($entries['exitFromBus'])) {
+                    //     $attendanceData[$date] .= '🚍 Exit Bus: ' . implode(', ', $entries['exitFromBus']);
+                    // }
+                }
+
+                return $attendanceData;
+            }
+        );
     }
 }

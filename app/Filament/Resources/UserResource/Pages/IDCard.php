@@ -3,7 +3,9 @@
 namespace App\Filament\Resources\UserResource\Pages;
 
 use App\Filament\Resources\UserResource;
-use Filament\Resources\Pages\Concerns\InteractsWithRecord;
+use App\Models\User;
+use Filament\Actions;
+use Filament\Actions\Concerns\InteractsWithRecord;
 use Filament\Resources\Pages\Page;
 
 class IDCard extends Page
@@ -17,5 +19,20 @@ class IDCard extends Page
     public function mount(int | string $record): void
     {
         $this->record = $this->resolveRecord($record);
+    }
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Actions\Action::make('View')
+                ->url(fn(): string => UserResource::getUrl('view', [$this->record->id])),
+            Actions\Action::make('Transport')
+                ->url(fn(): string => UserResource::getUrl('transport', [$this->record->id])),
+        ];
+    }
+
+    public function getModel(): string
+    {
+        return User::class;
     }
 }
