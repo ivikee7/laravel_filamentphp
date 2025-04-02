@@ -6,7 +6,9 @@ use App\Filament\Admin\Resources\UserResource;
 use App\Models\Attendance;
 use App\Models\User;
 use Filament\Actions;
-use Filament\Actions\Concerns\InteractsWithRecord;
+use Filament\Actions\Action;
+use Filament\Resources\Pages\Concerns\InteractsWithRecord;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\Page;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Table;
@@ -22,19 +24,43 @@ class IDCard extends Page implements HasTable
 
     protected static string $view = 'filament.admin.resources.user-resource.pages.i-d-card';
 
-    public function mount(int | string $record): void
+    public function mount(int|string $record): void
     {
-        $this->record = User::findOrFail($record);
+        $this->record = User::findOrFail($record); // ✅ Ensures the record is always found
+    }
+
+    // ✅ Place "View" & "Transport" buttons in the header
+    protected function getHeaderActions(): array
+    {
+        return [
+            Action::make('View')
+                ->url(fn(): string => UserResource::getUrl('view', [$this->record?->id])) // Use `?->` to avoid null errors
+                ->icon('heroicon-o-eye'),
+
+            Action::make('Transport')
+                ->url(fn(): string => UserResource::getUrl('transport', [$this->record?->id])) // Use `?->`
+                ->icon('heroicon-o-truck'),
+        ];
     }
 
     protected function getActions(): array
     {
         return [
-            Actions\Action::make('View')
-                ->url(fn(): string => UserResource::getUrl('view', [$this->record->id])),
-            Actions\Action::make('Transport')
-                ->url(fn(): string => UserResource::getUrl('transport', [$this->record->id])),
+            Action::make('entredInBus')
+                ->label('Entered in Bus')
+                ->action(fn() => $this->markAttendance('entredInBus')),
 
+            Action::make('entredInCampus')
+                ->label('Entered in Campus')
+                ->action(fn() => $this->markAttendance('entredInCampus')),
+
+            Action::make('exitFromCampus')
+                ->label('Exit from Campus')
+                ->action(fn() => $this->markAttendance('exitFromCampus')),
+
+            Action::make('exitFromBus')
+                ->label('Exit from Bus')
+                ->action(fn() => $this->markAttendance('exitFromBus')),
         ];
     }
 
@@ -83,5 +109,23 @@ class IDCard extends Page implements HasTable
             ->bulkActions([
                 // Add bulk actions if needed
             ]);
+    }
+
+    public function markAttendance(string $type): void
+    {
+        if (!$this->record) {
+            Notification::make()->title('Error: User not found')->danger()->send();
+            return;
+        }
+
+        Attendance::create([
+            'user_id' => $this->record->id,
+            'type' => $type,
+        ]);
+
+        Notification::make()
+            ->title(ucwords(str_replace('_', ' ', $type)))
+            ->success()
+            ->send();
     }
 }
