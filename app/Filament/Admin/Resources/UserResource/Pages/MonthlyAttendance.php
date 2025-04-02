@@ -19,7 +19,7 @@ class MonthlyAttendance extends Page implements HasTable
     use InteractsWithTable;
 
     protected static string $resource = UserResource::class;
-    protected static string $view = 'filament.resources.user-resource.pages.monthly-attendance';
+    protected static string $view = 'filament.admin.resources.user-resource.pages.monthly-attendance';
 
     public int $year;
     public int $month;

@@ -23,7 +23,7 @@ class Transport extends Page implements HasTable
 
     protected static string $resource = UserResource::class;
 
-    protected static string $view = 'filament.resources.user-resource.pages.transport';
+    protected static string $view = 'filament.admin.resources.user-resource.pages.transport';
 
     public function mount(int | string $record): void
     {

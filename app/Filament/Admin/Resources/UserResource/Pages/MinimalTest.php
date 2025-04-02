@@ -16,7 +16,7 @@ class MinimalTest extends Page implements HasTable
 
     protected static string $resource = UserResource::class;
 
-    protected static string $view = 'filament.resources.user-resource.pages.minimal-test';
+    protected static string $view = 'filament.admin.resources.user-resource.pages.minimal-test';
 
     public Collection $testData;
 
