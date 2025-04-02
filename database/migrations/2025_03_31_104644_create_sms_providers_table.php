@@ -20,6 +20,8 @@ return new class extends Migration
             $table->string('sender_id');
             $table->boolean('is_active')->default(true); // ✅ Toggle active providers
             //
+            $table->foreignId('creator_id')->nullable();
+            $table->foreignId('updater_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
