@@ -72,6 +72,7 @@ class SmsProviderResource extends Resource
         return [
             'index' => Pages\ListSmsProviders::route('/'),
             'create' => Pages\CreateSmsProvider::route('/create'),
+            'send-bulk-sms' => Pages\SendBulkSms::route('/send-bulk-sms'),
             'view' => Pages\ViewSmsProvider::route('/{record}'),
             'edit' => Pages\EditSmsProvider::route('/{record}/edit'),
         ];

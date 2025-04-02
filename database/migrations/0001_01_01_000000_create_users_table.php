@@ -15,11 +15,12 @@ return new class extends Migration
             $table->id();
             //
             $table->string('name');
-            $table->string('email')->unique();
+            $table->string('email');
+            $table->string('official_email')->nullable();
             $table->string('father_name')->nullable();
             $table->string('mother_name')->nullable();
-            $table->string('father_contact_number', 10)->nullable();
-            $table->string('mother_contact_number', 10)->nullable();
+            $table->string('primary_contact_number', 10)->nullable();
+            $table->string('secondary_contact_number', 10)->nullable();
             $table->string('address')->nullable();
             $table->string('city', 25)->nullable();
             $table->string('state', 25)->nullable();
@@ -28,6 +29,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('avatar')->nullable();
             $table->rememberToken();
+            $table->boolean('is_active')->nullable();
             //
             $table->foreignId('creator_id')->nullable();
             $table->foreignId('updater_id')->nullable();

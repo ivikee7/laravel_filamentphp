@@ -9,6 +9,7 @@ use App\Models\Admission;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -32,13 +33,14 @@ class User extends Authenticatable
         'password',
         'father_name',
         'mother_name',
-        'father_contact_number',
-        'mother_contact_number',
+        'primary_contact_number',
+        'secondary_contact_number',
         'address',
         'city',
         'state',
         'pin_code',
         'avatar',
+        'is_active',
     ];
 
     /**
@@ -64,6 +66,15 @@ class User extends Authenticatable
         ];
     }
 
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+    public function updater(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
     protected static function boot()
     {
         parent::boot();
@@ -82,7 +93,7 @@ class User extends Authenticatable
 
     function admission(): HasOne
     {
-        return $this->hasOne(Admission::class);
+        return $this->hasOne(Student::class);
     }
 
     public function attendances()
@@ -95,16 +106,18 @@ class User extends Authenticatable
         return Attribute::make(
             get: function () {
                 $attendanceData = [];
-                $daysInMonth = Carbon::now()->daysInMonth; // Get days in the current month
+                $selectedMonth = request()->query('month', now()->month);
+                $selectedYear = request()->query('year', now()->year);
+                $daysInMonth = Carbon::create($selectedYear, $selectedMonth)->daysInMonth;
 
                 for ($day = 1; $day <= $daysInMonth; $day++) {
-                    $date = Carbon::now()->format("Y-m-{$day}");
+                    $date = Carbon::create($selectedYear, $selectedMonth, $day)->toDateString();
 
-                    // Fetch records for this user on the specific date
-                    $records = $this->attendances
-                        ->whereBetween('created_at', ["{$date} 00:00:00", "{$date} 23:59:59"]);
+                    $records = $this->attendances->whereBetween('created_at', [
+                        "{$date} 00:00:00",
+                        "{$date} 23:59:59"
+                    ]);
 
-                    // Group by type
                     $entries = [
                         // 'entredInBus' => [],
                         'entredInCampus' => [],
@@ -119,7 +132,6 @@ class User extends Authenticatable
                         }
                     }
 
-                    // Format the output
                     $attendanceData[$date] = '';
                     // if (!empty($entries['entredInBus'])) {
                     //     $attendanceData[$date] .= '🚌 In Bus: ' . implode(', ', $entries['entredInBus']) . '<br>';

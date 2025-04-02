@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -18,22 +17,24 @@ class Registration extends Model
         'father_name',
         'father_qualification',
         'father_occupation',
-        'father_contact_number',
+        'primary_contact_number',
         'mother_name',
         'mother_qualification',
         'mother_occupation',
-        'mother_contact_number',
+        'secondary_contact_number',
         'address',
         'city',
         'state',
         'pin_code',
-        'class_id',
-        'last_attended_school',
-        'last_attended_class_id',
+        'previous_school',
         'payment_mode',
+        'previous_class_id',
+        'class_id',
         'creator_id',
         'updater_id',
     ];
+
+    protected $dates = ['deleted_at'];
 
     protected static function boot()
     {
@@ -51,22 +52,20 @@ class Registration extends Model
         });
     }
 
-    function creator(): BelongsTo
+    public function creator(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'creator_id');
+        return $this->belongsTo(User::class);
     }
-    function updater(): BelongsTo
+    public function updater(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'updater_id');
+        return $this->belongsTo(User::class);
     }
-
     public function class(): BelongsTo
     {
-        return $this->belongsTo(AdmissionClass::class, 'class_id', 'id');
+        return $this->belongsTo(Classes::class);
     }
-
-    public function lastAttendedClass(): BelongsTo
+    public function previousClass(): BelongsTo
     {
-        return $this->belongsTo(AdmissionClass::class, 'class_id', 'id');
+        return $this->belongsTo(Classes::class);
     }
 }

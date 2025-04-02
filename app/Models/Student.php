@@ -2,22 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class SmsProvider extends Model
+class Student extends Model
 {
     use SoftDeletes;
-    use HasFactory;
 
     protected $fillable = [
-        'name',
-        'api_url',
-        'api_key',
-        'sender_id',
-        'is_active',
         'creator_id',
         'updater_id',
     ];
@@ -36,11 +29,6 @@ class SmsProvider extends Model
                 $model->updater_id = auth()->id();
             }
         });
-    }
-
-    public static function getActiveProviders()
-    {
-        return self::where('is_active', true)->pluck('name', 'id');
     }
 
     public function creator(): BelongsTo

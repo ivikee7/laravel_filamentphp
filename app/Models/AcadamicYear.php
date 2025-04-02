@@ -2,21 +2,19 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class SmsProvider extends Model
+class AcadamicYear extends Model
 {
     use SoftDeletes;
-    use HasFactory;
 
     protected $fillable = [
         'name',
-        'api_url',
-        'api_key',
-        'sender_id',
+        'start_date',
+        'end_date',
         'is_active',
         'creator_id',
         'updater_id',
@@ -36,11 +34,13 @@ class SmsProvider extends Model
                 $model->updater_id = auth()->id();
             }
         });
-    }
 
-    public static function getActiveProviders()
-    {
-        return self::where('is_active', true)->pluck('name', 'id');
+        static::saving(function ($user) {
+            if ($user->is_active) {
+                // Set all other users as inactive before saving the new active user
+                static::where('id', '!=', $user->id)->update(['is_active' => false]);
+            }
+        });
     }
 
     public function creator(): BelongsTo
@@ -51,4 +51,5 @@ class SmsProvider extends Model
     {
         return $this->belongsTo(User::class);
     }
+
 }

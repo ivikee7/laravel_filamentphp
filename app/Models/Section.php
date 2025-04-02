@@ -2,22 +2,19 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class SmsProvider extends Model
+class Section extends Model
 {
     use SoftDeletes;
-    use HasFactory;
 
     protected $fillable = [
         'name',
-        'api_url',
-        'api_key',
-        'sender_id',
-        'is_active',
+        'class_id',
+        'room_id',
+        'teacher_id',
         'creator_id',
         'updater_id',
     ];
@@ -38,11 +35,6 @@ class SmsProvider extends Model
         });
     }
 
-    public static function getActiveProviders()
-    {
-        return self::where('is_active', true)->pluck('name', 'id');
-    }
-
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -50,5 +42,17 @@ class SmsProvider extends Model
     public function updater(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+    public function class(): BelongsTo
+    {
+        return $this->belongsTo(Classes::class);
+    }
+    public function teacher(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+    public function room(): BelongsTo
+    {
+        return $this->belongsTo(Room::class, 'room_id');
     }
 }

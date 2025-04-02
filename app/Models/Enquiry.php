@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -17,20 +16,21 @@ class Enquiry extends Model
         'date_of_birth',
         'father_name',
         'mother_name',
-        'father_contact_name',
-        'mother_contact_name',
-        'class_id',
-        'message',
+        'primary_contact_number',
+        'secondary_contact_number',
         'address',
         'city',
         'state',
         'pin_code',
-        'last_attended_school',
-        'last_attended_class_id',
+        'previous_school',
         'source',
+        'previous_class_id',
+        'class_id',
         'creator_id',
         'updater_id',
     ];
+
+    protected $dates = ['deleted_at'];
 
     protected static function boot()
     {
@@ -48,17 +48,21 @@ class Enquiry extends Model
         });
     }
 
-    function creator(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'creator_id');
-    }
-    function updater(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'updater_id');
-    }
 
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+    public function updater(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
     public function class(): BelongsTo
     {
-        return $this->belongsTo(AdmissionClass::class, 'class_id', 'id');
+        return $this->belongsTo(Classes::class);
+    }
+    public function previousClass(): BelongsTo
+    {
+        return $this->belongsTo(Classes::class);
     }
 }

@@ -2,13 +2,13 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\UserResource\Pages;
-use App\Filament\Resources\UserResource\Pages\IDCard;
-use App\Filament\Resources\UserResource\RelationManagers;
+use App\Filament\Resources\StudentResource\Pages;
+use App\Filament\Resources\StudentResource\RelationManagers;
+use App\Models\Registration;
+use App\Models\Student;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -18,11 +18,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
 
-class UserResource extends Resource
+class StudentResource extends Resource
 {
     protected static ?string $model = User::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    protected static ?string $navigationGroup = 'School Management System';
+    protected static ?string $modelLabel = 'Student';
 
     public static function form(Form $form): Form
     {
@@ -54,16 +57,20 @@ class UserResource extends Resource
                                 // Right Column: Other Input Fields
                                 Forms\Components\Group::make()
                                     ->schema([
-                                        Forms\Components\TextInput::make('name')->required(),
-                                        Forms\Components\TextInput::make('official_email')->email(),
+                                        Forms\Components\TextInput::make('name')->required()
+                                            ->default(fn($get) => Registration::find(request()->query('registration_id'))?->name),
+                                        Forms\Components\TextInput::make('official_email')->email()
+                                            ->default(fn($get) => Registration::find(request()->query('registration_id'))?->official_email),
                                     ])
                                     ->columnSpan(1),
                             ]),
                     ]),
                 Section::make('Parents info')
                     ->schema([
-                        Forms\Components\TextInput::make('father_name')->required(),
-                        Forms\Components\TextInput::make('mother_name')->required(),
+                        Forms\Components\TextInput::make('father_name')->required()
+                            ->default(fn($get) => Registration::find(request()->query('registration_id'))?->father_name),
+                        Forms\Components\TextInput::make('mother_name')->required()
+                            ->default(fn($get) => Registration::find(request()->query('registration_id'))?->mother_name),
                     ])->columns(2),
                 Section::make('Contact info')
                     ->schema([
@@ -72,42 +79,39 @@ class UserResource extends Resource
                             ->rules(['digits:10'])
                             ->minLength(10)
                             ->maxLength(10)
-                            ->required(),
+                            ->required()
+                            ->default(fn($get) => Registration::find(request()->query('registration_id'))?->primary_contact_number),
                         Forms\Components\TextInput::make('secondary_contact_number')
                             ->numeric()
                             ->rules(['digits:10'])
                             ->minLength(10)
                             ->maxLength(10)
-                            ->required(),
-                        Forms\Components\TextInput::make('email')->email()->required(),
+                            ->required()
+                            ->default(fn($get) => Registration::find(request()->query('registration_id'))?->secondary_contact_number),
+                        Forms\Components\TextInput::make('email')->email()->required()
+                            ->default(fn($get) => Registration::find(request()->query('registration_id'))?->email),
                     ])->columns(2),
                 Section::make('Address')
                     ->schema([
-                        Forms\Components\TextInput::make('address')->required(),
-                        Forms\Components\TextInput::make('city')->required(),
-                        Forms\Components\TextInput::make('state')->required(),
+                        Forms\Components\TextInput::make('address')->required()
+                            ->default(fn($get) => Registration::find(request()->query('registration_id'))?->address),
+                        Forms\Components\TextInput::make('city')->required()
+                            ->default(fn($get) => Registration::find(request()->query('registration_id'))?->city),
+                        Forms\Components\TextInput::make('state')->required()
+                            ->default(fn($get) => Registration::find(request()->query('registration_id'))?->state),
                         Forms\Components\TextInput::make('pin_code')
                             ->numeric()
                             ->rules(['digits:6'])
                             ->minLength(6)
                             ->maxLength(6)
-                            ->required(),
+                            ->required()
+                            ->default(fn($get) => Registration::find(request()->query('registration_id'))?->pin_code),
                     ])->columns(2),
-                Section::make('Authentication info')
-                    ->schema([
-                        Forms\Components\Select::make('roles')
-                            ->relationship('roles', 'name', function ($query) {
-                                $query->whereNotIn('name', ['Student']); // Exclude 'Student'
-
-                                // If the authenticated user is NOT a "Super Admin", also exclude "Super Admin"
-                                if (!Auth::user()->hasRole('Super Admin')) {
-                                    $query->where('name', '!=', 'Super Admin');
-                                }
-
-                                return $query;
-                            }),
-                        Forms\Components\Toggle::make('is_active')->inline(false)->required(),
-                    ])->columns(2),
+                // start only for deleteing registration after admission
+                Forms\Components\TextInput::make('registration_id')
+                    ->hidden()
+                    ->default(fn() => request()->query('registration_id')),
+                // end only for deleteing registration after admission
             ]);
     }
 
@@ -115,6 +119,8 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('id')
+                    ->searchable(),
                 Tables\Columns\ImageColumn::make('avatar')
                     ->circular()
                     ->size(50)
@@ -131,7 +137,11 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('roles.name')
                     ->badge()
                     ->searchable(),
-                Tables\Columns\ToggleColumn::make('is_active'),
+                Tables\Columns\TextColumn::make('is_active')
+                    ->label('Status')
+                    ->formatStateUsing(fn($state) => $state ? 'Active' : 'Suspended')
+                    ->badge()
+                    ->color(fn($state) => $state ? 'success' : 'danger'),
                 Tables\Columns\TextColumn::make('email_verified_at')
                     ->dateTime()
                     ->sortable()
@@ -151,13 +161,7 @@ class UserResource extends Resource
             ])
             ->defaultSort('id', 'desc')
             ->modifyQueryUsing(function (Builder $query) {
-                if (!Auth::user()->hasRole('Super Admin')) {
-                    $query->withoutRole('Super Admin');
-                }
-                //     if (!Auth::user()->hasRole('Teacher')) {
-                //         $query->withoutRole('Admin');
-                //     }
-                $query->withoutRole('Student');
+                $query->Role('Student');
             })
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
@@ -171,7 +175,7 @@ class UserResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                // Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -192,14 +196,10 @@ class UserResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListUsers::route('/'),
-            'create' => Pages\CreateUser::route('/create'),
-            'monthly-attendance' => Pages\MonthlyAttendance::route('/monthly-attendance'),
-            'minimal-test' => Pages\MinimalTest::route('/minimal-test'),
-            'view' => Pages\ViewUser::route('/{record}'),
-            'edit' => Pages\EditUser::route('/{record}/edit'),
-            'id-card' => Pages\IDCard::route('/{record}/id-card'),
-            'transport' => Pages\Transport::route('/{record}/transport'),
+            'index' => Pages\ListStudents::route('/'),
+            'create' => Pages\CreateStudent::route('/create'),
+            'view' => Pages\ViewStudent::route('/{record}'),
+            'edit' => Pages\EditStudent::route('/{record}/edit'),
         ];
     }
 
@@ -213,53 +213,33 @@ class UserResource extends Resource
 
     public static function query(Builder $query): Builder
     {
-        return $query->whereDoesntHave('roles', function ($query) {
+        $query->whereHas('roles', function ($query) {
             $query->where('name', 'Student');
         });
+
+        return $query;
     }
 
     public static function canView(Model $record): bool
     {
-        $authUser = Auth::user();
-        // Super Admin can view all users, including other Super Admins
-        if ($authUser->hasRole('Super Admin')) {
-            return true;
-        }
-        // Other users cannot view Super Admin users
-        return !$record->hasRole('Super Admin') && !$record->hasRole('Student');
+        return $record->hasRole('Student');
     }
 
     public static function canEdit(Model $record): bool
     {
-        $authUser = Auth::user();
-        // Super Admin can edit any user, including other Super Admins
-        if ($authUser->hasRole('Super Admin')) {
-            return true;
-        }
-        // Other users cannot edit Super Admin or Student users
-        return !$record->hasRole('Super Admin') && !$record->hasRole('Student');
+        return $record->hasRole('Student');
     }
 
     public static function canDelete(Model $record): bool
     {
-        $authUser = Auth::user();
-        // Super Admin can delete any user, including other Super Admins
-        if ($authUser->hasRole('Super Admin')) {
-            return true;
-        }
-        // Other users cannot delete Super Admin or Student users
-        return !$record->hasRole('Super Admin') && !$record->hasRole('Student');
+        return $record->hasRole('Student');
     }
 
     public static function getNavigationBadge(): ?string
     {
         return User::where('is_active', 1)
             ->whereHas('roles', function ($query) {
-                $query->whereNot('name', 'Student');
-
-                if (!Auth::user()->hasRole('Super Admin')) {
-                    $query->whereNot('name', 'Super Admin');
-                }
+                $query->where('name', 'Student');
             })
             ->count();
     }

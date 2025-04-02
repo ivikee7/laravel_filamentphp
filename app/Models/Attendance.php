@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Attendance extends Model
@@ -13,13 +12,23 @@ class Attendance extends Model
 
     protected $fillable = [
         'user_id',
-        'creator_id',
         'created_at',
+        'creator_id',
         'type',
     ];
 
-    // Timestamps none
     public $timestamps = false;
+
+
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+    public function updater(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
 
     protected static function boot()
     {
@@ -31,15 +40,5 @@ class Attendance extends Model
                 $model->created_at = now();
             }
         });
-    }
-
-    function creator(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'creator_id', 'id');
-    }
-
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 }
