@@ -1,6 +1,6 @@
 <x-filament-panels::page>
     {{-- First Row: Avatar & QR Code --}}
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 border-b items-center">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 items-center">
         <div class="flex justify-center">
             <img src="{{ $record->avatar_url ?? '/default-avatar.png' }}" class="w-32 h-32 rounded-full shadow-lg">
         </div>
@@ -13,7 +13,7 @@
     </div>
 
     {{-- Second Row: User Info in Columns --}}
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-6 rounded-lg border-b">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-6 rounded-lg">
         <div class=" p-2 rounded shadow">
             <strong class="text-gray-600">Name:</strong> <br> {{ $record->name }}
         </div>
