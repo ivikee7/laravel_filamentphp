@@ -54,21 +54,25 @@ class DatabaseSeeder extends Seeder
             'name' => 'Admin',
             'email' => 'ivikee7@gmail.com',
             'password' => 'admin@123...!@',
+            'is_active' => true,
         ])->assignRole('Super Admin');
         User::factory()->create([
             'name' => 'Chanchal Jha',
             'email' => 'chanchaljha@srcspatna.com',
             'password' => 'password',
+            'is_active' => true,
         ])->assignRole('Admin');
         User::factory()->create([
             'name' => 'Teacher',
             'email' => 'Teacher@gmail.com',
             'password' => 'password',
+            'is_active' => true,
         ])->assignRole('Teacher');
         User::factory()->create([
             'name' => 'Student',
             'email' => 'Student@gmail.com',
             'password' => 'password',
+            'is_active' => true,
         ])->assignRole('Student');
     }
 }
