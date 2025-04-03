@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Resources\UserResource\Pages;
 use App\Filament\Admin\Resources\UserResource;
 use App\Models\Attendance;
 use App\Models\User;
+use Carbon\Carbon;
 use Filament\Actions;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\Concerns\InteractsWithRecord;
@@ -24,9 +25,19 @@ class IDCard extends Page implements HasTable
 
     protected static string $view = 'filament.admin.resources.user-resource.pages.i-d-card';
 
+    public array $attendanceRecords = [];
+
     public function mount(int|string $record): void
     {
-        $this->record = User::findOrFail($record); // ✅ Ensures the record is always found
+        $this->record = $this->resolveRecord($record);
+
+        $today = Carbon::today()->toDateString();
+
+        // Fetch today's attendance types
+        $this->attendanceRecords = Attendance::where('user_id', $this->record->id)
+            ->whereDate('created_at', $today)
+            ->pluck('type')
+            ->toArray();
     }
 
     // ✅ Place "View" & "Transport" buttons in the header
@@ -43,26 +54,45 @@ class IDCard extends Page implements HasTable
         ];
     }
 
-    // protected function getActions(): array
-    // {
-    //     return [
-    //         Action::make('entredInBus')
-    //             ->label('Entered in Bus')
-    //             ->action(fn() => $this->markAttendance('entredInBus')),
+    protected function getActions(): array
+    {
+        $today = Carbon::today()->toDateString(); // Get today's date
 
-    //         Action::make('entredInCampus')
-    //             ->label('Entered in Campus')
-    //             ->action(fn() => $this->markAttendance('entredInCampus')),
+        $attendanceRecords = Attendance::where('user_id', $this->record->id)
+            ->whereDate('created_at', $today) // ✅ Check if attendance exists for today
+            ->pluck('type')
+            ->toArray();
 
-    //         Action::make('exitFromCampus')
-    //             ->label('Exit from Campus')
-    //             ->action(fn() => $this->markAttendance('exitFromCampus')),
+        return [
+            // Show "Entered in Bus" only if NOT marked today
+            !in_array('entredInBus', $attendanceRecords)
+                ? Action::make('entredInBus')
+                ->label('Entered in Bus')
+                ->action(fn() => $this->markAttendance('entredInBus'))
+                : null,
 
-    //         Action::make('exitFromBus')
-    //             ->label('Exit from Bus')
-    //             ->action(fn() => $this->markAttendance('exitFromBus')),
-    //     ];
-    // }
+            // Show "Entered in Campus" only if NOT marked today
+            !in_array('entredInCampus', $attendanceRecords)
+                ? Action::make('entredInCampus')
+                ->label('Entered in Campus')
+                ->action(fn() => $this->markAttendance('entredInCampus'))
+                : null,
+
+            // Show "Exit from Campus" only if NOT marked today
+            !in_array('exitFromCampus', $attendanceRecords)
+                ? Action::make('exitFromCampus')
+                ->label('Exit from Campus')
+                ->action(fn() => $this->markAttendance('exitFromCampus'))
+                : null,
+
+            // Show "Exit from Bus" only if NOT marked today
+            !in_array('exitFromBus', $attendanceRecords)
+                ? Action::make('exitFromBus')
+                ->label('Exit from Bus')
+                ->action(fn() => $this->markAttendance('exitFromBus'))
+                : null,
+        ];
+    }
 
     public function getModel(): string
     {
@@ -123,9 +153,21 @@ class IDCard extends Page implements HasTable
             'type' => $type,
         ]);
 
+        // ✅ Refresh attendance records immediately
+        $this->updateAttendanceRecords();
+
         Notification::make()
-            ->title(ucwords(str_replace('_', ' ', $type)))
+            ->title(ucwords(str_replace('_', ' ', $type)) . ' marked successfully')
             ->success()
             ->send();
+    }
+
+    // ✅ Function to refresh attendance records without reloading the page
+    public function updateAttendanceRecords(): void
+    {
+        $this->attendanceRecords = Attendance::where('user_id', $this->record->id)
+            ->whereDate('created_at', now()->toDateString())
+            ->pluck('type')
+            ->toArray();
     }
 }

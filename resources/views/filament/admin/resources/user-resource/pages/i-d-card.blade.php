@@ -30,33 +30,34 @@
     </div>
 
     {{-- Third Row: Attendance Buttons --}}
-    @php
-        $attendanceRecords = \App\Models\Attendance::where('user_id', $record->id)->pluck('type')->toArray();
-    @endphp
-
     <div class="flex flex-wrap justify-center gap-4 p-6">
-        @if (!in_array('entredInBus', $attendanceRecords) && !in_array('entredInCampus', $attendanceRecords))
+        @unless (in_array('entredInBus', $attendanceRecords))
             <x-filament::button wire:click="markAttendance('entredInBus')" color="success">
                 Entered in Bus
             </x-filament::button>
-        @endif
+        @endunless
 
-        @if (!in_array('entredInCampus', $attendanceRecords) && !in_array('exitFromCampus', $attendanceRecords))
+        @unless (in_array('entredInCampus', $attendanceRecords))
             <x-filament::button wire:click="markAttendance('entredInCampus')" color="primary">
                 Entered in Campus
             </x-filament::button>
-        @endif
+        @endunless
 
-        @if (!in_array('exitFromCampus', $attendanceRecords) && !in_array('exitFromBus', $attendanceRecords))
+        @unless (in_array('exitFromCampus', $attendanceRecords))
             <x-filament::button wire:click="markAttendance('exitFromCampus')" color="danger">
                 Exit from Campus
             </x-filament::button>
-        @endif
+        @endunless
 
-        @if (!in_array('exitFromBus', $attendanceRecords))
+        @unless (in_array('exitFromBus', $attendanceRecords))
             <x-filament::button wire:click="markAttendance('exitFromBus')" color="warning">
                 Exit from Bus
             </x-filament::button>
-        @endif
+        @endunless
+    </div>
+
+    <div class="mt-6">
+        <h2 class="text-xl font-bold text-center">Attendance History</h2>
+        {{ $this->table }}
     </div>
 </x-filament-panels::page>
