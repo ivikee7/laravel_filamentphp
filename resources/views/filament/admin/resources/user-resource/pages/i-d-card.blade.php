@@ -1,15 +1,9 @@
 <x-filament-panels::page>
     {{-- First Row: Avatar & QR Code --}}
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 items-center">
+    <div class="grid grid-cols-1 gap-6 p-6 items-center">
         <div class="flex justify-center">
             <img src="{{ $record->avatar ? asset('storage/' . $record->avatar) : '/default-avatar.png' }}"
-                 class="w-32 h-32 rounded-full shadow-lg">
-        </div>
-        <div class="flex flex-col items-center space-y-4">
-            <div class="bg-white p-4 shadow rounded">
-                {!! QrCode::size(150)->generate(route('filament.admin.resources.users.id-card', $record->id)) !!}
-            </div>
-            <h2 class="text-lg font-bold">{{ date('d-M-Y') }}</h2>
+                 class="w-32 h-32 rounded shadow-lg">
         </div>
     </div>
 
