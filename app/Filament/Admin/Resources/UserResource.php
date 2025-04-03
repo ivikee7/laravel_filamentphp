@@ -158,12 +158,6 @@ class UserResource extends Resource
                 if (!Auth::user()->hasRole('Super Admin')) {
                     $query->withoutRole('Super Admin');
                 }
-                if (Auth::user()->hasRole('Admin')) {
-                    $query->withoutRole('Admin');
-                }
-                if (Auth::user()->hasRole('Teacher')) {
-                    $query->withoutRole('Admin');
-                }
                 $query->withoutRole('Student');
             })
             ->filters([
@@ -255,11 +249,10 @@ class UserResource extends Resource
     {
         return User::where('is_active', 1)
             ->whereHas('roles', function ($query) {
-                $query->whereNot('name', 'Student');
-
                 if (!Auth::user()->hasRole('Super Admin')) {
                     $query->whereNot('name', 'Super Admin');
                 }
+                $query->whereNot('name', 'Student');
             })
             ->count();
     }
