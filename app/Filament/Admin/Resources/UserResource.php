@@ -158,7 +158,10 @@ class UserResource extends Resource
                 if (!Auth::user()->hasRole('Super Admin')) {
                     $query->withoutRole('Super Admin');
                 }
-                if (!Auth::user()->hasRole('Teacher')) {
+                if (Auth::user()->hasRole('Admin')) {
+                    $query->withoutRole('Admin');
+                }
+                if (Auth::user()->hasRole('Teacher')) {
                     $query->withoutRole('Admin');
                 }
                 $query->withoutRole('Student');
