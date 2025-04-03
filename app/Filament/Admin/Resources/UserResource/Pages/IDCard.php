@@ -43,26 +43,26 @@ class IDCard extends Page implements HasTable
         ];
     }
 
-    protected function getActions(): array
-    {
-        return [
-            Action::make('entredInBus')
-                ->label('Entered in Bus')
-                ->action(fn() => $this->markAttendance('entredInBus')),
+    // protected function getActions(): array
+    // {
+    //     return [
+    //         Action::make('entredInBus')
+    //             ->label('Entered in Bus')
+    //             ->action(fn() => $this->markAttendance('entredInBus')),
 
-            Action::make('entredInCampus')
-                ->label('Entered in Campus')
-                ->action(fn() => $this->markAttendance('entredInCampus')),
+    //         Action::make('entredInCampus')
+    //             ->label('Entered in Campus')
+    //             ->action(fn() => $this->markAttendance('entredInCampus')),
 
-            Action::make('exitFromCampus')
-                ->label('Exit from Campus')
-                ->action(fn() => $this->markAttendance('exitFromCampus')),
+    //         Action::make('exitFromCampus')
+    //             ->label('Exit from Campus')
+    //             ->action(fn() => $this->markAttendance('exitFromCampus')),
 
-            Action::make('exitFromBus')
-                ->label('Exit from Bus')
-                ->action(fn() => $this->markAttendance('exitFromBus')),
-        ];
-    }
+    //         Action::make('exitFromBus')
+    //             ->label('Exit from Bus')
+    //             ->action(fn() => $this->markAttendance('exitFromBus')),
+    //     ];
+    // }
 
     public function getModel(): string
     {

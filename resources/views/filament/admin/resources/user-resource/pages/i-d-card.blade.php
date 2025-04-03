@@ -3,7 +3,7 @@
     <div class="grid grid-cols-1 gap-6 p-6 items-center">
         <div class="flex justify-center">
             <img src="{{ $record->avatar ? asset('storage/' . $record->avatar) : '/default-avatar.png' }}"
-                 class="w-32 h-32 rounded shadow-lg">
+                class="w-32 h-32 rounded shadow-lg">
         </div>
     </div>
 
@@ -30,21 +30,33 @@
     </div>
 
     {{-- Third Row: Attendance Buttons --}}
+    @php
+        $attendanceRecords = \App\Models\Attendance::where('user_id', $record->id)->pluck('type')->toArray();
+    @endphp
+
     <div class="flex flex-wrap justify-center gap-4 p-6">
-        <x-filament::button wire:click="markAttendance('entredInBus')" color="success">
-            Entered in Bus
-        </x-filament::button>
+        @if (!in_array('entredInBus', $attendanceRecords) && !in_array('entredInCampus', $attendanceRecords))
+            <x-filament::button wire:click="markAttendance('entredInBus')" color="success">
+                Entered in Bus
+            </x-filament::button>
+        @endif
 
-        <x-filament::button wire:click="markAttendance('entredInCampus')" color="primary">
-            Entered in Campus
-        </x-filament::button>
+        @if (!in_array('entredInCampus', $attendanceRecords) && !in_array('exitFromCampus', $attendanceRecords))
+            <x-filament::button wire:click="markAttendance('entredInCampus')" color="primary">
+                Entered in Campus
+            </x-filament::button>
+        @endif
 
-        <x-filament::button wire:click="markAttendance('exitFromCampus')" color="danger">
-            Exit from Campus
-        </x-filament::button>
+        @if (!in_array('exitFromCampus', $attendanceRecords) && !in_array('exitFromBus', $attendanceRecords))
+            <x-filament::button wire:click="markAttendance('exitFromCampus')" color="danger">
+                Exit from Campus
+            </x-filament::button>
+        @endif
 
-        <x-filament::button wire:click="markAttendance('exitFromBus')" color="warning">
-            Exit from Bus
-        </x-filament::button>
+        @if (!in_array('exitFromBus', $attendanceRecords))
+            <x-filament::button wire:click="markAttendance('exitFromBus')" color="warning">
+                Exit from Bus
+            </x-filament::button>
+        @endif
     </div>
 </x-filament-panels::page>

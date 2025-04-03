@@ -18,8 +18,6 @@ class ListUsers extends ListRecords
             Actions\CreateAction::make(),
             Actions\Action::make('MonthlyAttendance')
                 ->url(fn(): string => UserResource::getUrl('monthly-attendance')),
-            Actions\Action::make('MinimalTest ')
-                ->url(fn(): string => UserResource::getUrl('minimal-test')),
         ];
     }
 

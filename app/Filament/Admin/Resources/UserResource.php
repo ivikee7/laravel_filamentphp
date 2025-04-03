@@ -131,7 +131,11 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('roles.name')
                     ->badge()
                     ->searchable(),
-                Tables\Columns\ToggleColumn::make('is_active'),
+                Tables\Columns\TextColumn::make('is_active')
+                    ->label('Status')
+                    ->formatStateUsing(fn($state) => $state ? 'Active' : 'Suspended')
+                    ->badge()
+                    ->color(fn($state) => $state ? 'success' : 'danger'),
                 Tables\Columns\TextColumn::make('email_verified_at')
                     ->dateTime()
                     ->sortable()
@@ -154,9 +158,9 @@ class UserResource extends Resource
                 if (!Auth::user()->hasRole('Super Admin')) {
                     $query->withoutRole('Super Admin');
                 }
-                //     if (!Auth::user()->hasRole('Teacher')) {
-                //         $query->withoutRole('Admin');
-                //     }
+                if (!Auth::user()->hasRole('Teacher')) {
+                    $query->withoutRole('Admin');
+                }
                 $query->withoutRole('Student');
             })
             ->filters([
@@ -195,7 +199,7 @@ class UserResource extends Resource
             'index' => Pages\ListUsers::route('/'),
             'create' => Pages\CreateUser::route('/create'),
             'monthly-attendance' => Pages\MonthlyAttendance::route('/monthly-attendance'),
-            'minimal-test' => Pages\MinimalTest::route('/minimal-test'),
+            'id-cards' => Pages\IDCards::route('/id-cards'),
             'view' => Pages\ViewUser::route('/{record}'),
             'edit' => Pages\EditUser::route('/{record}/edit'),
             'id-card' => Pages\IDCard::route('/{record}/id-card'),
@@ -209,13 +213,6 @@ class UserResource extends Resource
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ]);
-    }
-
-    public static function query(Builder $query): Builder
-    {
-        return $query->whereDoesntHave('roles', function ($query) {
-            $query->where('name', 'Student');
-        });
     }
 
     public static function canView(Model $record): bool
