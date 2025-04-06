@@ -7,6 +7,8 @@ namespace App\Models;
 use Althinect\FilamentSpatieRolesPermissions\Concerns\HasSuperAdmin;
 use App\Models\Admission;
 use Carbon\Carbon;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -17,7 +19,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasRoles, HasSuperAdmin, SoftDeletes;
@@ -41,6 +43,8 @@ class User extends Authenticatable
         'pin_code',
         'avatar',
         'is_active',
+        'created_at',
+        'updated_at',
     ];
 
     /**
@@ -64,6 +68,13 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return $this->where('is_active', true)->exists();
+        // Example: Allow users with the "admin" role
+        // return $this->hasRole(['Super Admin', 'Owner', 'Admin', 'Teacher']); // Replace 'admin' with your role
     }
 
     public function creator(): BelongsTo

@@ -4,18 +4,23 @@ namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\StudentResource\Pages;
 use App\Filament\Admin\Resources\StudentResource\RelationManagers;
+use App\Models\MessageTemplate;
 use App\Models\Registration;
-use App\Models\Student;
+use App\Models\SmsProvider;
 use App\Models\User;
+use App\Services\SMSService;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 
 class StudentResource extends Resource
@@ -24,7 +29,7 @@ class StudentResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $navigationGroup = 'School Management System';
+    protected static ?string $navigationGroup = 'User and Attendance';
     protected static ?string $modelLabel = 'Student';
 
     public static function form(Form $form): Form
@@ -182,6 +187,57 @@ class StudentResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                     Tables\Actions\ForceDeleteBulkAction::make(),
                     Tables\Actions\RestoreBulkAction::make(),
+                    BulkAction::make('send_bulk_sms')
+                        ->label('Send Bulk SMS')
+                        ->form([
+                            Forms\Components\Select::make('provider_id')
+                                ->label('SMS Provider')
+                                ->options(SMSProvider::query()->where('is_active', true)->pluck('name', 'id'))
+                                ->searchable()
+                                ->required(),
+
+                            Forms\Components\Select::make('template_id')
+                                ->label('Message Template')
+                                ->options(MessageTemplate::all()->pluck('name', 'id'))
+                                ->searchable()
+                                ->required(),
+                        ])
+                        ->action(function (Collection $records, array $data) {
+                            $provider = SmsProvider::find($data['provider_id']);
+
+
+                            if (!$provider || !$provider->is_active) {
+                                Notification::make()
+                                    ->title('SMS Provider Error')
+                                    ->body('SMS provider not found or inactive.')
+                                    ->danger()
+                                    ->send();
+                                return;
+                            }
+
+                            $template = MessageTemplate::find($data['template_id']);
+                            $smsService = new SMSService($provider->toArray()); // assuming SMSService accepts provider
+
+                            foreach ($records as $student) {
+                                $message = str_replace(
+                                    ['{{name}}', '{{time}}'],
+                                    [
+                                        $student->name,
+                                        optional($student->class)->name ?? '',
+                                        $student->roll_no ?? '',
+                                    ],
+                                    $template->content
+                                );
+
+                                $smsService->sendSms($student->primary_contact_number, $message, $template);
+                            }
+
+                            Notification::make()
+                                ->title('SMS Sent')
+                                ->body('Bulk SMS sent successfully!')
+                                ->success()
+                                ->send();
+                        }),
                 ]),
             ]);
     }

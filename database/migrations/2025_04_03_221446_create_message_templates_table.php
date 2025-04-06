@@ -11,18 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('sms_providers', function (Blueprint $table) {
+        Schema::create('message_templates', function (Blueprint $table) {
             $table->id();
             //
-            $table->string('name')->unique();
-            $table->string('base_url');
-            $table->enum('method', ['get', 'post'])->default('get');
-            $table->string('to_key');
-            $table->string('text_key');
+            $table->foreignId('sms_provider_id');
+            $table->string('name')->unique(); // Template name
+            $table->text('content'); // Message with placeholders
+            $table->json('variables')->nullable(); // Expected variables like ["name", "amount"]
             $table->json('params');
-            $table->json('headers')->nullable();
-            $table->json('responses')->nullable();
-            $table->boolean('is_active')->default(true);
+            $table->boolean('is_active');
             //
             $table->foreignId('creator_id')->nullable();
             $table->foreignId('updater_id')->nullable();
@@ -36,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sms_providers');
+        Schema::dropIfExists('message_templates');
     }
 };

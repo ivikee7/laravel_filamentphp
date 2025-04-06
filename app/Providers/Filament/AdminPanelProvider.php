@@ -4,6 +4,8 @@ namespace App\Providers\Filament;
 
 use Althinect\FilamentSpatieRolesPermissions\FilamentSpatieRolesPermissionsPlugin;
 use App\Filament\Admin\Auth\Login;
+use App\Filament\Admin\Pages\ViewLog;
+use App\Filament\Pages\HealthCheckResults;
 use Filament\Actions\Action;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -23,6 +25,8 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Saade\FilamentLaravelLog\FilamentLaravelLogPlugin;
+use ShuvroRoy\FilamentSpatieLaravelHealth\FilamentSpatieLaravelHealthPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -61,8 +65,16 @@ class AdminPanelProvider extends PanelProvider
                 Authenticate::class,
             ])
             ->plugin(FilamentSpatieRolesPermissionsPlugin::make())
+            ->plugin(FilamentSpatieLaravelHealthPlugin::make())
+            ->plugin(FilamentLaravelLogPlugin::make()
+                ->viewLog(ViewLog::class)
+                ->navigationGroup('Settings')
+                ->navigationLabel('Logs')
+                ->navigationIcon('heroicon-o-bug-ant')
+                ->navigationSort(1)
+                ->slug('logs'))
             ->spa()
             ->maxContentWidth(MaxWidth::Full)
-            ;
+        ;
     }
 }

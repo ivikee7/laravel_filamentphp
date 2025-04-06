@@ -14,6 +14,8 @@ class ViewSmsProvider extends ViewRecord
     {
         return [
             Actions\EditAction::make(),
+            Actions\Action::make('Send SMS')
+                ->url(fn(): string => SmsProviderResource::getUrl('sendSms', [$this->record->id])),
         ];
     }
 }

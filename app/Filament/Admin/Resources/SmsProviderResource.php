@@ -5,7 +5,9 @@ namespace App\Filament\Admin\Resources;
 use App\Filament\Admin\Resources\SmsProviderResource\Pages;
 use App\Filament\Admin\Resources\SmsProviderResource\RelationManagers;
 use App\Models\SmsProvider;
+use Closure;
 use Filament\Forms;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -19,17 +21,84 @@ class SmsProviderResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $navigationGroup = 'SMS Service Provider';
+    protected static ?string $navigationGroup = 'SMS Services';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')->required(),
-                Forms\Components\TextInput::make('api_url')->url()->required(),
-                Forms\Components\TextInput::make('api_key')->password()->required(),
-                Forms\Components\TextInput::make('sender_id')->required(),
-                Forms\Components\Toggle::make('is_active')->default(true),
+                Section::make()
+                    ->schema([
+                        Forms\Components\TextInput::make('name')
+                            ->required()
+                            ->maxLength(255),
+                        Forms\Components\TextInput::make('base_url')
+                            ->required()
+                            ->maxLength(255),
+                        Forms\Components\Select::make('method')
+                            ->options([
+                                'get' => 'Get',
+                                'post' => 'Post'
+                            ])
+                            ->required(),
+                        Forms\Components\TextInput::make('to_key')
+                            ->required()
+                            ->maxLength(255),
+                        Forms\Components\TextInput::make('text_key')
+                            ->required()
+                            ->maxLength(255),
+                        Forms\Components\Repeater::make('params')
+                            ->schema([
+                                Forms\Components\TextInput::make('param_name')
+                                    ->label('Parameter Name')
+                                    ->required()
+                                    ->rules(['distinct']),
+
+                                Forms\Components\TextInput::make('param_value')
+                                    ->label('Parameter Value')
+                                    ->required(),
+                            ])
+                            ->label('Parameter Mappings')
+                            ->grid(2)
+                            ->columnSpanFull()
+                            ->columns(2),
+                        Forms\Components\Repeater::make('headers')
+                            ->schema([
+                                Forms\Components\TextInput::make('header_name')
+                                    ->label('Header Name')
+                                    ->required()
+                                    ->rules(['distinct']),
+                                Forms\Components\TextInput::make('header_value')
+                                    ->label('Header Value')
+                                    ->required(),
+                            ])
+                            ->label('Header Mappings')
+                            ->grid(2)
+                            ->columnSpanFull()
+                            ->columns(2),
+                        Forms\Components\Repeater::make('responses')
+                            ->schema([
+                                Forms\Components\TextInput::make('response_name')
+                                    ->label('Response Name')
+                                    ->required()
+                                    ->rules(['distinct']),
+                                Forms\Components\TextInput::make('response_value')
+                                    ->label('Response Value')
+                                    ->required(),
+                                Forms\Components\Toggle::make('is_display')
+                                    ->label('Display in Notification')
+                                    ->default(false)
+                                    ->inline(false),
+                            ])
+                            ->label('Response Mappings')
+                            ->grid(2)
+                            ->columnSpanFull()
+                            ->columns(2),
+                        Forms\Components\Toggle::make('is_active')
+                            ->required()
+                            ->inline(false),
+
+                    ])->columns(2),
             ]);
     }
 
@@ -37,13 +106,35 @@ class SmsProviderResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('api_url')->label('API URL')->limit(30),
-                Tables\Columns\TextColumn::make('sender_id')->label('Sender ID'),
-                Tables\Columns\ToggleColumn::make('is_active')->label('Active'),
+                Tables\Columns\TextColumn::make('name')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('base_url')
+                    ->searchable()
+                    ->wrap(),
+                Tables\Columns\TextColumn::make('method'),
+                Tables\Columns\IconColumn::make('is_active')
+                    ->boolean(),
+                Tables\Columns\TextColumn::make('creator.name')
+                    ->numeric()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('updater.name')
+                    ->numeric()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('deleted_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->filters([])
-            ->actions([])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
             ])
@@ -72,9 +163,9 @@ class SmsProviderResource extends Resource
         return [
             'index' => Pages\ListSmsProviders::route('/'),
             'create' => Pages\CreateSmsProvider::route('/create'),
-            'send-bulk-sms' => Pages\SendBulkSms::route('/send-bulk-sms'),
             'view' => Pages\ViewSmsProvider::route('/{record}'),
             'edit' => Pages\EditSmsProvider::route('/{record}/edit'),
+            'sendSms' => Pages\SendSms::route('/{record}/send-sms'), // ✅ Add this line
         ];
     }
 

@@ -7,30 +7,36 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class SmsProvider extends Model
+class MessageTemplate extends Model
 {
-    use SoftDeletes;
     use HasFactory;
+    use SoftDeletes;
 
     protected $fillable = [
         'name',
-        'base_url',
-        'method',
+        'content',
+        'variables',
         'params',
-        'headers',
-        'responses',
-        'is_active',
-        'to_key',
-        'text_key',
-        'creator_id',
-        'updater_id',
+        'sms_provider_id',
+        'is_active'
     ];
 
     protected $casts = [
+        'variables' => 'array', // Ensure variables are stored as JSON
         'params' => 'array',
-        'headers' => 'array',
-        'responses' => 'array',
     ];
+
+    /**
+     * Replace placeholders with actual values.
+     */
+    public function render(array $data): string
+    {
+        $message = $this->content;
+        foreach ($data as $key => $value) {
+            $message = str_replace("{{{$key}}}", $value, $message);
+        }
+        return $message;
+    }
 
     protected static function boot()
     {
@@ -48,11 +54,6 @@ class SmsProvider extends Model
         });
     }
 
-    public static function getActiveProviders()
-    {
-        return self::where('is_active', true)->pluck('name', 'id');
-    }
-
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -60,5 +61,9 @@ class SmsProvider extends Model
     public function updater(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+    public function smsProvider(): BelongsTo
+    {
+        return $this->belongsTo(SmsProvider::class);
     }
 }
