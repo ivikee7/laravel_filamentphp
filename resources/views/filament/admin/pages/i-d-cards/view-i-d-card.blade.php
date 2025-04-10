@@ -3,8 +3,11 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
             {{-- Avatar --}}
             <div class="flex justify-center">
-                <img src="{{ $record->avatar ? asset('storage/' . $record->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode($record->name) }}"
-                    alt="{{ $record->name }}" class="w-32 h-32 rounded-full object-cover shadow-md">
+                <div class="flex">
+                    <img src="{{ $record->avatar ? asset('storage/' . $record->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode($record->name) }}"
+                        alt="{{ $record->name }}" class="w-32 h-32 rounded-full object-cover shadow-md">
+                </div>
+                {{-- <div><strong>Blood Group:</strong>{{ $record->blood_group }}</div> --}}
             </div>
 
             {{-- Name + Role + QR Code --}}
@@ -19,19 +22,17 @@
             </div>
 
             {{-- Contact Info --}}
-            @php
-                $student = $record->student;
-                $assignment = $student?->classAssignments()->latest()->first();
-            @endphp
 
             <div class="text-sm space-y-1 dark:text-white">
-                <div><strong>ID #:</strong> {{ $record->id ?? 'N/A' }}</div>
-                <div><strong>Class:</strong> {{ $student?->currentClassAssignment?->class?->name ?? 'N/A' }}</div>
-                <div><strong>Section:</strong> {{ $student?->currentClassAssignment?->section?->name ?? 'N/A' }}</div>
-                <div><strong>Father's Name:</strong> {{ $record->father_name ?? 'N/A' }}</div>
-                <div><strong>Mother's Name:</strong> {{ $record->mother_name ?? 'N/A' }}</div>
-                <div><strong>Primary Contact:</strong> {{ $record->primary_contact_number ?? 'N/A' }}</div>
-                <div><strong>Secondary Contact:</strong> {{ $record->secondary_contact_number ?? 'N/A' }}</div>
+                <div><strong>ID #:</strong> {{ $record->id }}</div>
+                <div><strong>Class:</strong> {{ $record->student?->currentClassAssignment?->class?->name }}</div>
+                <div><strong>Section:</strong> {{ $record->student?->currentClassAssignment?->section?->name }}</div>
+                <div><strong>Father's Name:</strong> {{ $record->father_name }}</div>
+                <div><strong>Mother's Name:</strong> {{ $record->mother_name }}</div>
+                <div><strong>Primary Contact:</strong> {{ $record->primary_contact_number }}</div>
+                <div><strong>Secondary Contact:</strong> {{ $record->secondary_contact_number }}</div>
+                <div><strong>Address:</strong> {{ $record->address }}, {{ $record->city }}, {{ $record->state }},
+                    {{ $record->pin_code }}</div>
             </div>
         </div>
     </div>
@@ -39,29 +40,29 @@
     <div>
         {{-- Third Row: Attendance Buttons --}}
         <div class="flex flex-wrap justify-center gap-4 p-6">
-            @unless (in_array('entredInBus', $attendanceRecords))
-                <x-filament::button wire:click="markAttendance('entredInBus')" color="success">
+            {{-- @unless (in_array('entredInBus', $attendanceRecords))
+                <x-filament::button wire:click="markAttendance('entredInBus')" color="primary">
                     Entered in Bus
                 </x-filament::button>
-            @endunless
+            @endunless --}}
 
             @unless (in_array('entredInCampus', $attendanceRecords))
-                <x-filament::button wire:click="markAttendance('entredInCampus')" color="primary">
+                <x-filament::button wire:click="markAttendance('entredInCampus')" color="success">
                     Entered in Campus
                 </x-filament::button>
             @endunless
 
             @unless (in_array('exitFromCampus', $attendanceRecords))
-                <x-filament::button wire:click="markAttendance('exitFromCampus')" color="danger">
+                <x-filament::button wire:click="markAttendance('exitFromCampus')" color="warning">
                     Exit from Campus
                 </x-filament::button>
             @endunless
 
-            @unless (in_array('exitFromBus', $attendanceRecords))
-                <x-filament::button wire:click="markAttendance('exitFromBus')" color="warning">
+            {{-- @unless (in_array('exitFromBus', $attendanceRecords))
+                <x-filament::button wire:click="markAttendance('exitFromBus')" color="danger">
                     Exit from Bus
                 </x-filament::button>
-            @endunless
+            @endunless --}}
         </div>
     </div>
 </x-filament-panels::page>

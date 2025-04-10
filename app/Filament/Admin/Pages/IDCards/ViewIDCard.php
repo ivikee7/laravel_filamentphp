@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Pages\IDCards;
 use App\Filament\Admin\Resources\UserResource;
 use App\Models\Attendance;
 use App\Models\MessageTemplate;
+use App\Models\SmsProvider;
 use App\Models\User;
 use App\Services\SMSService;
 use Carbon\Carbon;
@@ -55,18 +56,59 @@ class ViewIDCard extends Page
             return;
         }
 
-        Attendance::create([
+        $attendance = Attendance::create([
             'user_id' => $this->record->id,
             'type' => $type,
         ]);
-
-        // dd($type);
 
         // ✅ Refresh attendance records immediately
         $this->updateAttendanceRecords();
 
         Notification::make()
             ->title(ucwords(str_replace('_', ' ', $type)) . ' marked successfully')
+            ->success()
+            ->send();
+
+        // dd($attendance);
+
+        $provider = SmsProvider::find(env('MESSAGE_PROVIDER_ID'));
+
+        if (!$provider || !$provider->is_active) {
+            Notification::make()
+                ->title('SMS Provider Error')
+                ->body('SMS provider not found or inactive.')
+                ->danger()
+                ->send();
+            return;
+        }
+
+        $template = MessageTemplate::where('name', $type)->first();
+
+        if (!$template) {
+            Notification::make()
+                ->title('SMS Template Error '. $type)
+                ->body('SMS template not found.')
+                ->danger()
+                ->send();
+            return;
+        }
+
+        $smsService = new SMSService($provider->toArray()); // assuming SMSService accepts provider
+
+        $message = str_replace(
+            ['{{name}}', '{{time}}'],
+            [
+                $this->record->name,
+                $attendance->created_at
+            ],
+            $template->content
+        );
+
+        $smsService->sendSms($this->record->primary_contact_number, $message, $template);
+
+
+        Notification::make()
+            ->title('Message successfully sent')
             ->success()
             ->send();
     }

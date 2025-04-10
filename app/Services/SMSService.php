@@ -27,7 +27,7 @@ class SMSService
 
     public function sendSms($to, $message, $template = null)
     {
-        dd($message);
+        // dd($message);
         // Convert provider params into an associative array
         $params = collect($this->provider->params ?? [])
             ->mapWithKeys(fn($item) => [$item['param_name'] => $item['param_value']]);

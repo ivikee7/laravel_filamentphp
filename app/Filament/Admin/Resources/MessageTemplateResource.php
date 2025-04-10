@@ -33,7 +33,7 @@ class MessageTemplateResource extends Resource
                             return $query;
                         }),
                     Forms\Components\TextInput::make('name')
-                        ->unique()
+                        ->unique(ignoreRecord: true)
                         ->required()
                         ->maxLength(255),
                     Forms\Components\Textarea::make('content')
@@ -90,7 +90,7 @@ class MessageTemplateResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('content')
-                ->wrap()
+                    ->wrap()
                     ->searchable(),
                 Tables\Columns\IconColumn::make('is_active')
                     ->boolean(),
