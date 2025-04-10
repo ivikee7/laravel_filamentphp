@@ -28,7 +28,13 @@ class ListIDCards extends Page implements HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->query(User::with(['student', 'student.classAssignments'])->role('Student')) // eager load relationships
+            ->query(
+                User::with(['student', 'student.classAssignments'])
+                    ->role('Student')
+                    ->whereHas('student', function ($student) {
+                        return $student->where('current_status', 'active');
+                    })
+            ) // eager load relationships
             ->columns([
 
                 ImageColumn::make('avatar')
@@ -81,5 +87,10 @@ class ListIDCards extends Page implements HasTable
                     ->url(fn($record) => route('filament.admin.pages.id-cards.{record}', ['record' => $record->id])),
 
             ]);
+    }
+
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->can('viewAny IDCard', static::class);
     }
 }

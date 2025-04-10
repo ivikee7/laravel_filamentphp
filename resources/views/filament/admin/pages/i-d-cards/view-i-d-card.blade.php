@@ -36,33 +36,34 @@
             </div>
         </div>
     </div>
-
-    <div>
-        {{-- Third Row: Attendance Buttons --}}
-        <div class="flex flex-wrap justify-center gap-4 p-6">
-            {{-- @unless (in_array('entredInBus', $attendanceRecords))
+    @if (\App\Filament\Admin\Pages\IDCards\ViewIDCard::canMarkAttendance())
+        <div>
+            {{-- Third Row: Attendance Buttons --}}
+            <div class="flex flex-wrap justify-center gap-4 p-6">
+                {{-- @unless (in_array('entredInBus', $attendanceRecords))
                 <x-filament::button wire:click="markAttendance('entredInBus')" color="primary">
                     Entered in Bus
                 </x-filament::button>
             @endunless --}}
 
-            @unless (in_array('entredInCampus', $attendanceRecords))
-                <x-filament::button wire:click="markAttendance('entredInCampus')" color="success">
-                    Entered in Campus
-                </x-filament::button>
-            @endunless
+                @unless (in_array('entredInCampus', $attendanceRecords))
+                    <x-filament::button wire:click="markAttendance('entredInCampus')" color="success">
+                        Entered in Campus
+                    </x-filament::button>
+                @endunless
 
-            @unless (in_array('exitFromCampus', $attendanceRecords))
-                <x-filament::button wire:click="markAttendance('exitFromCampus')" color="warning">
-                    Exit from Campus
-                </x-filament::button>
-            @endunless
+                @unless (in_array('exitFromCampus', $attendanceRecords))
+                    <x-filament::button wire:click="markAttendance('exitFromCampus')" color="warning">
+                        Exit from Campus
+                    </x-filament::button>
+                @endunless
 
-            {{-- @unless (in_array('exitFromBus', $attendanceRecords))
+                {{-- @unless (in_array('exitFromBus', $attendanceRecords))
                 <x-filament::button wire:click="markAttendance('exitFromBus')" color="danger">
                     Exit from Bus
                 </x-filament::button>
             @endunless --}}
+            </div>
         </div>
-    </div>
+    @endif
 </x-filament-panels::page>

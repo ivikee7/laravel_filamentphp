@@ -86,7 +86,7 @@ class ViewIDCard extends Page
 
         if (!$template) {
             Notification::make()
-                ->title('SMS Template Error '. $type)
+                ->title('SMS Template Error ' . $type)
                 ->body('SMS template not found.')
                 ->danger()
                 ->send();
@@ -120,5 +120,16 @@ class ViewIDCard extends Page
             ->whereDate('created_at', now()->toDateString())
             ->pluck('type')
             ->toArray();
+    }
+
+    public static function canAccess(): bool
+    {
+        // return auth()->user()?->can('view IDCard', static::class);
+        return true;
+    }
+
+    public static function canMarkAttendance(): bool
+    {
+        return auth()->user()?->can('create IDCard', static::class);
     }
 }
