@@ -3,11 +3,12 @@
 namespace Database\Seeders;
 
 use App\Models\AcadamicSession;
-use App\Models\AcadamicYear;
+use App\Models\AcademicYear;
 use App\Models\AdmissionClass;
 use App\Models\AdmissionSection;
 use App\Models\Classes;
 use App\Models\Section;
+use App\Models\Student;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -21,11 +22,20 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         Role::create(['name' => 'Super Admin']);
+        Role::create(['name' => 'Owner']);
+        Role::create(['name' => 'Principal']);
         Role::create(['name' => 'Admin']);
         Role::create(['name' => 'Teacher']);
         Role::create(['name' => 'Student']);
+        Role::create(['name' => 'Driver']);
+        Role::create(['name' => 'Conductor']);
+        Role::create(['name' => 'Maid']);
+        Role::create(['name' => 'Gardener']);
+        Role::create(['name' => 'Ground Staff']);
+        Role::create(['name' => 'Security Guard']);
+        Role::create(['name' => 'Supervisor']);
 
-        AcadamicYear::create([
+        AcademicYear::create([
             'name' => '2025-2026',
             'start_date' => '2025-04-01',
             'end_date' => '2026-03-31',
@@ -68,11 +78,20 @@ class DatabaseSeeder extends Seeder
             'password' => 'password',
             'is_active' => true,
         ])->assignRole('Teacher');
-        User::factory()->create([
+        $student = User::factory()->create([
             'name' => 'Student',
             'email' => 'Student@gmail.com',
             'password' => 'password',
             'is_active' => true,
         ])->assignRole('Student');
+        Student::create([
+            'user_id' => $student->id,
+            'admission_number'=>$student->id,
+            'admission_date'=>now(),
+            // 'current_status',
+            // 'tc_status',
+            // 'leaving_date',
+            // 'exit_reason',
+        ]);
     }
 }

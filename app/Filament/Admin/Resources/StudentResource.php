@@ -4,13 +4,16 @@ namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\StudentResource\Pages;
 use App\Filament\Admin\Resources\StudentResource\RelationManagers;
+use App\Models\AcademicYear;
 use App\Models\MessageTemplate;
 use App\Models\Registration;
 use App\Models\SmsProvider;
+use App\Models\Student;
 use App\Models\User;
 use App\Services\SMSService;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
@@ -34,6 +37,7 @@ class StudentResource extends Resource
 
     public static function form(Form $form): Form
     {
+
         return $form
             ->schema([
                 Section::make('User info')
@@ -62,12 +66,64 @@ class StudentResource extends Resource
                                 // Right Column: Other Input Fields
                                 Forms\Components\Group::make()
                                     ->schema([
-                                        Forms\Components\TextInput::make('name')->required()
+                                        Forms\Components\TextInput::make('name')
+                                            ->required()
                                             ->default(fn($get) => Registration::find(request()->query('registration_id'))?->name),
                                         Forms\Components\TextInput::make('official_email')->email()
                                             ->default(fn($get) => Registration::find(request()->query('registration_id'))?->official_email),
+                                        Forms\Components\Select::make('blood_group')
+                                            ->label('Blood Group')
+                                            ->options([
+                                                'A+' => 'A+',
+                                                'A-' => 'A-',
+                                                'B+' => 'B+',
+                                                'B-' => 'B-',
+                                                'AB+' => 'AB+',
+                                                'AB-' => 'AB-',
+                                                'O+' => 'O+',
+                                                'O-' => 'O-',
+                                                'UNK' => 'UNK',
+                                            ])
+                                            ->required(),
                                     ])
                                     ->columnSpan(1),
+                            ]),
+                    ]),
+
+                Section::make('Admission Info')
+                    ->schema([
+                        Forms\Components\Group::make()
+                            ->relationship('currentStudent')
+                            ->schema([
+                                Forms\Components\DatePicker::make('admission_date')
+                                    ->label('Admission Date'),
+                                Forms\Components\Select::make('current_status')
+                                    ->options([
+                                        'active' => 'Active',
+                                        'graduated' => 'Graduated',
+                                        'left' => 'Left',
+                                    ])
+                                    ->required(),
+                            ])->columns(3),
+
+                        Forms\Components\Group::make()
+                            ->relationship('currentStudent')
+                            ->schema([
+                                Forms\Components\Group::make()
+                                    ->relationship('currentClassAssignment')
+                                    ->schema([
+                                        Forms\Components\Select::make('academic_year_id')
+                                            ->options(AcademicYear::pluck('name', 'id'))
+                                            ->required(),
+                                        Forms\Components\Select::make('class_id')
+                                            ->relationship('class', 'name')
+                                            ->default(fn($get) => Registration::find(request()->query('registration_id'))?->class_id)
+                                            ->required(),
+                                        Forms\Components\Select::make('section_id')
+                                            ->relationship('section', 'name')
+                                            ->default(fn($get) => Registration::find(request()->query('registration_id'))?->section_id)
+                                            ->required(),
+                                    ])->columns(3),
                             ]),
                     ]),
                 Section::make('Parents info')
@@ -112,6 +168,7 @@ class StudentResource extends Resource
                             ->required()
                             ->default(fn($get) => Registration::find(request()->query('registration_id'))?->pin_code),
                     ])->columns(2),
+
                 // start only for deleteing registration after admission
                 Forms\Components\TextInput::make('registration_id')
                     ->hidden()
@@ -125,20 +182,28 @@ class StudentResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('id')
+                    ->label('ID')
                     ->searchable(),
                 Tables\Columns\ImageColumn::make('avatar')
                     ->circular()
                     ->size(50)
                     ->label('Image'),
                 Tables\Columns\TextColumn::make('name')
-                    ->searchable(),
+                    ->wrap()
+                    ->searchable()
+                    ->label('Name'),
                 Tables\Columns\TextColumn::make('father_name')
-                    ->searchable(),
+                    ->wrap()
+                    ->searchable()
+                    ->label('Father Name'),
                 Tables\Columns\TextColumn::make('mother_name')
-                    ->searchable(),
+                    ->wrap()
+                    ->searchable()
+                    ->label('Motner Name'),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->label('Email'),
                 Tables\Columns\TextColumn::make('roles.name')
                     ->badge()
                     ->searchable(),
@@ -154,14 +219,17 @@ class StudentResource extends Resource
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
+                    ->label('Created At')
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
+                    ->label('Updated At')
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('deleted_at')
                     ->dateTime()
                     ->sortable()
+                    ->label('Deleted At')
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->defaultSort('id', 'desc')
@@ -204,7 +272,6 @@ class StudentResource extends Resource
                         ])
                         ->action(function (Collection $records, array $data) {
                             $provider = SmsProvider::find($data['provider_id']);
-
 
                             if (!$provider || !$provider->is_active) {
                                 Notification::make()
@@ -265,15 +332,6 @@ class StudentResource extends Resource
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ]);
-    }
-
-    public static function query(Builder $query): Builder
-    {
-        $query->whereHas('roles', function ($query) {
-            $query->where('name', 'Student');
-        });
-
-        return $query;
     }
 
     public static function canView(Model $record): bool

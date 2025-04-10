@@ -11,21 +11,22 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('students', function (Blueprint $table) {
+        Schema::create('student_class_assignments', function (Blueprint $table) {
             $table->id();
             //
-            $table->foreignId('user_id');
-            $table->string('admission_number')->unique()->nullable();
-            $table->date('admission_date')->nullable();
-            $table->enum('current_status', ['active', 'graduated', 'left'])->default('active');
-            $table->enum('tc_status', ['not_requested', 'requested', 'issued'])->default('not_requested');
-            $table->date('leaving_date')->nullable();
-            $table->text('exit_reason')->nullable();
+            $table->foreignId('student_id');
+            $table->foreignId('class_id');
+            $table->foreignId('section_id')->nullable();
+            $table->foreignId('academic_year_id');
+            $table->boolean('is_promoted')->default(false);
+            $table->boolean('is_current')->default(true);
             //
             $table->foreignId('creator_id')->nullable();
             $table->foreignId('updater_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
+
+            $table->unique(['student_id', 'class_id', 'academic_year_id'], 'student_class_unique');
         });
     }
 
@@ -34,6 +35,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('students');
+        Schema::dropIfExists('student_class_assignments');
     }
 };

@@ -32,6 +32,7 @@ class User extends Authenticatable implements FilamentUser
     protected $fillable = [
         'name',
         'email',
+        'official_email',
         'password',
         'father_name',
         'mother_name',
@@ -43,6 +44,7 @@ class User extends Authenticatable implements FilamentUser
         'pin_code',
         'avatar',
         'is_active',
+        'blood_group',
         'created_at',
         'updated_at',
     ];
@@ -107,9 +109,29 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasOne(Student::class);
     }
 
+    function student(): HasOne
+    {
+        return $this->hasOne(Student::class);
+    }
+
+    public function currentStudent(): HasOne
+    {
+        return $this->hasOne(Student::class)->latestOfMany();
+    }
+
+    public function students(): HasMany
+    {
+        return $this->hasMany(Student::class);
+    }
+
     public function attendances()
     {
         return $this->hasMany(Attendance::class);
+    }
+
+    public function financialDetails()
+    {
+        return $this->hasOne(UserFinancialDetail::class);
     }
 
     protected function formattedAttendance(): Attribute
@@ -161,5 +183,54 @@ class User extends Authenticatable implements FilamentUser
                 return $attendanceData;
             }
         );
+    }
+
+    public function getCurrentClassSectionAttribute(): ?string
+    {
+        // Only for students
+        if (!$this->hasRole('Student')) {
+            return null;
+        }
+
+        $student = $this->students()->latest()->first();
+
+        if (!$student || !$student->currentClassAssignment) {
+            return null;
+        }
+
+        $class = optional($student->currentClassAssignment->class)->name;
+        $section = optional($student->currentClassAssignment->section)->name;
+
+        return $class && $section ? "$class / $section" : null;
+    }
+
+    public function getCurrentClassAttribute()
+    {
+        if (!$this->hasRole('Student')) {
+            return null;
+        }
+
+        $student = $this->students()->latest()->first();
+
+        if (!$student) return null;
+
+        $class = optional($student->currentClassAssignment)->class?->name;
+
+        return $class ? "$class" : null;
+    }
+
+    public function getCurrentSectionAttribute()
+    {
+        if (!$this->hasRole('Student')) {
+            return null;
+        }
+
+        $student = $this->students()->latest()->first();
+
+        if (!$student) return null;
+
+        $section = optional($student->currentClassAssignment)->section?->name;
+
+        return $section ? "$section" : null;
     }
 }

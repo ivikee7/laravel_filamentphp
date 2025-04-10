@@ -4,8 +4,13 @@ namespace App\Filament\Admin\Resources\StudentResource\Pages;
 
 use App\Filament\Admin\Resources\StudentResource;
 use App\Models\Registration;
+use App\Models\Student;
+use App\Models\StudentClassAssignment;
+use App\Models\User;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class CreateStudent extends CreateRecord
@@ -20,6 +25,14 @@ class CreateStudent extends CreateRecord
         $this->registrationId = request()->query('registration_id');
     }
 
+    protected function mutateFormDataBeforeCreate(array $data): array
+    {
+        $data['password'] = Hash::make($data['primary_contact_number']);
+        $data['is_active'] = true;
+
+        return $data;
+    }
+
     protected function afterCreate(): void
     {
         if ($this->registrationId) {
@@ -30,19 +43,5 @@ class CreateStudent extends CreateRecord
         }
 
         $this->record->assignRole('Student');
-
-        $this->record->update([
-            'official_email' => strtolower(str_replace(' ', '', $this->record->id)) . '@' . env("ORG_DOMAIN"),
-        ]);
-    }
-
-    protected function mutateFormDataBeforeCreate(array $data): array
-    {
-        if (empty($data['password'])) {
-            $data['password'] = Hash::make($data['primary_contact_number']); // Default hashed password
-            $data['is_active'] = true;
-        }
-
-        return $data;
     }
 }

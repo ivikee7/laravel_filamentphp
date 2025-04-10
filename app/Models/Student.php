@@ -5,12 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use PhpParser\Node\Expr\FuncCall;
 
 class Student extends Model
 {
     use SoftDeletes;
 
     protected $fillable = [
+        'user_id',
+        'admission_number',
+        'admission_date',
+        'current_status',
+        'tc_status',
+        'leaving_date',
+        'exit_reason',
         'creator_id',
         'updater_id',
     ];
@@ -38,5 +46,31 @@ class Student extends Model
     public function updater(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function classAssignments()
+    {
+        return $this->hasMany(StudentClassAssignment::class);
+    }
+    public function currentClassAssignment()
+    {
+        return $this->hasOne(StudentClassAssignment::class)->where('is_current', true);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function currentAcademicYear()
+    {
+        return $this->hasOneThrough(
+            AcademicYear::class,
+            StudentClassAssignment::class,
+            'student_id',        // Foreign key on StudentClassAssignment
+            'id',                // Local key on AcademicYear
+            'id',                // Local key on Student
+            'academic_year_id'   // Foreign key on StudentClassAssignment
+        )->where('is_current', true);
     }
 }

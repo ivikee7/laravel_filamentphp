@@ -11,16 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('students', function (Blueprint $table) {
+        Schema::create('transport_assignments', function (Blueprint $table) {
             $table->id();
             //
-            $table->foreignId('user_id');
-            $table->string('admission_number')->unique()->nullable();
-            $table->date('admission_date')->nullable();
-            $table->enum('current_status', ['active', 'graduated', 'left'])->default('active');
-            $table->enum('tc_status', ['not_requested', 'requested', 'issued'])->default('not_requested');
-            $table->date('leaving_date')->nullable();
-            $table->text('exit_reason')->nullable();
+            $table->foreignId('user_id')->constrained(); // student or employee
+            $table->foreignId('route_id')->constrained();
+            $table->foreignId('stoppage_id')->nullable()->constrained();
+            $table->foreignId('bus_id')->nullable()->constrained();
             //
             $table->foreignId('creator_id')->nullable();
             $table->foreignId('updater_id')->nullable();
@@ -34,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('students');
+        Schema::dropIfExists('transport_assignments');
     }
 };

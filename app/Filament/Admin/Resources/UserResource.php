@@ -95,6 +95,58 @@ class UserResource extends Resource
                             ->maxLength(6)
                             ->required(),
                     ])->columns(2),
+                Section::make('Financial Info')
+                    ->schema([
+                        Forms\Components\Group::make()
+                            ->relationship('financialDetails')
+                            ->schema([
+                                // Basic salary and allowances
+                                Forms\Components\TextInput::make('basic_salary')
+                                    ->numeric()
+                                    ->required(),
+                                Forms\Components\TextInput::make('house_allowance')
+                                    ->numeric()
+                                    ->required(),
+                                Forms\Components\TextInput::make('transport_allowance')
+                                    ->numeric()
+                                    ->required(),
+                                Forms\Components\TextInput::make('other_allowances')
+                                    ->numeric()
+                                    ->required(),
+
+                                // Deductions
+                                Forms\Components\TextInput::make('tax_deduction')
+                                    ->numeric()
+                                    ->required(),
+                                Forms\Components\TextInput::make('loan_deduction')
+                                    ->numeric()
+                                    ->required(),
+
+                                // Payment info
+                                Forms\Components\TextInput::make('bank_name')
+                                    ->required(),
+                                Forms\Components\TextInput::make('account_number')
+                                    ->numeric()
+                                    ->required(),
+                                Forms\Components\TextInput::make('ifsc_code')
+                                    ->required(),
+
+                                // Provident fund
+                                Forms\Components\TextInput::make('provident_fund_contribution')
+                                    ->numeric()
+                                    ->required(),
+                                Forms\Components\TextInput::make('pf_account_number')
+                                    ->numeric()
+                                    ->required(),
+                                Forms\Components\TextInput::make('esi_number')
+                                    ->numeric()
+                                    ->required(),
+
+                                // Extra
+                                Forms\Components\TextInput::make('notes')
+                                    ->required(),
+                            ])->columns(3)
+                    ]),
                 Section::make('Authentication info')
                     ->schema([
                         Forms\Components\Select::make('roles')
@@ -198,7 +250,6 @@ class UserResource extends Resource
             'index' => Pages\ListUsers::route('/'),
             'create' => Pages\CreateUser::route('/create'),
             'monthly-attendance' => Pages\MonthlyAttendance::route('/monthly-attendance'),
-            'id-cards' => Pages\IDCards::route('/id-cards'),
             'view' => Pages\ViewUser::route('/{record}'),
             'edit' => Pages\EditUser::route('/{record}/edit'),
             'id-card' => Pages\IDCard::route('/{record}/id-card'),
