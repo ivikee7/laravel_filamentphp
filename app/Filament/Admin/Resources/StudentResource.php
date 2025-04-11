@@ -114,6 +114,7 @@ class StudentResource extends Resource
                                     ->schema([
                                         Forms\Components\Select::make('academic_year_id')
                                             ->options(AcademicYear::pluck('name', 'id'))
+                                            ->label('Academic Year')
                                             ->required(),
                                         Forms\Components\Select::make('class_id')
                                             ->relationship('class', 'name')
@@ -187,7 +188,12 @@ class StudentResource extends Resource
                 Tables\Columns\ImageColumn::make('avatar')
                     ->circular()
                     ->size(50)
-                    ->label('Image'),
+                    ->label('Image')
+                    ->getStateUsing(function ($record) {
+                        return $record->avatar
+                            ? 'storage/' . $record->avatar
+                            : 'https://ui-avatars.com/api/?name=' . urlencode($record->name);
+                    }),
                 Tables\Columns\TextColumn::make('name')
                     ->wrap()
                     ->searchable()

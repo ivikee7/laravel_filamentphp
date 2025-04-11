@@ -172,7 +172,12 @@ class UserResource extends Resource
                 Tables\Columns\ImageColumn::make('avatar')
                     ->circular()
                     ->size(50)
-                    ->label('Image'),
+                    ->label('Image')
+                    ->getStateUsing(function ($record) {
+                        return $record->avatar
+                            ? 'storage/' . $record->avatar
+                            : 'https://ui-avatars.com/api/?name=' . urlencode($record->name);
+                    }),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('father_name')
