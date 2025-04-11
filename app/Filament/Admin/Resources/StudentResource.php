@@ -25,6 +25,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class StudentResource extends Resource
 {
@@ -188,12 +189,7 @@ class StudentResource extends Resource
                 Tables\Columns\ImageColumn::make('avatar')
                     ->circular()
                     ->size(50)
-                    ->label('Image')
-                    ->getStateUsing(function ($record) {
-                        return $record->avatar
-                            ? 'storage/' . $record->avatar
-                            : 'https://ui-avatars.com/api/?name=' . urlencode($record->name);
-                    }),
+                    ->label('Image'),
                 Tables\Columns\TextColumn::make('name')
                     ->wrap()
                     ->searchable()
