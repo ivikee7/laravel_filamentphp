@@ -114,7 +114,7 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasOne(Student::class);
     }
 
-    public function currentStudent(): HasOne
+    public function currentStudent()
     {
         return $this->hasOne(Student::class)->latestOfMany();
     }

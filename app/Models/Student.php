@@ -54,7 +54,7 @@ class Student extends Model
     }
     public function currentClassAssignment()
     {
-        return $this->hasOne(StudentClassAssignment::class)->where('is_current', true);
+        return $this->hasOne(StudentClassAssignment::class)->latestOfMany();
     }
 
     public function user()

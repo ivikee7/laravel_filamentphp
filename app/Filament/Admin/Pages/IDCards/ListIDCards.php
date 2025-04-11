@@ -29,31 +29,31 @@ class ListIDCards extends Page implements HasTable
     {
         return $table
             ->query(
-                User::with(['student', 'student.classAssignments'])
-                    ->role('Student')
-                    ->whereHas('student', function ($student) {
-                        return $student->where('current_status', 'active');
+                User::whereHas('roles', function ($roles) {
+                    return $roles->where('name', 'Student');
+                })
+                    ->whereHas('currentStudent', function ($currentStudent) {
+                        return $currentStudent->where('current_status', 'active');
                     })
-            ) // eager load relationships
+            )
             ->columns([
-
                 ImageColumn::make('avatar')
                     ->label('Photo')
                     ->circular()
                     ->defaultImageUrl(url('default-avatar.png'))
                     ->size(50),
-
                 TextColumn::make('id')
                     ->label('ID')
                     ->searchable()
                     ->sortable(),
-
                 TextColumn::make('name')
                     ->label('Name')
                     ->searchable()
                     ->sortable(),
-
-                TextColumn::make('student.current_status')
+                TextColumn::make('roles.name')
+                    ->badge()
+                    ->searchable(),
+                TextColumn::make('currentStudent.current_status')
                     ->label('Status')
                     ->badge()
                     ->colors([
@@ -61,16 +61,16 @@ class ListIDCards extends Page implements HasTable
                         'danger' => 'left',
                         'warning' => 'graduated',
                     ]),
-
-                TextColumn::make('student.classAssignments.class.name')
+                TextColumn::make('currentStudent.currentClassAssignment.class.name')
                     ->label('Class')
                     ->sortable()
-                    ->formatStateUsing(fn($state, $record) => $record->student->classAssignments->last()?->class?->name),
-
-                TextColumn::make('student.classAssignments.section.name')
+                // ->formatStateUsing(fn($state, $record) => $record->currentStudent->currentClassAssignment?->class?->name)
+                ,
+                TextColumn::make('currentStudent.currentClassAssignment.section.name')
                     ->label('Section')
                     ->sortable()
-                    ->formatStateUsing(fn($state, $record) => $record->student->classAssignments->last()?->section?->name),
+                // ->formatStateUsing(fn($state, $record) => $record->currentStudent->currentClassAssignment?->section?->name)
+                ,
                 ViewColumn::make('qr_code')
                     ->label('QR Code')
                     ->view('components.qr-code-column')
