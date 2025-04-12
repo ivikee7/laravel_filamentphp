@@ -59,6 +59,31 @@ class UserResource extends Resource
                                     ->schema([
                                         Forms\Components\TextInput::make('name')->required(),
                                         Forms\Components\TextInput::make('official_email')->email(),
+                                        Forms\Components\Group::make()
+                                            ->schema([
+                                                Forms\Components\Select::make('blood_group')
+                                                    ->label('Blood Group')
+                                                    ->options([
+                                                        'A+' => 'A+',
+                                                        'A-' => 'A-',
+                                                        'B+' => 'B+',
+                                                        'B-' => 'B-',
+                                                        'AB+' => 'AB+',
+                                                        'AB-' => 'AB-',
+                                                        'O+' => 'O+',
+                                                        'O-' => 'O-',
+                                                        'UNK' => 'UNK',
+                                                    ])
+                                                    ->required(),
+                                                Forms\Components\Select::make('gender')
+                                                    ->label('Gender')
+                                                    ->options([
+                                                        'M' => 'Male',
+                                                        'F' => 'Female',
+                                                        'O' => 'Other',
+                                                    ])
+                                                    ->required(),
+                                            ])->columns(2),
                                     ])
                                     ->columnSpan(1),
                             ]),

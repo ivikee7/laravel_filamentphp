@@ -53,20 +53,23 @@ class EnquiryResource extends Resource
                         Forms\Components\Select::make('class_id')
                             ->relationship('class', 'name')
                             ->default(null),
+                        Forms\Components\Textarea::make('notes')
+                            ->required()
+                            ->columnSpan(2)
+                            ->maxLength(255)
+                            ->rows(5)
+                            ->cols(1)
                     ])->columns(3),
-                Section::make('Father info')
+                Section::make('Parents info')
                     ->schema([
                         Forms\Components\TextInput::make('father_name')
                             ->maxLength(50)
                             ->default(null),
-                        Forms\Components\TextInput::make('primary_contact_number')
+                        Forms\Components\TextInput::make('primary_contact_number')->required()
                             ->numeric()
                             ->rules(['digits:10'])
                             ->minLength(10)
                             ->maxLength(10),
-                    ])->columns(3),
-                Section::make('Mother info')
-                    ->schema([
                         Forms\Components\TextInput::make('mother_name')
                             ->maxLength(50)
                             ->default(null),
@@ -75,6 +78,7 @@ class EnquiryResource extends Resource
                             ->rules(['digits:10'])
                             ->minLength(10)
                             ->maxLength(10),
+                        Forms\Components\TextInput::make('email')->email()->required(),
                     ])->columns(3),
                 Section::make('Mother info')
                     ->schema([
@@ -109,9 +113,9 @@ class EnquiryResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('name')
+                Tables\Columns\TextColumn::make('name')->wrap()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('class.name')
+                Tables\Columns\TextColumn::make('class.name')->wrap()
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('gender')
@@ -120,9 +124,9 @@ class EnquiryResource extends Resource
                     ->date()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('father_name')
+                Tables\Columns\TextColumn::make('father_name')->wrap()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('mother_name')
+                Tables\Columns\TextColumn::make('mother_name')->wrap()
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('primary_contact_number')
@@ -131,37 +135,40 @@ class EnquiryResource extends Resource
                 Tables\Columns\TextColumn::make('secondary_contact_number')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('address')
+                Tables\Columns\TextColumn::make('address')->wrap()
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('city')
+                Tables\Columns\TextColumn::make('city')->wrap()
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('state')
+                Tables\Columns\TextColumn::make('state')->wrap()
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('pin_code')
                     ->numeric()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('previous_school')
+                Tables\Columns\TextColumn::make('previous_school')->wrap()
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('source')
+                Tables\Columns\TextColumn::make('notes')
+                    ->wrap()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('previousClass.name')
+                Tables\Columns\TextColumn::make('source')->wrap()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('previousClass.name')->wrap()
                     ->numeric()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('created_at')
+                Tables\Columns\TextColumn::make('created_at')->wrap()
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
+                Tables\Columns\TextColumn::make('updated_at')->wrap()
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('deleted_at')
+                Tables\Columns\TextColumn::make('deleted_at')->wrap()
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

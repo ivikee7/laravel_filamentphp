@@ -72,20 +72,32 @@ class StudentResource extends Resource
                                             ->default(fn($get) => Registration::find(request()->query('registration_id'))?->name),
                                         Forms\Components\TextInput::make('official_email')->email()
                                             ->default(fn($get) => Registration::find(request()->query('registration_id'))?->official_email),
-                                        Forms\Components\Select::make('blood_group')
-                                            ->label('Blood Group')
-                                            ->options([
-                                                'A+' => 'A+',
-                                                'A-' => 'A-',
-                                                'B+' => 'B+',
-                                                'B-' => 'B-',
-                                                'AB+' => 'AB+',
-                                                'AB-' => 'AB-',
-                                                'O+' => 'O+',
-                                                'O-' => 'O-',
-                                                'UNK' => 'UNK',
-                                            ])
-                                            ->required(),
+                                        Forms\Components\Group::make()
+                                            ->schema([
+                                                Forms\Components\Select::make('blood_group')
+                                                    ->label('Blood Group')
+                                                    ->options([
+                                                        'A+' => 'A+',
+                                                        'A-' => 'A-',
+                                                        'B+' => 'B+',
+                                                        'B-' => 'B-',
+                                                        'AB+' => 'AB+',
+                                                        'AB-' => 'AB-',
+                                                        'O+' => 'O+',
+                                                        'O-' => 'O-',
+                                                        'UNK' => 'UNK',
+                                                    ])
+                                                    ->required(),
+                                                Forms\Components\Select::make('gender')
+                                                    ->label('Gender')
+                                                    ->options([
+                                                        'M' => 'Male',
+                                                        'F' => 'Female',
+                                                        'O' => 'Other',
+                                                    ])
+                                                    ->default(fn($get) => Registration::find(request()->query('registration_id'))?->gender)
+                                                    ->required(),
+                                            ])->columns(2),
                                     ])
                                     ->columnSpan(1),
                             ]),
@@ -123,8 +135,7 @@ class StudentResource extends Resource
                                             ->required(),
                                         Forms\Components\Select::make('section_id')
                                             ->relationship('section', 'name')
-                                            ->default(fn($get) => Registration::find(request()->query('registration_id'))?->section_id)
-                                            ->required(),
+                                            ->default(fn($get) => Registration::find(request()->query('registration_id'))?->section_id),
                                     ])->columns(3),
                             ]),
                     ]),

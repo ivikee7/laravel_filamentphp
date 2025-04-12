@@ -45,6 +45,7 @@ class User extends Authenticatable implements FilamentUser
         'avatar',
         'is_active',
         'blood_group',
+        'gender',
         'created_at',
         'updated_at',
     ];

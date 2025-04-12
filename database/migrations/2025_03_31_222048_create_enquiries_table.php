@@ -29,6 +29,7 @@ return new class extends Migration
             $table->string('source', 25)->nullable();
             $table->foreignId('previous_class_id')->nullable();
             $table->foreignId('class_id')->nullable();
+            $table->string('notes')->nullable();
             //
             $table->foreignId('creator_id')->nullable();
             $table->foreignId('updater_id')->nullable();

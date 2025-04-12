@@ -26,6 +26,7 @@ class Enquiry extends Model
         'source',
         'previous_class_id',
         'class_id',
+        'notes',
         'creator_id',
         'updater_id',
     ];
