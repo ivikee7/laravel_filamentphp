@@ -38,6 +38,10 @@ class AppServiceProvider extends ServiceProvider
             \App\Filament\Admin\Pages\IDCards\ListIDCards::class,
             \App\Policies\IDCards\ListIDCardsPolicy::class
         );
+        Gate::policy(
+            \App\Filament\Admin\Pages\IDCards\ViewIDCard::class,
+            \App\Policies\IDCards\ViewIDCardPolicy::class
+        );
 
         Health::checks([
             OptimizedAppCheck::new(),

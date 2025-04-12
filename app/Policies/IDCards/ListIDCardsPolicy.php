@@ -17,9 +17,9 @@ class ListIDCardsPolicy
 
     use HandlesAuthorization;
 
-    public function viewAny(User $user): bool
+    public static function viewAny(User $user): bool
     {
-        return $user->hasPermissionTo('viewAny Attendance');
+        return $user->hasPermissionTo('view-any Attendance');
     }
 
     public function view(User $user): bool

@@ -21,9 +21,4 @@ class ViewIDCardPolicy
     {
         return $user->hasPermissionTo('view Attendance');
     }
-
-    public function markAttendance(User $user): bool
-    {
-        return $user->hasPermissionTo('create Attendance');
-    }
 }
