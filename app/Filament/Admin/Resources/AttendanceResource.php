@@ -19,7 +19,7 @@ class AttendanceResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $navigationGroup = 'User and Attendance';
+    protected static ?string $navigationGroup = 'Attendance';
 
     public static function form(Form $form): Form
     {
@@ -27,7 +27,7 @@ class AttendanceResource extends Resource
             ->schema([
                 Forms\Components\Select::make('user.name')
                     ->relationship('user', 'name', function ($query) {
-                        // $query->whereNotIn('name', ['Super Admin']);
+                        $query->whereNotIn('name', ['Super Admin']);
                         return $query;
                     })
                     ->required()
@@ -100,8 +100,12 @@ class AttendanceResource extends Resource
         return [
             'index' => Pages\ListAttendances::route('/'),
             'create' => Pages\CreateAttendance::route('/create'),
+            'monthly-report' => Pages\MonthlyReport::route('monthly-report'),
             'view' => Pages\ViewAttendance::route('/{record}'),
             'edit' => Pages\EditAttendance::route('/{record}/edit'),
+
+            // 👇 Manually define route for MonthlyReport
+            // 'monthly-report' => Pages\MonthlyReport::route('/monthly-report'),
         ];
     }
 

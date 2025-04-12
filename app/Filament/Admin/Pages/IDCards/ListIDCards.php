@@ -40,13 +40,7 @@ class ListIDCards extends Page implements HasTable
                 ImageColumn::make('avatar')
                     ->label('Photo')
                     ->circular()
-                    // ->defaultImageUrl(url('default-avatar.png'))
-                    ->size(50)
-                    ->getStateUsing(function ($record) {
-                        return $record->avatar
-                            ? 'storage/' . $record->avatar
-                            : 'https://ui-avatars.com/api/?name=' . urlencode($record->name);
-                    }),
+                    ->size(50),
                 TextColumn::make('id')
                     ->label('ID')
                     ->searchable()
