@@ -20,6 +20,7 @@ use Filament\PanelProvider;
 use Filament\Resources\Pages\Page as PagesPage;
 use Filament\Support\Colors\Color;
 use Filament\Support\Enums\MaxWidth;
+use Filament\Tables\Table;
 use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -77,6 +78,11 @@ class AdminPanelProvider extends PanelProvider
                 ->slug('logs'))
             ->spa()
             ->maxContentWidth(MaxWidth::Full)
+            ->bootUsing(function () {
+                Table::configureUsing(function (Table $table): void {
+                    $table->paginated([5, 10, 25, 50]);
+                });
+            })
         ;
     }
 }

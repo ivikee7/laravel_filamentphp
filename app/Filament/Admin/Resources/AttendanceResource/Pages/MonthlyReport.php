@@ -64,7 +64,9 @@ class MonthlyReport extends Page implements HasTable
                     )
                     ->default(now()->format('Y'))
                     ->query(fn($query) => $query), // 🔐 Prevent Filament from auto-applying this filter
-            ]);
+            ])
+            // ->paginated([5, 10, 25, 50, 100])
+            ;
     }
 
     protected function getAttendanceColumns(): array
@@ -74,7 +76,12 @@ class MonthlyReport extends Page implements HasTable
         $staticColumns = [
             Tables\Columns\TextColumn::make('id')->label('ID')->sortable()->searchable(),
             Tables\Columns\TextColumn::make('name')->label('Name')->sortable()->searchable(),
-            Tables\Columns\TextColumn::make('roles.name')->label('Role')->sortable()->searchable(),
+            Tables\Columns\TextColumn::make('roles.name')->label('Role')->sortable()->searchable()
+                ->toggleable(isToggledHiddenByDefault: true),
+            Tables\Columns\TextColumn::make('currentStudent.currentClassAssignment.class.name')->label('Class')->sortable()->searchable()
+                ->toggleable(isToggledHiddenByDefault: true),
+            Tables\Columns\TextColumn::make('currentStudent.currentClassAssignment.section.name')->label('Section')->sortable()->searchable()
+                ->toggleable(isToggledHiddenByDefault: true),
         ];
 
         $dayColumns = array_map(function ($day) {

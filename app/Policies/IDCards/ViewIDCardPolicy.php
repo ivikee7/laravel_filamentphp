@@ -19,11 +19,11 @@ class ViewIDCardPolicy
 
     public function view(User $user): bool
     {
-        return $user->hasPermissionTo('view IDCard');
+        return $user->hasPermissionTo('view Attendance');
     }
 
     public function markAttendance(User $user): bool
     {
-        return $user->hasPermissionTo('create IDCard');
+        return $user->hasPermissionTo('create Attendance');
     }
 }

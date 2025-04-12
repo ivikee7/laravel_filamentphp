@@ -19,11 +19,11 @@ class ListIDCardsPolicy
 
     public function viewAny(User $user): bool
     {
-        return $user->hasPermissionTo('viewAny IDCard');
+        return $user->hasPermissionTo('viewAny Attendance');
     }
 
     public function view(User $user): bool
     {
-        return $user->hasPermissionTo('view IDCard');
+        return $user->hasPermissionTo('view Attendance');
     }
 }
