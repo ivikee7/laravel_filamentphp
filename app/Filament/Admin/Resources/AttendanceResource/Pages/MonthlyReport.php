@@ -29,7 +29,7 @@ class MonthlyReport extends Page implements HasTable
                 $year = $this->getTable()->getFilters()['year']->getState() ?? now()->format('Y');
 
                 return User::query()
-                    ->role('Student')
+                    // ->role('Student')
                     ->with(['attendances' => function ($q) use ($month, $year) {
                         $q->whereMonth('created_at', $month)
                             ->whereYear('created_at', $year);
