@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 
-class BookAuthor extends Model
+class BookLocation extends Model
 {
     use SoftDeletes;
 
-    protected $table = 'library_book_authors';
+    protected $table = 'library_book_locations';
 
     protected $fillable = [
         'name',

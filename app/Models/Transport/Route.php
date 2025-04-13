@@ -1,21 +1,23 @@
 <?php
 
-namespace App\Models\Library;
+namespace App\Models\Transport;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 
-class BookAuthor extends Model
+class Route extends Model
 {
     use SoftDeletes;
 
-    protected $table = 'library_book_authors';
+    protected $table = 'transport_routes';
 
     protected $fillable = [
         'name',
-        'notes',
+        'description',
+        'creator_id',
+        'updater_id',
     ];
 
     protected static function boot()
@@ -55,4 +57,7 @@ class BookAuthor extends Model
     {
         return $this->belongsTo(User::class, 'deleted_by');
     }
+
+
+
 }

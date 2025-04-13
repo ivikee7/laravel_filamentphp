@@ -10,6 +10,9 @@ class Subject extends Model
 {
     use SoftDeletes;
 
+    protected $fillable = [
+        'name',
+    ];
 
     protected static function boot()
     {

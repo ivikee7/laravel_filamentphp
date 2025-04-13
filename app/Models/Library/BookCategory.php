@@ -11,6 +11,11 @@ class BookCategory extends Model
 {
     use SoftDeletes;
 
+    protected $table ='library_book_categories';
+
+    protected $fillable =[
+        'name',
+    ];
 
     protected static function boot()
     {

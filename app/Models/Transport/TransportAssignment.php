@@ -1,21 +1,23 @@
 <?php
 
-namespace App\Models\Library;
+namespace App\Models\Transport;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 
-class BookAuthor extends Model
+class TransportAssignment extends Model
 {
     use SoftDeletes;
 
-    protected $table = 'library_book_authors';
-
     protected $fillable = [
-        'name',
-        'notes',
+        'user_id',
+        'route_id',
+        'stoppage_id',
+        'bus_id',
+        'creator_id',
+        'updater_id',
     ];
 
     protected static function boot()

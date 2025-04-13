@@ -11,13 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('transport_assignments', function (Blueprint $table) {
+        Schema::create('library_book_borrows', function (Blueprint $table) {
             $table->id();
             //
-            $table->foreignId('user_id'); // student or employee
-            $table->foreignId('route_id');
-            $table->foreignId('stoppage_id')->nullable();
-            $table->foreignId('bus_id')->nullable();
+            $table->foreignId('book_id');
+            $table->foreignId('user_id');
+            $table->date('due_date')->nullable();
+            $table->string('notes', 100)->nullable();
+            $table->foreignId('received_by')->nullable();
+            $table->timestamp('received_at')->nullable();
             //
             $table->foreignId('created_by')->nullable();
             $table->foreignId('updated_by')->nullable();
@@ -32,6 +34,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('transport_assignments');
+        Schema::dropIfExists('library_book_borrows');
     }
 };

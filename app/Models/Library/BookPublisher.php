@@ -11,7 +11,15 @@ class BookPublisher extends Model
 {
     use SoftDeletes;
 
+    protected $table = 'library_book_publishers';
 
+    protected $fillable = [
+        'name',
+        'email',
+        'primary_contact_number',
+        'secondary_contact_number',
+        'location'
+    ];
 
     protected static function boot()
     {

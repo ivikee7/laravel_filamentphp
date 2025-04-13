@@ -11,13 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('transport_assignments', function (Blueprint $table) {
+        Schema::create('transport_buses', function (Blueprint $table) {
             $table->id();
             //
-            $table->foreignId('user_id'); // student or employee
-            $table->foreignId('route_id');
-            $table->foreignId('stoppage_id')->nullable();
-            $table->foreignId('bus_id')->nullable();
+            $table->string('registration_number')->unique();
+            $table->string('model')->nullable();
+            $table->integer('seating_capacity');
+            $table->foreignId('driver_id')->constrained('users');
+            $table->foreignId('conductor_id')->nullable()->constrained('users');
+            $table->boolean('is_active')->default(true);
             //
             $table->foreignId('created_by')->nullable();
             $table->foreignId('updated_by')->nullable();
@@ -32,6 +34,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('transport_assignments');
+        Schema::dropIfExists('transport_buses');
     }
 };
