@@ -88,6 +88,17 @@ class ListIDCards extends Page implements HasTable
             ]);
     }
 
+    public static function getNavigationBadge(): ?string
+    {
+        return User::whereHas('roles', function ($roles) {
+            return $roles->where('name', 'Student');
+        })
+            ->whereHas('currentStudent', function ($currentStudent) {
+                return $currentStudent->where('current_status', 'active');
+            })
+            ->count();
+    }
+
     public static function canAccess(): bool
     {
         return auth()->user()?->can('view-any Attendance', static::class);

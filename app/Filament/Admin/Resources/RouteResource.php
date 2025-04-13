@@ -103,4 +103,10 @@ class RouteResource extends Resource
                 SoftDeletingScope::class,
             ]);
     }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return Route::count();
+    }
+
 }

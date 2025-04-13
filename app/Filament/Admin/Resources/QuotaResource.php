@@ -107,4 +107,9 @@ class QuotaResource extends Resource
                 SoftDeletingScope::class,
             ]);
     }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return Quota::count();
+    }
 }

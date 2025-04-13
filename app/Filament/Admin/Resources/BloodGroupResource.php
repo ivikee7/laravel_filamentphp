@@ -100,4 +100,9 @@ class BloodGroupResource extends Resource
                 SoftDeletingScope::class,
             ]);
     }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return BloodGroup::count();
+    }
 }

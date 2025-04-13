@@ -104,4 +104,9 @@ class RoomResource extends Resource
                 SoftDeletingScope::class,
             ]);
     }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return Room::count();
+    }
 }
