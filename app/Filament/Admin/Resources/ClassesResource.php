@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\ClassesResource\Pages;
 use App\Filament\Admin\Resources\ClassesResource\RelationManagers;
+use App\Models\AcademicYear;
 use App\Models\Classes;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -27,8 +28,9 @@ class ClassesResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('class_id')
-                    ->options(fn($get) => Classes::where('academic_year_id', $get('academic_year_id'))->pluck('name', 'id')),
+                Forms\Components\Select::make('academic_year_id')
+                    ->relationship('academicYear', 'name')
+                    ->required(),
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
@@ -40,6 +42,8 @@ class ClassesResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('academicYear.name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('createdBy.name')
                     ->numeric()
