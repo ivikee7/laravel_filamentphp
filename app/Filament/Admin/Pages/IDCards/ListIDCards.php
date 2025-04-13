@@ -22,7 +22,7 @@ class ListIDCards extends Page implements HasTable
     protected static string $view = 'filament.admin.pages.i-d-cards.list-i-d-cards';
 
     protected static ?string $slug = 'id-cards';
-    protected static ?string $navigationGroup = 'IDCard';
+    protected static ?string $navigationGroup = 'User';
     protected static ?string $navigationLabel = 'ID Cards';
 
     public function table(Table $table): Table
