@@ -91,7 +91,8 @@ class AdminPanelProvider extends PanelProvider
             ->maxContentWidth(MaxWidth::Full)
             ->bootUsing(function () {
                 Table::configureUsing(function (Table $table): void {
-                    $table->paginated([5, 10, 25, 50]);
+                    $table->paginated([5, 10, 25, 50])
+                        ->defaultPaginationPageOption(5);
                 });
             })
             ->favicon(asset('logo_favicon.png'))
