@@ -51,11 +51,11 @@ class AcademicYearResource extends Resource
                     ->date()
                     ->sortable(),
                 Tables\Columns\ToggleColumn::make('is_active'),
-                Tables\Columns\TextColumn::make('creator.name')
+                Tables\Columns\TextColumn::make('createdBy.name')
                     ->numeric()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updater.name')
+                Tables\Columns\TextColumn::make('updatedBy.name')
                     ->numeric()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

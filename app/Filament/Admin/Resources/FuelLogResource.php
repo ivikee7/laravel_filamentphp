@@ -64,11 +64,11 @@ class FuelLogResource extends Resource
                 Tables\Columns\TextColumn::make('filled_by')
                     ->wrap()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('creator_id')
+                Tables\Columns\TextColumn::make('createdBy.name')
                     ->numeric()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updater_id')
+                Tables\Columns\TextColumn::make('updatedBy.name')
                     ->numeric()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

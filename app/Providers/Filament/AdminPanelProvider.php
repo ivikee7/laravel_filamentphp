@@ -27,6 +27,7 @@ use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Saade\FilamentLaravelLog\FilamentLaravelLogPlugin;
 use ShuvroRoy\FilamentSpatieLaravelHealth\FilamentSpatieLaravelHealthPlugin;
@@ -68,8 +69,18 @@ class AdminPanelProvider extends PanelProvider
                 Authenticate::class,
             ])
             ->plugin(FilamentSpatieRolesPermissionsPlugin::make())
-            ->plugin(FilamentSpatieLaravelHealthPlugin::make())
+            ->plugin(
+                FilamentSpatieLaravelHealthPlugin::make()
+                    ->authorize(function (): bool {
+                        // Check if the current user has the 'Super Admin' role
+                        return Auth::check() && Auth::user()->hasRole('Super Admin');
+                    })
+            )
             ->plugin(FilamentLaravelLogPlugin::make()
+                ->authorize(function (): bool {
+                    // Check if the current user has the 'Super Admin' role
+                    return Auth::check() && Auth::user()->hasRole('Super Admin');
+                })
                 ->viewLog(ViewLog::class)
                 ->navigationGroup('Settings')
                 ->navigationLabel('Logs')
@@ -83,6 +94,8 @@ class AdminPanelProvider extends PanelProvider
                     $table->paginated([5, 10, 25, 50]);
                 });
             })
+            ->favicon(asset('logo_favicon.png'))
+            ->sidebarFullyCollapsibleOnDesktop()
         ;
     }
 }

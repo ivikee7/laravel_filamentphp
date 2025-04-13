@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements FilamentUser
@@ -44,10 +45,8 @@ class User extends Authenticatable implements FilamentUser
         'pin_code',
         'avatar',
         'is_active',
-        'blood_group',
-        'gender',
-        'created_at',
-        'updated_at',
+        'blood_group_id',
+        'gender_id',
     ];
 
     /**
@@ -80,30 +79,56 @@ class User extends Authenticatable implements FilamentUser
         // return $this->hasRole(['Super Admin', 'Owner', 'Admin', 'Teacher']); // Replace 'admin' with your role
     }
 
-    public function creator(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
-    public function updater(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
-
     protected static function boot()
     {
         parent::boot();
 
         static::creating(function ($model) {
-            if (auth()->check()) {
-                $model->creator_id = auth()->id();
+            if (Auth::check()) {
+                $model->created_by = Auth::id();
             }
         });
         static::updating(function ($model) {
-            if (auth()->check()) {
-                $model->updater_id = auth()->id();
+            if (Auth::check()) {
+                $model->updated_by = Auth::id();
             }
         });
+        static::deleting(function ($model) {
+            if (Auth::check()) {
+                $model->deleted_by = Auth::id();
+                $model->saveQuietly();
+            }
+        });
+        static::restoring(function ($model) {
+            $model->deleted_by = null;
+            $model->saveQuietly();
+        });
     }
+    public function createdBy()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+    public function updatedBy()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
+    public function deletedBy()
+    {
+        return $this->belongsTo(User::class, 'deleted_by');
+    }
+
+    public function gender(): BelongsTo
+    {
+        return $this->belongsTo(Gender::class, 'gender_id');
+    }
+    public function bloodGroup(): BelongsTo
+    {
+        return $this->belongsTo(BloodGroup::class, 'blood_group_id');
+    }
+
+
+
+
 
     function admission(): HasOne
     {

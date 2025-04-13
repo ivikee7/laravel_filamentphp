@@ -5,7 +5,11 @@ namespace App\Filament\Admin\Resources;
 use App\Filament\Admin\Resources\StudentResource\Pages;
 use App\Filament\Admin\Resources\StudentResource\RelationManagers;
 use App\Models\AcademicYear;
+use App\Models\BloodGroup;
+use App\Models\Classes;
+use App\Models\Gender;
 use App\Models\MessageTemplate;
+use App\Models\Quota;
 use App\Models\Registration;
 use App\Models\SmsProvider;
 use App\Models\Student;
@@ -74,28 +78,11 @@ class StudentResource extends Resource
                                             ->default(fn($get) => Registration::find(request()->query('registration_id'))?->official_email),
                                         Forms\Components\Group::make()
                                             ->schema([
-                                                Forms\Components\Select::make('blood_group')
-                                                    ->label('Blood Group')
-                                                    ->options([
-                                                        'A+' => 'A+',
-                                                        'A-' => 'A-',
-                                                        'B+' => 'B+',
-                                                        'B-' => 'B-',
-                                                        'AB+' => 'AB+',
-                                                        'AB-' => 'AB-',
-                                                        'O+' => 'O+',
-                                                        'O-' => 'O-',
-                                                        'UNK' => 'UNK',
-                                                    ])
+                                                Forms\Components\Select::make('gender_id')
+                                                    ->options(Gender::pluck('name', 'id'))
                                                     ->required(),
-                                                Forms\Components\Select::make('gender')
-                                                    ->label('Gender')
-                                                    ->options([
-                                                        'M' => 'Male',
-                                                        'F' => 'Female',
-                                                        'O' => 'Other',
-                                                    ])
-                                                    ->default(fn($get) => Registration::find(request()->query('registration_id'))?->gender)
+                                                Forms\Components\Select::make('blood_group_id')
+                                                    ->options(BloodGroup::pluck('name', 'id'))
                                                     ->required(),
                                             ])->columns(2),
                                     ])
@@ -117,6 +104,9 @@ class StudentResource extends Resource
                                         'left' => 'Left',
                                     ])
                                     ->required(),
+                                Forms\Components\Select::make('quota_id')
+                                    ->options(Quota::pluck('name', 'id'))
+                                    ->required(),
                             ])->columns(3),
 
                         Forms\Components\Group::make()
@@ -126,16 +116,39 @@ class StudentResource extends Resource
                                     ->relationship('currentClassAssignment')
                                     ->schema([
                                         Forms\Components\Select::make('academic_year_id')
-                                            ->options(AcademicYear::pluck('name', 'id'))
                                             ->label('Academic Year')
-                                            ->required(),
+                                            ->options(AcademicYear::pluck('name', 'id'))
+                                            ->required()
+                                            ->reactive()
+                                            ->afterStateUpdated(fn($set) => [
+                                                $set('class_id', null),
+                                                $set('section_id', null),
+                                            ]),
+
                                         Forms\Components\Select::make('class_id')
-                                            ->relationship('class', 'name')
-                                            ->default(fn($get) => Registration::find(request()->query('registration_id'))?->class_id)
-                                            ->required(),
+                                            ->label('Class')
+                                            ->options(
+                                                fn($get) =>
+                                                $get('academic_year_id')
+                                                    ? Classes::where('academic_year_id', $get('academic_year_id'))->pluck('name', 'id')
+                                                    : []
+                                            )
+                                            ->required()
+                                            ->reactive()
+                                            ->afterStateUpdated(fn($set) => $set('section_id', null))
+                                            ->default(fn($get) => Registration::find(request()->query('registration_id'))?->class_id),
+
                                         Forms\Components\Select::make('section_id')
-                                            ->relationship('section', 'name')
-                                            ->default(fn($get) => Registration::find(request()->query('registration_id'))?->section_id),
+                                            ->label('Section')
+                                            ->required()
+                                            ->options(function ($get) {
+                                                $classId = $get('class_id');
+                                                return $classId
+                                                    ? \App\Models\Section::where('class_id', $classId)->pluck('name', 'id')->toArray()
+                                                    : [];
+                                            })
+                                            ->default(fn($get) => \App\Models\Registration::find(request()->query('registration_id'))?->section_id),
+
                                     ])->columns(3),
                             ]),
                     ]),
@@ -196,11 +209,13 @@ class StudentResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->label('ID')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: false),
                 Tables\Columns\ImageColumn::make('avatar')
                     ->circular()
                     ->size(50)
-                    ->label('Image'),
+                    ->label('Image')
+                    ->toggleable(isToggledHiddenByDefault: false),
                 Tables\Columns\TextColumn::make('name')
                     ->wrap()
                     ->searchable()
@@ -208,15 +223,29 @@ class StudentResource extends Resource
                 Tables\Columns\TextColumn::make('father_name')
                     ->wrap()
                     ->searchable()
-                    ->label('Father Name'),
+                    ->label('Father Name')
+                    ->toggleable(isToggledHiddenByDefault: false),
                 Tables\Columns\TextColumn::make('mother_name')
                     ->wrap()
                     ->searchable()
-                    ->label('Motner Name'),
+                    ->label('Motner Name')
+                    ->toggleable(isToggledHiddenByDefault: false),
+                Tables\Columns\TextColumn::make('student.quota.name')
+                    ->sortable()->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('bloodGroup.name')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: false),
+                Tables\Columns\TextColumn::make('gender.name')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: false),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->label('Email'),
+                Tables\Columns\TextColumn::make('official_email')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('roles.name')
                     ->badge()
                     ->searchable(),

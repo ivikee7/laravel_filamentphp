@@ -15,10 +15,11 @@ return new class extends Migration
             $table->id();
             //
             $table->foreignId('user_id');
-            $table->timestamp('created_at');
-            $table->foreignId('creator_id')->nullable();
             $table->string('type', 20)->nullable();
             //
+            $table->timestamp('created_at');
+            $table->foreignId('created_by')->nullable();
+            $table->foreignId('deleted_by')->nullable();
             $table->softDeletes();
         });
     }

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             //
-            $table->string('name');
+            $table->string('name', 50);
             $table->string('email');
             $table->string('official_email')->nullable();
             $table->string('father_name')->nullable();
@@ -27,14 +27,16 @@ return new class extends Migration
             $table->integer('pin_code')->nullable();
             $table->string('avatar')->nullable();
             $table->boolean('is_active')->nullable();
-            $table->string('blood_group')->nullable();
-
+            $table->foreignId('blood_group_id')->nullable();
+            $table->foreignId('gender_id')->nullable();
+            //
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
             //
-            $table->foreignId('creator_id')->nullable();
-            $table->foreignId('updater_id')->nullable();
+            $table->foreignId('created_by')->nullable();
+            $table->foreignId('updated_by')->nullable();
+            $table->foreignId('deleted_by')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

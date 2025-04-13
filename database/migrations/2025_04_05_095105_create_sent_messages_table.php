@@ -20,6 +20,7 @@ return new class extends Migration
             $table->json('response')->nullable();
             $table->foreignId('provider_id')->constrained('sms_providers');
             //
+            $table->foreignId('created_by')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

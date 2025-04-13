@@ -21,8 +21,9 @@ return new class extends Migration
             $table->boolean('is_promoted')->default(false);
             $table->boolean('is_current')->default(true);
             //
-            $table->foreignId('creator_id')->nullable();
-            $table->foreignId('updater_id')->nullable();
+            $table->foreignId('created_by')->nullable();
+            $table->foreignId('updated_by')->nullable();
+            $table->foreignId('deleted_by')->nullable();
             $table->timestamps();
             $table->softDeletes();
 

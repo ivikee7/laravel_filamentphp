@@ -21,9 +21,11 @@ return new class extends Migration
             $table->enum('tc_status', ['not_requested', 'requested', 'issued'])->default('not_requested');
             $table->date('leaving_date')->nullable();
             $table->text('exit_reason')->nullable();
+            $table->foreignId('quota_id');
             //
-            $table->foreignId('creator_id')->nullable();
-            $table->foreignId('updater_id')->nullable();
+            $table->foreignId('created_by')->nullable();
+            $table->foreignId('updated_by')->nullable();
+            $table->foreignId('deleted_by')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
