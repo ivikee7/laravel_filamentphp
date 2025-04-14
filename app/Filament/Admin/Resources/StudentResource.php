@@ -132,7 +132,6 @@ class StudentResource extends Resource
 
                                         Forms\Components\Select::make('section_id')
                                             ->label('Section')
-                                            ->required()
                                             ->options(function ($get) {
                                                 $classId = $get('class_id');
                                                 return $classId
