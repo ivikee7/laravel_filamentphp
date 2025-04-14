@@ -96,15 +96,6 @@ class StudentResource extends Resource
                         Forms\Components\Group::make()
                             ->relationship('currentStudent')
                             ->schema([
-                                Forms\Components\DatePicker::make('admission_date')
-                                    ->label('Admission Date'),
-                                Forms\Components\Select::make('current_status')
-                                    ->options([
-                                        'active' => 'Active',
-                                        'graduated' => 'Graduated',
-                                        'left' => 'Left',
-                                    ])
-                                    ->required(),
                                 Forms\Components\Select::make('quota_id')
                                     ->options(Quota::pluck('name', 'id'))
                                     ->required(),
