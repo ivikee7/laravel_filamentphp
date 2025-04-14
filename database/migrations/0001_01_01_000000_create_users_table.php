@@ -31,7 +31,7 @@ return new class extends Migration
             $table->foreignId('gender_id')->nullable();
             //
             $table->string('aadhaar_number', 15)->nullable();
-            $table->string('mother_tongue', 10)->nullable();
+            $table->string('mother_tongue', 50)->nullable();
             $table->date('date_of_birth')->nullable();
             $table->string('place_of_birth', 50)->nullable();
             $table->string('notes', 100)->nullable();
