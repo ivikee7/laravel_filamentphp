@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('library_book_locations', function (Blueprint $table) {
             $table->id();
             $table->string('name', 100);
-            $table->string('notes', 255)->nullable();
+            $table->string('notes', 150)->nullable();
             //
             $table->foreignId('created_by')->nullable();
             $table->foreignId('updated_by')->nullable();

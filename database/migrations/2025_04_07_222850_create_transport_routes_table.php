@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('transport_routes', function (Blueprint $table) {
             $table->id();
             //
-            $table->string('name');
-            $table->text('description')->nullable();
+            $table->string('name', 50);
+            $table->text('description', 150)->nullable();
             $table->boolean('is_active')->default(true);
             //
             $table->foreignId('created_by')->nullable();

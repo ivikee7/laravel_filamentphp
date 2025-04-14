@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('sections', function (Blueprint $table) {
             $table->id();
             //
-            $table->string('name');
+            $table->string('name', 25);
             $table->foreignId('class_id');
             $table->foreignId('room_id');
             $table->foreignId('teacher_id')->nullable();

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('library_book_suppliers', function (Blueprint $table) {
             $table->id();
             $table->string('name', 100);
-            $table->string('address', 255)->nullable();
+            $table->string('address', 150)->nullable();
             $table->string('primary_contact_number', 15)->nullable();
             $table->string('secondary_contact_number', 15)->nullable();
             $table->string('email', 100)->nullable();

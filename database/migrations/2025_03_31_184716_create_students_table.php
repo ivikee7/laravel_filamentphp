@@ -17,11 +17,11 @@ return new class extends Migration
             $table->foreignId('user_id');
             $table->foreignId('registration_id')->nullable();
             $table->foreignId('quota_id');
-            $table->string('admission_number')->unique()->nullable();
+            $table->string('admission_number', 25)->unique()->nullable();
             $table->enum('current_status', ['active', 'graduated', 'left'])->default('active');
             $table->enum('tc_status', ['not_requested', 'requested', 'issued'])->default('not_requested');
             $table->date('leaving_date')->nullable();
-            $table->text('exit_reason')->nullable();
+            $table->text('exit_reason', 255)->nullable();
             //
             $table->foreignId('created_by')->nullable();
             $table->foreignId('updated_by')->nullable();

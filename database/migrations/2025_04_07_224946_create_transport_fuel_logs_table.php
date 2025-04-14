@@ -18,7 +18,7 @@ return new class extends Migration
             $table->date('date');
             $table->decimal('liters', 8, 2);
             $table->decimal('cost', 10, 2);
-            $table->string('filled_by')->nullable();
+            $table->string('filled_by', 50)->nullable();
             //
             $table->foreignId('created_by')->nullable();
             $table->foreignId('updated_by')->nullable();

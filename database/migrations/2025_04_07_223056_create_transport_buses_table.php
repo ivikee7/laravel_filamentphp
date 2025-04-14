@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('transport_buses', function (Blueprint $table) {
             $table->id();
             //
-            $table->string('registration_number')->unique();
-            $table->string('model')->nullable();
+            $table->string('registration_number', 50)->unique();
+            $table->string('model', 50)->nullable();
             $table->integer('seating_capacity');
             $table->foreignId('driver_id')->constrained('users');
             $table->foreignId('conductor_id')->nullable()->constrained('users');

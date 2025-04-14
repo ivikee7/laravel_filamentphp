@@ -26,17 +26,17 @@ return new class extends Migration
             $table->decimal('loan_deduction', 10, 2)->nullable();
 
             // Payment info
-            $table->string('bank_name')->nullable();
-            $table->string('account_number')->nullable();
-            $table->string('ifsc_code')->nullable(); // or Swift/Branch code
+            $table->string('bank_name', 50)->nullable();
+            $table->string('account_number', 50)->nullable();
+            $table->string('ifsc_code', 50)->nullable(); // or Swift/Branch code
 
             // Provident fund
             $table->decimal('provident_fund_contribution', 10, 2)->nullable();
-            $table->string('pf_account_number')->nullable();
-            $table->string('esi_number')->nullable(); // if applicable
+            $table->string('pf_account_number', 50)->nullable();
+            $table->string('esi_number', 50)->nullable(); // if applicable
 
             // Extra
-            $table->text('notes')->nullable();
+            $table->text('notes', 255)->nullable();
             //
             $table->foreignId('created_by')->nullable();
             $table->foreignId('updated_by')->nullable();

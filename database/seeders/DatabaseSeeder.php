@@ -113,7 +113,6 @@ class DatabaseSeeder extends Seeder
         Student::create([
             'user_id' => $student->id,
             'admission_number' => $student->id,
-            'admission_date' => now(),
             'quota_id' => 1,
             // 'current_status',
             // 'tc_status',

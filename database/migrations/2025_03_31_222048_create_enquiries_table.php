@@ -15,13 +15,13 @@ return new class extends Migration
             $table->id();
             //
             $table->string('name', 50);
-            $table->enum('gender', ['M', 'F', 'O'])->nullable();
+            $table->foreignId('gender_id')->nullable();
             $table->Date('date_of_birth')->nullable();
             $table->string('father_name', 50)->nullable();
             $table->string('mother_name', 50)->nullable();
             $table->string('primary_contact_number', 15);
             $table->string('secondary_contact_number', 15)->nullable();
-            $table->string('address')->nullable();
+            $table->string('address', 150)->nullable();
             $table->string('city', 25)->nullable();
             $table->string('state', 25)->nullable();
             $table->integer('pin_code')->unsigned()->nullable();
@@ -29,7 +29,7 @@ return new class extends Migration
             $table->string('source', 25)->nullable();
             $table->foreignId('previous_class_id')->nullable();
             $table->foreignId('class_id')->nullable();
-            $table->string('notes')->nullable();
+            $table->string('notes', 255)->nullable();
             //
             $table->foreignId('created_by')->nullable();
             $table->foreignId('updated_by')->nullable();

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('quotas', function (Blueprint $table) {
             $table->id();
             //
-            $table->string('name'); // e.g., RTE, Staff, Board Members
+            $table->string('name', 50); // e.g., RTE, Staff, Board Members
             $table->decimal('discount_percentage')->default(0); // e.g., 100, 70, 10
             //
             $table->foreignId('created_by')->nullable();

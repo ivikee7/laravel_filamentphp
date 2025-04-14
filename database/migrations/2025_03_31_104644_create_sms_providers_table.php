@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('sms_providers', function (Blueprint $table) {
             $table->id();
             //
-            $table->string('name')->unique();
+            $table->string('name', 100)->unique();
             $table->string('base_url');
             $table->enum('method', ['get', 'post'])->default('get');
             $table->string('to_key');

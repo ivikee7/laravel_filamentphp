@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             //
             $table->foreignId('user_id');
-            $table->string('phone');
+            $table->string('phone', 15);
             $table->text('message');
             $table->json('response')->nullable();
             $table->foreignId('provider_id')->constrained('sms_providers');
