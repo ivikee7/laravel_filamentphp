@@ -254,10 +254,10 @@ class UserResource extends Resource
             ])
             ->defaultSort('id', 'desc')
             ->modifyQueryUsing(function (Builder $query) {
-                if (!Auth::user()->hasRole('Super Admin')) {
-                    $query->withoutRole('Super Admin');
-                }
-                $query->withoutRole('Student');
+                // if (!Auth::user()->hasRole('Super Admin')) {
+                //     $query->withoutRole('Super Admin');
+                // }
+                // $query->withoutRole('Student');
             })
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
@@ -307,7 +307,25 @@ class UserResource extends Resource
         return parent::getEloquentQuery()
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
-            ]);
+            ])
+            ->whereHas('roles', function ($query) {
+                if (!Auth::user()->hasRole('Super Admin')) {
+                    $query->whereNot('name', 'Super Admin');
+                }
+                $query->whereNot('name', 'Student');
+            });
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return User::where('is_active', 1)
+            ->whereHas('roles', function ($query) {
+                if (!Auth::user()->hasRole('Super Admin')) {
+                    $query->whereNot('name', 'Super Admin');
+                }
+                $query->whereNot('name', 'Student');
+            })
+            ->count();
     }
 
     public static function canView(Model $record): bool
@@ -341,17 +359,5 @@ class UserResource extends Resource
         }
         // Other users cannot delete Super Admin or Student users
         return !$record->hasRole('Super Admin') && !$record->hasRole('Student');
-    }
-
-    public static function getNavigationBadge(): ?string
-    {
-        return User::where('is_active', 1)
-            ->whereHas('roles', function ($query) {
-                if (!Auth::user()->hasRole('Super Admin')) {
-                    $query->whereNot('name', 'Super Admin');
-                }
-                $query->whereNot('name', 'Student');
-            })
-            ->count();
     }
 }
