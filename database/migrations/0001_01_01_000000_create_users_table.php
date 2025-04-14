@@ -15,20 +15,27 @@ return new class extends Migration
             $table->id();
             //
             $table->string('name', 50);
-            $table->string('email');
-            $table->string('official_email')->nullable();
-            $table->string('father_name')->nullable();
-            $table->string('mother_name')->nullable();
-            $table->string('primary_contact_number', 10)->nullable();
-            $table->string('secondary_contact_number', 10)->nullable();
-            $table->string('address')->nullable();
+            $table->string('email', 50);
+            $table->string('official_email', 50)->nullable();
+            $table->string('father_name', 50)->nullable();
+            $table->string('mother_name', 60)->nullable();
+            $table->string('primary_contact_number', 15)->nullable();
+            $table->string('secondary_contact_number', 15)->nullable();
+            $table->string('address', 100)->nullable();
             $table->string('city', 25)->nullable();
             $table->string('state', 25)->nullable();
             $table->integer('pin_code')->nullable();
-            $table->string('avatar')->nullable();
+            $table->string('avatar', 100)->nullable();
             $table->boolean('is_active')->nullable();
             $table->foreignId('blood_group_id')->nullable();
             $table->foreignId('gender_id')->nullable();
+            //
+            $table->string('aadhaar_number', 15)->nullable();
+            $table->string('mother_tongue', 10)->nullable();
+            $table->date('date_of_birth')->nullable();
+            $table->string('place_of_birth', 15)->nullable();
+            $table->string('notes', 100)->nullable();
+            $table->date('termination_date')->nullable();
             //
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
