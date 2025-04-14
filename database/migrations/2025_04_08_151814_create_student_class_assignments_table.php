@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             //
             $table->foreignId('student_id');
+            $table->foreignId('academic_year_id');
             $table->foreignId('class_id');
             $table->foreignId('section_id')->nullable();
-            $table->foreignId('academic_year_id');
             $table->boolean('is_promoted')->default(false);
             $table->boolean('is_current')->default(true);
             //
