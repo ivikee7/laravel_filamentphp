@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Resources\AttendanceResource\Pages;
 use App\Filament\Admin\Resources\AttendanceResource;
 use App\Models\User;
 use Carbon\Carbon;
+use Filament\Forms\Components\DatePicker;
 use Filament\Resources\Pages\Page;
 use Filament\Tables;
 use Filament\Tables\Concerns\InteractsWithTable;
@@ -12,6 +13,8 @@ use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Livewire\Attributes\Url;
 
 class MonthlyReport extends Page implements HasTable
 {
@@ -21,88 +24,120 @@ class MonthlyReport extends Page implements HasTable
 
     protected static string $view = 'filament.admin.resources.attendance-resource.pages.monthly-report';
 
+    #[Url(as: 'from_date')]
+    public ?string $fromDate = null;
+
+    #[Url(as: 'to_date')]
+    public ?string $toDate = null;
+
+    public function mount(): void
+    {
+        $this->fromDate = null;
+        $this->toDate = null;
+    }
+
     public function table(Table $table): Table
     {
         return $table
-            ->query(function () {
-                $month = $this->getTable()->getFilters()['month']->getState() ?? now()->format('m');
-                $year = $this->getTable()->getFilters()['year']->getState() ?? now()->format('Y');
-
-                return User::query()
-                    // ->role('Student')
-                    ->with(['attendances' => function ($q) use ($month, $year) {
-                        $q->whereMonth('created_at', $month)
-                            ->whereYear('created_at', $year);
-                    }]);
-            })
+            ->query(
+                $user = User::query()->with(['attendances' => function ($q) {
+                    if ($this->fromDate) {
+                        $q->whereDate('created_at', '>=', $this->fromDate);
+                    }
+                    if ($this->toDate) {
+                        $q->whereDate('created_at', '<=', $this->toDate);
+                    }
+                }])
+            )
             ->columns($this->getAttendanceColumns())
             ->filters([
-                SelectFilter::make('month')
-                    ->options([
-                        '01' => 'January',
-                        '02' => 'February',
-                        '03' => 'March',
-                        '04' => 'April',
-                        '05' => 'May',
-                        '06' => 'June',
-                        '07' => 'July',
-                        '08' => 'August',
-                        '09' => 'September',
-                        '10' => 'October',
-                        '11' => 'November',
-                        '12' => 'December',
+                Filter::make('date_range')
+                    ->form([
+                        DatePicker::make('from_date')
+                            ->label('From Date')
+                            ->displayFormat('Y-m-d')
+                            ->format('Y-m-d'),
+                        DatePicker::make('to_date')
+                            ->label('To Date')
+                            ->displayFormat('Y-m-d')
+                            ->format('Y-m-d')
+                            ->after('from_date'),
                     ])
-                    ->default(now()->format('m'))
-                    ->query(fn($query) => $query), // 🔐 Prevent Filament from auto-applying this filter
+                    ->query(function (Builder $query, array $data, MonthlyReport $livewire): Builder {
+                        $livewire->fromDate = $data['from_date'] ?? null;
+                        $livewire->toDate = $data['to_date'] ?? null;
 
+                        if ($livewire->fromDate) {
+                            $query->whereHas('attendances', function (Builder $q) use ($livewire) {
+                                $q->whereDate('created_at', '>=', $livewire->fromDate);
+                            });
+                        }
+                        if ($livewire->toDate) {
+                            $query->whereHas('attendances', function (Builder $q) use ($livewire) {
+                                $q->whereDate('created_at', '<=', $livewire->toDate);
+                            });
+                        }
 
-                SelectFilter::make('year')
-                    ->options(
-                        collect(range(now()->year, now()->year - 5))
-                            ->mapWithKeys(fn($y) => [$y => $y])
-                            ->toArray()
-                    )
-                    ->default(now()->format('Y'))
-                    ->query(fn($query) => $query), // 🔐 Prevent Filament from auto-applying this filter
-            ])
-            // ->paginated([5, 10, 25, 50, 100])
-            ;
+                        return $query;
+                    })
+                    ->label('Date Range'),
+            ]);
     }
 
     protected function getAttendanceColumns(): array
     {
-        $daysInMonth = now()->daysInMonth;
-
-        $staticColumns = [
+        $columns = [
             Tables\Columns\TextColumn::make('id')->label('ID')->sortable()->searchable(),
-            Tables\Columns\TextColumn::make('name')->label('Name')->sortable()->searchable(),
-            Tables\Columns\TextColumn::make('roles.name')->label('Role')->sortable()->searchable()
+            Tables\Columns\TextColumn::make('name')->label('Name')->sortable()->searchable()->wrap(),
+            Tables\Columns\TextColumn::make('roles.name')->label('Role')->sortable()->searchable()->wrap()
                 ->toggleable(isToggledHiddenByDefault: true),
-            Tables\Columns\TextColumn::make('currentStudent.currentClassAssignment.class.name')->label('Class')->sortable()->searchable()
+            Tables\Columns\TextColumn::make('currentStudent.currentClassAssignment.class.name')->label('Class')->sortable()->searchable()->wrap()
                 ->toggleable(isToggledHiddenByDefault: true),
-            Tables\Columns\TextColumn::make('currentStudent.currentClassAssignment.section.name')->label('Section')->sortable()->searchable()
+            Tables\Columns\TextColumn::make('currentStudent.currentClassAssignment.section.name')->label('Section')->sortable()->searchable()->wrap()
                 ->toggleable(isToggledHiddenByDefault: true),
         ];
 
-        $dayColumns = array_map(function ($day) {
-            $date = now()->startOfMonth()->addDays($day - 1)->toDateString();
+        $startDate = null;
+        $endDate = null;
 
-            return Tables\Columns\TextColumn::make("attendance_day_{$day}")
-                ->label((string) $day)
-                ->getStateUsing(function ($record) use ($date) {
-                    $attendance = $record->attendances
-                        ->filter(fn($att) => \Carbon\Carbon::parse($att->created_at)->toDateString() === $date);
+        if ($this->fromDate && $this->toDate) {
+            $startDate = Carbon::parse($this->fromDate)->startOfDay();
+            $endDate = Carbon::parse($this->toDate)->endOfDay();
+        } else {
+            $now = now();
+            $startDate = Carbon::create($now->year, $now->month, 1)->startOfDay();
+            $endDate = Carbon::create($now->year, $now->month, $now->daysInMonth)->endOfDay();
+        }
 
-                    if ($attendance->isEmpty()) return '-';
+        if ($startDate && $endDate) {
+            while ($startDate <= $endDate) {
+                $dateString = $startDate->toDateString();
+                $formattedDate = $startDate->format('dmy');
 
-                    $in = \Carbon\Carbon::parse($attendance->first()->created_at)->format('H:i');
-                    $out = \Carbon\Carbon::parse($attendance->last()->created_at)->format('H:i');
+                $columns[] = Tables\Columns\TextColumn::make("attendance_day_" . $startDate->format('Ymd'))
+                    ->label($formattedDate)
+                    ->getStateUsing(function ($record) use ($dateString) {
+                        $attendance = $record->attendances
+                            ->filter(function ($att) use ($dateString) {
+                                return Carbon::parse($att->created_at)->toDateString() === $dateString;
+                            })
+                            ->sortBy('created_at'); // Sort attendances by time
 
-                    return "$in\n$out";
-                })
-                ->wrap();
-        }, range(1, $daysInMonth));
+                        if ($attendance->isEmpty()) {
+                            return '-';
+                        }
 
-        return array_merge($staticColumns, $dayColumns);
+                        $in = $attendance->first()->created_at->format('H:i');
+                        $out = $attendance->last()->created_at->format('H:i');
+
+                        return "$in\n$out"; // Display in and out on separate lines
+                    })
+                    ->wrap();
+
+                $startDate->addDay();
+            }
+        }
+
+        return $columns;
     }
 }
