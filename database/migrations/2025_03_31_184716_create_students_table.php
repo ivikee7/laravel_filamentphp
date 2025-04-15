@@ -22,6 +22,8 @@ return new class extends Migration
             $table->enum('tc_status', ['not_requested', 'requested', 'issued'])->default('not_requested');
             $table->date('leaving_date')->nullable();
             $table->text('exit_reason', 255)->nullable();
+            $table->foreignId('local_guardian_user_id')->nullable();
+            $table->string('local_guardian_relationship', 50)->nullable();
             //
             $table->foreignId('created_by')->nullable();
             $table->foreignId('updated_by')->nullable();
