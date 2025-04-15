@@ -180,7 +180,8 @@ class RegistrationResource extends Resource
                 Tables\Columns\TextColumn::make('date_of_birth')
                     ->date()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('gender.name'),
+                Tables\Columns\TextColumn::make('gender.name')
+                ->searchable(),
                 Tables\Columns\TextColumn::make('father_qualification')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
