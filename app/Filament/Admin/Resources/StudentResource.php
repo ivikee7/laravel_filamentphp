@@ -29,6 +29,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
 class StudentResource extends Resource
@@ -293,6 +294,30 @@ class StudentResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 // Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('resetPassword')
+                    ->label('')
+                    ->icon('heroicon-o-key')
+                    ->form([
+                        Forms\Components\TextInput::make('new_password')
+                            ->label('New Password')
+                            ->password()
+                            ->required()
+                            ->confirmed(),
+                        Forms\Components\TextInput::make('new_password_confirmation')
+                            ->label('Confirm New Password')
+                            ->password()
+                            ->required(),
+                    ])
+                    ->action(function (array $data, User $record) {
+                        $record->password = Hash::make($data['new_password']);
+                        $record->save();
+                        Notification::make()
+                            ->title('Password Reset')
+                            ->body("Password for {$record->name} has been reset successfully.")
+                            ->success()
+                            ->send();
+                    })
+                    ->visible(fn(): bool => Auth::user()->can('resetUserPassword', User::class)), // Optional permission check
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

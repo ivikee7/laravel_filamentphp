@@ -12,6 +12,7 @@ use Filament\Forms;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -19,6 +20,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
 class UserResource extends Resource
@@ -191,7 +193,7 @@ class UserResource extends Resource
                     ->label('Image')
                     ->toggleable(isToggledHiddenByDefault: false),
                 Tables\Columns\TextColumn::make('name')
-                ->wrap()
+                    ->wrap()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('father_name')->wrap()
                     ->searchable()
@@ -258,7 +260,31 @@ class UserResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                // Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('resetPassword')
+                    ->label('')
+                    ->icon('heroicon-o-key')
+                    ->form([
+                        Forms\Components\TextInput::make('new_password')
+                            ->label('New Password')
+                            ->password()
+                            ->required()
+                            ->confirmed(),
+                        Forms\Components\TextInput::make('new_password_confirmation')
+                            ->label('Confirm New Password')
+                            ->password()
+                            ->required(),
+                    ])
+                    ->action(function (array $data, User $record) {
+                        $record->password = Hash::make($data['new_password']);
+                        $record->save();
+                        Notification::make()
+                            ->title('Password Reset')
+                            ->body("Password for {$record->name} has been reset successfully.")
+                            ->success()
+                            ->send();
+                    })
+                    ->visible(fn(): bool => Auth::user()->can('resetUserPassword', User::class)), // Optional permission check
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
