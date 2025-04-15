@@ -171,7 +171,7 @@ class RegistrationResource extends Resource
                 Tables\Columns\TextColumn::make('id')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('name')
-                ->wrap()
+                    ->wrap()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('class.name')
                     ->numeric()
@@ -180,9 +180,11 @@ class RegistrationResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('date_of_birth')->wrap()
                     ->date()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('gender.name')
-                ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('father_qualification')->wrap()
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -230,7 +232,7 @@ class RegistrationResource extends Resource
                 Tables\Columns\TextColumn::make('created_at')->wrap()
                     ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(isToggledHiddenByDefault: false),
                 Tables\Columns\TextColumn::make('updated_at')->wrap()
                     ->dateTime()
                     ->sortable()
