@@ -31,8 +31,8 @@ return new class extends Migration
             $table->string('state', 25)->nullable();
             $table->integer('pin_code')->nullable();
             $table->string('previous_school', 100)->nullable();
-            $table->double('payment_amount');
-            $table->string('payment_mode', 15);
+            $table->double('payment_amount')->nullable();
+            $table->string('payment_mode', 15)->nullable();
             $table->string('payment_notes', 50)->nullable();
             $table->foreignId('previous_class_id')->nullable();
             $table->foreignId('academic_year_id')->nullable();
