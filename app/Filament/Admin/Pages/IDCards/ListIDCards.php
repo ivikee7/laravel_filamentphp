@@ -56,6 +56,7 @@ class ListIDCards extends Page implements HasTable
                 TextColumn::make('currentStudent.current_status')
                     ->label('Status')
                     ->badge()
+                    ->searchable()
                     ->colors([
                         'success' => 'active',
                         'danger' => 'left',
@@ -64,11 +65,13 @@ class ListIDCards extends Page implements HasTable
                 TextColumn::make('currentStudent.currentClassAssignment.class.name')
                     ->label('Class')
                     ->sortable()
+                    ->searchable()
                 // ->formatStateUsing(fn($state, $record) => $record->currentStudent->currentClassAssignment?->class?->name)
                 ,
                 TextColumn::make('currentStudent.currentClassAssignment.section.name')
                     ->label('Section')
                     ->sortable()
+                    ->searchable()
                 // ->formatStateUsing(fn($state, $record) => $record->currentStudent->currentClassAssignment?->section?->name)
                 ,
                 ViewColumn::make('qr_code')
