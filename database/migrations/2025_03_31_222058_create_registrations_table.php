@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('registrations', function (Blueprint $table) {
             $table->id();
             //
-            $table->string('name', 25);
+            $table->string('name', 50);
             $table->date('date_of_birth')->nullable();
             $table->foreignId('gender_id')->nullable();
             $table->string('father_name', 50)->nullable();
