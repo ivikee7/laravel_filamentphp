@@ -224,6 +224,16 @@ class StudentResource extends Resource
                     ->searchable()
                     ->label('Motner Name')
                     ->toggleable(isToggledHiddenByDefault: false),
+                Tables\Columns\TextColumn::make('currentStudent.currentClassAssignment.class.name')
+                    ->wrap()
+                    ->searchable()
+                    ->label('Class')
+                    ->toggleable(isToggledHiddenByDefault: false),
+                Tables\Columns\TextColumn::make('currentStudent.currentClassAssignment.section.name')
+                    ->wrap()
+                    ->searchable()
+                    ->label('Section')
+                    ->toggleable(isToggledHiddenByDefault: false),
                 Tables\Columns\TextColumn::make('student.quota.name')
                     ->sortable()->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
