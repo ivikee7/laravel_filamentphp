@@ -116,4 +116,9 @@ class AttendanceResource extends Resource
                 SoftDeletingScope::class,
             ]);
     }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return Attendance::whereDate('created_at', now())->count();
+    }
 }
