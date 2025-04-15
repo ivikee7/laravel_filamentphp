@@ -8,6 +8,7 @@ use App\Models\AcademicYear;
 use App\Models\Classes;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -41,9 +42,12 @@ class ClassesResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
+                Tables\Columns\TextColumn::make('id')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('academicYear.name')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('name')
+                ->label('Class Name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('createdBy.name')
                     ->numeric()
@@ -85,7 +89,7 @@ class ClassesResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\SectionsRelationManager::class,
         ];
     }
 
