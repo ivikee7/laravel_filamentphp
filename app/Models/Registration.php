@@ -89,4 +89,8 @@ class Registration extends Model
     {
         return $this->belongsTo(Classes::class);
     }
+    public function gender(): BelongsTo
+    {
+        return $this->belongsTo(Gender::class);
+    }
 }
