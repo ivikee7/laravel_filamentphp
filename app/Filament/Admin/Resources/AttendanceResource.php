@@ -119,6 +119,6 @@ class AttendanceResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return Attendance::whereDate('created_at', now())->count();
+        return Attendance::whereDate('created_at', now())->groupBy('user_id')->count();
     }
 }
