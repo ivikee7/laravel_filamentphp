@@ -251,7 +251,8 @@ class StudentResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('roles.name')
                     ->badge()
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('is_active')
                     ->label('Status')
                     ->formatStateUsing(fn($state) => $state ? 'Active' : 'Suspended')
