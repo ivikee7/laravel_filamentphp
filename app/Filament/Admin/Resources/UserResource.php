@@ -5,6 +5,8 @@ namespace App\Filament\Admin\Resources;
 use App\Filament\Admin\Resources\UserResource\Pages;
 use App\Filament\Admin\Resources\UserResource\Pages\IDCard;
 use App\Filament\Admin\Resources\UserResource\RelationManagers;
+use App\Models\BloodGroup;
+use App\Models\Gender;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
@@ -61,27 +63,11 @@ class UserResource extends Resource
                                         Forms\Components\TextInput::make('official_email')->email(),
                                         Forms\Components\Group::make()
                                             ->schema([
-                                                Forms\Components\Select::make('blood_group')
-                                                    ->label('Blood Group')
-                                                    ->options([
-                                                        'A+' => 'A+',
-                                                        'A-' => 'A-',
-                                                        'B+' => 'B+',
-                                                        'B-' => 'B-',
-                                                        'AB+' => 'AB+',
-                                                        'AB-' => 'AB-',
-                                                        'O+' => 'O+',
-                                                        'O-' => 'O-',
-                                                        'UNK' => 'UNK',
-                                                    ])
+                                                Forms\Components\Select::make('gender_id')
+                                                    ->options(Gender::pluck('name', 'id'))
                                                     ->required(),
-                                                Forms\Components\Select::make('gender')
-                                                    ->label('Gender')
-                                                    ->options([
-                                                        'M' => 'Male',
-                                                        'F' => 'Female',
-                                                        'O' => 'Other',
-                                                    ])
+                                                Forms\Components\Select::make('blood_group_id')
+                                                    ->options(BloodGroup::pluck('name', 'id'))
                                                     ->required(),
                                             ])->columns(2),
                                     ])
