@@ -97,6 +97,8 @@ class AdminPanelProvider extends PanelProvider
             })
             ->favicon(asset('logo_favicon.png'))
             ->sidebarFullyCollapsibleOnDesktop()
+            // ->passwordReset() // Password Reset
+            ->profile() // Profile
         ;
     }
 }

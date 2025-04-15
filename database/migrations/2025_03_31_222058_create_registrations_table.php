@@ -38,6 +38,8 @@ return new class extends Migration
             $table->foreignId('academic_year_id')->nullable();
             $table->foreignId('class_id')->nullable();
             $table->foreignId('enquiry_id')->nullable();
+            $table->date('placement_test_date')->nullable();
+            $table->boolean('placement_test_status')->nullable();
             //
             $table->foreignId('created_by')->nullable();
             $table->foreignId('updated_by')->nullable();
