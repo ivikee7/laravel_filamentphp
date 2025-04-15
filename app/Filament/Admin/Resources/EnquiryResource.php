@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Resources;
 use App\Filament\Admin\Resources\EnquiryResource\Pages;
 use App\Filament\Admin\Resources\EnquiryResource\RelationManagers;
 use App\Models\Enquiry;
+use App\Models\Gender;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
@@ -31,12 +32,9 @@ class EnquiryResource extends Resource
                         Forms\Components\TextInput::make('name')
                             ->required()
                             ->maxLength(50),
-                        Forms\Components\Select::make('gender')
-                            ->options([
-                                'M' => 'Male',
-                                'F' => 'Female',
-                                'O' => 'Other',
-                            ]),
+                        Forms\Components\Select::make('gender_id')
+                            ->options(Gender::pluck('name', 'id'))
+                            ->required(),
                         Forms\Components\DatePicker::make('date_of_birth'),
                     ])->columns(3),
                 Section::make('Preveius School info')

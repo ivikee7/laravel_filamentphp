@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('mother_name', 50)->nullable();
             $table->string('primary_contact_number', 15);
             $table->string('secondary_contact_number', 15)->nullable();
+            $table->string('email', 50)->nullable();
             $table->string('address', 150)->nullable();
             $table->string('city', 25)->nullable();
             $table->string('state', 25)->nullable();

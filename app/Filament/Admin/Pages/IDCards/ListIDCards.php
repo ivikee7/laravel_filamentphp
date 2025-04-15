@@ -46,7 +46,7 @@ class ListIDCards extends Page implements HasTable
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('name')
-                ->wrap()
+                    ->wrap()
                     ->label('Name')
                     ->searchable()
                     ->sortable(),

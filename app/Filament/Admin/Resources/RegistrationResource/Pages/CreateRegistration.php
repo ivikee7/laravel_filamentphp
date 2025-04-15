@@ -23,6 +23,13 @@ class CreateRegistration extends CreateRecord
         $this->enquiryId = request()->query('enquiry_id');
     }
 
+    protected function mutateFormDataBeforeCreate(array $data): array
+    {
+        $data['enquiry_id'] = $this->enquiryId;
+
+        return $data;
+    }
+
     protected function afterCreate(): void
     {
         if ($this->enquiryId) {

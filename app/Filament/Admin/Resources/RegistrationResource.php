@@ -4,7 +4,10 @@ namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\RegistrationResource\Pages;
 use App\Filament\Admin\Resources\RegistrationResource\RelationManagers;
+use App\Models\AcademicYear;
+use App\Models\Classes;
 use App\Models\Enquiry;
+use App\Models\Gender;
 use App\Models\Registration;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
@@ -37,13 +40,10 @@ class RegistrationResource extends Resource
                             ->default(fn($get) => Enquiry::find(request()->query('enquiry_id'))?->name),
                         Forms\Components\DatePicker::make('date_of_birth')
                             ->default(fn($get) => Enquiry::find(request()->query('enquiry_id'))?->date_of_birth),
-                        Forms\Components\Select::make('gender')
-                            ->options([
-                                'M' => 'Male',
-                                'F' => 'Female',
-                                'O' => 'Other',
-                            ])
-                            ->default(fn($get) => Enquiry::find(request()->query('enquiry_id'))?->gender),
+                        Forms\Components\Select::make('gender_id')
+                            ->options(Gender::pluck('name', 'id'))
+                            ->required()
+                            ->default(fn($get) => Enquiry::find(request()->query('enquiry_id'))?->gender_id),
                     ])->columns(3),
                 Section::make('Previous School info')
                     ->schema([
@@ -56,9 +56,33 @@ class RegistrationResource extends Resource
                     ])->columns(3),
                 Section::make('Admission info')
                     ->schema([
-                        Forms\Components\Select::make('class_id')
+                        Forms\Components\Select::make('enquiryClass')
+                            ->label('Enquiry for admission in')
                             ->relationship('class', 'name')
+                            ->default(fn($get) => Enquiry::find(request()->query('enquiry_id'))?->class_id)
+                            ->disabled()
+                            ->dehydrated(false)
+                            ->visible(fn($get) => filled($get('enquiry_id'))),
 
+                        Forms\Components\Select::make('academic_year_id')
+                            ->label('Academic Year')
+                            ->options(AcademicYear::pluck('name', 'id'))
+                            ->required()
+                            ->reactive()
+                            ->afterStateUpdated(fn($set) => [
+                                $set('class_id', null),
+                            ]),
+
+                        Forms\Components\Select::make('class_id')
+                            ->label('Class')
+                            ->options(
+                                fn($get) =>
+                                $get('academic_year_id')
+                                    ? Classes::where('academic_year_id', $get('academic_year_id'))->pluck('name', 'id')
+                                    : []
+                            )
+                            ->required()
+                            ->reactive()
                             ->default(fn($get) => Enquiry::find(request()->query('enquiry_id'))?->class_id),
                     ])->columns(3),
                 Section::make('Father info')
@@ -68,17 +92,10 @@ class RegistrationResource extends Resource
                             ->default(fn($get) => Enquiry::find(request()->query('enquiry_id'))?->father_name),
                         Forms\Components\TextInput::make('father_qualification')
                             ->maxLength(50)
-
                             ->default(fn($get) => Enquiry::find(request()->query('enquiry_id'))?->father_qualification),
                         Forms\Components\TextInput::make('father_occupation')
                             ->maxLength(50)
-
                             ->default(fn($get) => Enquiry::find(request()->query('enquiry_id'))?->father_occupation),
-                        Forms\Components\TextInput::make('primary_contact_number')
-                            ->tel()
-                            ->rules(['digits:10'])
-                            ->required()
-                            ->default(fn($get) => Enquiry::find(request()->query('enquiry_id'))?->primary_contact_number),
                     ])->columns(3),
                 Section::make('Mother info')
                     ->schema([
@@ -91,11 +108,21 @@ class RegistrationResource extends Resource
                         Forms\Components\TextInput::make('mother_occupation')
                             ->maxLength(50)
                             ->default(fn($get) => Enquiry::find(request()->query('enquiry_id'))?->mother_occupation),
+                    ])->columns(3),
+                Section::make('Contact info')
+                    ->schema([
+                        Forms\Components\TextInput::make('primary_contact_number')
+                            ->tel()
+                            ->rules(['digits:10'])
+                            ->required()
+                            ->default(fn($get) => Enquiry::find(request()->query('enquiry_id'))?->primary_contact_number),
                         Forms\Components\TextInput::make('secondary_contact_number')
                             ->tel()
                             ->rules(['digits:10'])
                             ->required()
                             ->default(fn($get) => Enquiry::find(request()->query('enquiry_id'))?->secondary_contact_number),
+                        Forms\Components\TextInput::make('email')->email()->required()
+                            ->default(fn($get) => Enquiry::find(request()->query('enquiry_id'))?->email),
                     ])->columns(3),
                 Section::make('Address')
                     ->schema([
@@ -114,11 +141,20 @@ class RegistrationResource extends Resource
                             ->required()
                             ->default(fn($get) => Enquiry::find(request()->query('enquiry_id'))?->pin_code),
                     ])->columns(3),
-                Section::make('Other info')
+                Section::make('Payment info')
                     ->schema([
-                        Forms\Components\TextInput::make('payment_mode')
-                            ->required()
-                            ->maxLength(15),
+                        Forms\Components\TextInput::make('payment_amount')
+                            ->numeric()
+                            ->required(),
+                        Forms\Components\Select::make('payment_mode')
+                            ->options([
+                                'Online' => 'Online',
+                                'QR_Code' => 'QR_Code',
+                                'Cash' => 'Cash',
+                            ])
+                            ->required(),
+                        Forms\Components\TextInput::make('payment_notes')
+                            ->required(),
                     ])->columns(3),
                 // start only for deleteing enquiry after registration
                 Forms\Components\TextInput::make('enquiry_id')

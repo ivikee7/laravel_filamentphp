@@ -25,14 +25,19 @@ return new class extends Migration
             $table->string('mother_qualification', 50)->nullable();
             $table->string('mother_occupation', 50)->nullable();
             $table->string('secondary_contact_number', 15)->nullable();
+            $table->string('email', 50)->nullable();
             $table->string('address', 150)->nullable();
             $table->string('city', 25)->nullable();
             $table->string('state', 25)->nullable();
             $table->integer('pin_code')->nullable();
             $table->string('previous_school', 100)->nullable();
+            $table->double('payment_amount');
             $table->string('payment_mode', 15);
+            $table->string('payment_notes', 50)->nullable();
             $table->foreignId('previous_class_id')->nullable();
+            $table->foreignId('academic_year_id')->nullable();
             $table->foreignId('class_id')->nullable();
+            $table->foreignId('enquiry_id')->nullable();
             //
             $table->foreignId('created_by')->nullable();
             $table->foreignId('updated_by')->nullable();

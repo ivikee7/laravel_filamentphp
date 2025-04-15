@@ -81,10 +81,12 @@ class StudentResource extends Resource
                                             ->schema([
                                                 Forms\Components\Select::make('gender_id')
                                                     ->options(Gender::pluck('name', 'id'))
-                                                    ->required(),
+                                                    ->required()
+                                                    ->default(fn($get) => Registration::find(request()->query('registration_id'))?->gender_id),
                                                 Forms\Components\Select::make('blood_group_id')
                                                     ->options(BloodGroup::pluck('name', 'id'))
-                                                    ->required(),
+                                                    ->required()
+                                                    ->default(fn($get) => Registration::find(request()->query('registration_id'))?->blood_group_id),
                                             ])->columns(2),
                                     ])
                                     ->columnSpan(1),
@@ -115,7 +117,8 @@ class StudentResource extends Resource
                                             ->afterStateUpdated(fn($set) => [
                                                 $set('class_id', null),
                                                 $set('section_id', null),
-                                            ]),
+                                            ])
+                                            ->default(fn($get) => Registration::find(request()->query('registration_id'))?->academic_year_id),
 
                                         Forms\Components\Select::make('class_id')
                                             ->label('Class')

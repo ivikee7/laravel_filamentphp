@@ -29,6 +29,7 @@ class CreateStudent extends CreateRecord
     {
         $data['password'] = Hash::make($data['primary_contact_number']);
         $data['is_active'] = true;
+        $data['student']['registration_id'] = $this->registrationId;
 
         return $data;
     }

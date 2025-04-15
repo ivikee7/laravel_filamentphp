@@ -13,12 +13,13 @@ class Enquiry extends Model
 
     protected $fillable = [
         'name',
-        'gender',
+        'gender_id',
         'date_of_birth',
         'father_name',
         'mother_name',
         'primary_contact_number',
         'secondary_contact_number',
+        'email',
         'address',
         'city',
         'state',
