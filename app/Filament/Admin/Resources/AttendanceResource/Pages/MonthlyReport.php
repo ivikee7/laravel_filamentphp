@@ -56,31 +56,24 @@ class MonthlyReport extends Page implements HasTable
                         DatePicker::make('from_date')
                             ->label('From Date')
                             ->displayFormat('Y-m-d')
-                            ->format('Y-m-d'),
+                            ->format('Y-m-d')
+                            ->reactive(),
                         DatePicker::make('to_date')
                             ->label('To Date')
                             ->displayFormat('Y-m-d')
                             ->format('Y-m-d')
-                            ->after('from_date'),
+                            ->after('from_date')
+                            ->reactive(),
                     ])
                     ->query(function (Builder $query, array $data, MonthlyReport $livewire): Builder {
                         $livewire->fromDate = $data['from_date'] ?? null;
                         $livewire->toDate = $data['to_date'] ?? null;
 
-                        if ($livewire->fromDate) {
-                            $query->whereHas('attendances', function (Builder $q) use ($livewire) {
-                                $q->whereDate('created_at', '>=', $livewire->fromDate);
-                            });
-                        }
-                        if ($livewire->toDate) {
-                            $query->whereHas('attendances', function (Builder $q) use ($livewire) {
-                                $q->whereDate('created_at', '<=', $livewire->toDate);
-                            });
-                        }
+                        $query->when($livewire->fromDate, fn($q) => $q->whereHas('attendances', fn($sq) => $sq->whereDate('created_at', '>=', $livewire->fromDate)));
+                        $query->when($livewire->toDate, fn($q) => $q->whereHas('attendances', fn($sq) => $sq->whereDate('created_at', '<=', $livewire->toDate)));
 
                         return $query;
                     })
-                    ->label('Date Range'),
             ]);
     }
 
