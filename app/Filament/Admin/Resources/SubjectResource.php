@@ -100,4 +100,9 @@ class SubjectResource extends Resource
                 SoftDeletingScope::class,
             ]);
     }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return Subject::count();
+    }
 }
