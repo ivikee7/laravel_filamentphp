@@ -171,52 +171,53 @@ class RegistrationResource extends Resource
                 Tables\Columns\TextColumn::make('id')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('name')
+                ->wrap()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('class.name')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('father_name')
+                Tables\Columns\TextColumn::make('father_name')->wrap()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('date_of_birth')
+                Tables\Columns\TextColumn::make('date_of_birth')->wrap()
                     ->date()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('gender.name')
                 ->searchable(),
-                Tables\Columns\TextColumn::make('father_qualification')
+                Tables\Columns\TextColumn::make('father_qualification')->wrap()
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('father_occupation')
+                Tables\Columns\TextColumn::make('father_occupation')->wrap()
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('primary_contact_number')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('mother_name')
+                Tables\Columns\TextColumn::make('mother_name')->wrap()
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('mother_qualification')
+                Tables\Columns\TextColumn::make('mother_qualification')->wrap()
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('mother_occupation')
+                Tables\Columns\TextColumn::make('mother_occupation')->wrap()
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('secondary_contact_number')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('address')
+                Tables\Columns\TextColumn::make('address')->wrap()
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('city')
+                Tables\Columns\TextColumn::make('city')->wrap()
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('state')
+                Tables\Columns\TextColumn::make('state')->wrap()
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('pin_code')
                     ->numeric()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('previous_school')
+                Tables\Columns\TextColumn::make('previous_school')->wrap()
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('payment_mode')
@@ -226,18 +227,18 @@ class RegistrationResource extends Resource
                     ->numeric()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('created_at')
+                Tables\Columns\TextColumn::make('created_at')->wrap()
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
+                Tables\Columns\TextColumn::make('updated_at')->wrap()
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('deleted_at')
+                Tables\Columns\TextColumn::make('deleted_at')->wrap()
                     ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(isToggledHiddenByDefault: true)->wrap(),
             ])
             ->defaultSort('id', 'desc')
             ->filters([
