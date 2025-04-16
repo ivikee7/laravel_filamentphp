@@ -18,30 +18,21 @@ class WebsiteEnquiryController extends Controller
             'contact_number' => 'required|digits:10',
             'email' => 'required|email|max:50',
             'message' => 'required|string|max:255',
+        ], [
+            'name.required' => 'Name required.',
+            'contact_number.required' => 'Contact required.',
+            'contact_number.digits' => '10 digits only.',
+            'email.required' => 'Email required.',
+            'email.email' => 'Invalid email.',
+            'message.required' => 'Message required.',
+            'message.max' => 'Too long.',
         ]);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $product = WebsiteEnquiry::create($request->all());
-        return response()->json(['data' => $product], 201);
-    }
-
-    public function create(Request $request)
-    {
-        $validated = $request->validate([
-            'name' => 'required|string|max:50',
-            'contact_number' => 'nullable|digits:10',
-            'email' => 'nullable|email|max:50',
-            'message' => 'nullable|string|max:255',
-        ]);
-
-        $enquiry = WebsiteEnquiry::create($validated);
-
-        return response()->json([
-            'success' => true,
-            'data' => $enquiry,
-        ]);
+        WebsiteEnquiry::create($request->all());
+        return response()->json(['success' => true], 201);
     }
 }
