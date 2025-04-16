@@ -27,18 +27,30 @@ class EnquiryResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('name')
                     ->maxLength(50)
-                    ->default(null),
+                    ->default(null)
+                    ->disabled()
+                    ->required(),
                 Forms\Components\TextInput::make('contact_number')
                     ->numeric()
                     ->rules(['digits:10'])
-                    ->default(null),
+                    ->default(null)
+                    ->disabled()
+                    ->required(),
                 Forms\Components\TextInput::make('email')
                     ->email()
                     ->maxLength(50)
-                    ->default(null),
+                    ->default(null)
+                    ->disabled()
+                    ->required(),
                 Forms\Components\TextInput::make('message')
                     ->maxLength(255)
-                    ->default(null),
+                    ->default(null)
+                    ->disabled()
+                    ->required(),
+                Forms\Components\Textarea::make('notes')
+                    ->maxLength(150)
+                    ->default(null)
+                    ->required(),
             ]);
     }
 
@@ -55,6 +67,10 @@ class EnquiryResource extends Resource
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('message')
+                    ->wrap()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('notes')
+                    ->label('Follow-up notes')
                     ->wrap()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('deleted_by')

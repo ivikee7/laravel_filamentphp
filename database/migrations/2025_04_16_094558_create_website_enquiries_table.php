@@ -18,7 +18,10 @@ return new class extends Migration
             $table->string('contact_number', 15)->nullable();
             $table->string('email', 50)->nullable();
             $table->string('message', 255)->nullable();
+            $table->string('notes', 150)->nullable();
             //
+            $table->foreignId('created_by')->nullable();
+            $table->foreignId('updated_by')->nullable();
             $table->foreignId('deleted_by')->nullable();
             $table->timestamps();
             $table->softDeletes();
