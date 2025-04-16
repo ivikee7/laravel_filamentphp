@@ -15,9 +15,9 @@ class WebsiteEnquiryController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:50',
-            'contact_number' => 'nullable|digits:10',
-            'email' => 'nullable|email|max:50',
-            'message' => 'nullable|string|max:255',
+            'contact_number' => 'required|digits:10',
+            'email' => 'required|email|max:50',
+            'message' => 'required|string|max:255',
         ]);
 
         if ($validator->fails()) {
