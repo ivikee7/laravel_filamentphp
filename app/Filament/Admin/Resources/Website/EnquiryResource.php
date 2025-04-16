@@ -19,7 +19,6 @@ class EnquiryResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $navigationGroup = 'User';
     protected static ?string $modelLabel = 'Website Enquiry';
 
     public static function form(Form $form): Form
@@ -27,10 +26,11 @@ class EnquiryResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
-                    ->maxLength(255)
+                    ->maxLength(50)
                     ->default(null),
                 Forms\Components\TextInput::make('contact_number')
-                    ->maxLength(255)
+                    ->numeric()
+                    ->rules(['digits:10'])
                     ->default(null),
                 Forms\Components\TextInput::make('email')
                     ->email()
@@ -38,9 +38,6 @@ class EnquiryResource extends Resource
                     ->default(null),
                 Forms\Components\TextInput::make('message')
                     ->maxLength(255)
-                    ->default(null),
-                Forms\Components\TextInput::make('deleted_by')
-                    ->numeric()
                     ->default(null),
             ]);
     }
@@ -50,12 +47,14 @@ class EnquiryResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                ->wrap()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('contact_number')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('message')
+                ->wrap()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('deleted_by')
                     ->numeric()
