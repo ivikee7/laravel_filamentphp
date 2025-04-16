@@ -48,6 +48,7 @@ class EnquiryResource extends Resource
                     ->disabled()
                     ->required(),
                 Forms\Components\Textarea::make('notes')
+                    ->label('Follow-up notes')
                     ->maxLength(150)
                     ->default(null)
                     ->required(),
