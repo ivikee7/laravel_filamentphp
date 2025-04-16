@@ -1,27 +1,25 @@
 <?php
 
-namespace App\Models\Transport;
+namespace App\Models;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 
-class FuelLog extends Model
+class LibraryBookSupplier extends Model
 {
     use SoftDeletes;
 
-    protected $table = 'transport_fuel_logs';
+    protected $table = 'library_book_suppliers';
 
     protected $fillable = [
-        'bus_id',
-        'date',
-        'liters',
-        'cost',
-        'filled_by',
-        'creator_id',
-        'updater_id',
+        'name',
+        'address',
+        'primary_contact_number',
+        'secondary_contact_number',
+        'email',
+        'is_active',
     ];
 
     protected static function boot()
@@ -60,13 +58,5 @@ class FuelLog extends Model
     public function deletedBy()
     {
         return $this->belongsTo(User::class, 'deleted_by');
-    }
-
-
-
-
-    public function bus(): BelongsTo
-    {
-        return $this->belongsTo(Bus::class);
     }
 }

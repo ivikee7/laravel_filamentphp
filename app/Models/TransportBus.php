@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Library;
+namespace App\Models;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
@@ -8,19 +8,19 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 
-class BookBorrow extends Model
+class TransportBus extends Model
 {
     use SoftDeletes;
 
-    protected $table = 'library_book_borrows';
+    protected $table = 'transport_buses';
 
     protected $fillable = [
-        'book_id',
-        'user_id',
-        'due_date',
-        'notes',
-        'received_at',
-        'received_by'
+        'registration_number',
+        'model',
+        'seating_capacity',
+        'driver_id',
+        'creator_id',
+        'updater_id',
     ];
 
     protected static function boot()
@@ -61,12 +61,6 @@ class BookBorrow extends Model
         return $this->belongsTo(User::class, 'deleted_by');
     }
 
-    public function book(): BelongsTo
-    {
-        return $this->belongsTo(Book::class);
-    }
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
+
+
 }

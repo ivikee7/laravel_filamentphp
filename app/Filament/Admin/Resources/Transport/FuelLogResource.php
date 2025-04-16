@@ -4,7 +4,7 @@ namespace App\Filament\Admin\Resources\Transport;
 
 use App\Filament\Admin\Resources\Transport\FuelLogResource\Pages;
 use App\Filament\Admin\Resources\Transport\FuelLogResource\RelationManagers;
-use App\Models\Transport\FuelLog;
+use App\Models\TransportFuelLog;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class FuelLogResource extends Resource
 {
-    protected static ?string $model = FuelLog::class;
+    protected static ?string $model = TransportFuelLog::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -128,6 +128,6 @@ class FuelLogResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return FuelLog::count();
+        return TransportFuelLog::count();
     }
 }

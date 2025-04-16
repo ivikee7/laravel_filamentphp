@@ -1,26 +1,21 @@
 <?php
 
-namespace App\Models\Transport;
+namespace App\Models;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 
-class Bus extends Model
+class LibraryBookAuthor extends Model
 {
     use SoftDeletes;
 
-    protected $table = 'transport_buses';
+    protected $table = 'library_book_authors';
 
     protected $fillable = [
-        'registration_number',
-        'model',
-        'seating_capacity',
-        'driver_id',
-        'creator_id',
-        'updater_id',
+        'name',
+        'notes',
     ];
 
     protected static function boot()
@@ -60,7 +55,4 @@ class Bus extends Model
     {
         return $this->belongsTo(User::class, 'deleted_by');
     }
-
-
-
 }

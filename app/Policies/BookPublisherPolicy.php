@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Policies\Library;
+namespace App\Policies;
 
-use App\Models\Library\BookPublisher;
+use App\Models\LibraryBookPublisher;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
@@ -19,7 +19,7 @@ class BookPublisherPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, BookPublisher $bookPublisher): bool
+    public function view(User $user, LibraryBookPublisher $bookPublisher): bool
     {
         return false;
     }
@@ -35,7 +35,7 @@ class BookPublisherPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, BookPublisher $bookPublisher): bool
+    public function update(User $user, LibraryBookPublisher $bookPublisher): bool
     {
         return false;
     }
@@ -43,7 +43,7 @@ class BookPublisherPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, BookPublisher $bookPublisher): bool
+    public function delete(User $user, LibraryBookPublisher $bookPublisher): bool
     {
         return false;
     }
@@ -51,7 +51,7 @@ class BookPublisherPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, BookPublisher $bookPublisher): bool
+    public function restore(User $user, LibraryBookPublisher $bookPublisher): bool
     {
         return false;
     }
@@ -59,7 +59,7 @@ class BookPublisherPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, BookPublisher $bookPublisher): bool
+    public function forceDelete(User $user, LibraryBookPublisher $bookPublisher): bool
     {
         return false;
     }

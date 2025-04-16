@@ -1,20 +1,27 @@
 <?php
 
-namespace App\Models\Library;
+namespace App\Models;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 
-class BookCategory extends Model
+class TransportStoppage extends Model
 {
     use SoftDeletes;
 
-    protected $table ='library_book_categories';
 
-    protected $fillable =[
+    protected $table = 'transport_stoppages';
+
+    protected $fillable = [
         'name',
+        'route_id',
+        'location',
+        'order',
+        'creator_id',
+        'updater_id',
     ];
 
     protected static function boot()
@@ -53,5 +60,11 @@ class BookCategory extends Model
     public function deletedBy()
     {
         return $this->belongsTo(User::class, 'deleted_by');
+    }
+
+
+    public function route(): BelongsTo
+    {
+        return $this->belongsTo(TransportRoute::class);
     }
 }

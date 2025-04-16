@@ -1,21 +1,20 @@
 <?php
 
-namespace App\Models\Library;
+namespace App\Models;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 
-class BookLocation extends Model
+class LibraryBookCategory extends Model
 {
     use SoftDeletes;
 
-    protected $table = 'library_book_locations';
+    protected $table = 'library_book_categories';
 
     protected $fillable = [
         'name',
-        'notes',
     ];
 
     protected static function boot()

@@ -4,8 +4,7 @@ namespace App\Filament\Admin\Resources\Transport;
 
 use App\Filament\Admin\Resources\Transport\RouteResource\Pages;
 use App\Filament\Admin\Resources\Transport\RouteResource\RelationManagers;
-use App\Models\Transport\Route;
-use App\Models\Transport\TransportRoute;
+use App\Models\TransportRoute;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -16,7 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class RouteResource extends Resource
 {
-    protected static ?string $model = Route::class;
+    protected static ?string $model = TransportRoute::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -107,7 +106,7 @@ class RouteResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return Route::count();
+        return TransportRoute::count();
     }
 
 }

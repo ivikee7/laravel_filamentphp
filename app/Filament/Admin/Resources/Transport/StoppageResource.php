@@ -4,8 +4,7 @@ namespace App\Filament\Admin\Resources\Transport;
 
 use App\Filament\Admin\Resources\Transport\StoppageResource\Pages;
 use App\Filament\Admin\Resources\Transport\StoppageResource\RelationManagers;
-use App\Models\Transport\Stoppage;
-use App\Models\Transport\TransportStoppage;
+use App\Models\TransportStoppage;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -16,7 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class StoppageResource extends Resource
 {
-    protected static ?string $model = Stoppage::class;
+    protected static ?string $model = TransportStoppage::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -122,6 +121,6 @@ class StoppageResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return Stoppage::count();
+        return TransportStoppage::count();
     }
 }

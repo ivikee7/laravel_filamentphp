@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Policies\Library;
+namespace App\Policies;
 
-use App\Models\Library\BookSupplier;
+use App\Models\LibraryBookCategory;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
-class BookSupplierPolicy
+class BookCategoryPolicy
 {
     /**
      * Determine whether the user can view any models.
@@ -19,7 +19,7 @@ class BookSupplierPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, BookSupplier $bookSupplier): bool
+    public function view(User $user, LibraryBookCategory $bookCategory): bool
     {
         return false;
     }
@@ -35,7 +35,7 @@ class BookSupplierPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, BookSupplier $bookSupplier): bool
+    public function update(User $user, LibraryBookCategory $bookCategory): bool
     {
         return false;
     }
@@ -43,7 +43,7 @@ class BookSupplierPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, BookSupplier $bookSupplier): bool
+    public function delete(User $user, LibraryBookCategory $bookCategory): bool
     {
         return false;
     }
@@ -51,7 +51,7 @@ class BookSupplierPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, BookSupplier $bookSupplier): bool
+    public function restore(User $user, LibraryBookCategory $bookCategory): bool
     {
         return false;
     }
@@ -59,7 +59,7 @@ class BookSupplierPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, BookSupplier $bookSupplier): bool
+    public function forceDelete(User $user, LibraryBookCategory $bookCategory): bool
     {
         return false;
     }

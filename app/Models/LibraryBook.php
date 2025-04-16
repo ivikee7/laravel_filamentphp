@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Library;
+namespace App\Models;
 
 use App\Models\Classes;
 use App\Models\Language;
@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 
-class Book extends Model
+class LibraryBook extends Model
 {
     use SoftDeletes;
 
@@ -78,21 +78,21 @@ class Book extends Model
 
     public function author(): BelongsTo
     {
-        return $this->belongsTo(BookAuthor::class);
+        return $this->belongsTo(LibraryBookAuthor::class);
     }
 
     public function publisher(): BelongsTo
     {
-        return $this->belongsTo(BookPublisher::class);
+        return $this->belongsTo(LibraryBookPublisher::class);
     }
 
     public function category(): BelongsTo
     {
-        return $this->belongsTo(BookCategory::class);
+        return $this->belongsTo(LibraryBookCategory::class);
     }
     public function location(): BelongsTo
     {
-        return $this->belongsTo(BookLocation::class);
+        return $this->belongsTo(LibraryBookLocation::class);
     }
     public function language(): BelongsTo
     {
@@ -108,12 +108,12 @@ class Book extends Model
     }
     public function supplier(): BelongsTo
     {
-        return $this->belongsTo(BookSupplier::class);
+        return $this->belongsTo(LibraryBookSupplier::class);
     }
 
     public function borrows()
     {
-        return $this->hasMany(BookBorrow::class);
+        return $this->hasMany(LibraryBookBorrow::class);
     }
     public function scopeOnlyAvailable($query)
     {

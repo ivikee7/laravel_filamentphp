@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Models\GSuite;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class User extends Model
+class GSuiteUser extends Model
 {
     use SoftDeletes;
 

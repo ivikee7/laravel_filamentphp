@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Policies\Library;
+namespace App\Policies;
 
-use App\Models\Library\Book;
+use App\Models\LibraryBookSupplier;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
-class BookPolicy
+class BookSupplierPolicy
 {
     /**
      * Determine whether the user can view any models.
@@ -19,7 +19,7 @@ class BookPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Book $book): bool
+    public function view(User $user, LibraryBookSupplier $bookSupplier): bool
     {
         return false;
     }
@@ -35,7 +35,7 @@ class BookPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Book $book): bool
+    public function update(User $user, LibraryBookSupplier $bookSupplier): bool
     {
         return false;
     }
@@ -43,7 +43,7 @@ class BookPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Book $book): bool
+    public function delete(User $user, LibraryBookSupplier $bookSupplier): bool
     {
         return false;
     }
@@ -51,7 +51,7 @@ class BookPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, Book $book): bool
+    public function restore(User $user, LibraryBookSupplier $bookSupplier): bool
     {
         return false;
     }
@@ -59,7 +59,7 @@ class BookPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, Book $book): bool
+    public function forceDelete(User $user, LibraryBookSupplier $bookSupplier): bool
     {
         return false;
     }

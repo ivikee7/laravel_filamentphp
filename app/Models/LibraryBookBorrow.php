@@ -1,24 +1,26 @@
 <?php
 
-namespace App\Models\Library;
+namespace App\Models;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 
-class BookPublisher extends Model
+class LibraryBookBorrow extends Model
 {
     use SoftDeletes;
 
-    protected $table = 'library_book_publishers';
+    protected $table = 'library_book_borrows';
 
     protected $fillable = [
-        'name',
-        'email',
-        'primary_contact_number',
-        'secondary_contact_number',
-        'location'
+        'book_id',
+        'user_id',
+        'due_date',
+        'notes',
+        'received_at',
+        'received_by'
     ];
 
     protected static function boot()
@@ -57,5 +59,14 @@ class BookPublisher extends Model
     public function deletedBy()
     {
         return $this->belongsTo(User::class, 'deleted_by');
+    }
+
+    public function book(): BelongsTo
+    {
+        return $this->belongsTo(LibraryBook::class);
+    }
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 }

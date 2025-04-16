@@ -1,25 +1,21 @@
 <?php
 
-namespace App\Models\Transport;
+namespace App\Models;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 
-class Stoppage extends Model
+class TransportAssignment extends Model
 {
     use SoftDeletes;
 
-
-    protected $table = 'transport_stoppages';
-
     protected $fillable = [
-        'name',
+        'user_id',
         'route_id',
-        'location',
-        'order',
+        'stoppage_id',
+        'bus_id',
         'creator_id',
         'updater_id',
     ];
@@ -60,11 +56,5 @@ class Stoppage extends Model
     public function deletedBy()
     {
         return $this->belongsTo(User::class, 'deleted_by');
-    }
-
-
-    public function route(): BelongsTo
-    {
-        return $this->belongsTo(Route::class);
     }
 }

@@ -4,8 +4,7 @@ namespace App\Filament\Admin\Resources\Transport;
 
 use App\Filament\Admin\Resources\Transport\BusResource\Pages;
 use App\Filament\Admin\Resources\Transport\BusResource\RelationManagers;
-use App\Models\Transport\Bus;
-use App\Models\Transport\TransportBus;
+use App\Models\TransportBus;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -16,7 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class BusResource extends Resource
 {
-    protected static ?string $model = Bus::class;
+    protected static ?string $model = TransportBus::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -133,6 +132,6 @@ class BusResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return Bus::count();
+        return TransportBus::count();
     }
 }

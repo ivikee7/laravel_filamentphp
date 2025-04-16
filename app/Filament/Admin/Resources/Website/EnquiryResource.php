@@ -4,7 +4,7 @@ namespace App\Filament\Admin\Resources\Website;
 
 use App\Filament\Admin\Resources\Website\EnquiryResource\Pages;
 use App\Filament\Admin\Resources\Website\EnquiryResource\RelationManagers;
-use App\Models\Website\Enquiry as WebsiteEnquiry;
+use App\Models\WebsiteEnquiry;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
