@@ -4,7 +4,7 @@ namespace App\Filament\Admin\Resources\Website;
 
 use App\Filament\Admin\Resources\Website\EnquiryResource\Pages;
 use App\Filament\Admin\Resources\Website\EnquiryResource\RelationManagers;
-use App\Models\Website\Enquiry;
+use App\Models\Website\Enquiry as WebsiteEnquiry;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class EnquiryResource extends Resource
 {
-    protected static ?string $model = Enquiry::class;
+    protected static ?string $model = WebsiteEnquiry::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -113,5 +113,10 @@ class EnquiryResource extends Resource
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ]);
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return WebsiteEnquiry::count();
     }
 }
