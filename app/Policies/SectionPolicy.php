@@ -2,9 +2,9 @@
 
 namespace App\Policies;
 
+use Illuminate\Auth\Access\Response;
 use App\Models\Section;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class SectionPolicy
 {
@@ -13,7 +13,7 @@ class SectionPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasPermissionTo('view-any Section');
+        return $user->checkPermissionTo('view-any Section');
     }
 
     /**
@@ -21,7 +21,7 @@ class SectionPolicy
      */
     public function view(User $user, Section $section): bool
     {
-        return $user->hasPermissionTo('view Section');
+        return $user->checkPermissionTo('view Section');
     }
 
     /**
@@ -29,7 +29,7 @@ class SectionPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasPermissionTo('create Section');
+        return $user->checkPermissionTo('create Section');
     }
 
     /**
@@ -37,7 +37,7 @@ class SectionPolicy
      */
     public function update(User $user, Section $section): bool
     {
-        return $user->hasPermissionTo('update Section');
+        return $user->checkPermissionTo('update Section');
     }
 
     /**
@@ -45,7 +45,15 @@ class SectionPolicy
      */
     public function delete(User $user, Section $section): bool
     {
-        return $user->hasPermissionTo('delete Section');
+        return $user->checkPermissionTo('delete Section');
+    }
+
+    /**
+     * Determine whether the user can delete any models.
+     */
+    public function deleteAny(User $user): bool
+    {
+        return $user->checkPermissionTo('delete-any Section');
     }
 
     /**
@@ -53,7 +61,31 @@ class SectionPolicy
      */
     public function restore(User $user, Section $section): bool
     {
-        return $user->hasPermissionTo('restore Section');
+        return $user->checkPermissionTo('restore Section');
+    }
+
+    /**
+     * Determine whether the user can restore any models.
+     */
+    public function restoreAny(User $user): bool
+    {
+        return $user->checkPermissionTo('restore-any Section');
+    }
+
+    /**
+     * Determine whether the user can replicate the model.
+     */
+    public function replicate(User $user, Section $section): bool
+    {
+        return $user->checkPermissionTo('replicate Section');
+    }
+
+    /**
+     * Determine whether the user can reorder the models.
+     */
+    public function reorder(User $user): bool
+    {
+        return $user->checkPermissionTo('reorder Section');
     }
 
     /**
@@ -61,6 +93,14 @@ class SectionPolicy
      */
     public function forceDelete(User $user, Section $section): bool
     {
-        return $user->hasPermissionTo('force-delete Section');
+        return $user->checkPermissionTo('force-delete Section');
+    }
+
+    /**
+     * Determine whether the user can permanently delete any models.
+     */
+    public function forceDeleteAny(User $user): bool
+    {
+        return $user->checkPermissionTo('force-delete-any Section');
     }
 }

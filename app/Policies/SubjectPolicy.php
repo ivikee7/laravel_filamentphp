@@ -2,9 +2,9 @@
 
 namespace App\Policies;
 
+use Illuminate\Auth\Access\Response;
 use App\Models\Subject;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class SubjectPolicy
 {
@@ -13,7 +13,7 @@ class SubjectPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->checkPermissionTo('view-any Subject');
     }
 
     /**
@@ -21,7 +21,7 @@ class SubjectPolicy
      */
     public function view(User $user, Subject $subject): bool
     {
-        return false;
+        return $user->checkPermissionTo('view Subject');
     }
 
     /**
@@ -29,7 +29,7 @@ class SubjectPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->checkPermissionTo('create Subject');
     }
 
     /**
@@ -37,7 +37,7 @@ class SubjectPolicy
      */
     public function update(User $user, Subject $subject): bool
     {
-        return false;
+        return $user->checkPermissionTo('update Subject');
     }
 
     /**
@@ -45,7 +45,15 @@ class SubjectPolicy
      */
     public function delete(User $user, Subject $subject): bool
     {
-        return false;
+        return $user->checkPermissionTo('delete Subject');
+    }
+
+    /**
+     * Determine whether the user can delete any models.
+     */
+    public function deleteAny(User $user): bool
+    {
+        return $user->checkPermissionTo('delete-any Subject');
     }
 
     /**
@@ -53,7 +61,31 @@ class SubjectPolicy
      */
     public function restore(User $user, Subject $subject): bool
     {
-        return false;
+        return $user->checkPermissionTo('restore Subject');
+    }
+
+    /**
+     * Determine whether the user can restore any models.
+     */
+    public function restoreAny(User $user): bool
+    {
+        return $user->checkPermissionTo('restore-any Subject');
+    }
+
+    /**
+     * Determine whether the user can replicate the model.
+     */
+    public function replicate(User $user, Subject $subject): bool
+    {
+        return $user->checkPermissionTo('replicate Subject');
+    }
+
+    /**
+     * Determine whether the user can reorder the models.
+     */
+    public function reorder(User $user): bool
+    {
+        return $user->checkPermissionTo('reorder Subject');
     }
 
     /**
@@ -61,6 +93,14 @@ class SubjectPolicy
      */
     public function forceDelete(User $user, Subject $subject): bool
     {
-        return false;
+        return $user->checkPermissionTo('force-delete Subject');
+    }
+
+    /**
+     * Determine whether the user can permanently delete any models.
+     */
+    public function forceDeleteAny(User $user): bool
+    {
+        return $user->checkPermissionTo('force-delete-any Subject');
     }
 }

@@ -2,9 +2,9 @@
 
 namespace App\Policies;
 
+use Illuminate\Auth\Access\Response;
 use App\Models\Gender;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class GenderPolicy
 {
@@ -13,7 +13,7 @@ class GenderPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->checkPermissionTo('view-any Gender');
     }
 
     /**
@@ -21,7 +21,7 @@ class GenderPolicy
      */
     public function view(User $user, Gender $gender): bool
     {
-        return false;
+        return $user->checkPermissionTo('view Gender');
     }
 
     /**
@@ -29,7 +29,7 @@ class GenderPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->checkPermissionTo('create Gender');
     }
 
     /**
@@ -37,7 +37,7 @@ class GenderPolicy
      */
     public function update(User $user, Gender $gender): bool
     {
-        return false;
+        return $user->checkPermissionTo('update Gender');
     }
 
     /**
@@ -45,7 +45,15 @@ class GenderPolicy
      */
     public function delete(User $user, Gender $gender): bool
     {
-        return false;
+        return $user->checkPermissionTo('delete Gender');
+    }
+
+    /**
+     * Determine whether the user can delete any models.
+     */
+    public function deleteAny(User $user): bool
+    {
+        return $user->checkPermissionTo('delete-any Gender');
     }
 
     /**
@@ -53,7 +61,31 @@ class GenderPolicy
      */
     public function restore(User $user, Gender $gender): bool
     {
-        return false;
+        return $user->checkPermissionTo('restore Gender');
+    }
+
+    /**
+     * Determine whether the user can restore any models.
+     */
+    public function restoreAny(User $user): bool
+    {
+        return $user->checkPermissionTo('restore-any Gender');
+    }
+
+    /**
+     * Determine whether the user can replicate the model.
+     */
+    public function replicate(User $user, Gender $gender): bool
+    {
+        return $user->checkPermissionTo('replicate Gender');
+    }
+
+    /**
+     * Determine whether the user can reorder the models.
+     */
+    public function reorder(User $user): bool
+    {
+        return $user->checkPermissionTo('reorder Gender');
     }
 
     /**
@@ -61,6 +93,14 @@ class GenderPolicy
      */
     public function forceDelete(User $user, Gender $gender): bool
     {
-        return false;
+        return $user->checkPermissionTo('force-delete Gender');
+    }
+
+    /**
+     * Determine whether the user can permanently delete any models.
+     */
+    public function forceDeleteAny(User $user): bool
+    {
+        return $user->checkPermissionTo('force-delete-any Gender');
     }
 }

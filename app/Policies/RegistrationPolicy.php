@@ -2,9 +2,9 @@
 
 namespace App\Policies;
 
+use Illuminate\Auth\Access\Response;
 use App\Models\Registration;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class RegistrationPolicy
 {
@@ -13,7 +13,7 @@ class RegistrationPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasPermissionTo('view-any Registration');
+        return $user->checkPermissionTo('view-any Registration');
     }
 
     /**
@@ -21,7 +21,7 @@ class RegistrationPolicy
      */
     public function view(User $user, Registration $registration): bool
     {
-        return $user->hasPermissionTo('view Registration');
+        return $user->checkPermissionTo('view Registration');
     }
 
     /**
@@ -29,7 +29,7 @@ class RegistrationPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasPermissionTo('create Registration');
+        return $user->checkPermissionTo('create Registration');
     }
 
     /**
@@ -37,7 +37,7 @@ class RegistrationPolicy
      */
     public function update(User $user, Registration $registration): bool
     {
-        return $user->hasPermissionTo('update Registration');
+        return $user->checkPermissionTo('update Registration');
     }
 
     /**
@@ -45,7 +45,15 @@ class RegistrationPolicy
      */
     public function delete(User $user, Registration $registration): bool
     {
-        return $user->hasPermissionTo('delete Registration');
+        return $user->checkPermissionTo('delete Registration');
+    }
+
+    /**
+     * Determine whether the user can delete any models.
+     */
+    public function deleteAny(User $user): bool
+    {
+        return $user->checkPermissionTo('delete-any Registration');
     }
 
     /**
@@ -53,7 +61,31 @@ class RegistrationPolicy
      */
     public function restore(User $user, Registration $registration): bool
     {
-        return $user->hasPermissionTo('restore Registration');
+        return $user->checkPermissionTo('restore Registration');
+    }
+
+    /**
+     * Determine whether the user can restore any models.
+     */
+    public function restoreAny(User $user): bool
+    {
+        return $user->checkPermissionTo('restore-any Registration');
+    }
+
+    /**
+     * Determine whether the user can replicate the model.
+     */
+    public function replicate(User $user, Registration $registration): bool
+    {
+        return $user->checkPermissionTo('replicate Registration');
+    }
+
+    /**
+     * Determine whether the user can reorder the models.
+     */
+    public function reorder(User $user): bool
+    {
+        return $user->checkPermissionTo('reorder Registration');
     }
 
     /**
@@ -61,6 +93,14 @@ class RegistrationPolicy
      */
     public function forceDelete(User $user, Registration $registration): bool
     {
-        return $user->hasPermissionTo('force-delete Registration');
+        return $user->checkPermissionTo('force-delete Registration');
+    }
+
+    /**
+     * Determine whether the user can permanently delete any models.
+     */
+    public function forceDeleteAny(User $user): bool
+    {
+        return $user->checkPermissionTo('force-delete-any Registration');
     }
 }

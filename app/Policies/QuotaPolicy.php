@@ -2,9 +2,9 @@
 
 namespace App\Policies;
 
+use Illuminate\Auth\Access\Response;
 use App\Models\Quota;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class QuotaPolicy
 {
@@ -13,7 +13,7 @@ class QuotaPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->checkPermissionTo('view-any Quota');
     }
 
     /**
@@ -21,7 +21,7 @@ class QuotaPolicy
      */
     public function view(User $user, Quota $quota): bool
     {
-        return false;
+        return $user->checkPermissionTo('view Quota');
     }
 
     /**
@@ -29,7 +29,7 @@ class QuotaPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->checkPermissionTo('create Quota');
     }
 
     /**
@@ -37,7 +37,7 @@ class QuotaPolicy
      */
     public function update(User $user, Quota $quota): bool
     {
-        return false;
+        return $user->checkPermissionTo('update Quota');
     }
 
     /**
@@ -45,7 +45,15 @@ class QuotaPolicy
      */
     public function delete(User $user, Quota $quota): bool
     {
-        return false;
+        return $user->checkPermissionTo('delete Quota');
+    }
+
+    /**
+     * Determine whether the user can delete any models.
+     */
+    public function deleteAny(User $user): bool
+    {
+        return $user->checkPermissionTo('delete-any Quota');
     }
 
     /**
@@ -53,7 +61,31 @@ class QuotaPolicy
      */
     public function restore(User $user, Quota $quota): bool
     {
-        return false;
+        return $user->checkPermissionTo('restore Quota');
+    }
+
+    /**
+     * Determine whether the user can restore any models.
+     */
+    public function restoreAny(User $user): bool
+    {
+        return $user->checkPermissionTo('restore-any Quota');
+    }
+
+    /**
+     * Determine whether the user can replicate the model.
+     */
+    public function replicate(User $user, Quota $quota): bool
+    {
+        return $user->checkPermissionTo('replicate Quota');
+    }
+
+    /**
+     * Determine whether the user can reorder the models.
+     */
+    public function reorder(User $user): bool
+    {
+        return $user->checkPermissionTo('reorder Quota');
     }
 
     /**
@@ -61,6 +93,14 @@ class QuotaPolicy
      */
     public function forceDelete(User $user, Quota $quota): bool
     {
-        return false;
+        return $user->checkPermissionTo('force-delete Quota');
+    }
+
+    /**
+     * Determine whether the user can permanently delete any models.
+     */
+    public function forceDeleteAny(User $user): bool
+    {
+        return $user->checkPermissionTo('force-delete-any Quota');
     }
 }

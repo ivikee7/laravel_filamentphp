@@ -2,9 +2,9 @@
 
 namespace App\Policies;
 
+use Illuminate\Auth\Access\Response;
 use App\Models\Classes;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class ClassesPolicy
 {
@@ -13,7 +13,7 @@ class ClassesPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasPermissionTo('view-any Classes');
+        return $user->checkPermissionTo('view-any Classes');
     }
 
     /**
@@ -21,7 +21,7 @@ class ClassesPolicy
      */
     public function view(User $user, Classes $classes): bool
     {
-        return $user->hasPermissionTo('view Classes');
+        return $user->checkPermissionTo('view Classes');
     }
 
     /**
@@ -29,7 +29,7 @@ class ClassesPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasPermissionTo('create Classes');
+        return $user->checkPermissionTo('create Classes');
     }
 
     /**
@@ -37,7 +37,7 @@ class ClassesPolicy
      */
     public function update(User $user, Classes $classes): bool
     {
-        return $user->hasPermissionTo('update Classes');
+        return $user->checkPermissionTo('update Classes');
     }
 
     /**
@@ -45,7 +45,15 @@ class ClassesPolicy
      */
     public function delete(User $user, Classes $classes): bool
     {
-        return $user->hasPermissionTo('delete Classes');
+        return $user->checkPermissionTo('delete Classes');
+    }
+
+    /**
+     * Determine whether the user can delete any models.
+     */
+    public function deleteAny(User $user): bool
+    {
+        return $user->checkPermissionTo('delete-any Classes');
     }
 
     /**
@@ -53,7 +61,31 @@ class ClassesPolicy
      */
     public function restore(User $user, Classes $classes): bool
     {
-        return $user->hasPermissionTo('restore Classes');
+        return $user->checkPermissionTo('restore Classes');
+    }
+
+    /**
+     * Determine whether the user can restore any models.
+     */
+    public function restoreAny(User $user): bool
+    {
+        return $user->checkPermissionTo('restore-any Classes');
+    }
+
+    /**
+     * Determine whether the user can replicate the model.
+     */
+    public function replicate(User $user, Classes $classes): bool
+    {
+        return $user->checkPermissionTo('replicate Classes');
+    }
+
+    /**
+     * Determine whether the user can reorder the models.
+     */
+    public function reorder(User $user): bool
+    {
+        return $user->checkPermissionTo('reorder Classes');
     }
 
     /**
@@ -61,6 +93,14 @@ class ClassesPolicy
      */
     public function forceDelete(User $user, Classes $classes): bool
     {
-        return $user->hasPermissionTo('force-delete Classes');
+        return $user->checkPermissionTo('force-delete Classes');
+    }
+
+    /**
+     * Determine whether the user can permanently delete any models.
+     */
+    public function forceDeleteAny(User $user): bool
+    {
+        return $user->checkPermissionTo('force-delete-any Classes');
     }
 }

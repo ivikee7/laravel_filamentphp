@@ -2,8 +2,9 @@
 
 namespace App\Policies;
 
-use App\Models\User;
 use Illuminate\Auth\Access\Response;
+
+use App\Models\User;
 
 class UserPolicy
 {
@@ -12,7 +13,7 @@ class UserPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasPermissionTo('view-any User');
+        return $user->checkPermissionTo('view-any User');
     }
 
     /**
@@ -20,7 +21,7 @@ class UserPolicy
      */
     public function view(User $user, User $model): bool
     {
-        return $user->hasPermissionTo('view User');
+        return $user->checkPermissionTo('view User');
     }
 
     /**
@@ -28,7 +29,7 @@ class UserPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasPermissionTo('create User');
+        return $user->checkPermissionTo('create User');
     }
 
     /**
@@ -36,7 +37,7 @@ class UserPolicy
      */
     public function update(User $user, User $model): bool
     {
-        return $user->hasPermissionTo('update User');
+        return $user->checkPermissionTo('update User');
     }
 
     /**
@@ -44,7 +45,15 @@ class UserPolicy
      */
     public function delete(User $user, User $model): bool
     {
-        return $user->hasPermissionTo('delete User');
+        return $user->checkPermissionTo('delete User');
+    }
+
+    /**
+     * Determine whether the user can delete any models.
+     */
+    public function deleteAny(User $user): bool
+    {
+        return $user->checkPermissionTo('delete-any User');
     }
 
     /**
@@ -52,7 +61,31 @@ class UserPolicy
      */
     public function restore(User $user, User $model): bool
     {
-        return $user->hasPermissionTo('restore User');
+        return $user->checkPermissionTo('restore User');
+    }
+
+    /**
+     * Determine whether the user can restore any models.
+     */
+    public function restoreAny(User $user): bool
+    {
+        return $user->checkPermissionTo('restore-any User');
+    }
+
+    /**
+     * Determine whether the user can replicate the model.
+     */
+    public function replicate(User $user, User $model): bool
+    {
+        return $user->checkPermissionTo('replicate User');
+    }
+
+    /**
+     * Determine whether the user can reorder the models.
+     */
+    public function reorder(User $user): bool
+    {
+        return $user->checkPermissionTo('reorder User');
     }
 
     /**
@@ -60,21 +93,14 @@ class UserPolicy
      */
     public function forceDelete(User $user, User $model): bool
     {
-        return $user->hasPermissionTo('force-delete User');
+        return $user->checkPermissionTo('force-delete User');
     }
 
-    public function viewIDCard(User $user, User $model): bool
+    /**
+     * Determine whether the user can permanently delete any models.
+     */
+    public function forceDeleteAny(User $user): bool
     {
-        return $user->hasPermissionTo('view-id-card User');
-    }
-
-    public function viewTransport(User $user, User $model): bool
-    {
-        return $user->hasPermissionTo('view-transport User');
-    }
-
-    public function viewMonthlyAttendance(User $user, User $model): bool
-    {
-        return $user->hasPermissionTo('view-monthly-attendance User');
+        return $user->checkPermissionTo('force-delete-any User');
     }
 }

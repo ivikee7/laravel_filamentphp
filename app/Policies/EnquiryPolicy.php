@@ -2,9 +2,9 @@
 
 namespace App\Policies;
 
+use Illuminate\Auth\Access\Response;
 use App\Models\Enquiry;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class EnquiryPolicy
 {
@@ -13,7 +13,7 @@ class EnquiryPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasPermissionTo('view-any Enquiry');
+        return $user->checkPermissionTo('view-any Enquiry');
     }
 
     /**
@@ -21,7 +21,7 @@ class EnquiryPolicy
      */
     public function view(User $user, Enquiry $enquiry): bool
     {
-        return $user->hasPermissionTo('view Enquiry');
+        return $user->checkPermissionTo('view Enquiry');
     }
 
     /**
@@ -29,7 +29,7 @@ class EnquiryPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasPermissionTo('create Enquiry');
+        return $user->checkPermissionTo('create Enquiry');
     }
 
     /**
@@ -37,7 +37,7 @@ class EnquiryPolicy
      */
     public function update(User $user, Enquiry $enquiry): bool
     {
-        return $user->hasPermissionTo('update Enquiry');
+        return $user->checkPermissionTo('update Enquiry');
     }
 
     /**
@@ -45,7 +45,15 @@ class EnquiryPolicy
      */
     public function delete(User $user, Enquiry $enquiry): bool
     {
-        return $user->hasPermissionTo('delete Enquiry');
+        return $user->checkPermissionTo('delete Enquiry');
+    }
+
+    /**
+     * Determine whether the user can delete any models.
+     */
+    public function deleteAny(User $user): bool
+    {
+        return $user->checkPermissionTo('delete-any Enquiry');
     }
 
     /**
@@ -53,7 +61,31 @@ class EnquiryPolicy
      */
     public function restore(User $user, Enquiry $enquiry): bool
     {
-        return $user->hasPermissionTo('restore Enquiry');
+        return $user->checkPermissionTo('restore Enquiry');
+    }
+
+    /**
+     * Determine whether the user can restore any models.
+     */
+    public function restoreAny(User $user): bool
+    {
+        return $user->checkPermissionTo('restore-any Enquiry');
+    }
+
+    /**
+     * Determine whether the user can replicate the model.
+     */
+    public function replicate(User $user, Enquiry $enquiry): bool
+    {
+        return $user->checkPermissionTo('replicate Enquiry');
+    }
+
+    /**
+     * Determine whether the user can reorder the models.
+     */
+    public function reorder(User $user): bool
+    {
+        return $user->checkPermissionTo('reorder Enquiry');
     }
 
     /**
@@ -61,6 +93,14 @@ class EnquiryPolicy
      */
     public function forceDelete(User $user, Enquiry $enquiry): bool
     {
-        return $user->hasPermissionTo('force-delete Enquiry');
+        return $user->checkPermissionTo('force-delete Enquiry');
+    }
+
+    /**
+     * Determine whether the user can permanently delete any models.
+     */
+    public function forceDeleteAny(User $user): bool
+    {
+        return $user->checkPermissionTo('force-delete-any Enquiry');
     }
 }
