@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('website_enquiries', function (Blueprint $table) {
             $table->id();
             //
-            $table->string('name')->nullable();
-            $table->string('contact_number')->nullable();
+            $table->string('name', 50)->nullable();
+            $table->string('contact_number', 15)->nullable();
             $table->string('email', 50)->nullable();
             $table->string('message', 255)->nullable();
             //
