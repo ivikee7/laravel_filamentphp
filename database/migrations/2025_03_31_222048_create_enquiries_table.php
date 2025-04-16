@@ -26,11 +26,11 @@ return new class extends Migration
             $table->string('city', 25)->nullable();
             $table->string('state', 25)->nullable();
             $table->integer('pin_code')->unsigned()->nullable();
-            $table->string('previous_school', 50)->nullable();
             $table->string('source', 25)->nullable();
+            $table->string('previous_school', 50)->nullable();
             $table->foreignId('previous_class_id')->nullable();
             $table->foreignId('class_id')->nullable();
-            $table->string('notes', 255)->nullable();
+            $table->string('notes', 100)->nullable();
             //
             $table->foreignId('created_by')->nullable();
             $table->foreignId('updated_by')->nullable();
