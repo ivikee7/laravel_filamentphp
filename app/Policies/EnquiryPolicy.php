@@ -61,6 +61,6 @@ class EnquiryPolicy
      */
     public function forceDelete(User $user, Enquiry $enquiry): bool
     {
-        return $user->hasPermissionTo('force-felete Enquiry');
+        return $user->hasPermissionTo('force-delete Enquiry');
     }
 }

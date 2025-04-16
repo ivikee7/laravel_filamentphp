@@ -186,7 +186,11 @@ return [
          */
         'model_directories' => [
             app_path('Models'),
-            //app_path('Domains/Forum')
+            app_path('Models/Library'),
+            app_path('Models/GSuite'),
+            app_path('Models/Transport'),
+            app_path('Models/Website'),
+            // app_path('Domains/Library'),
         ],
 
         /*
