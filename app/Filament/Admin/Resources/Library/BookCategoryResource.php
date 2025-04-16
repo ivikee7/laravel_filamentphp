@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Resources\Library;
 use App\Filament\Admin\Resources\Library\BookCategoryResource\Pages;
 use App\Filament\Admin\Resources\Library\BookCategoryResource\RelationManagers;
 use App\Models\Library\BookCategory;
+use App\Models\LibraryBookCategory;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -15,11 +16,13 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class BookCategoryResource extends Resource
 {
-    protected static ?string $model = BookCategory::class;
+    protected static ?string $model = LibraryBookCategory::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $navigationGroup = 'Library Management System';
+
+    protected static ?string $navigationLabel = 'Category';
 
     public static function form(Form $form): Form
     {

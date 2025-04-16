@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Resources\Library;
 use App\Filament\Admin\Resources\Library\BookPublisherResource\Pages;
 use App\Filament\Admin\Resources\Library\BookPublisherResource\RelationManagers;
 use App\Models\Library\BookPublisher;
+use App\Models\LibraryBookPublisher;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -15,11 +16,13 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class BookPublisherResource extends Resource
 {
-    protected static ?string $model = BookPublisher::class;
+    protected static ?string $model = LibraryBookPublisher::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $navigationGroup = 'Library Management System';
+
+    protected static ?string $navigationLabel = 'Publisher';
 
     public static function form(Form $form): Form
     {

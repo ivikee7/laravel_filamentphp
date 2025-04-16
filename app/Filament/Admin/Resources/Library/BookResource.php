@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Resources\Library;
 use App\Filament\Admin\Resources\Library\BookResource\Pages;
 use App\Filament\Admin\Resources\Library\BookResource\RelationManagers;
 use App\Models\Library\Book;
+use App\Models\LibraryBook;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -16,11 +17,13 @@ use Illuminate\Support\Facades\Auth;
 
 class BookResource extends Resource
 {
-    protected static ?string $model = Book::class;
+    protected static ?string $model = LibraryBook::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $navigationGroup = 'Library Management System';
+
+    protected static ?string $navigationLabel = 'Book';
 
     public static function form(Form $form): Form
     {

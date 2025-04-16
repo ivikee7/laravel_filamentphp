@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Resources\Library;
 use App\Filament\Admin\Resources\Library\BookSupplierResource\Pages;
 use App\Filament\Admin\Resources\Library\BookSupplierResource\RelationManagers;
 use App\Models\Library\BookSupplier;
+use App\Models\LibraryBookSupplier;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -15,11 +16,13 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class BookSupplierResource extends Resource
 {
-    protected static ?string $model = BookSupplier::class;
+    protected static ?string $model = LibraryBookSupplier::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $navigationGroup = 'Library Management System';
+
+    protected static ?string $navigationLabel = 'Supplier';
 
     public static function form(Form $form): Form
     {
@@ -57,10 +60,10 @@ class BookSupplierResource extends Resource
                     ->wrap()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('primary_contact_number')
-                ->label('Primary No.')
+                    ->label('Primary No.')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('secondary_contact_number')
-                ->label('Secondary No.')
+                    ->label('Secondary No.')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('email')
