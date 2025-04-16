@@ -8,6 +8,6 @@ use Illuminate\Support\Facades\Route;
 //     return view('welcome');
 // });
 
-Route::prefix('/api')->group(function () {
-    Route::post('/website-enquiries', [WebsiteEnquiryController::class, 'store']);
-});
+// Route::prefix('/api')->group(function () {
+//     Route::post('/website-enquiries', [WebsiteEnquiryController::class, 'store']);
+// });
