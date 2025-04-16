@@ -59,6 +59,9 @@ class EnquiryResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('id')
+                    ->wrap()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('name')
                     ->wrap()
                     ->searchable(),
