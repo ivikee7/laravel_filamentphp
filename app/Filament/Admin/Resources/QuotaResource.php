@@ -67,6 +67,7 @@ class QuotaResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->defaultSort('id', 'desc')
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
             ])

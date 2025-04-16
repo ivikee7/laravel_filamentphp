@@ -275,6 +275,7 @@ class UserResource extends Resource
                             ->password()
                             ->required(),
                     ])
+                    ->defaultSort('id', 'desc')
                     ->action(function (array $data, User $record) {
                         $record->password = Hash::make($data['new_password']);
                         $record->save();
