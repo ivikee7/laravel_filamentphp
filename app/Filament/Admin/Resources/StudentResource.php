@@ -234,7 +234,27 @@ class StudentResource extends Resource
                     ->label('Section')
                     ->toggleable(isToggledHiddenByDefault: false),
                 Tables\Columns\TextColumn::make('full_address')
-                    ->formatStateUsing(fn($record): string => "{$record->address}, {$record->city}, {$record->state}, {$record->pin_code}"),
+                    ->label('Address')
+                    ->getStateUsing(function ($record) {
+                        return collect([
+                            $record->address,
+                            $record->city,
+                            $record->state,
+                            $record->pincode,
+                        ])
+                            ->filter() // Remove null/empty values
+                            ->implode(', ');
+                    })
+                    ->wrap()
+                    ->searchable(query: function ($query, string $search) {
+                        $query->where(function ($q) use ($search) {
+                            $q->where('address', 'like', "%{$search}%")
+                                ->orWhere('city', 'like', "%{$search}%")
+                                ->orWhere('state', 'like', "%{$search}%")
+                                ->orWhere('pincode', 'like', "%{$search}%");
+                        });
+                    })
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('student.quota.name')
                     ->sortable()->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
