@@ -233,6 +233,8 @@ class StudentResource extends Resource
                     ->searchable()
                     ->label('Section')
                     ->toggleable(isToggledHiddenByDefault: false),
+                Tables\Columns\TextColumn::make('full_address')
+                    ->formatStateUsing(fn($record): string => "{$record->address}, {$record->city}, {$record->state}, {$record->pincode}"),
                 Tables\Columns\TextColumn::make('student.quota.name')
                     ->sortable()->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -258,10 +260,6 @@ class StudentResource extends Resource
                     ->formatStateUsing(fn($state) => $state ? 'Active' : 'Suspended')
                     ->badge()
                     ->color(fn($state) => $state ? 'success' : 'danger'),
-                Tables\Columns\TextColumn::make('email_verified_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
