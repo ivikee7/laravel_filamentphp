@@ -234,7 +234,7 @@ class StudentResource extends Resource
                     ->label('Section')
                     ->toggleable(isToggledHiddenByDefault: false),
                 Tables\Columns\TextColumn::make('full_address')
-                    ->formatStateUsing(fn($record): string => "{$record->address}, {$record->city}, {$record->state}, {$record->pincode}"),
+                    ->formatStateUsing(fn($record): string => "{$record->address}, {$record->city}, {$record->state}, {$record->pin_code}"),
                 Tables\Columns\TextColumn::make('student.quota.name')
                     ->sortable()->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
