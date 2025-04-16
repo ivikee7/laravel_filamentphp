@@ -4,7 +4,7 @@ namespace App\Filament\Admin\Resources\GSuite;
 
 use App\Filament\Admin\Resources\GSuite\UserResource\Pages;
 use App\Filament\Admin\Resources\GSuite\UserResource\RelationManagers;
-use App\Models\GSuite\User as GSuiteUser;
+use App\Models\GSuiteUser;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
