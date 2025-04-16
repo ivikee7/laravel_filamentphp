@@ -240,7 +240,7 @@ class StudentResource extends Resource
                             $record->address,
                             $record->city,
                             $record->state,
-                            $record->pincode,
+                            $record->pin_code,
                         ])
                             ->filter() // Remove null/empty values
                             ->implode(', ');
@@ -251,7 +251,7 @@ class StudentResource extends Resource
                             $q->where('address', 'like', "%{$search}%")
                                 ->orWhere('city', 'like', "%{$search}%")
                                 ->orWhere('state', 'like', "%{$search}%")
-                                ->orWhere('pincode', 'like', "%{$search}%");
+                                ->orWhere('pin_code', 'like', "%{$search}%");
                         });
                     })
                     ->toggleable(isToggledHiddenByDefault: true),
