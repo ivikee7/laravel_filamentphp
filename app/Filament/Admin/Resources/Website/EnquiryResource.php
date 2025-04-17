@@ -79,6 +79,14 @@ class EnquiryResource extends Resource
                     ->label('Follow-up notes')
                     ->wrap()
                     ->searchable(),
+                Tables\Columns\TextColumn::make('created_by')
+                    ->numeric()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('updated_by')
+                    ->numeric()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('deleted_by')
                     ->numeric()
                     ->sortable()

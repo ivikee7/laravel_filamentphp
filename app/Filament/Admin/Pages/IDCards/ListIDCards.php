@@ -80,6 +80,7 @@ class ListIDCards extends Page implements HasTable
                     ->state(fn($record) => route('filament.admin.pages.id-cards.{record}', ['record' => $record->id]))
                     ->alignCenter(),
             ])
+            ->defaultSort('id', 'desc')
             ->filters([
                 // Add filters here if needed (class, section, etc.)
             ])
