@@ -25,17 +25,38 @@ class CreateStudent extends CreateRecord
     {
         parent::mount();
 
-        if (!request()->has('registration_id') || !\App\Models\Registration::find(request()->get('registration_id'))) {
+        $this->registrationId = request()->query('registration_id');
+
+        // Check if registration_id is missing or invalid
+        $registration = Registration::with('student')->find($this->registrationId);
+
+        if (! $registration) {
             Notification::make()
-                ->title('Missing or invalid registration')
+                ->title('Invalid registration')
                 ->danger()
-                ->body('Please select a valid registration to create a student.')
+                ->body('Please select a valid registration to admit the student.')
                 ->send();
 
             $this->redirect(RegistrationResource::getUrl('index'), navigate: true);
+            return;
         }
 
-        $this->registrationId = request()->query('registration_id');
+        // Check if the registration already has a student admitted
+        if ($registration->student) {
+            Notification::make()
+                ->title('Student already admitted')
+                ->danger()
+                ->body('This registration already has a student record.')
+                ->send();
+
+            $this->redirect(RegistrationResource::getUrl('index'), navigate: true);
+            return;
+        }
+
+        // Optional: Store registration ID in state to use during creation
+        // $this->form->fill([
+        //     'registration_id' => $this->registrationId,
+        // ]);
     }
 
     protected function mutateFormDataBeforeCreate(array $data): array

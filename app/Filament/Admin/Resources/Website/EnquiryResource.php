@@ -151,4 +151,9 @@ class EnquiryResource extends Resource
     {
         return WebsiteEnquiry::count();
     }
+
+    public static function canCreate(): bool
+    {
+        return false;
+    }
 }
