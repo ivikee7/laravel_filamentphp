@@ -52,7 +52,6 @@ class CreateStudent extends CreateRecord
             $this->redirect(RegistrationResource::getUrl('index'), navigate: true);
             return;
         }
-        dd($registration->student);
     }
 
     protected function mutateFormDataBeforeCreate(array $data): array
