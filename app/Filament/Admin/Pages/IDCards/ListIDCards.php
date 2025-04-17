@@ -90,7 +90,7 @@ class ListIDCards extends Page implements HasTable
                     ->label('View')
                     ->icon('heroicon-o-eye')
                     ->url(fn($record) => route('filament.admin.pages.id-cards.{record}', ['record' => $record->id]))
-                    ->visible(fn() => ! Auth::user()->can('View Attendance')),
+                    ->visible(fn() => Auth::user()->can('View Attendance')),
 
             ]);
     }
