@@ -97,6 +97,7 @@ class Registration extends Model
 
     public function student(): HasOne
     {
-        return $this->hasOne(Student::class);
+        // dd($this->hasOne(Student::class, 'registration_id')->get());
+        return $this->hasOne(Student::class, 'registration_id')->latestOfMany();
     }
 }

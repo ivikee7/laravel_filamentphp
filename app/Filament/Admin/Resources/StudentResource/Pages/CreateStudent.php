@@ -52,11 +52,7 @@ class CreateStudent extends CreateRecord
             $this->redirect(RegistrationResource::getUrl('index'), navigate: true);
             return;
         }
-
-        // Optional: Store registration ID in state to use during creation
-        // $this->form->fill([
-        //     'registration_id' => $this->registrationId,
-        // ]);
+        dd($registration->student);
     }
 
     protected function mutateFormDataBeforeCreate(array $data): array
