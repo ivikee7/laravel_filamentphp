@@ -35,18 +35,8 @@ class UserResource extends Resource
                     ->required()
                     ->maxLength(50),
                 Forms\Components\TextInput::make('gSuiteUser.password')
-                    ->password()
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('created_by')
-                    ->numeric()
-                    ->default(null),
-                Forms\Components\TextInput::make('updated_by')
-                    ->numeric()
-                    ->default(null),
-                Forms\Components\TextInput::make('deleted_by')
-                    ->numeric()
-                    ->default(null),
             ]);
     }
 
