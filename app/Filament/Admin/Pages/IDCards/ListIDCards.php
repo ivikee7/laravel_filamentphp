@@ -12,6 +12,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ViewColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 
 class ListIDCards extends Page implements HasTable
 {
@@ -88,7 +89,8 @@ class ListIDCards extends Page implements HasTable
                 Action::make('view')
                     ->label('View')
                     ->icon('heroicon-o-eye')
-                    ->url(fn($record) => route('filament.admin.pages.id-cards.{record}', ['record' => $record->id])),
+                    ->url(fn($record) => route('filament.admin.pages.id-cards.{record}', ['record' => $record->id]))
+                    ->visible(fn() => ! Auth::user()->can('View Attendance')),
 
             ]);
     }
@@ -106,6 +108,7 @@ class ListIDCards extends Page implements HasTable
 
     public static function canAccess(): bool
     {
-        return auth()->user()?->can('view-any Attendance', static::class);
+        // return auth()->user()?->can('view-any Attendance', static::class);
+        return true;
     }
 }
