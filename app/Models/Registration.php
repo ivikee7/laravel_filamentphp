@@ -38,6 +38,7 @@ class Registration extends Model
         'class_id',
         'creator_id',
         'updater_id',
+        'enquiry_id',
     ];
 
     protected $dates = ['deleted_at'];
