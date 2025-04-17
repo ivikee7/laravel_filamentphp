@@ -75,7 +75,7 @@ class EnquiryResource extends Resource
                             ->rules(['digits:10'])
                             ->minLength(10)
                             ->maxLength(10),
-                        Forms\Components\TextInput::make('email')->email()->required(),
+                        Forms\Components\TextInput::make('email')->email(),
                     ])->columns(3),
                 Section::make('Mother info')
                     ->schema([
