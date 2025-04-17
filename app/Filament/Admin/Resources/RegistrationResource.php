@@ -120,7 +120,7 @@ class RegistrationResource extends Resource
                             ->rules(['digits:10'])
                             ->required()
                             ->default(fn($get) => Enquiry::find(request()->query('enquiry_id'))?->secondary_contact_number),
-                        Forms\Components\TextInput::make('email')->email()->required()
+                        Forms\Components\TextInput::make('email')->email()
                             ->default(fn($get) => Enquiry::find(request()->query('enquiry_id'))?->email),
                     ])->columns(3),
                 Section::make('Address')
