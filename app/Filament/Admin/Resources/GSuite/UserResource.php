@@ -40,23 +40,28 @@ class UserResource extends Resource
             ]);
     }
 
+    public static function query()
+    {
+        // Simply return the query builder for the User model
+        return User::query();
+    }
+
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
-                    ->searchable() // ✅ Only this is searchable
-                    ->hidden(),     // Optional: hide full name if you only want first/last
-
                 Tables\Columns\TextColumn::make('first_name')
                     ->label('First Name')
-                    ->getStateUsing(fn($record) => explode(' ', $record->name)[0] ?? '_'),
-
+                    ->getStateUsing(function ($record) {
+                        $parts = explode(' ', $record->name);
+                        return count($parts) === 1 ? $parts[0] : implode(' ', array_slice($parts, 0, -1));
+                    })
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('last_name')
                     ->label('Last Name')
                     ->getStateUsing(function ($record) {
                         $parts = explode(' ', $record->name);
-                        return count($parts) > 1 ? $parts[array_key_last($parts)] : '_';
+                        return count($parts) > 1 ? end($parts) : '_';
                     }),
 
                 Tables\Columns\TextColumn::make('official_email')
