@@ -51,6 +51,11 @@ class ListIDCards extends Page implements HasTable
                     ->label('Name')
                     ->searchable()
                     ->sortable(),
+                TextColumn::make('bloodGroup.name')
+                    ->wrap()
+                    ->label('BG')
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('primary_contact_number')
                     ->wrap()
                     ->label('Contact No.')
