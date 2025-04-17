@@ -96,9 +96,16 @@ class EnquiryResource extends Resource
                     ])->columns(3),
                 Section::make('Other info')
                     ->schema([
-                        Forms\Components\TextInput::make('source')
-                            ->maxLength(25)
-                            ->default(null),
+                        Forms\Components\Select::make('source')
+                            ->options([
+                                'OTHER' => 'OTHER',
+                                'HOADING' => 'HOADING',
+                                'RELEVENT' => 'RELEVENT',
+                                'SOCIAL MEDIA' => 'SOCIAL MEDIA',
+                                'WEBSITE' => 'WEBSITE',
+                            ])
+                            ->default(null)
+                            ->required(),
                     ])->columns(3),
 
             ]);
