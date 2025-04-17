@@ -58,7 +58,8 @@ class ListIDCards extends Page implements HasTable
                     ->sortable(),
                 TextColumn::make('roles.name')
                     ->badge()
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('currentStudent.current_status')
                     ->label('Status')
                     ->badge()
@@ -67,7 +68,8 @@ class ListIDCards extends Page implements HasTable
                         'success' => 'active',
                         'danger' => 'left',
                         'warning' => 'graduated',
-                    ]),
+                    ])
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('currentStudent.currentClassAssignment.class.name')
                     ->label('Class')
                     ->sortable()
