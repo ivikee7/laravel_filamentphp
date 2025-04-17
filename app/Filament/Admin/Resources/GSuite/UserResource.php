@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Resources\GSuite;
 use App\Filament\Admin\Resources\GSuite\UserResource\Pages;
 use App\Filament\Admin\Resources\GSuite\UserResource\RelationManagers;
 use App\Models\GSuiteUser;
+use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -15,7 +16,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class UserResource extends Resource
 {
-    protected static ?string $model = GSuiteUser::class;
+    protected static ?string $model = User::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -29,11 +30,11 @@ class UserResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(50),
-                Forms\Components\TextInput::make('email')
+                Forms\Components\TextInput::make('official_email')
                     ->email()
                     ->required()
                     ->maxLength(50),
-                Forms\Components\TextInput::make('password')
+                Forms\Components\TextInput::make('gSuiteUser.password')
                     ->password()
                     ->required()
                     ->maxLength(255),
@@ -53,30 +54,59 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
+                Tables\Columns\TextColumn::make('first_name')
+                    ->label('First Name')
+                    ->getStateUsing(function ($record) {
+                        $parts = explode(' ', trim($record->name));
+                        return count($parts) > 1
+                            ? implode(' ', array_slice($parts, 0, -1))
+                            : $parts[0]; // fallback: whole name
+                    })
                     ->searchable(),
-                Tables\Columns\TextColumn::make('email')
+
+                Tables\Columns\TextColumn::make('last_name')
+                    ->label('Last Name')
+                    ->getStateUsing(function ($record) {
+                        $parts = explode(' ', trim($record->name));
+                        return count($parts) > 1
+                            ? end($parts)
+                            : '_'; // fallback for no last name
+                    })
                     ->searchable(),
-                Tables\Columns\TextColumn::make('password')
+
+                Tables\Columns\TextColumn::make('official_email')
+                    ->label('Email')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('created_by')
+                Tables\Columns\TextColumn::make('gSuiteUser.password')
+                    ->label('Password')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('gSuiteUser.created_by')
+                    ->label('Created By')
                     ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('updated_by')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('gSuiteUser.updated_by')
+                    ->label('Updated By')
                     ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('deleted_by')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('gSuiteUser.deleted_by')
+                    ->label('Deleted By')
                     ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('gSuiteUser.created_at')
+                    ->label('Created At')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
+                Tables\Columns\TextColumn::make('gSuiteUser.updated_at')
+                    ->label('Updated At')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('deleted_at')
+                Tables\Columns\TextColumn::make('gSuiteUser.deleted_at')
+                    ->label('Deleted At')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

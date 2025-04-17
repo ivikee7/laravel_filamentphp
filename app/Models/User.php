@@ -126,6 +126,11 @@ class User extends Authenticatable implements FilamentUser
         return $this->belongsTo(BloodGroup::class, 'blood_group_id');
     }
 
+    public function gSuiteUser(): HasOne
+    {
+        return $this->hasOne(GSuiteUser::class);
+    }
+
 
 
 
