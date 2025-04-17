@@ -62,20 +62,20 @@ class EnquiryResource extends Resource
                         Forms\Components\TextInput::make('father_name')
                             ->maxLength(50)
                             ->default(null),
+                        Forms\Components\TextInput::make('mother_name')
+                            ->maxLength(50)
+                            ->default(null),
+                        Forms\Components\TextInput::make('email')->email(),
                         Forms\Components\TextInput::make('primary_contact_number')->required()
                             ->numeric()
                             ->rules(['digits:10'])
                             ->minLength(10)
                             ->maxLength(10),
-                        Forms\Components\TextInput::make('mother_name')
-                            ->maxLength(50)
-                            ->default(null),
                         Forms\Components\TextInput::make('secondary_contact_number')
                             ->numeric()
                             ->rules(['digits:10'])
                             ->minLength(10)
                             ->maxLength(10),
-                        Forms\Components\TextInput::make('email')->email(),
                     ])->columns(3),
                 Section::make('Mother info')
                     ->schema([
