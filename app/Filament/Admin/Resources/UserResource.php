@@ -164,6 +164,7 @@ class UserResource extends Resource
                 Section::make('Authentication info')
                     ->schema([
                         Forms\Components\Select::make('roles')
+                            ->multiple()
                             ->relationship('roles', 'name', function ($query) {
                                 $query->whereNotIn('name', ['Student']); // Exclude 'Student'
 
