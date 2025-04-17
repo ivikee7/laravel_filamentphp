@@ -44,25 +44,20 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('name')
+                    ->searchable() // ✅ Only this is searchable
+                    ->hidden(),     // Optional: hide full name if you only want first/last
+
                 Tables\Columns\TextColumn::make('first_name')
                     ->label('First Name')
-                    ->getStateUsing(function ($record) {
-                        $parts = explode(' ', trim($record->name));
-                        return count($parts) > 1
-                            ? implode(' ', array_slice($parts, 0, -1))
-                            : $parts[0]; // fallback: whole name
-                    })
-                    ->searchable(),
+                    ->getStateUsing(fn($record) => explode(' ', $record->name)[0] ?? '_'),
 
                 Tables\Columns\TextColumn::make('last_name')
                     ->label('Last Name')
                     ->getStateUsing(function ($record) {
-                        $parts = explode(' ', trim($record->name));
-                        return count($parts) > 1
-                            ? end($parts)
-                            : '_'; // fallback for no last name
-                    })
-                    ->searchable(),
+                        $parts = explode(' ', $record->name);
+                        return count($parts) > 1 ? $parts[array_key_last($parts)] : '_';
+                    }),
 
                 Tables\Columns\TextColumn::make('official_email')
                     ->label('Email')
