@@ -445,9 +445,4 @@ class StudentResource extends Resource
             })
             ->count();
     }
-
-    public static function canCreate(): bool
-    {
-        return false;
-    }
 }
