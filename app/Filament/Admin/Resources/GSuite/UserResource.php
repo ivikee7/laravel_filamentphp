@@ -65,11 +65,49 @@ class UserResource extends Resource
                     }),
 
                 Tables\Columns\TextColumn::make('official_email')
-                    ->label('Email')
+                    ->label('Email Address')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('gSuiteUser.password')
                     ->label('Password')
                     ->searchable(),
+
+                Tables\Columns\TextColumn::make('orgUnitPath')
+                    ->label('Org Unit Path')
+                    ->getStateUsing(function ($record) {
+                        $parts = ['/School'];
+
+                        // Role of the user (assuming this is stored in $record->role or something similar)
+                        $role = ucfirst($record->role ?? 'User'); // Admin, Student, etc.
+                        $parts[] = $role;
+
+                        if ($role === 'Student') {
+                            // Assuming relations or attributes exist
+                            if ($record->student?->classAssignment?->class?->name) {
+                                $parts[] = $record->student->classAssignment->class->name;
+                            }
+
+                            if ($record->student?->classAssignment?->section?->name) {
+                                $parts[] = $record->student->classAssignment->section->name;
+                            }
+                        }
+
+                        return implode('/', $parts) . '/';
+                    })
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('orgUnitPath')
+                    ->label('Org Unit Path')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('changePasswordAtNextSign-In')
+                    ->label('Change Password at Next Sign-In')
+                    ->default("FALSE")
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('is_active')
+                    ->label('New Status')
+                    ->formatStateUsing(fn($state) => $state ? 'Active' : 'Suspended')
+                    ->searchable(),
+
+
                 Tables\Columns\TextColumn::make('gSuiteUser.created_by')
                     ->label('Created By')
                     ->numeric()
