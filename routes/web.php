@@ -16,3 +16,8 @@ Route::get('/login', AuthLogin::class)->name('login');
 
 Route::post('/whatsapp/webhook', [WebhookController::class, 'handle']);
 Route::get('/whatsapp/webhook', [WebhookController::class, 'verify']);
+
+Route::post('/whatsapp/webhook-test', function () {
+    \Illuminate\Support\Facades\Log::info('Webhook-test route hit');
+    return 'OK';
+});
