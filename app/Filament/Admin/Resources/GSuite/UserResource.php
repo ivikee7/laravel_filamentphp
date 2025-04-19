@@ -43,7 +43,7 @@ class UserResource extends Resource
     public static function query()
     {
         // Simply return the query builder for the User model
-        return User::query();
+        return User::query()->where('official_email', '!=', '')->hasRole('Student');
     }
 
     public static function table(Table $table): Table
@@ -67,6 +67,13 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('official_email')
                     ->label('Email Address')
                     ->searchable(),
+
+
+                Tables\Columns\TextColumn::make('gSuiteUser.email')
+                    ->label('Email')
+                    ->searchable(),
+
+
                 Tables\Columns\TextColumn::make('gSuiteUser.password')
                     ->label('Password')
                     ->searchable(),
@@ -74,20 +81,22 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('orgUnitPath')
                     ->label('Org Unit Path')
                     ->getStateUsing(function ($record) {
-                        $parts = ['/School'];
+                        $parts = ['/' . env('APP_NAME') . '/School'];
 
-                        // Role of the user (assuming this is stored in $record->role or something similar)
-                        $role = ucfirst($record->role ?? 'User'); // Admin, Student, etc.
+                        // Use the first available role name, or "User" if none
+                        $roleName = $record->roles->pluck('name')->first() ?? 'User';
+                        $role = ucfirst($roleName);
                         $parts[] = $role;
 
-                        if ($role === 'Student') {
-                            // Assuming relations or attributes exist
-                            if ($record->student?->classAssignment?->class?->name) {
-                                $parts[] = $record->student->classAssignment->class->name;
+                        if ($role === 'Student' && $record->currentStudent?->currentClassAssignment) {
+                            $assignment = $record->currentStudent->currentClassAssignment;
+
+                            if ($assignment->class?->name) {
+                                $parts[] = $assignment->class->name;
                             }
 
-                            if ($record->student?->classAssignment?->section?->name) {
-                                $parts[] = $record->student->classAssignment->section->name;
+                            if ($assignment->section?->name) {
+                                $parts[] = $assignment->section->name;
                             }
                         }
 
@@ -95,9 +104,10 @@ class UserResource extends Resource
                     })
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('orgUnitPath')
-                    ->label('Org Unit Path')
-                    ->searchable(),
+                // Tables\Columns\TextColumn::make('orgUnitPath')
+                //     ->label('Org Unit Path')
+                //     ->searchable(),
+
                 Tables\Columns\TextColumn::make('changePasswordAtNextSign-In')
                     ->label('Change Password at Next Sign-In')
                     ->default("FALSE")

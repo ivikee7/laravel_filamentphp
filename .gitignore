@@ -22,13 +22,4 @@ yarn-error.log
 /.vscode
 /.zed
 
-# Whatsapp
-/app/Services/WhatsAppService.php
-/app/Models/WhatsAppProvider.php
-/app/Models/WhatsAppMessage.php
-/database/migrations/2025_04_17_210242_create_whatsapp_providers_table.php
-/database/migrations/2025_04_17_210702_create_whatsapp_messages_table.php
-/app/Filament/Admin/Resources/WhatsAppProviderResource.php
-/app/Filament/Admin/Resources/WhatsAppMessageResource.php
-/app/Filament/Admin/Resources/WhatsAppMessageResource
-/app/Filament/Admin/Resources/WhatsAppProviderResource
+
