@@ -11,9 +11,11 @@ class WebhookController extends Controller
 {
     public function handle(Request $request)
     {
-        Log::info('WhatsApp Webhook:', $request->all());
+        Log::info('🔥 WhatsApp Webhook Hit');
+        Log::info('Raw Input: ' . file_get_contents('php://input'));
+        Log::info('Webhook Payload:', $request->all());
 
-        // Optionally, save to database or perform actions based on status
+
         return response()->json(['status' => 'received'], 200);
     }
 
