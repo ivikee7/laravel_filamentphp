@@ -23,7 +23,6 @@ class WebhookController extends Controller
         $token = $request->get('hub_verify_token');
         $challenge = $request->get('hub_challenge');
 
-        // Match with the correct verify_token stored in DB
         $provider = WhatsAppProvider::where('verify_token', $token)->first();
 
         if ($mode === 'subscribe' && $provider) {

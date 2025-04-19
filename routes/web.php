@@ -15,4 +15,4 @@ Route::redirect('/admin/login', '/login');
 Route::get('/login', AuthLogin::class)->name('login');
 
 Route::post('/whatsapp/webhook', [WebhookController::class, 'handle']);
-Route::get('/whatsapp/webhook', [WebhookController::class, 'verify']); // for verification
+Route::get('/whatsapp/webhook', [WebhookController::class, 'verify']);
