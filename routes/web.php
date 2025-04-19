@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Route;
 //     return view('welcome');
 // });
 
+Route::redirect('/', '/admin');
 Route::redirect('/admin/login', '/login');
 Route::get('/login', AuthLogin::class)->name('login');
 
