@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 
@@ -19,10 +20,15 @@ class WhatsAppProvider extends Model
         'send_message_endpoint',
         'headers',
         'verify_token',
+        'is_active',
+        'is_default',
+
     ];
 
     protected $casts = [
         'headers' => 'array',
+        'is_active' => 'boolean',
+        'is_default' => 'boolean',
     ];
 
     protected static function boot()
@@ -61,5 +67,14 @@ class WhatsAppProvider extends Model
     public function deletedBy()
     {
         return $this->belongsTo(User::class, 'deleted_by');
+    }
+
+    public function isActive()
+    {
+        return $this->where('is_active', true);
+    }
+    public function default()
+    {
+        return $this->where('is_default', true)->first();
     }
 }

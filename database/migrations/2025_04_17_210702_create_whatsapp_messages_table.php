@@ -15,10 +15,12 @@ return new class extends Migration
             $table->id();
             //
             $table->foreignId('whatsapp_provider_id');
-            $table->string('to');
+            $table->string('from_number')->nullable(); // Sender (null for outgoing messages)
+            $table->string('to'); // Receiver
             $table->text('message');
-            $table->string('status')->default('pending'); // sent, failed, etc.
-            $table->json('response')->nullable(); // store full API response
+            $table->enum('direction', ['incoming', 'outgoing']);
+            $table->string('status')->default('pending'); // pending, sent, failed, delivered, read
+            $table->json('response')->nullable(); // Store full API response
             //
             $table->foreignId('created_by')->nullable();
             $table->foreignId('updated_by')->nullable();

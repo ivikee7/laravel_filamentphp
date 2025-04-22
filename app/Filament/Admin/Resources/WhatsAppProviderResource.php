@@ -70,6 +70,7 @@ class WhatsAppProviderResource extends Resource
                             ->default(null),
                     ]),
                 Forms\Components\Toggle::make('is_active')->inline(false)->required(),
+                Forms\Components\Toggle::make('is_default')->inline(false)->required(),
             ]);
     }
 

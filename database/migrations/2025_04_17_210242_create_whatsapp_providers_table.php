@@ -21,6 +21,7 @@ return new class extends Migration
             $table->json('headers')->nullable();
             $table->string('verify_token')->nullable();
             $table->boolean('is_active')->default(true);
+            $table->boolean('is_default')->default(false);
             //
             $table->foreignId('created_by')->nullable();
             $table->foreignId('updated_by')->nullable();
