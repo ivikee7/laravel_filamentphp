@@ -12,7 +12,6 @@ class WebhookController extends Controller
 {
     public function handle(Request $request)
     {
-        Log::info('handle:', ['handle' => $request]);
         return response()->json(['status' => 'received'], 200);
     }
 
@@ -23,6 +22,7 @@ class WebhookController extends Controller
         $token = $request->get('hub_verify_token');
         $challenge = $request->get('hub_challenge');
 
+
         $provider = WhatsAppProvider::where('verify_token', $token)->first();
 
         if ($mode === 'subscribe' && $provider) {
@@ -31,12 +31,14 @@ class WebhookController extends Controller
 
         // 📩 Handle incoming webhook events (messages, statuses, etc.)
         $payload = $request->all();
-        Log::info('Incoming WhatsApp Webhook:', $payload);
+        // Log::info('Incoming WhatsApp Webhook:', $payload);
 
         if (isset($payload['entry'])) {
             foreach ($payload['entry'] as $entry) {
                 foreach ($entry['changes'] as $change) {
                     $value = $change['value'] ?? [];
+
+                    Log::info($value);
 
                     if (isset($value['messages'])) {
                         foreach ($value['messages'] as $message) {
