@@ -12,7 +12,7 @@ class WebhookController extends Controller
 {
     public function handle(Request $request)
     {
-        Log::info('handle', $request);
+        Log::info('handle:', ['handle' => $request]);
         return response()->json(['status' => 'received'], 200);
     }
 
