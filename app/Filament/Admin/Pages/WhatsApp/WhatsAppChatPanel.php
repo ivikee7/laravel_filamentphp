@@ -61,12 +61,13 @@ class WhatsAppChatPanel extends Page implements Forms\Contracts\HasForms
         $this->messages = collect(); // Empty initial messages
     }
 
+    // Add a 'direction' column in your messages table
     public function selectContact($wa_id)
     {
         $this->activeContactWaId = $wa_id;
         $this->activeContactName = $wa_id; // Replace with actual name if available
 
-        // Load the message history for the selected contact
+        // Load message history
         $this->messages = WhatsAppMessage::where('to', $wa_id)
             ->orWhere('from_number', $wa_id)
             ->orderBy('created_at')
@@ -160,12 +161,11 @@ class WhatsAppChatPanel extends Page implements Forms\Contracts\HasForms
         $this->reset('message');
     }
 
-    public function getChatHistory()
+    public function getChatHistory($page = 1)
     {
         return WhatsAppMessage::where('to', $this->activeContactWaId)
-            ->orWhere('from', $this->activeContactWaId)
+            ->orWhere('from_number', $this->activeContactWaId)
             ->orderBy('created_at', 'desc')
-            ->limit(50)
-            ->get();
+            ->paginate(20, ['*'], 'page', $page);
     }
 }

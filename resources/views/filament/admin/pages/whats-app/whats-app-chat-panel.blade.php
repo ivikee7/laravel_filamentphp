@@ -57,9 +57,9 @@
                     <div class="flex {{ $message->direction === 'outgoing' ? 'justify-end' : 'justify-start' }}">
                         <div
                             class="max-w-md px-4 py-2 rounded-xl shadow
-                        {{ $message->direction === 'outgoing'
-                            ? 'bg-green-500 text-white rounded-br-none'
-                            : 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-bl-none' }}">
+                            {{ $message->direction === 'outgoing'
+                                ? 'bg-green-500 text-white rounded-br-none'
+                                : 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-bl-none' }}">
                             <p class="text-sm leading-snug">{{ $message->message }}</p>
                             <div class="text-xs mt-1 opacity-60 text-right">
                                 {{ \Carbon\Carbon::parse($message->created_at)->format('h:i A') }}
