@@ -17,13 +17,11 @@ class WebhookController extends Controller
 
     public function verify(Request $request)
     {
+        Log::info($request);
         // 🔐 Handle webhook verification
         $mode = $request->get('hub_mode');
         $token = $request->get('hub_verify_token');
         $challenge = $request->get('hub_challenge');
-
-        Log::info($mode);
-
 
         $provider = WhatsAppProvider::where('verify_token', $token)->first();
 
