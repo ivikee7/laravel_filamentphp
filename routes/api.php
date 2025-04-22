@@ -9,8 +9,3 @@ Route::match(array('GET', 'POST'), '/website-enquiries', [WebsiteEnquiryControll
 
 Route::post('/whatsapp/webhook', [WebhookController::class, 'handle']);
 Route::get('/whatsapp/webhook', [WebhookController::class, 'verify']);
-
-Route::post('/whatsapp/webhook-test', function () {
-    \Illuminate\Support\Facades\Log::info('Webhook-test route hit');
-    return 'OK';
-});
