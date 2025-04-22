@@ -8,4 +8,5 @@ Route::match(array('GET', 'POST'), '/website-enquiries', [WebsiteEnquiryControll
 
 
 Route::post('/whatsapp/webhook', [WebhookController::class, 'handle']);
-Route::get('/whatsapp/webhook', [WebhookController::class, 'verify']);
+// Route::get('/whatsapp/webhook', [WebhookController::class, 'verify']);
+Route::match(['GET', 'POST'], '/whatsapp/webhook', [WebhookController::class, 'verify']);

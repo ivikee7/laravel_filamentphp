@@ -12,12 +12,13 @@ class WebhookController extends Controller
 {
     public function handle(Request $request)
     {
-        Log::info($request);
+        // Log::info($request);
         return response()->json(['status' => 'received'], 200);
     }
 
     public function verify(Request $request)
     {
+        Log::info($request);
         // 🔐 Handle webhook verification
         $mode = $request->get('hub_mode');
         $token = $request->get('hub_verify_token');
