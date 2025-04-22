@@ -24,6 +24,8 @@ class WebhookController extends Controller
 
         $provider = WhatsAppProvider::where('verify_token', $token)->first();
 
+        Log::info('Incoming WhatsApp Webhook:', $request);
+
         if ($mode === 'subscribe' && $provider) {
             return response($challenge, 200)->header('Content-Type', 'text/plain');
         }
