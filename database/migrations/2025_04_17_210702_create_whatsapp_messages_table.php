@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('status')->default('pending'); // pending, sent, failed, delivered, read
             $table->json('response')->nullable(); // Store full API response
             $table->timestamp('received_at')->nullable();
+            $table->string('message_id', 100)->nullable();
             //
             $table->foreignId('created_by')->nullable();
             $table->foreignId('updated_by')->nullable();

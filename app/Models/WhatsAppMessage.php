@@ -19,6 +19,7 @@ class WhatsAppMessage extends Model
         'status',
         'response',
         'received_at',
+        'message_id',
     ];
 
     protected $casts = [

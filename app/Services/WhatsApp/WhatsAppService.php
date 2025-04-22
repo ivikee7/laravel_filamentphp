@@ -6,6 +6,7 @@ use App\Models\WhatsAppMessage;
 use App\Models\WhatsAppProvider;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class WhatsAppService
 {
@@ -31,6 +32,7 @@ class WhatsAppService
             'whatsapp_provider_id' => $provider->id,
             'to' => $to,
             'message' => $message,
+            'message_id' => $response['messages'][0]['id'] ?? null,
             'status' => $response['status'] ?? ($response->successful() ? 'sent' : 'failed'),
             'response' => $response->body(),
             'created_by' => Auth::id(),
