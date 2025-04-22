@@ -69,37 +69,4 @@
         </div>
     </div>
 
-    {{-- Floating New Chat Button (Bottom-Right) --}}
-    <div class="fixed bottom-6 right-6 z-50">
-        <button wire:click="$set('showNewChatModal', true)"
-            class="bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-lg transition">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24"
-                stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-            </svg>
-        </button>
-    </div>
-
-    {{-- New Chat Modal (Centered) --}}
-    <div id="new-chat-modal" x-data="{ open: @entangle('showNewChatModal') }" x-show="open"
-        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl w-80 space-y-4 shadow-lg">
-            <h2 class="text-lg font-semibold text-gray-800 dark:text-white">Start New Chat</h2>
-
-            <input type="text" wire:model.defer="newContactWaId" placeholder="Enter WhatsApp number"
-                class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-gray-900 dark:text-white" />
-
-            <div class="flex justify-end space-x-2">
-                <button wire:click="$set('showNewChatModal', false)"
-                    class="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded hover:bg-gray-300 dark:hover:bg-gray-600">
-                    Cancel
-                </button>
-                <button wire:click="startNewChat" wire:click="$set('showNewChatModal', false)"
-                    class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
-                    Start
-                </button>
-            </div>
-        </div>
-    </div>
-
 </x-filament-panels::page>

@@ -33,8 +33,6 @@ class WhatsAppChatPanel extends Page implements Forms\Contracts\HasForms
     public $newMessage;
     public string $newContactWaId = '';
 
-    public $showNewChatModal = false; // To handle modal visibility
-
     public function mount()
     {
         // Initialize contacts
