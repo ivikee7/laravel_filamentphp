@@ -22,7 +22,7 @@ class WebhookController extends Controller
         $token = $request->get('hub_verify_token');
         $challenge = $request->get('hub_challenge');
 
-        $provider = WhatsAppProvider::where('verify_token', 'secret_whatsapp_token_srcspatna_com')->first();
+        $provider = WhatsAppProvider::where('verify_token', $token)->first();
 
         Log::info('Webhook verify:', $provider);
 
