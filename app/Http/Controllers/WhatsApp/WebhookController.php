@@ -22,6 +22,8 @@ class WebhookController extends Controller
         $token = $request->get('hub_verify_token');
         $challenge = $request->get('hub_challenge');
 
+        Log::info($mode);
+
 
         $provider = WhatsAppProvider::where('verify_token', $token)->first();
 
@@ -37,8 +39,6 @@ class WebhookController extends Controller
             foreach ($payload['entry'] as $entry) {
                 foreach ($entry['changes'] as $change) {
                     $value = $change['value'] ?? [];
-
-                    Log::info($value);
 
                     if (isset($value['messages'])) {
                         foreach ($value['messages'] as $message) {
