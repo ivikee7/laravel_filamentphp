@@ -24,7 +24,7 @@ class WhatsAppProviderResource extends Resource
     {
         return $form
             ->schema([
-                Section::make('Api conf')
+                Section::make('🔧 Basic Config')
                     ->schema([
                         Forms\Components\Group::make()
                             ->schema([
@@ -37,10 +37,20 @@ class WhatsAppProviderResource extends Resource
                                 Forms\Components\TextInput::make('send_message_endpoint')
                                     ->required()
                                     ->maxLength(255),
+                                Forms\Components\TextInput::make('api_token')
+                                    ->maxLength(255)
+                                    ->default(null),
                             ])->columns(2),
-                        Forms\Components\TextInput::make('api_token')
-                            ->maxLength(255)
-                            ->default(null),
+
+                        Forms\Components\Group::make()
+                            ->schema([
+                                Forms\Components\TextInput::make('verify_token')
+                                    ->maxLength(255)
+                                    ->default(null),
+                                Forms\Components\TextInput::make('encryption_key')
+                                    ->maxLength(255)
+                                    ->default(null),
+                            ])->columns(2),
                         Forms\Components\Group::make()
                             ->schema([
                                 Forms\Components\Repeater::make('headers')
@@ -63,14 +73,53 @@ class WhatsAppProviderResource extends Resource
                                     ->createItemButtonLabel('Add Header'), // Optional: Set label for adding new items
                             ]),
                     ]),
-                Section::make('Webhook conf')
+                Section::make('📞 WhatsApp API Details')
                     ->schema([
-                        Forms\Components\TextInput::make('verify_token')
+                        Forms\Components\TextInput::make('phone_number')
                             ->maxLength(255)
                             ->default(null),
-                    ]),
-                Forms\Components\Toggle::make('is_active')->inline(false)->required(),
-                Forms\Components\Toggle::make('is_default')->inline(false)->required(),
+                        Forms\Components\TextInput::make('phone_number_id')
+                            ->maxLength(255)
+                            ->default(null),
+                        Forms\Components\TextInput::make('business_account_id')
+                            ->maxLength(255)
+                            ->default(null),
+                        Forms\Components\DateTimePicker::make('token_expires_at')
+                            ->default(null),
+                    ])->columns(2),
+                Section::make('🔁 Webhook Management')
+                    ->schema([
+                        Forms\Components\TextInput::make('webhook_url')
+                            ->maxLength(255)
+                            ->default(null),
+                        Forms\Components\DateTimePicker::make('webhook_received_at')
+                            ->default(null),
+                        Forms\Components\TextInput::make('webhook_status')
+                            ->maxLength(100)
+                            ->default(null),
+                        Forms\Components\Textarea::make('last_error_message')
+                            ->maxLength(255)
+                            ->default(null),
+                        Forms\Components\TextInput::make('failed_webhook_count')
+                            ->numeric()
+                            ->default(null),
+                        Forms\Components\DateTimePicker::make('last_successful_response')
+                            ->default(null),
+                    ])->columns(2),
+                Section::make('🔐 Meta App Info')
+                    ->schema([
+                        Forms\Components\TextInput::make('meta_app_id')
+                            ->maxLength(255)
+                            ->default(null),
+                        Forms\Components\TextInput::make('meta_app_secret')
+                            ->maxLength(255)
+                            ->default(null),
+                    ])->columns(2),
+                Section::make('⚙️ Operational Controls')
+                    ->schema([
+                        Forms\Components\Toggle::make('is_active')->inline(false)->required(),
+                        Forms\Components\Toggle::make('is_default')->inline(false)->required(),
+                    ])->columns(2)
             ]);
     }
 
