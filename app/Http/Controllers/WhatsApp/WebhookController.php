@@ -30,7 +30,6 @@ class WebhookController extends Controller
 
         // 📩 Handle incoming webhook events (messages, statuses, etc.)
         $payload = $request->all();
-        // Log::info('Incoming WhatsApp Webhook:', $payload);
 
         if (isset($payload['entry'])) {
             foreach ($payload['entry'] as $entry) {
@@ -43,6 +42,8 @@ class WebhookController extends Controller
                             $text = $message['text']['body'] ?? null;
                             $messageId = $message['id'] ?? null;
                             $timestamp = $message['timestamp'] ?? now();
+
+                            Log::info($provider);
 
                             // Store as incoming message
                             WhatsAppMessage::updateOrCreate(
