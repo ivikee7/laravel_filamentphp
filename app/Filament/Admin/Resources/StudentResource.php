@@ -14,7 +14,9 @@ use App\Models\Registration;
 use App\Models\SmsProvider;
 use App\Models\Student;
 use App\Models\User;
+use App\Models\WhatsAppProvider;
 use App\Services\SMSService;
+use App\Services\WhatsApp\WhatsAppService;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
@@ -393,6 +395,58 @@ class StudentResource extends Resource
                                 ->success()
                                 ->send();
                         }),
+                    Tables\Actions\BulkAction::make('sendWhatsappMessage')
+                        ->label('Send WhatsApp Message')
+                        ->form([
+                            Forms\Components\Select::make('provider_id')
+                                ->label('Select WhatsApp Provider')
+                                ->options(WhatsAppProvider::all()->pluck('name', 'id'))
+                                ->required(),
+                            Forms\Components\Textarea::make('message')
+                                ->label('Message')
+                                ->rows(4)
+                                ->required(),
+                        ])
+                        ->action(function (array $data, $records) {
+                            $provider = WhatsAppProvider::find($data['provider_id']);
+
+                            foreach ($records as $user) {
+                                $to = $user->primary_contact_number;
+                                $message = $data['message'];
+
+                                if ($to && $provider) {
+
+                                    // dispatch(new SendWhatsappMessageJob($to, $message, $provider));
+                                    $response = app(WhatsAppService::class)->sendMessage($to, $message, $provider);
+
+                                    // Check for error in response
+                                    if (isset($response['error'])) {
+                                        $error = $response['error'];
+
+                                        $metaTitle = $error['type'] ?? 'Error';
+                                        $metaMessage = $error['message'] ?? 'An error occurred while sending the message.';
+
+                                        Notification::make()
+                                            ->title("Error: {$metaTitle}")
+                                            ->body($metaMessage)
+                                            ->danger() // red alert
+                                            ->send();
+                                    } else {
+                                        $metaTitle = 'Message Sent';
+                                        $metaMessage = 'Message was successfully sent via WhatsApp.';
+
+                                        Notification::make()
+                                            ->title($metaTitle)
+                                            ->body($metaMessage)
+                                            ->success() // green alert
+                                            ->send();
+                                    }
+                                }
+                            }
+                        })
+                        ->deselectRecordsAfterCompletion()
+                        ->color('success')
+                        ->icon('heroicon-o-chat-bubble-left-right'),
                 ]),
             ]);
     }
