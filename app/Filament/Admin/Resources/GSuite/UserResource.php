@@ -68,12 +68,6 @@ class UserResource extends Resource
                     ->label('Email Address')
                     ->searchable(),
 
-
-                Tables\Columns\TextColumn::make('gSuiteUser.email')
-                    ->label('Email')
-                    ->searchable(),
-
-
                 Tables\Columns\TextColumn::make('gSuiteUser.password')
                     ->label('Password')
                     ->searchable(),
