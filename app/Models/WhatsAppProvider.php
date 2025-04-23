@@ -14,14 +14,37 @@ class WhatsAppProvider extends Model
     protected $table = 'whatsapp_providers';
 
     protected $fillable = [
+        // 🔧 Basic Config
         'name',
         'base_url',
-        'api_token',
         'send_message_endpoint',
+        'api_token',
         'headers',
         'verify_token',
+        'encryption_key',
+        // 📞 WhatsApp API Details
+        'phone_number',
+        'phone_number_id',
+        'business_account_id',
+        'token_expires_at',
+        // 🔁 Webhook Management
+        'webhook_url',
+        'webhook_received_at',
+        'webhook_status',
+        'last_error_message',
+        'failed_webhook_count',
+        'last_successful_response',
+        // 🔐 Meta App Info
+        'meta_app_id',
+        'meta_app_secret',
+        // ⚙️ Operational Controls
         'is_active',
         'is_default',
+        'environment',
+        // 👤 Auditing
+        'created_by',
+        'updated_by',
+        'deleted_by',
 
     ];
 

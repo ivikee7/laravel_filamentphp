@@ -40,7 +40,7 @@ class WebhookController extends Controller
 
                     // ✅ Get provider by display phone number
                     $phoneNumber = $value['metadata']['display_phone_number'] ?? null;
-                    $provider = WhatsAppProvider::where('phone_number', $phoneNumber)->first();
+                    $provider = WhatsAppProvider::where('phone_number', '91' . $phoneNumber)->first();
 
                     // Prevent null provider insert
                     if (! $provider) {
