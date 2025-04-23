@@ -1,10 +1,8 @@
 <x-filament-panels::page>
 
     <div class="flex h-[80vh] rounded-xl overflow-hidden shadow-lg bg-white dark:bg-gray-900">
-
         {{-- Sidebar --}}
         <div x-data="{ open: true }" class="flex-shrink-0 flex">
-            <!-- Toggle -->
             <button @click="open = !open"
                 class="p-2 bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 text-gray-800 dark:text-white transition">
                 <svg x-show="!open" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
@@ -17,20 +15,31 @@
                 </svg>
             </button>
 
-            <div x-show="open" x-transition class="w-72 border-r bg-gray-100 dark:bg-gray-800 flex flex-col">
+            <div x-show="open" x-transition class="w-80 border-r bg-gray-100 dark:bg-gray-800 flex flex-col">
                 <div class="p-4 border-b dark:border-gray-700">
                     <h2 class="text-lg font-bold text-gray-900 dark:text-gray-100">Chats</h2>
+                    <div class="mt-2">
+                        <input type="text" wire:model.lazy="newContactWaId" placeholder="Start new chat..."
+                            class="w-full px-3 py-1 rounded border bg-white dark:bg-gray-700 dark:text-white focus:outline-none focus:ring">
+                        <button wire:click="startNewChat"
+                            class="mt-2 w-full px-3 py-1 rounded bg-primary-600 text-white hover:bg-primary-700">
+                            Start
+                        </button>
+                    </div>
                 </div>
 
                 <div class="flex-1 overflow-y-auto">
                     @forelse($contacts as $contact)
-                        <div wire:click="selectContact('{{ $contact->wa_id }}')"
+                        <div wire:click="selectContact('{{ $contact->wa_id }}', {{ $contact->provider_id }})"
                             class="p-4 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 transition">
                             <div class="font-semibold text-gray-800 dark:text-white">
                                 {{ $contact->name ?? $contact->wa_id }}
                             </div>
                             <div class="text-sm text-gray-500 dark:text-gray-400 truncate">
                                 {{ Str::limit($contact->last_message, 40) }}
+                            </div>
+                            <div class="text-xs text-gray-400 mt-1">
+                                Provider: {{ $contact->name }}
                             </div>
                         </div>
                     @empty
@@ -49,6 +58,8 @@
                 <h2 class="text-lg font-bold text-gray-800 dark:text-white">
                     {{ $activeContactName ?? 'Select a contact' }}
                 </h2>
+                <p class="text-xs text-gray-600 dark:text-gray-400">Provider:
+                    {{ $activeProviderName ?? 'N/A' }}</p>
             </div>
 
             {{-- Messages --}}
@@ -57,12 +68,15 @@
                     <div class="flex {{ $message->direction === 'outgoing' ? 'justify-end' : 'justify-start' }}">
                         <div
                             class="max-w-md px-4 py-2 rounded-xl shadow
-                            {{ $message->direction === 'outgoing'
-                                ? 'bg-green-500 text-white rounded-br-none'
-                                : 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-bl-none' }}">
+                        {{ $message->direction === 'outgoing'
+                            ? 'bg-green-500 text-white rounded-br-none'
+                            : 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-bl-none' }}">
                             <p class="text-sm leading-snug">{{ $message->message }}</p>
                             <div class="text-xs mt-1 opacity-60 text-right">
                                 {{ \Carbon\Carbon::parse($message->created_at)->format('h:i A') }}
+                                <span class="ml-2 text-xs text-gray-400">
+                                    {{ ucfirst($message->status) }}
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -70,7 +84,7 @@
             </div>
 
             {{-- Message Input --}}
-            @if ($activeContactWaId)
+            @if ($activeContactWaId && $activeProviderId)
                 <form wire:submit.prevent="sendMessage"
                     class="p-4 border-t dark:border-gray-700 bg-gray-100 dark:bg-gray-800">
                     <div class="flex items-center gap-3">

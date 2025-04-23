@@ -29,47 +29,50 @@ class WhatsAppChatPanel extends Page implements Forms\Contracts\HasForms
     public $contacts;
     public $messages;
     public $activeContactWaId;
+    public $activeProviderId;
     public $activeContactName;
     public $newMessage;
     public string $newContactWaId = '';
 
     public function mount()
     {
-        // Initialize contacts
-        $this->contacts = WhatsAppMessage::select('to as wa_id')
-            ->groupBy('to')
+        $this->contacts = WhatsAppMessage::select('to', 'whatsapp_provider_id')
+            ->groupBy('to', 'whatsapp_provider_id')
             ->get()
             ->map(function ($contact) {
-                $lastMessage = WhatsAppMessage::where('to', $contact->wa_id)
+                $lastMessage = WhatsAppMessage::where('to', $contact->to)
+                    ->where('whatsapp_provider_id', $contact->whatsapp_provider_id)
                     ->latest()
                     ->first();
 
-                return (object)[
-                    'wa_id' => $contact->wa_id,
+                return (object) [
+                    'wa_id' => $contact->to,
+                    'provider_id' => $contact->whatsapp_provider_id,
                     'last_message' => $lastMessage->message ?? null,
-                    'name' => $contact->wa_id, // You can customize this with real names if available
+                    'name' => $contact->to,
                 ];
             });
 
-        $this->messages = collect(); // Initialize empty messages collection
+        $this->messages = collect();
     }
 
     public function startNewChat()
     {
         $this->activeContactWaId = $this->newContactWaId;
-        $this->activeContactName = $this->newContactWaId; // You can replace with real name if available
-        $this->messages = collect(); // Empty initial messages
+        $this->activeContactName = $this->newContactWaId;
+        $this->messages = collect();
     }
 
-    // Add a 'direction' column in your messages table
-    public function selectContact($wa_id)
+    public function selectContact($wa_id, $provider_id)
     {
         $this->activeContactWaId = $wa_id;
-        $this->activeContactName = $wa_id; // Replace with actual name if available
+        $this->activeProviderId = $provider_id;
+        $this->activeContactName = $wa_id;
 
-        // Load message history
-        $this->messages = WhatsAppMessage::where('to', $wa_id)
-            ->orWhere('from_number', $wa_id)
+        $this->messages = WhatsAppMessage::where('whatsapp_provider_id', $provider_id)
+            ->where(function ($query) use ($wa_id) {
+                $query->where('to', $wa_id)->orWhere('from_number', $wa_id);
+            })
             ->orderBy('created_at')
             ->get();
     }
@@ -80,24 +83,20 @@ class WhatsAppChatPanel extends Page implements Forms\Contracts\HasForms
             'newMessage' => 'required|string',
         ])->validate();
 
-
-        // Get default provider
-        $provider = WhatsAppProvider::where('is_default', true)->first();
+        $provider = WhatsAppProvider::find($this->activeProviderId);
 
         if ($provider) {
-            // Send message through WhatsAppService
             app(WhatsAppService::class)->sendMessage(
                 $this->activeContactWaId,
                 $this->newMessage,
                 $provider
             );
 
-            // Clear input and refresh chat
             $this->newMessage = '';
-            $this->selectContact($this->activeContactWaId);
+            $this->selectContact($this->activeContactWaId, $this->activeProviderId);
         } else {
             Notification::make()
-                ->title('Default WhatsApp provider not found.')
+                ->title('Selected WhatsApp provider not found.')
                 ->danger()
                 ->send();
         }
@@ -107,18 +106,9 @@ class WhatsAppChatPanel extends Page implements Forms\Contracts\HasForms
     {
         return [
             Grid::make(2)->schema([
-                TextInput::make('to')
-                    ->label('Recipient Number')
-                    ->required()
-                    ->tel(),
-
-                Hidden::make('providerId')
-                    ->default(WhatsAppProvider::first()?->id), // Default provider
-
-                Textarea::make('message')
-                    ->label('Message')
-                    ->rows(3)
-                    ->required(),
+                TextInput::make('to')->label('Recipient Number')->required()->tel(),
+                Hidden::make('providerId')->default(WhatsAppProvider::first()?->id),
+                Textarea::make('message')->label('Message')->rows(3)->required(),
             ]),
         ];
     }
@@ -126,12 +116,9 @@ class WhatsAppChatPanel extends Page implements Forms\Contracts\HasForms
     public function send()
     {
         $data = $this->form->getState();
-
         $provider = WhatsAppProvider::findOrFail($data['providerId']);
 
-        $headers = collect($provider->headers)
-            ->pluck('header_value', 'header_name')
-            ->toArray();
+        $headers = collect($provider->headers)->pluck('header_value', 'header_name')->toArray();
 
         $response = Http::withHeaders($headers)
             ->withToken($provider->token)
@@ -153,10 +140,7 @@ class WhatsAppChatPanel extends Page implements Forms\Contracts\HasForms
             'created_by' => Auth::id(),
         ]);
 
-        Notification::make()
-            ->title('Message sent!')
-            ->success()
-            ->send();
+        Notification::make()->title('Message sent!')->success()->send();
 
         $this->reset('message');
     }
@@ -167,5 +151,30 @@ class WhatsAppChatPanel extends Page implements Forms\Contracts\HasForms
             ->orWhere('from_number', $this->activeContactWaId)
             ->orderBy('created_at', 'desc')
             ->paginate(20, ['*'], 'page', $page);
+    }
+
+    public function getContactsProperty()
+    {
+        return WhatsAppMessage::selectRaw('wa_id, provider_id, MAX(created_at) as last_time')
+            ->whereNotNull('wa_id')
+            ->groupBy('wa_id', 'provider_id')
+            ->orderByDesc('last_time')
+            ->get()
+            ->map(function ($chat) {
+                $lastMessage = WhatsAppMessage::where('wa_id', $chat->wa_id)
+                    ->where('provider_id', $chat->provider_id)
+                    ->latest()
+                    ->first();
+
+                $provider = WhatsAppProvider::find($chat->provider_id);
+
+                return (object) [
+                    'wa_id' => $chat->wa_id,
+                    'provider_id' => $chat->provider_id,
+                    'last_message' => $lastMessage?->message ?? '',
+                    'name' => optional(User::where('primary_contact_number', $chat->wa_id)->first())->name,
+                    'provider_name' => $provider?->name ?? 'Unknown',
+                ];
+            });
     }
 }
