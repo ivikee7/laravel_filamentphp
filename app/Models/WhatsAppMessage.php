@@ -14,6 +14,7 @@ class WhatsAppMessage extends Model
 
     protected $fillable = [
         'whatsapp_provider_id',
+        'from_number',
         'to',
         'message',
         'status',
