@@ -17,18 +17,20 @@ class WebhookController extends Controller
 
     public function verify(Request $request)
     {
-        // 🔐 Handle webhook verification
         $mode = $request->get('hub_mode');
         $token = $request->get('hub_verify_token');
         $challenge = $request->get('hub_challenge');
 
-        $provider = WhatsAppProvider::where('verify_token', $token)->first();
-
-        if ($mode === 'subscribe' && $provider) {
-            return response($challenge, 200)->header('Content-Type', 'text/plain');
+        // 🔐 Handle webhook verification only
+        if ($mode === 'subscribe' && $token) {
+            $provider = WhatsAppProvider::where('verify_token', $token)->first();
+            if ($provider) {
+                return response($challenge, 200)->header('Content-Type', 'text/plain');
+            }
+            return response('Unauthorized', 403);
         }
 
-        // 📩 Handle incoming webhook events (messages, statuses, etc.)
+        // 📩 Handle incoming webhook events
         $payload = $request->all();
 
         if (isset($payload['entry'])) {
@@ -36,23 +38,29 @@ class WebhookController extends Controller
                 foreach ($entry['changes'] as $change) {
                     $value = $change['value'] ?? [];
 
+                    // ✅ Get provider by display phone number
+                    $phoneNumber = $value['metadata']['display_phone_number'] ?? null;
+                    $provider = WhatsAppProvider::where('phone_number', $phoneNumber)->first();
+
+                    // Prevent null provider insert
+                    if (! $provider) {
+                        Log::warning('WhatsApp Provider not found for phone number', [
+                            'display_phone_number' => $phoneNumber,
+                            'change' => $change,
+                        ]);
+                        continue;
+                    }
+
+                    // ✅ Incoming messages
                     if (isset($value['messages'])) {
                         foreach ($value['messages'] as $message) {
-                            $from = $message['from'] ?? null;
-                            $text = $message['text']['body'] ?? null;
-                            $messageId = $message['id'] ?? null;
-                            $timestamp = $message['timestamp'] ?? now();
-
-                            Log::info($request);
-
-                            // Store as incoming message
                             WhatsAppMessage::updateOrCreate(
-                                ['message_id' => $messageId],
+                                ['message_id' => $message['id']],
                                 [
-                                    'whatsapp_provider_id' => $provider?->id,
-                                    'from_number' => $from,
-                                    'to' => $value['metadata']['display_phone_number'] ?? null,
-                                    'message' => $text,
+                                    'whatsapp_provider_id' => $provider->id,
+                                    'from_number' => $message['from'] ?? null,
+                                    'to' => $phoneNumber,
+                                    'message' => $message['text']['body'] ?? null,
                                     'direction' => 'incoming',
                                     'status' => 'received',
                                     'received_at' => now(),
@@ -62,7 +70,7 @@ class WebhookController extends Controller
                         }
                     }
 
-                    // Optionally handle status updates (e.g., message delivered/read)
+                    // ✅ Status updates (delivered, read, etc.)
                     if (isset($value['statuses'])) {
                         foreach ($value['statuses'] as $status) {
                             WhatsAppMessage::where('message_id', $status['id'])->update([
