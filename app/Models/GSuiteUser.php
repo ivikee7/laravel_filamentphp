@@ -15,6 +15,7 @@ class GSuiteUser extends Model
 
     protected $fillable = [
         'user_id',
+        'email',
         'password',
     ];
 

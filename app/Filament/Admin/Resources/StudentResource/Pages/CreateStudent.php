@@ -71,7 +71,38 @@ class CreateStudent extends CreateRecord
                 $registration->delete();
             }
         }
+        $record = $this->record;
 
-        $this->record->assignRole('Student');
+        $record->assignRole('Student');
+
+        $record->gSuiteUser()->create([
+            'email' => $record->id . '@' . env('ORG_DOMAIN'),
+            'password' => self::generateGsuitePassword([
+                'name' => $record->name,
+                'primary_contact_number' => $record->primary_contact_number,
+            ]),
+        ]);
+    }
+
+    public static function generateGsuitePassword(array $data): string
+    {
+        $name = preg_replace('/[^a-zA-Z0-9]/', '', $data['name']);
+        $name = ucfirst(strtolower($name));
+        $namePart = substr($name, 0, 5);
+
+        if (strlen($namePart) < 5) {
+            $namePart = str_pad($namePart, 5, strtoupper(chr(rand(65, 90))));
+        }
+
+        $number = preg_replace('/\D/', '', $data['primary_contact_number']);
+        $numberPart = substr($number, 0, 5);
+
+        if (strlen($numberPart) < 5) {
+            $numberPart = str_pad($numberPart, 5, rand(0, 9));
+        }
+
+        $password = $namePart . '@' . $numberPart;
+
+        return substr($password, 0, 11);
     }
 }
