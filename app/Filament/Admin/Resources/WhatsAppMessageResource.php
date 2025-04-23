@@ -50,9 +50,7 @@ class WhatsAppMessageResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('provider.name')
                     ->label('Provider')
-                    ->numeric()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('to')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('from_number')
