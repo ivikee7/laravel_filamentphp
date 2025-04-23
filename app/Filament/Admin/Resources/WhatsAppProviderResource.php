@@ -129,11 +129,7 @@ class WhatsAppProviderResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('base_url')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('token')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('send_message_endpoint')
+                Tables\Columns\TextColumn::make('phone_number')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_by')
                     ->numeric()
