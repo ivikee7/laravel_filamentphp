@@ -43,7 +43,7 @@ class WebhookController extends Controller
                             $messageId = $message['id'] ?? null;
                             $timestamp = $message['timestamp'] ?? now();
 
-                            Log::info($provider);
+                            Log::info($request);
 
                             // Store as incoming message
                             WhatsAppMessage::updateOrCreate(
