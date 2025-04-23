@@ -55,6 +55,8 @@ class WhatsAppMessageResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('to')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('from_number')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('message')
                     ->wrap()
                     ->searchable(),
