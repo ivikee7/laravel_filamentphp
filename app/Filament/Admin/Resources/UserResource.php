@@ -71,13 +71,13 @@ class UserResource extends Resource
                                                 ->label('GSuite Email')
                                                 ->email()
                                                 ->required()
-                                                ->disabled(fn() => !Filament::auth()->user()?->hasPermissionTo('update GSuiteUser')),
+                                                ->disabled(fn() => !Filament::auth()->user()?->can('update GSuiteUser')),
                                             Forms\Components\TextInput::make('password')
                                                 ->label('GSuite Password')
                                                 ->email()
                                                 ->required()
-                                                ->visible(fn() => Filament::auth()->user()?->hasRole('Super Admin'))
-                                                ->disabled(fn() => !Filament::auth()->user()?->hasRole('Super Admin')),
+                                                ->visible(fn() => Filament::auth()->user()?->isSuperAdmin())
+                                                ->disabled(fn() => !Filament::auth()->user()?->isSuperAdmin()),
                                         ])->relationship('gSuiteUser')->columns(2),
                                         Forms\Components\Group::make()
                                             ->schema([

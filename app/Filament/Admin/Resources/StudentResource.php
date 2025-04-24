@@ -84,12 +84,12 @@ class StudentResource extends Resource
                                                 ->label('GSuite Email')
                                                 ->email()
                                                 ->required()
-                                                ->disabled(fn() => !Filament::auth()->user()?->hasPermissionTo('update GSuiteUser')),
+                                                ->disabled(fn() => !Filament::auth()->user()?->can('update GSuiteUser')),
                                             Forms\Components\TextInput::make('password')
                                                 ->label('GSuite Password')
                                                 ->email()
                                                 ->required()
-                                                ->disabled(fn() => !Filament::auth()->user()?->hasPermissionTo('update GSuiteUser')),
+                                                ->disabled(fn() => !Filament::auth()->user()?->can('update GSuiteUser')),
                                         ])->relationship('gSuiteUser')->columns(2),
                                         Forms\Components\Group::make()
                                             ->schema([
