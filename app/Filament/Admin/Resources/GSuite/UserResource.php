@@ -78,7 +78,7 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('orgUnitPath')
                     ->label('Org Unit Path')
                     ->getStateUsing(function ($record) {
-                        $parts = ['/' . env('APP_NAME') . '/School'];
+                        $parts = ['/SRCS, Patna' . '/School'];
 
                         // Use the first available role name, or "User" if none
                         $roleName = $record->roles->pluck('name')->first() ?? 'User';
@@ -97,7 +97,7 @@ class UserResource extends Resource
                             }
                         }
 
-                        return implode('/', $parts) . '/';
+                        return implode('/', $parts);
                     })
                     ->searchable()
                     ->sortable(),
