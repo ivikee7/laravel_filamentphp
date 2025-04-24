@@ -233,7 +233,7 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('gSuiteUser.email')->label('GSuite Email')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('gSuiteUser.password')->label('GSuite Pssword')
+                Tables\Columns\TextColumn::make('gSuiteUser.password')->label('GSuite Pwd')
                     ->searchable()
                     ->visible(fn() => Filament::auth()->user()?->hasRole('Super Admin'))
                     ->toggleable(isToggledHiddenByDefault: true),
