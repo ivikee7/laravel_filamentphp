@@ -141,7 +141,7 @@ class UserResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->paginated([5, 25, 50, 'all'])
+            ->paginated([5, 25, 50, 100, 500])
             ->defaultPaginationPageOption(5)
             ->defaultSort('id', 'desc')
             ->filters([
