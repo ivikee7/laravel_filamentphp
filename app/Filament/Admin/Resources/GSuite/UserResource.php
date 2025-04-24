@@ -54,6 +54,7 @@ class UserResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('first_name')
                     ->label('First Name')
+                    ->wrap()
                     ->getStateUsing(function ($record) {
                         $parts = explode(' ', $record->name);
                         return count($parts) === 1 ? $parts[0] : implode(' ', array_slice($parts, 0, -1));
@@ -100,11 +101,6 @@ class UserResource extends Resource
                     })
                     ->searchable()
                     ->sortable(),
-
-                // Tables\Columns\TextColumn::make('orgUnitPath')
-                //     ->label('Org Unit Path')
-                //     ->searchable(),
-
                 Tables\Columns\TextColumn::make('changePasswordAtNextSign-In')
                     ->label('Change Password at Next Sign-In')
                     ->default("FALSE")
@@ -145,6 +141,8 @@ class UserResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->paginated([10, 25, 50, 100, 'all'])
+            ->defaultPaginationPageOption(5)
             ->defaultSort('id', 'desc')
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
