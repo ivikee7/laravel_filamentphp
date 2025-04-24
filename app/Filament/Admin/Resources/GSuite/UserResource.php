@@ -64,7 +64,13 @@ class UserResource extends Resource
                     ->label('Last Name')
                     ->getStateUsing(function ($record) {
                         $parts = explode(' ', $record->name);
-                        return count($parts) > 1 ? end($parts) : '_';
+
+                        if (count($parts) > 1) {
+                            $lastName = $parts[count($parts) - 1];
+                            return $lastName ?: '_';
+                        }
+
+                        return '_';
                     }),
 
                 Tables\Columns\TextColumn::make('gSuiteUser.email')
