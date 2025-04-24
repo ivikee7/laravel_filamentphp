@@ -146,6 +146,16 @@ class UserResource extends Resource
             ->defaultSort('id', 'desc')
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
+                Tables\Filters\SelectFilter::make('is_active')
+                    ->options([
+                        true => 'Active',
+                        false => 'Suspended',
+                    ])
+                    ->label('Status')
+                    ->default(true),
+                Tables\Filters\SelectFilter::make('currentStudent.currentClassAssignment.class_id')
+                    ->label('Class')
+                    ->relationship('currentStudent.currentClassAssignment.class', 'name'),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
