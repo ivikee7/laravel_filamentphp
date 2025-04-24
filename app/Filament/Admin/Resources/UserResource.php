@@ -79,7 +79,6 @@ class UserResource extends Resource
                                                 ->visible(fn() => Filament::auth()->user()?->hasRole('Super Admin'))
                                                 ->disabled(fn() => !Filament::auth()->user()?->hasRole('Super Admin')),
                                         ])->relationship('gSuiteUser')->columns(2),
-                                        // Forms\Components\TextInput::make('gSuiteUser.email')->email()->label('GSuite Email'),
                                         Forms\Components\Group::make()
                                             ->schema([
                                                 Forms\Components\Select::make('gender_id')

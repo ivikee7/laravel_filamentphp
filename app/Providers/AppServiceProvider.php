@@ -42,10 +42,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Gate::before(function (User $user, string $ability) {
-            return $user->isSuperAdmin() ? true : null;
-        });
-
         Gate::policy(
             \App\Filament\Admin\Pages\IDCards\ListIDCards::class,
             \App\Policies\IDCards\ListIDCardsPolicy::class
