@@ -27,7 +27,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->unique(['student_id', 'class_id', 'academic_year_id'], 'student_class_unique');
+            $table->unique(['student_id', 'academic_year_id'], 'unique_student_academicYear');
         });
     }
 

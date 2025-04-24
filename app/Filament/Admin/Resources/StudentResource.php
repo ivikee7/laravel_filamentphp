@@ -479,6 +479,74 @@ class StudentResource extends Resource
                         ->deselectRecordsAfterCompletion()
                         ->color('success')
                         ->icon('heroicon-o-chat-bubble-left-right'),
+                    Tables\Actions\BulkAction::make('promote')
+                        ->label('Promote Students')
+                        ->form([
+                            Forms\Components\Select::make('new_academic_year_id')
+                                ->label('Academic Year')
+                                ->options(AcademicYear::where('is_active', true)->pluck('name', 'id')->toArray())
+                                ->reactive()
+                                ->afterStateUpdated(fn(callable $set) => $set('new_class_id', null)) // Reset class if academic year changes
+                                ->searchable()
+                                ->required(),
+
+                            Forms\Components\Select::make('new_class_id')
+                                ->label('New Class')
+                                ->options(function (callable $get) {
+                                    $academicYearId = $get('new_academic_year_id');
+                                    if (!$academicYearId) return [];
+                                    return Classes::where('academic_year_id', $academicYearId)->pluck('name', 'id')->toArray();
+                                })
+                                ->reactive()
+                                ->afterStateUpdated(fn(callable $set) => $set('new_section_id', null)) // Reset section if class changes
+                                ->searchable()
+                                ->required(),
+
+                            Forms\Components\Select::make('new_section_id')
+                                ->label('Section')
+                                ->options(function (callable $get) {
+                                    $classId = $get('new_class_id');
+                                    if (!$classId) return [];
+                                    return ModelsSection::where('class_id', $classId)->pluck('name', 'id')->toArray();
+                                })
+                                ->searchable(),
+                        ])
+                        ->action(function (Collection $records, array $data) {
+                            foreach ($records as $user) {
+                                $student = $user->student;
+
+                                if (!$student) {
+                                    continue;
+                                }
+
+                                // 👇 Always ensure previous assignments are not current (across all academic years)
+                                $student->classAssignments()->update(['is_current' => false]);
+
+                                // Check if a record exists for the selected academic year
+                                $existing = $student->classAssignments()
+                                    ->where('academic_year_id', $data['new_academic_year_id'])
+                                    ->first();
+
+                                if ($existing) {
+                                    $existing->update([
+                                        'class_id' => $data['new_class_id'],
+                                        'section_id' => $data['new_section_id'],
+                                        'is_current' => true,
+                                    ]);
+                                } else {
+                                    $student->classAssignments()->create([
+                                        'class_id' => $data['new_class_id'],
+                                        'section_id' => $data['new_section_id'],
+                                        'academic_year_id' => $data['new_academic_year_id'],
+                                        'is_promoted' => true,
+                                        'is_current' => true,
+                                        'student_id' => $student->id,
+                                    ]);
+                                }
+                            }
+                        })
+                        ->requiresConfirmation()
+                        ->deselectRecordsAfterCompletion()
                 ]),
             ]);
     }
