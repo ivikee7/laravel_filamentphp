@@ -218,6 +218,7 @@ class StudentResource extends Resource
                 Tables\Columns\TextColumn::make('id')
                     ->label('ID')
                     ->searchable()
+                    ->sortable()
                     ->toggleable(isToggledHiddenByDefault: false),
                 Tables\Columns\ImageColumn::make('avatar')
                     ->circular()
@@ -227,23 +228,28 @@ class StudentResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->wrap()
                     ->searchable()
+                    ->sortable()
                     ->label('Name'),
                 Tables\Columns\TextColumn::make('father_name')
                     ->wrap()
                     ->searchable()
+                    ->sortable()
                     ->label('Father Name')
                     ->toggleable(isToggledHiddenByDefault: false),
                 Tables\Columns\TextColumn::make('mother_name')
                     ->wrap()
                     ->searchable()
+                    ->sortable()
                     ->label('Motner Name')
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('currentStudent.currentClassAssignment.class.name')
                     ->searchable()
+                    ->sortable()
                     ->label('Class')
                     ->toggleable(isToggledHiddenByDefault: false),
                 Tables\Columns\TextColumn::make('currentStudent.currentClassAssignment.section.name')
                     ->searchable()
+                    ->sortable()
                     ->label('Section')
                     ->toggleable(isToggledHiddenByDefault: false),
                 Tables\Columns\TextColumn::make('full_address')
@@ -273,26 +279,31 @@ class StudentResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('bloodGroup.name')
                     ->searchable()
+                    ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('gender.name')
                     ->searchable()
+                    ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable()
+                    ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->label('Email'),
                 Tables\Columns\TextColumn::make('gSuiteUser.email')->label('GSuite Email')
                     ->searchable()
+                    ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('gSuiteUser.password')->label('GSuite Pwd')
-                    ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('roles.name')
                     ->badge()
                     ->searchable()
+                    ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('is_active')
                     ->label('Status')
+                    ->sortable()
                     ->formatStateUsing(fn($state) => $state ? 'Active' : 'Suspended')
                     ->badge()
                     ->color(fn($state) => $state ? 'success' : 'danger'),
