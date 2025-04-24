@@ -230,7 +230,8 @@ class StudentResource extends Resource
                     ->wrap()
                     ->searchable()
                     ->sortable()
-                    ->label('Name'),
+                    ->label('Name')
+                    ->toggleable(isToggledHiddenByDefault: false),
                 Tables\Columns\TextColumn::make('father_name')
                     ->wrap()
                     ->searchable()
