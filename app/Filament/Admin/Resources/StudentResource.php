@@ -306,7 +306,8 @@ class StudentResource extends Resource
                     ->sortable()
                     ->formatStateUsing(fn($state) => $state ? 'Active' : 'Suspended')
                     ->badge()
-                    ->color(fn($state) => $state ? 'success' : 'danger'),
+                    ->color(fn($state) => $state ? 'success' : 'danger')
+                    ->toggleable(isToggledHiddenByDefault: false),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
