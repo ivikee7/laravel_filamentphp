@@ -66,7 +66,7 @@ class UserResource extends Resource
                         return count($parts) > 1 ? end($parts) : '_';
                     }),
 
-                Tables\Columns\TextColumn::make('official_email')
+                Tables\Columns\TextColumn::make('gSuiteUser.email')
                     ->label('Email Address')
                     ->searchable(),
 
@@ -100,6 +100,7 @@ class UserResource extends Resource
                     })
                     ->searchable()
                     ->sortable(),
+
                 // Tables\Columns\TextColumn::make('orgUnitPath')
                 //     ->label('Org Unit Path')
                 //     ->searchable(),
@@ -112,7 +113,6 @@ class UserResource extends Resource
                     ->label('New Status')
                     ->formatStateUsing(fn($state) => $state ? 'Active' : 'Suspended')
                     ->searchable(),
-
 
                 Tables\Columns\TextColumn::make('gSuiteUser.created_by')
                     ->label('Created By')

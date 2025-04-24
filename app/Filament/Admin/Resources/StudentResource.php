@@ -17,6 +17,7 @@ use App\Models\User;
 use App\Models\WhatsAppProvider;
 use App\Services\SMSService;
 use App\Services\WhatsApp\WhatsAppService;
+use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
@@ -78,8 +79,18 @@ class StudentResource extends Resource
                                         Forms\Components\TextInput::make('name')
                                             ->required()
                                             ->default(fn($get) => Registration::find(request()->query('registration_id'))?->name),
-                                        Forms\Components\TextInput::make('official_email')->email()
-                                            ->default(fn($get) => Registration::find(request()->query('registration_id'))?->official_email),
+                                        Forms\Components\Group::make([
+                                            Forms\Components\TextInput::make('email')
+                                                ->label('GSuite Email')
+                                                ->email()
+                                                ->required()
+                                                ->disabled(fn() => !Filament::auth()->user()?->hasPermissionTo('update GSuiteUser')),
+                                            Forms\Components\TextInput::make('password')
+                                                ->label('GSuite Password')
+                                                ->email()
+                                                ->required()
+                                                ->disabled(fn() => !Filament::auth()->user()?->hasPermissionTo('update GSuiteUser')),
+                                        ])->relationship('gSuiteUser')->columns(2),
                                         Forms\Components\Group::make()
                                             ->schema([
                                                 Forms\Components\Select::make('gender_id')
@@ -270,7 +281,10 @@ class StudentResource extends Resource
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->label('Email'),
-                Tables\Columns\TextColumn::make('official_email')
+                Tables\Columns\TextColumn::make('gSuiteUser.email')->label('GSuite Email')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('gSuiteUser.password')->label('GSuite Pssword')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('roles.name')

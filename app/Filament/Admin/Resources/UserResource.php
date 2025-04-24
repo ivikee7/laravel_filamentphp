@@ -11,6 +11,7 @@ use App\Models\Gender;
 use App\Models\User;
 use App\Models\WhatsAppProvider;
 use App\Services\WhatsApp\WhatsAppService;
+use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -65,7 +66,19 @@ class UserResource extends Resource
                                 Forms\Components\Group::make()
                                     ->schema([
                                         Forms\Components\TextInput::make('name')->required(),
-                                        Forms\Components\TextInput::make('official_email')->email(),
+                                        Forms\Components\Group::make([
+                                            Forms\Components\TextInput::make('email')
+                                                ->label('GSuite Email')
+                                                ->email()
+                                                ->required()
+                                                ->disabled(fn() => !Filament::auth()->user()?->hasPermissionTo('update GSuiteUser')),
+                                            Forms\Components\TextInput::make('password')
+                                                ->label('GSuite Password')
+                                                ->email()
+                                                ->required()
+                                                ->disabled(fn() => !Filament::auth()->user()?->hasRole('Super Admin')),
+                                        ])->relationship('gSuiteUser')->columns(2),
+                                        // Forms\Components\TextInput::make('gSuiteUser.email')->email()->label('GSuite Email'),
                                         Forms\Components\Group::make()
                                             ->schema([
                                                 Forms\Components\Select::make('gender_id')
@@ -217,7 +230,10 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('email')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('official_email')
+                Tables\Columns\TextColumn::make('gSuiteUser.email')->label('GSuite Email')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('gSuiteUser.password')->label('GSuite Pssword')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('roles.name')
