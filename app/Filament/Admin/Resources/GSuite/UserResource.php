@@ -112,7 +112,7 @@ class UserResource extends Resource
                     ->default("FALSE")
                     ->searchable(),
                 Tables\Columns\TextColumn::make('is_active')
-                    ->label('New Status')
+                    ->label('New Status [Upload Only]')
                     ->formatStateUsing(fn($state) => $state ? 'Active' : 'Suspended')
                     ->searchable(),
 
