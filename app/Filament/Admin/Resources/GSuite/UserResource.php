@@ -162,6 +162,9 @@ class UserResource extends Resource
                 Tables\Filters\SelectFilter::make('currentStudent.currentClassAssignment.class_id')
                     ->label('Class')
                     ->relationship('currentStudent.currentClassAssignment.class', 'name'),
+                Tables\Filters\SelectFilter::make('roles')
+                    ->label('Roles')
+                    ->relationship('roles', 'name'),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
