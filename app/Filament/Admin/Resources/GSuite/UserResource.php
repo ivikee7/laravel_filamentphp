@@ -78,7 +78,7 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('orgUnitPath')
                     ->label('Org Unit Path')
                     ->getStateUsing(function ($record) {
-                        $parts = ['/SRCS, Patna' . '/School'];
+                        $parts = ['/SRCS' . '/School'];
 
                         // Use the first available role name, or "User" if none
                         $roleName = $record->roles->pluck('name')->first() ?? 'User';
