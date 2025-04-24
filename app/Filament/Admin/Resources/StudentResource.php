@@ -341,14 +341,7 @@ class StudentResource extends Resource
                 Tables\Filters\SelectFilter::make('currentStudent.currentClassAssignment.class_id')
                     ->label('Class')
                     ->relationship('currentStudent.currentClassAssignment.class', 'name'),
-                Tables\Filters\SelectFilter::make('section_id')
-                    ->label('Section')
-                    ->options(ModelsSection::pluck('name', 'id')->toArray())
-                    ->query(function (Builder $query, array $data): Builder {
-                        return $query->whereHas('currentStudent.currentClassAssignment', function ($q) use ($data) {
-                            $q->where('section_id', $data['value']);
-                        });
-                    }),
+
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
