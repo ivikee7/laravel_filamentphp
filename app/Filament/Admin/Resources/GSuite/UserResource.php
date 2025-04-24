@@ -12,7 +12,9 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Gate;
 
 class UserResource extends Resource
 {
@@ -183,5 +185,30 @@ class UserResource extends Resource
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ]);
+    }
+
+    public static function canViewAny(): bool
+    {
+        return Gate::allows('viewAny', GSuiteUser::class);
+    }
+
+    public static function canCreate(): bool
+    {
+        return Gate::allows('create', GSuiteUser::class);
+    }
+
+    public static function canView(Model $record): bool
+    {
+        return Gate::allows('view', $record->gSuiteUser);
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return Gate::allows('update', $record->gSuiteUser);
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return Gate::allows('delete', $record->gSuiteUser);
     }
 }
