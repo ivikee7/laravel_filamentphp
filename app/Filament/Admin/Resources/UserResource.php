@@ -255,7 +255,7 @@ class UserResource extends Resource
                     ->formatStateUsing(fn($state) => $state ? 'Active' : 'Suspended')
                     ->badge()
                     ->color(fn($state) => $state ? 'success' : 'danger')
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(isToggledHiddenByDefault: false),
                 Tables\Columns\TextColumn::make('email_verified_at')
                     ->dateTime()
                     ->sortable()

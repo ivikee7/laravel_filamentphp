@@ -11,6 +11,7 @@ use App\Models\Gender;
 use App\Models\MessageTemplate;
 use App\Models\Quota;
 use App\Models\Registration;
+use App\Models\Section as ModelsSection;
 use App\Models\SmsProvider;
 use App\Models\Student;
 use App\Models\User;
@@ -336,7 +337,18 @@ class StudentResource extends Resource
                         false => 'Suspended',
                     ])
                     ->label('Status')
-                    ->default(true)
+                    ->default(true),
+                Tables\Filters\SelectFilter::make('currentStudent.currentClassAssignment.class_id')
+                    ->label('Class')
+                    ->relationship('currentStudent.currentClassAssignment.class', 'name'),
+                Tables\Filters\SelectFilter::make('section_id')
+                    ->label('Section')
+                    ->options(ModelsSection::pluck('name', 'id')->toArray())
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query->whereHas('currentStudent.currentClassAssignment', function ($q) use ($data) {
+                            $q->where('section_id', $data['value']);
+                        });
+                    }),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
