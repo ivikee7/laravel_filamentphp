@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources\GSuite\UserResource\Pages;
 
 use App\Filament\Admin\Resources\GSuite\UserResource;
+use App\Filament\Admin\Resources\StudentResource\Pages\UpdateClassSection;
 use App\Models\GSuiteUser;
 use App\Models\User;
 use Filament\Actions;

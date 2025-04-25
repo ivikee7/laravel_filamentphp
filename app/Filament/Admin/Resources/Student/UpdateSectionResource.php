@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources\Student;
 
 use App\Filament\Admin\Resources\Student\UpdateSectionResource\Pages;
 use App\Filament\Admin\Resources\Student\UpdateSectionResource\RelationManagers;
+use App\Models\AcademicYear;
 use App\Models\Section;
 use App\Models\Student\UpdateSection;
 use App\Models\User;
@@ -57,28 +58,61 @@ class UpdateSectionResource extends Resource
                     ->sortable()
                     ->label('Motner Name')
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('currentStudent.currentClassAssignment.class.name')
-                    ->searchable()
-                    ->sortable()
+                Tables\Columns\SelectColumn::make('currentStudent.currentClassAssignment.class_id')
                     ->label('Class')
-                    ->toggleable(isToggledHiddenByDefault: false),
+                    ->options(function ($record) {
+                        // Get the academic year ID from the currentClassAssignment of the student
+                        $academicYearId = $record->currentStudent?->currentClassAssignment?->academic_year_id;
+
+                        // If academic year exists, return classes associated with it
+                        return $academicYearId
+                            ? \App\Models\Classes::where('academic_year_id', $academicYearId)
+                            ->pluck('name', 'id')
+                            : [];
+                    })
+                    ->afterStateUpdated(function ($record, $state) {
+                        // Get the class assignment for the student
+                        $assignment = $record->currentStudent?->currentClassAssignment;
+                        if ($assignment) {
+                            // Update the class_id in the assignment
+                            $assignment->update(['class_id' => $state]);
+
+                            // Optionally, you can also clear the section when class changes
+                            $assignment->update(['section_id' => null]);
+                        }
+
+                        // Emit an event to refresh the table
+                        $this->emitSelf('refresh');
+                    }),
                 Tables\Columns\SelectColumn::make('currentStudent.currentClassAssignment.section_id')
                     ->label('Section')
                     ->options(function ($record) {
+                        // Get the class_id from the currentClassAssignment
                         $classId = $record->currentStudent?->currentClassAssignment?->class_id;
 
-                        if (!$classId) {
-                            return [];
-                        }
-
-                        return Section::where('class_id', $classId)->pluck('name', 'id')->toArray();
+                        // If class_id exists, return sections associated with the class
+                        return $classId
+                            ? \App\Models\Section::where('class_id', $classId)->pluck('name', 'id')->toArray()
+                            : [];
                     })
-                    ->sortable()
-                    ->searchable(),
+                    ->afterStateUpdated(function ($record, $state) {
+                        // Update the section_id in the currentClassAssignment
+                        $assignment = $record->currentStudent?->currentClassAssignment;
+                        if ($assignment) {
+                            $assignment->update(['section_id' => $state]);
+                        }
+                    }),
             ])
             ->defaultSort('id', 'desc')
             ->modifyQueryUsing(function (Builder $query) {
-                $query->Role('Student');
+                $activeAcademicYearId = AcademicYear::where('is_active', true)->value('id');
+
+                $query->role('Student') // Filter only users with 'Student' role
+                    ->whereHas('currentStudent.currentClassAssignment', function ($subQuery) use ($activeAcademicYearId) {
+                        $subQuery
+                            ->where('academic_year_id', $activeAcademicYearId)
+                            ->where('is_current', true); // assuming `is_current` exists in class assignments
+                    });
             })
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
