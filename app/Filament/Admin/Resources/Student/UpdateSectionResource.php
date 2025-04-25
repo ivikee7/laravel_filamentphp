@@ -58,6 +58,12 @@ class UpdateSectionResource extends Resource
                     ->sortable()
                     ->label('Motner Name')
                     ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('currentStudent.currentClassAssignment.academicYear.name')
+                    ->wrap()
+                    ->searchable()
+                    ->sortable()
+                    ->label('Academic Year')
+                    ->toggleable(isToggledHiddenByDefault: false),
                 Tables\Columns\SelectColumn::make('currentStudent.currentClassAssignment.class_id')
                     ->label('Class')
                     ->options(function ($record) {
