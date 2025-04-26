@@ -244,11 +244,7 @@ class StudentResource extends Resource
                     ->label('Motner Name')
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('currentStudent.currentClassAssignment.class.name')
-                    ->searchable(query: function (Builder $query, string $search) {
-                        $query->whereHas('currentStudent.currentClassAssignment.class', function (Builder $query) use ($search) {
-                            $query->where('name', 'like', "%{$search}%");
-                        });
-                    })
+                    ->searchable()
                     ->sortable()
                     ->label('Class')
                     ->toggleable(isToggledHiddenByDefault: false),
