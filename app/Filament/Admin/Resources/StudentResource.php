@@ -512,7 +512,7 @@ class StudentResource extends Resource
                                 ->label('Academic Year')
                                 ->options(AcademicYear::where('is_active', true)->pluck('name', 'id')->toArray())
                                 ->reactive()
-                                ->afterStateUpdated(fn(callable $set) => $set('new_class_id', null)) // Reset class if academic year changes
+                                ->afterStateUpdated(fn(callable $set) => $set('new_class_id', null))
                                 ->searchable()
                                 ->required(),
 
@@ -524,7 +524,7 @@ class StudentResource extends Resource
                                     return Classes::where('academic_year_id', $academicYearId)->pluck('name', 'id')->toArray();
                                 })
                                 ->reactive()
-                                ->afterStateUpdated(fn(callable $set) => $set('new_section_id', null)) // Reset section if class changes
+                                ->afterStateUpdated(fn(callable $set) => $set('new_section_id', null))
                                 ->searchable()
                                 ->required(),
 
@@ -545,14 +545,27 @@ class StudentResource extends Resource
                                     continue;
                                 }
 
-                                // Create the new class assignment.  We don't need to update is_current
-                                $student->classAssignments()->create([
-                                    'class_id' => $data['new_class_id'],
-                                    'section_id' => $data['new_section_id'],
-                                    'academic_year_id' => $data['new_academic_year_id'],
-                                    'is_promoted' => true,
-                                    'student_id' => $student->id,
-                                ]);
+                                // Check if a record exists for the student and academic year.
+                                $existingAssignment = $student->classAssignments()
+                                    ->where('academic_year_id', $data['new_academic_year_id'])
+                                    ->first();
+
+                                if ($existingAssignment) {
+                                    // Update the existing record.
+                                    $existingAssignment->update([
+                                        'class_id' => $data['new_class_id'],
+                                        'section_id' => $data['new_section_id'],
+                                    ]);
+                                } else {
+                                    // Create a new record.
+                                    $student->classAssignments()->create([
+                                        'class_id' => $data['new_class_id'],
+                                        'section_id' => $data['new_section_id'],
+                                        'academic_year_id' => $data['new_academic_year_id'],
+                                        'is_promoted' => true,
+                                        'student_id' => $student->id,
+                                    ]);
+                                }
                             }
                         })
                         ->requiresConfirmation()
