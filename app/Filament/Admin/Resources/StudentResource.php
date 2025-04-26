@@ -48,7 +48,6 @@ class StudentResource extends Resource
 
     public static function form(Form $form): Form
     {
-
         return $form
             ->schema([
                 Section::make('User info')
@@ -245,7 +244,11 @@ class StudentResource extends Resource
                     ->label('Motner Name')
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('currentStudent.currentClassAssignment.class.name')
-                    ->searchable()
+                    ->searchable(query: function (Builder $query, string $search) {
+                        $query->whereHas('currentStudent.currentClassAssignment.class', function (Builder $query) use ($search) {
+                            $query->where('name', 'like', "%{$search}%");
+                        });
+                    })
                     ->sortable()
                     ->label('Class')
                     ->toggleable(isToggledHiddenByDefault: false),
@@ -253,6 +256,11 @@ class StudentResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->label('Section')
+                    ->toggleable(isToggledHiddenByDefault: false),
+                Tables\Columns\TextColumn::make('currentStudent.currentClassAssignment.academicYear.name')
+                    ->searchable()
+                    ->sortable()
+                    ->label('Academic Year')
                     ->toggleable(isToggledHiddenByDefault: false),
                 Tables\Columns\TextColumn::make('full_address')
                     ->label('Address')
@@ -339,10 +347,65 @@ class StudentResource extends Resource
                     ])
                     ->label('Status')
                     ->default(true),
-                Tables\Filters\SelectFilter::make('currentStudent.currentClassAssignment.class_id')
-                    ->label('Class')
-                    ->relationship('currentStudent.currentClassAssignment.class', 'name'),
+                Tables\Filters\SelectFilter::make('academic_year_id')
+                    ->label('Academic Year')
+                    ->options(function () {
+                        return \App\Models\AcademicYear::pluck('name', 'id')->toArray();
+                    })
+                    ->query(function (Builder $query, array $data): Builder {
+                        // Use array_key_exists to check if the key is set
+                        if (array_key_exists('academic_year_id', $data)) {
+                            $value = $data['academic_year_id']; // Extract the value
 
+                            // Only proceed with the whereHas if $value is not null
+                            if ($value !== null) {
+                                return $query->whereHas('currentStudent', function (Builder $query) use ($value) {
+                                    $query->whereHas('currentClassAssignment', function (Builder $query) use ($value) {
+                                        $query->where('academic_year_id', $value);
+                                    });
+                                });
+                            }
+                            //  Add an else, to handle the case where academic_year_id exists, but is null
+                            else {
+                                return $query->whereHas('currentStudent', function (Builder $query) {
+                                    $query->whereHas('currentClassAssignment');
+                                });
+                            }
+                        }
+                        // If the key doesn't exist, return the default query
+                        return $query->whereHas('currentStudent', function (Builder $query) {
+                            $query->whereHas('currentClassAssignment');
+                        });
+                    })
+                    ->default(function () {
+                        return \App\Models\AcademicYear::where('is_active', true)->value('id');
+                    }),
+                Tables\Filters\SelectFilter::make('class_name')
+                    ->label('Class')
+                    ->options(function () {
+                        return \App\Models\Classes::distinct('name')->pluck('name', 'name')->toArray();
+                    })
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query->when(
+                            $data['value'],
+                            fn(Builder $query, $value): Builder => $query->whereHas('currentStudent.currentClassAssignment.class', function (Builder $query) use ($value) {
+                                $query->where(\Illuminate\Support\Facades\DB::raw('LOWER(name)'), '=', strtolower($value));
+                            }),
+                        );
+                    }),
+                Tables\Filters\SelectFilter::make('section_name')
+                    ->label('Section')
+                    ->options(function () {
+                        return \App\Models\Section::distinct('name')->pluck('name', 'name')->toArray();
+                    })
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query->when(
+                            $data['value'],
+                            fn(Builder $query, $value): Builder => $query->whereHas('currentStudent.currentClassAssignment.section', function (Builder $query) use ($value) {
+                                $query->where(\Illuminate\Support\Facades\DB::raw('LOWER(name)'), '=', strtolower($value));
+                            }),
+                        );
+                    }),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
@@ -519,30 +582,14 @@ class StudentResource extends Resource
                                     continue;
                                 }
 
-                                // 👇 Always ensure previous assignments are not current (across all academic years)
-                                $student->classAssignments()->update(['is_current' => false]);
-
-                                // Check if a record exists for the selected academic year
-                                $existing = $student->classAssignments()
-                                    ->where('academic_year_id', $data['new_academic_year_id'])
-                                    ->first();
-
-                                if ($existing) {
-                                    $existing->update([
-                                        'class_id' => $data['new_class_id'],
-                                        'section_id' => $data['new_section_id'],
-                                        'is_current' => true,
-                                    ]);
-                                } else {
-                                    $student->classAssignments()->create([
-                                        'class_id' => $data['new_class_id'],
-                                        'section_id' => $data['new_section_id'],
-                                        'academic_year_id' => $data['new_academic_year_id'],
-                                        'is_promoted' => true,
-                                        'is_current' => true,
-                                        'student_id' => $student->id,
-                                    ]);
-                                }
+                                // Create the new class assignment.  We don't need to update is_current
+                                $student->classAssignments()->create([
+                                    'class_id' => $data['new_class_id'],
+                                    'section_id' => $data['new_section_id'],
+                                    'academic_year_id' => $data['new_academic_year_id'],
+                                    'is_promoted' => true,
+                                    'student_id' => $student->id,
+                                ]);
                             }
                         })
                         ->requiresConfirmation()
@@ -573,7 +620,16 @@ class StudentResource extends Resource
         return parent::getEloquentQuery()
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
-            ]);
+            ])
+            ->with([
+                'student.quota',
+                'bloodGroup',
+                'gender',
+                'currentStudent.currentClassAssignment.class',
+                'currentStudent.currentClassAssignment.section',
+                // ... other relationships
+            ])
+            ->Role('Student');
     }
 
     public static function canView(Model $record): bool

@@ -73,18 +73,7 @@ class Student extends Model
     }
     public function currentClassAssignment()
     {
-        $activeYearId = \App\Models\AcademicYear::where('is_active', true)->value('id');
-
-        return $this->hasOne(StudentClassAssignment::class)
-            ->where(function ($query) use ($activeYearId) {
-                $query->where('is_current', true)
-                    ->where('academic_year_id', $activeYearId);
-            })
-            ->orWhere(function ($query) {
-                // Fallback to latest assignment if no active-year assignment exists
-                $query->where('is_current', true)
-                    ->orderByDesc('academic_year_id');
-            });
+        return $this->hasOne(StudentClassAssignment::class)->latestOfMany();
     }
 
     public function user()
