@@ -2,10 +2,9 @@
 
 namespace App\Filament\Admin\Resources;
 
-use App\Filament\Admin\Resources\ClassesResource\Pages;
-use App\Filament\Admin\Resources\ClassesResource\RelationManagers;
-use App\Models\AcademicYear;
-use App\Models\Classes;
+use App\Filament\Admin\Resources\StudentClassResource\Pages;
+use App\Filament\Admin\Resources\StudentClassResource\RelationManagers;
+use App\Models\StudentClass;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -15,9 +14,9 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class ClassesResource extends Resource
+class StudentClassResource extends Resource
 {
-    protected static ?string $model = Classes::class;
+    protected static ?string $model = StudentClass::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -114,6 +113,6 @@ class ClassesResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return Classes::count();
+        return StudentClass::count();
     }
 }

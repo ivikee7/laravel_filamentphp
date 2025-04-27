@@ -142,4 +142,9 @@ class BookBorrowResource extends Resource
             ->whereNull('received_at')
             ->whereNull('received_by');
     }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return LibraryBookBorrow::count();
+    }
 }

@@ -218,6 +218,12 @@ class BookResource extends Resource
             ->whereDoesntHave('borrows', function ($query) {
                 $query->whereNull('received_at');
                 $query->whereNull('received_by');
-            });
+            })
+        ;
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return LibraryBook::count();
     }
 }

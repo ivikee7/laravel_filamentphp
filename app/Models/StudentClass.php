@@ -8,9 +8,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 
-class Classes extends Model
+class StudentClass extends Model
 {
     use SoftDeletes;
+
+    protected $table = 'student_classes';
 
     protected $fillable = [
         'name'
@@ -59,7 +61,8 @@ class Classes extends Model
         return $this->belongsTo(AcademicYear::class);
     }
 
-    public function sections():HasMany{
-        return $this->hasMany(Section::class, 'class_id');
+    public function sections(): HasMany
+    {
+        return $this->hasMany(StudentSection::class, 'class_id');
     }
 }

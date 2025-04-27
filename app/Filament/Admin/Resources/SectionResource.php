@@ -5,6 +5,8 @@ namespace App\Filament\Admin\Resources;
 use App\Filament\Admin\Resources\SectionResource\Pages;
 use App\Filament\Admin\Resources\SectionResource\RelationManagers;
 use App\Models\Section;
+use App\Models\Student;
+use App\Models\StudentSection;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -15,7 +17,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class SectionResource extends Resource
 {
-    protected static ?string $model = Section::class;
+    protected static ?string $model = StudentSection::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -135,7 +137,7 @@ class SectionResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return Section::count();
+        return StudentSection::count();
     }
 
 }

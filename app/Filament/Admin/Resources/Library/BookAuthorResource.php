@@ -110,4 +110,9 @@ class BookAuthorResource extends Resource
                 SoftDeletingScope::class,
             ]);
     }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return LibraryBookAuthor::count();
+    }
 }

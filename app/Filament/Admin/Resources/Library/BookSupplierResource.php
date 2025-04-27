@@ -134,4 +134,10 @@ class BookSupplierResource extends Resource
                 SoftDeletingScope::class,
             ]);
     }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return LibraryBookSupplier::where('is_active', 1)
+            ->count();
+    }
 }

@@ -8,6 +8,7 @@ use App\Models\Subject;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 
@@ -100,7 +101,7 @@ class LibraryBook extends Model
     }
     public function class(): BelongsTo
     {
-        return $this->belongsTo(Classes::class);
+        return $this->belongsTo(ClassName::class);
     }
     public function subject(): BelongsTo
     {
@@ -111,9 +112,9 @@ class LibraryBook extends Model
         return $this->belongsTo(LibraryBookSupplier::class);
     }
 
-    public function borrows()
+    public function borrows(): HasMany
     {
-        return $this->hasMany(LibraryBookBorrow::class);
+        return $this->hasMany(LibraryBookBorrow::class, 'book_id');
     }
     public function scopeOnlyAvailable($query)
     {

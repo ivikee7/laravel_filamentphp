@@ -7,9 +7,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 
-class Section extends Model
+class StudentSection extends Model
 {
     use SoftDeletes;
+
+    protected $table = 'student_sections';
 
     protected $fillable = [
         'name',
@@ -63,7 +65,7 @@ class Section extends Model
 
     public function class(): BelongsTo
     {
-        return $this->belongsTo(Classes::class);
+        return $this->belongsTo(StudentClass::class);
     }
     public function teacher(): BelongsTo
     {
