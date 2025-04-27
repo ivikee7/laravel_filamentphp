@@ -36,7 +36,9 @@ class ClassNameResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('name')
+                    ->wrap()
+                    ->searchable(),
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
