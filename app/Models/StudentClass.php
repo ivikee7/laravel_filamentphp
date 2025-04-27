@@ -58,7 +58,8 @@ class StudentClass extends Model
         return $this->belongsTo(User::class, 'deleted_by');
     }
 
-    public function className():BelongsTo{
+    public function className(): BelongsTo
+    {
         return $this->belongsTo(ClassName::class, 'class_name_id');
     }
 

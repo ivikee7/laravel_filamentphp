@@ -5,10 +5,10 @@ namespace App\Filament\Admin\Resources;
 use App\Filament\Admin\Resources\RegistrationResource\Pages;
 use App\Filament\Admin\Resources\RegistrationResource\RelationManagers;
 use App\Models\AcademicYear;
-use App\Models\Classes;
 use App\Models\Enquiry;
 use App\Models\Gender;
 use App\Models\Registration;
+use App\Models\StudentClass;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
@@ -50,7 +50,8 @@ class RegistrationResource extends Resource
                             ->maxLength(255)
                             ->default(fn($get) => Enquiry::find(request()->query('enquiry_id'))?->previous_school),
                         Forms\Components\Select::make('previous_class_id')
-                            ->relationship('previousClass', 'name')
+                            ->relationship('class', 'name')
+                            ->label('Previous Class')
                             ->default(fn($get) => Enquiry::find(request()->query('enquiry_id'))?->previous_class_id),
                     ])->columns(3),
                 Section::make('Admission info')
@@ -73,16 +74,22 @@ class RegistrationResource extends Resource
                             ]),
 
                         Forms\Components\Select::make('class_id')
-                            ->label('Class')
-                            ->options(
-                                fn($get) =>
-                                $get('academic_year_id')
-                                    ? Classes::where('academic_year_id', $get('academic_year_id'))->pluck('name', 'id')
-                                    : []
-                            )
+                            ->label('Registration Class')
+                            ->options(function ($get) {
+                                $academicYearId = $get('academic_year_id'); // Get the academic_year_id dynamically
+                                return $academicYearId
+                                    ? StudentClass::with('className')  // Eager load the className relationship
+                                    ->where('academic_year_id', $academicYearId)
+                                    ->get()
+                                    ->pluck('className.name', 'id') // Pluck name from className relation and id as value
+                                    : []; // Empty array if no academic_year_id is set
+                            })
                             ->required()
                             ->reactive()
-                            ->default(fn($get) => Enquiry::find(request()->query('enquiry_id'))?->class_id),
+                            ->default(function ($get) {
+                                // Default the class_id based on the enquiry record, pulling the class_id from the Enquiry model
+                                return Enquiry::find(request()->query('enquiry_id'))?->class_id;
+                            }),
                     ])->columns(3),
                 Section::make('Father info')
                     ->schema([
@@ -172,8 +179,8 @@ class RegistrationResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->wrap()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('class.name')
-                    ->numeric()
+                Tables\Columns\TextColumn::make('admissionClass.className.name')
+                    ->label('Class')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('father_name')->wrap()
                     ->searchable(),
@@ -224,8 +231,8 @@ class RegistrationResource extends Resource
                 Tables\Columns\TextColumn::make('payment_mode')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('previousClass.name')
-                    ->numeric()
+                Tables\Columns\TextColumn::make('class.name')
+                    ->label('Previus Class')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('created_at')->wrap()

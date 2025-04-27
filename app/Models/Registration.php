@@ -83,13 +83,13 @@ class Registration extends Model
 
 
 
+    public function admissionClass(): BelongsTo
+    {
+        return $this->belongsTo(StudentClass::class, 'class_id');
+    }
     public function class(): BelongsTo
     {
-        return $this->belongsTo(Classes::class);
-    }
-    public function previousClass(): BelongsTo
-    {
-        return $this->belongsTo(Classes::class);
+        return $this->belongsTo(ClassName::class);
     }
     public function gender(): BelongsTo
     {

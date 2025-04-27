@@ -42,12 +42,14 @@ class EnquiryResource extends Resource
                             ->maxLength(50)
                             ->default(null),
                         Forms\Components\Select::make('previous_class_id')
-                            ->relationship('previousClass', 'name')
+                            ->label('Previous Class')
+                            ->relationship('class', 'name')
                             ->default(null),
                     ])->columns(3),
                 Section::make('Admission info')
                     ->schema([
                         Forms\Components\Select::make('class_id')
+                        ->label('Enquiry Class')
                             ->relationship('class', 'name')
                             ->default(null),
                         Forms\Components\Textarea::make('notes')
@@ -120,7 +122,7 @@ class EnquiryResource extends Resource
                 Tables\Columns\TextColumn::make('name')->wrap()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('class.name')->wrap()
-                    ->numeric()
+                    ->label('Enquiry Class')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('gender')
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -160,7 +162,8 @@ class EnquiryResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('source')->wrap()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('previousClass.name')->wrap()
+                Tables\Columns\TextColumn::make('class.name')->wrap()
+                    ->label('Previous Class')
                     ->numeric()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

@@ -74,15 +74,12 @@ class Enquiry extends Model
     }
 
 
-
-
-
     public function class(): BelongsTo
     {
-        return $this->belongsTo(StudentClass::class);
+        return $this->belongsTo(ClassName::class);
     }
-    public function previousClass(): BelongsTo
-    {
-        return $this->belongsTo(StudentClass::class);
-    }
+    // public function previousClass(): BelongsTo
+    // {
+    //     return $this->belongsTo(StudentClass::class);
+    // }
 }
