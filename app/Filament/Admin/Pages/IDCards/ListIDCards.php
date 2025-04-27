@@ -38,14 +38,14 @@ class ListIDCards extends Page implements HasTable
                     })
             )
             ->columns([
-                ImageColumn::make('avatar')
-                    ->label('Photo')
-                    ->circular()
-                    ->size(50),
                 TextColumn::make('id')
                     ->label('ID')
                     ->searchable()
                     ->sortable(),
+                ImageColumn::make('avatar')
+                    ->label('Photo')
+                    ->circular()
+                    ->size(50),
                 TextColumn::make('name')
                     ->wrap()
                     ->label('Name')
