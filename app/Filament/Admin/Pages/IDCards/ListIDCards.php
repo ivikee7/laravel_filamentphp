@@ -75,7 +75,7 @@ class ListIDCards extends Page implements HasTable
                         'warning' => 'graduated',
                     ])
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('currentStudent.currentClassAssignment.class.name')
+                TextColumn::make('currentStudent.currentClassAssignment.class.className.name')
                     ->label('Class')
                     ->sortable()
                     ->searchable()
