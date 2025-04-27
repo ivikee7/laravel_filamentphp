@@ -39,13 +39,22 @@ class ClassNameResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->wrap()
                     ->searchable(),
+                Tables\Columns\TextColumn::make('createdBy.name')
+                    ->wrap()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('updateBy.name')
+                    ->wrap()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('deletedBy.name')
+                    ->wrap()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->wrap()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->wrap()
                     ->searchable(),
-                    Tables\Columns\TextColumn::make('deleted_at')
+                Tables\Columns\TextColumn::make('deleted_at')
                     ->wrap()
                     ->searchable(),
             ])
