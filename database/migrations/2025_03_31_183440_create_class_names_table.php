@@ -13,8 +13,14 @@ return new class extends Migration
     {
         Schema::create('class_names', function (Blueprint $table) {
             $table->id();
+            //
             $table->string('name');
+            //
+            $table->foreignId('created_by')->nullable();
+            $table->foreignId('updated_by')->nullable();
+            $table->foreignId('deleted_by')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
