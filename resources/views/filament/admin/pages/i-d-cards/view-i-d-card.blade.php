@@ -25,7 +25,7 @@
 
             <div class="text-sm space-y-1 dark:text-white">
                 <div><strong>ID #:</strong> {{ $record->id }}</div>
-                <div><strong>Class:</strong> {{ $record->student?->currentClassAssignment?->class?->classNmae?->name }}</div>
+                <div><strong>Class:</strong> {{ $record->student?->currentClassAssignment?->class?->className?->name }}</div>
                 <div><strong>Section:</strong> {{ $record->student?->currentClassAssignment?->section?->name }}</div>
                 <div><strong>Father's Name:</strong> {{ $record->father_name }}</div>
                 <div><strong>Mother's Name:</strong> {{ $record->mother_name }}</div>
