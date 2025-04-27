@@ -130,36 +130,47 @@ class StudentResource extends Resource
                                             ->required()
                                             ->reactive()
                                             ->afterStateUpdated(fn($set) => [
-                                                $set('student_class_id', null), // Corrected: Changed 'class_id' to 'student_class_id'
+                                                $set('class_id', null),
                                                 $set('section_id', null),
                                             ])
                                             ->default(fn() => \App\Models\Registration::find(request()->query('registration_id'))?->academic_year_id),
 
-                                        Forms\Components\Select::make('student_class_id') // Corrected: Changed 'class_id' to 'student_class_id'
+                                        Forms\Components\Select::make('class_id')
                                             ->label('Student Class')
-                                            ->options(
-                                                fn($get) =>
-                                                $get('academic_year_id')
-                                                    ? \App\Models\StudentClass::where('academic_year_id', $get('academic_year_id'))->pluck('name', 'id') // Corrected: Changed 'className.name' to 'name'
-                                                    : []
-                                            )
+                                            ->options(function ($get) {
+                                                $academicYearId = $get('academic_year_id');
+                                                if (!$academicYearId) {
+                                                    return [];
+                                                }
+
+                                                return \App\Models\StudentClass::with('className')
+                                                    ->where('academic_year_id', $academicYearId)
+                                                    ->get()
+                                                    ->pluck('className.name', 'id')
+                                                    ->toArray();
+                                            })
                                             ->required()
                                             ->reactive()
                                             ->afterStateUpdated(fn($set) => $set('section_id', null))
-                                            ->default(fn() => \App\Models\Registration::find(request()->query('registration_id'))?->student_class_id), // Corrected: Changed 'class_id' to 'student_class_id'
+                                            ->default(fn() => \App\Models\Registration::find(request()->query('registration_id'))?->class_id),
 
                                         Forms\Components\Select::make('section_id')
                                             ->label('Section')
                                             ->options(function ($get) {
-                                                $studentClassId = $get('student_class_id'); // Corrected: Changed 'class_id' to 'student_class_id'
-                                                return $studentClassId
-                                                    ? \App\Models\StudentSection::where('student_class_id', $studentClassId)->pluck('name', 'id')->toArray() // Corrected: Changed 'class_id' to 'student_class_id'
-                                                    : [];
+                                                $classId = $get('class_id');
+                                                if (!$classId) {
+                                                    return [];
+                                                }
+
+                                                return \App\Models\StudentSection::where('class_id', $classId)
+                                                    ->pluck('name', 'id')
+                                                    ->toArray();
                                             })
                                             ->default(fn() => \App\Models\Registration::find(request()->query('registration_id'))?->section_id),
-
-                                    ])->columns(3),
+                                    ])
+                                    ->columns(3),
                             ]),
+
                     ]),
                 Section::make('Parents info')
                     ->schema([
@@ -347,20 +358,24 @@ class StudentResource extends Resource
                 Tables\Filters\SelectFilter::make('class_name')
                     ->label('Class')
                     ->options(function () {
-                        return \App\Models\StudentClass::distinct('name')->pluck('name', 'name')->toArray();
+                        return StudentClass::with('className')  // Ensure eager load 'className'
+                            ->distinct() // Use distinct for unique class names
+                            ->get()
+                            ->pluck('className.name', 'className.name')  // Pluck className.name for both key and value
+                            ->toArray();
                     })
                     ->query(function (Builder $query, array $data): Builder {
                         return $query->when(
                             $data['value'],
-                            fn(Builder $query, $value): Builder => $query->whereHas('currentStudent.currentClassAssignment.class', function (Builder $query) use ($value) {
-                                $query->where(\Illuminate\Support\Facades\DB::raw('LOWER(name)'), '=', strtolower($value));
-                            }),
+                            fn(Builder $query, $value): Builder => $query->whereHas('currentStudent.currentClassAssignment.class.className', function (Builder $query) use ($value) {
+                                $query->where('class_names.name', '=', $value);
+                            })
                         );
                     }),
                 Tables\Filters\SelectFilter::make('section_name')
                     ->label('Section')
                     ->options(function () {
-                        return \App\Models\StudentSection::distinct('name')->pluck('name', 'name')->toArray();
+                        return StudentSection::distinct('name')->pluck('name', 'name')->toArray();
                     })
                     ->query(function (Builder $query, array $data): Builder {
                         return $query->when(

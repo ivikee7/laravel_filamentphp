@@ -63,6 +63,6 @@ class Room extends Model
 
     public function sections(): HasMany
     {
-        return $this->hasMany(Section::class, 'room_id');
+        return $this->hasMany(StudentSection::class, 'room_id');
     }
 }

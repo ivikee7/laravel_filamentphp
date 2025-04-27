@@ -6,6 +6,7 @@ use App\Filament\Admin\Resources\StudentSectionResource\Pages;
 use App\Filament\Admin\Resources\StudentSectionResource\RelationManagers;
 use App\Models\Section;
 use App\Models\Student;
+use App\Models\StudentClass;
 use App\Models\StudentSection;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -27,18 +28,37 @@ class StudentSectionResource extends Resource
     {
         return $form
             ->schema([
+                // Forms\Components\Select::make('class_id')
+                //     ->label('Class')
+                //     ->options(function () {
+                //         StudentClass::whereHas('academicYear', function (Builder $query) {
+                //             $query->where('is_active', true)
+                //             ;
+                //         })->get()->pluck('className.name', 'id')->toArray();
+                //     })
+                //     ->required(),
+                Forms\Components\Select::make('class_id')
+                    ->label('Class')
+                    ->options(function () {
+                        return StudentClass::with('className')
+                            ->whereHas('academicYear', function ($query) {
+                                $query->where('is_active', true);
+                            })
+                            ->get()
+                            ->pluck('className.name', 'id');
+                    })
+                    ->searchable()
+                    ->required(),
                 Forms\Components\TextInput::make('name')
                     ->required()
-                    ->maxLength(255),
-                Forms\Components\Select::make('class_id')
-                    ->relationship('class', 'name')
-                    ->required(),
+                    ->maxLength(50),
                 Forms\Components\Select::make('room_id')
                     ->relationship('room', 'name', function ($query, $get) {
                         $query->whereDoesntHave('sections');
 
                         // Ensure the current room_id is always included in the dropdown
                         if ($get('room_id')) {
+
                             $query->orWhere('id', $get('room_id'));
                         }
                     })
@@ -61,11 +81,12 @@ class StudentSectionResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('class.academicYear.name')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('class.className.name')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('class.name')
-                    ->numeric()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('room.name')
                     ->numeric()
                     ->sortable(),
@@ -139,5 +160,4 @@ class StudentSectionResource extends Resource
     {
         return StudentSection::count();
     }
-
 }
