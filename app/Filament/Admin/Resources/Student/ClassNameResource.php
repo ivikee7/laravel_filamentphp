@@ -104,4 +104,9 @@ class ClassNameResource extends Resource
                 SoftDeletingScope::class,
             ]);
     }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return ClassName::count();
+    }
 }
