@@ -27,8 +27,7 @@ class ClassNameResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('name')
                     ->required()
-                    ->maxLength(50)
-                    ->qnique(),
+                    ->maxLength(50),
             ]);
     }
 
