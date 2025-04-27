@@ -41,22 +41,28 @@ class ClassNameResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('createdBy.name')
                     ->wrap()
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updateBy.name')
                     ->wrap()
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('deletedBy.name')
                     ->wrap()
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->wrap()
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->wrap()
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('deleted_at')
-                    ->wrap()
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('created_at')->wrap()
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('updated_at')->wrap()
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('deleted_at')->wrap()
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
