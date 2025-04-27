@@ -77,11 +77,11 @@ class StudentClassAssignment extends Model
 
     public function class(): BelongsTo
     {
-        return $this->belongsTo(Classes::class);
+        return $this->belongsTo(StudentClass::class);
     }
     public function section(): BelongsTo
     {
-        return $this->belongsTo(Section::class);
+        return $this->belongsTo(StudentSection::class);
     }
     public function academicYear()
     {

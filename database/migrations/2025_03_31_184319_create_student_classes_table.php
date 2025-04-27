@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('student_classes', function (Blueprint $table) {
             $table->id();
             //
-            // $table->string('name', 25);
             $table->foreignId('class_name_id');
             $table->foreignId('academic_year_id')->nullable();
             //

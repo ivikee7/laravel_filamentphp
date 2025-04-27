@@ -31,9 +31,12 @@ class StudentClassResource extends Resource
                 Forms\Components\Select::make('academic_year_id')
                     ->relationship('academicYear', 'name')
                     ->required(),
+                Forms\Components\Select::make('class_name_id')
+                    ->relationship('className', 'name')
+                    ->required(),
                 Forms\Components\TextInput::make('name')
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(50),
             ]);
     }
 
@@ -45,8 +48,7 @@ class StudentClassResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('academicYear.name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('name')
-                ->label('Class Name')
+                Tables\Columns\TextColumn::make('className.name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('createdBy.name')
                     ->numeric()

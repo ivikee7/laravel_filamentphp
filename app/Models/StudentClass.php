@@ -15,7 +15,9 @@ class StudentClass extends Model
     protected $table = 'student_classes';
 
     protected $fillable = [
-        'name'
+        'name',
+        'class_name_id',
+        'academic_year_id',
     ];
 
     protected static function boot()
@@ -54,6 +56,10 @@ class StudentClass extends Model
     public function deletedBy()
     {
         return $this->belongsTo(User::class, 'deleted_by');
+    }
+
+    public function className():BelongsTo{
+        return $this->belongsTo(ClassName::class, 'class_name_id');
     }
 
     public function academicYear()

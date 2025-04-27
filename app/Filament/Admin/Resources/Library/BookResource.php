@@ -71,7 +71,7 @@ class BookResource extends Resource
                     ->relationship('language', 'name')
                     ->default(null),
                 Forms\Components\Select::make('class_id')
-                    ->relationship('class', 'name')
+                    ->relationship('class.className', 'name')
                     ->default(null),
                 Forms\Components\Select::make('subject_id')
                     ->relationship('subject', 'name')
@@ -135,7 +135,7 @@ class BookResource extends Resource
                     ->wrap()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('class.name')
+                Tables\Columns\TextColumn::make('class.className.name')
                     ->wrap()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('subject.name')
