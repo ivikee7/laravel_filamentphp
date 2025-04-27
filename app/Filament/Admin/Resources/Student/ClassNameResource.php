@@ -27,7 +27,8 @@ class ClassNameResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('name')
                     ->required()
-                    ->maxLength(50),
+                    ->maxLength(50)
+                    ->unique(ClassName::class, 'name', ignoreRecord: true),
             ]);
     }
 
