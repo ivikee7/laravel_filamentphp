@@ -2,8 +2,8 @@
 
 namespace App\Filament\Admin\Resources;
 
-use App\Filament\Admin\Resources\SectionResource\Pages;
-use App\Filament\Admin\Resources\SectionResource\RelationManagers;
+use App\Filament\Admin\Resources\StudentSectionResource\Pages;
+use App\Filament\Admin\Resources\StudentSectionResource\RelationManagers;
 use App\Models\Section;
 use App\Models\Student;
 use App\Models\StudentSection;
@@ -15,7 +15,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class SectionResource extends Resource
+class StudentSectionResource extends Resource
 {
     protected static ?string $model = StudentSection::class;
 
