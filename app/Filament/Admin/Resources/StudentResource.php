@@ -521,12 +521,16 @@ class StudentResource extends Resource
                         ->deselectRecordsAfterCompletion()
                         ->color('success')
                         ->icon('heroicon-o-chat-bubble-left-right'),
-                    Tables\Actions\BulkAction::make('promote')
+                    BulkAction::make('promote')
                         ->label('Promote Students')
                         ->form([
                             Forms\Components\Select::make('new_academic_year_id')
                                 ->label('Academic Year')
-                                ->options(AcademicYear::where('is_active', true)->pluck('name', 'id')->toArray())
+                                ->options(
+                                    AcademicYear::where('is_active', true)
+                                        ->pluck('name', 'id')
+                                        ->toArray()
+                                )
                                 ->reactive()
                                 ->afterStateUpdated(fn(callable $set) => $set('new_class_id', null))
                                 ->searchable()
@@ -536,8 +540,14 @@ class StudentResource extends Resource
                                 ->label('New Class')
                                 ->options(function (callable $get) {
                                     $academicYearId = $get('new_academic_year_id');
+
                                     if (!$academicYearId) return [];
-                                    return StudentClass::where('academic_year_id', $academicYearId)->pluck('name', 'id')->toArray();
+
+                                    return StudentClass::with('className')  // Eager load the related className
+                                        ->where('academic_year_id', $academicYearId)
+                                        ->get()
+                                        ->pluck('className.name', 'id')  // Pluck related className's name
+                                        ->toArray();
                                 })
                                 ->reactive()
                                 ->afterStateUpdated(fn(callable $set) => $set('new_section_id', null))
@@ -548,8 +558,12 @@ class StudentResource extends Resource
                                 ->label('Section')
                                 ->options(function (callable $get) {
                                     $classId = $get('new_class_id');
+
                                     if (!$classId) return [];
-                                    return StudentSection::where('class_id', $classId)->pluck('name', 'id')->toArray();
+
+                                    return StudentSection::where('class_id', $classId)
+                                        ->pluck('name', 'id')
+                                        ->toArray();
                                 })
                                 ->searchable(),
                         ])
@@ -585,7 +599,7 @@ class StudentResource extends Resource
                             }
                         })
                         ->requiresConfirmation()
-                        ->deselectRecordsAfterCompletion()
+                        ->deselectRecordsAfterCompletion(),
                 ]),
             ]);
     }

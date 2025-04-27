@@ -7,6 +7,8 @@ use App\Filament\Admin\Resources\Student\UpdateSectionResource\RelationManagers;
 use App\Models\AcademicYear;
 use App\Models\Section;
 use App\Models\Student\UpdateSection;
+use App\Models\StudentClass;
+use App\Models\StudentSection;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -69,38 +71,53 @@ class UpdateSectionResource extends Resource
                     ->options(function ($record) {
                         $academicYearId = $record->currentStudent?->currentClassAssignment?->academic_year_id;
 
-                        return $academicYearId
-                            ? \App\Models\Classes::where('academic_year_id', $academicYearId)->pluck('name', 'id')->toArray()
-                            : [];
+                        if (!$academicYearId) {
+                            return [];
+                        }
+
+                        return StudentClass::where('academic_year_id', $academicYearId)
+                            ->with('className')
+                            ->get()
+                            ->mapWithKeys(function ($studentClass) {
+                                return [$studentClass->id => $studentClass->className?->name];
+                            })
+                            ->toArray();
                     })
                     ->afterStateUpdated(function ($record, $state) {
-                        if (!$state) return; // Don't update if state is null
+                        if (!$state) return;
 
-                        $assignment = $record->currentStudent->currentClassAssignment;
+                        $assignment = $record->currentStudent?->currentClassAssignment;
                         if ($assignment) {
                             $assignment->update(['class_id' => $state]);
                         }
                     })
                     ->searchable()
                     ->sortable(),
+
                 Tables\Columns\SelectColumn::make('currentStudent.currentClassAssignment.section_id')
                     ->label('Section')
                     ->options(function ($record) {
-                        // Get the class_id from the currentClassAssignment
                         $classId = $record->currentStudent?->currentClassAssignment?->class_id;
 
-                        // If class_id exists, return sections associated with the class
-                        return $classId
-                            ? \App\Models\Section::where('class_id', $classId)->pluck('name', 'id')->toArray()
-                            : [];
+                        if (!$classId) {
+                            return [];
+                        }
+
+                        return StudentSection::where('class_id', $classId)
+                            ->pluck('name', 'id')
+                            ->toArray();
                     })
                     ->afterStateUpdated(function ($record, $state) {
-                        // Update the section_id in the currentClassAssignment
+                        if (!$state) return;
+
                         $assignment = $record->currentStudent?->currentClassAssignment;
                         if ($assignment) {
                             $assignment->update(['section_id' => $state]);
                         }
-                    }),
+                    })
+                    ->searchable()
+                    ->sortable(),
+
             ])
             ->defaultSort('id', 'desc')
             ->modifyQueryUsing(function (Builder $query) {
@@ -122,7 +139,7 @@ class UpdateSectionResource extends Resource
                     ->default(true),
                 Tables\Filters\SelectFilter::make('currentStudent.currentClassAssignment.class_id')
                     ->label('Class')
-                    ->relationship('currentStudent.currentClassAssignment.class', 'name'),
+                    ->relationship('currentStudent.currentClassAssignment.class.className', 'name'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
