@@ -20,6 +20,10 @@ class WhatsAppProviderResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static ?string $navigationGroup = 'WhatsApp';
+
+    protected static ?string $navigationLabel = 'Providers';
+
     public static function form(Form $form): Form
     {
         return $form

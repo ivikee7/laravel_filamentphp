@@ -95,8 +95,8 @@ class UserResource extends Resource
                         if ($role === 'Student' && $record->currentStudent?->currentClassAssignment) {
                             $assignment = $record->currentStudent->currentClassAssignment;
 
-                            if ($assignment->class?->name) {
-                                $parts[] = $assignment->class->name;
+                            if ($assignment->class?->className?->name) {
+                                $parts[] = $assignment->class->className->name;
                             }
 
                             if ($assignment->section?->name) {
@@ -162,7 +162,7 @@ class UserResource extends Resource
                     ->default(true),
                 Tables\Filters\SelectFilter::make('currentStudent.currentClassAssignment.class_id')
                     ->label('Class')
-                    ->relationship('currentStudent.currentClassAssignment.class', 'name'),
+                    ->relationship('currentStudent.currentClassAssignment.class.className', 'name'),
                 Tables\Filters\SelectFilter::make('roles')
                     ->label('Roles')
                     ->relationship('roles', 'name'),
