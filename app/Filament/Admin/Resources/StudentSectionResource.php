@@ -24,6 +24,8 @@ class StudentSectionResource extends Resource
 
     protected static ?string $navigationGroup = 'School Management System';
 
+    protected static ?string $navigationLabel = 'Class Sections';
+
     public static function form(Form $form): Form
     {
         return $form

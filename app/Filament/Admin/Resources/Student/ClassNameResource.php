@@ -19,7 +19,9 @@ class ClassNameResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $modelLabel = 'Classes';
+    protected static ?string $navigationGroup = 'School Management System';
+
+    protected static ?string $modelLabel = 'Class';
 
     public static function form(Form $form): Form
     {
