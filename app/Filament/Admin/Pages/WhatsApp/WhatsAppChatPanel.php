@@ -23,6 +23,8 @@ class WhatsAppChatPanel extends Page implements Forms\Contracts\HasForms
 
     protected static string $view = 'filament.admin.pages.whats-app.whats-app-chat-panel';
 
+    protected static ?string $navigationGroup = 'WhatsApp';
+
     protected static ?string $navigationLabel = 'Live Chat';
 
 
