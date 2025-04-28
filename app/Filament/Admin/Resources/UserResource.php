@@ -289,7 +289,7 @@ class UserResource extends Resource
                     ])
                     ->label('Status')
                     ->default(true)
-            ])
+            ])->filtersFormColumns(2)
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 // Tables\Actions\EditAction::make(),

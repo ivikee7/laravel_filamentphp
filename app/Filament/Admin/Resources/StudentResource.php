@@ -385,7 +385,7 @@ class StudentResource extends Resource
                             }),
                         );
                     }),
-            ])
+            ])->filtersFormColumns(2)
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 // Tables\Actions\EditAction::make(),
