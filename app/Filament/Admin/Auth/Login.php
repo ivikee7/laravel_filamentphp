@@ -21,9 +21,16 @@ class Login extends AuthLogin
                         $this->getIdFormComponent(),
                         $this->getPasswordFormComponent(),
                         $this->getRememberFormComponent(),
-                        View::make('components.login.google-button'),
                     ])
-                    ->statePath('data'),
+                    ->statePath('data')
+                    ->components([ // Wrap the form components in a container
+                        $this->getIdFormComponent(),
+                        $this->getPasswordFormComponent(),
+                        $this->getRememberFormComponent(),
+                        View::make('components.login.google-button')  // Add Google button here.
+                            ->columnSpanFull(), // Make the button span the entire row
+                    ])
+                    ->columns(1), // Ensure the form has only one column
             ),
         ];
     }
@@ -60,8 +67,9 @@ class Login extends AuthLogin
                 $this->getIdFormComponent(),
                 $this->getPasswordFormComponent(),
                 $this->getRememberFormComponent(),
-                View::make('components.login.google-button'),  // Add Google button here.
-            ]);
+                View::make('components.login.google-button')  // Add Google button here.
+                    ->columnSpanFull(),
+            ])->columns(1);
     }
 
     public function mount(): void
