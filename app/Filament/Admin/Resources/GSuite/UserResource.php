@@ -76,8 +76,7 @@ class UserResource extends Resource
 
                 Tables\Columns\TextColumn::make('gSuiteUser.email')
                     ->label('Email Address')
-                    // ->searchable()
-                    ,
+                    ->searchable(),
 
                 Tables\Columns\TextColumn::make('gSuiteUser.password')
                     ->label('Password')
@@ -107,12 +106,13 @@ class UserResource extends Resource
 
                         return implode('/', $parts);
                     })
-                    ->searchable()
+                    // ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('changePasswordAtNextSign-In')
                     ->label('Change Password at Next Sign-In')
                     ->default("FALSE")
-                    ->searchable(),
+                    // ->searchable()
+                    ,
                 Tables\Columns\TextColumn::make('is_active')
                     ->label('New Status [Upload Only]')
                     ->formatStateUsing(fn($state) => $state ? 'Active' : 'Suspended')
