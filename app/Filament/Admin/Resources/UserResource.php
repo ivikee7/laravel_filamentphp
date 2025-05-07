@@ -74,7 +74,6 @@ class UserResource extends Resource
                                                 ->disabled(fn() => !Filament::auth()->user()?->can('update GSuiteUser')),
                                             Forms\Components\TextInput::make('password')
                                                 ->label('GSuite Password')
-                                                ->email()
                                                 ->required()
                                                 ->visible(fn() => Filament::auth()->user()?->isSuperAdmin())
                                                 ->disabled(fn() => !Filament::auth()->user()?->isSuperAdmin()),
