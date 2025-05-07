@@ -5,9 +5,12 @@ use App\Http\Controllers\Api\WebsiteEnquiryController;
 use App\Http\Controllers\WhatsApp\WebhookController;
 use App\Filament\Admin\Auth\Login as AuthLogin;
 use App\Jobs\GenerateQRCode;
+use App\Models\GSuiteUser;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
+use Laravel\Socialite\Facades\Socialite;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 // Route::get('/', function () {
@@ -17,6 +20,32 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 Route::redirect('/', '/admin');
 Route::redirect('/admin/login', '/login');
 Route::get('/login', AuthLogin::class)->name('login');
+
+
+Route::get('/auth/google', function () {
+    return Socialite::driver('google')->redirect();
+})->name('google.login');
+
+Route::get('/auth/google/callback', function () {
+    $googleUser = Socialite::driver('google')->user();
+
+    // Check if the user exists in your database via gSuiteUser relationship
+    $user = User::whereHas('gSuiteUser', function ($query) use ($googleUser) {
+        $query->where('email', $googleUser->email);
+    })->first();
+
+    if ($user) {
+        // Log the user in
+        Auth::login($user);
+    } else {
+        // If the user doesn't exist, redirect to the login page
+        return redirect('/login')->with('error', 'Email not found. Please contact support.');
+    }
+
+    // Redirect the user to the Filament admin panel
+    return redirect('/admin');
+});
+
 
 
 // Route::get('/generate-student-qrs', function () {

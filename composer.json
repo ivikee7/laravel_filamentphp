@@ -10,6 +10,7 @@
         "althinect/filament-spatie-roles-permissions": "^2.3",
         "filament/filament": "^3.3",
         "laravel/framework": "^12.0",
+        "laravel/socialite": "^5.20",
         "laravel/tinker": "^2.10.1",
         "saade/filament-laravel-log": "^3.0",
         "shuvroroy/filament-spatie-laravel-health": "^2.3",

@@ -89,6 +89,7 @@ class AdminPanelProvider extends PanelProvider
                 ->slug('logs'))
             ->spa()
             ->maxContentWidth(MaxWidth::Full)
+            ->sidebarFullyCollapsibleOnDesktop()
             ->bootUsing(function () {
                 Table::configureUsing(function (Table $table): void {
                     $table->paginated([5, 10, 25, 50])
@@ -96,7 +97,6 @@ class AdminPanelProvider extends PanelProvider
                 });
             })
             ->favicon(asset('logo_favicon.png'))
-            ->sidebarFullyCollapsibleOnDesktop()
             // ->passwordReset() // Password Reset
             ->profile() // Profile
         ;
