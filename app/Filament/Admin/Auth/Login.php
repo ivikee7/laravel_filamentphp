@@ -21,15 +21,10 @@ class Login extends AuthLogin
                         $this->getIdFormComponent(),
                         $this->getPasswordFormComponent(),
                         $this->getRememberFormComponent(),
-                    ])
-                    ->statePath('data')
-                    ->components([ // Wrap the form components in a container
-                        $this->getIdFormComponent(),
-                        $this->getPasswordFormComponent(),
-                        $this->getRememberFormComponent(),
                         View::make('components.login.google-button')  // Add Google button here.
                             ->columnSpanFull(), // Make the button span the entire row
                     ])
+                    ->statePath('data')
                     ->columns(1), // Ensure the form has only one column
             ),
         ];
