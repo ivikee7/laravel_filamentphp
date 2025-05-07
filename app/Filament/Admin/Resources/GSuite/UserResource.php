@@ -76,7 +76,8 @@ class UserResource extends Resource
 
                 Tables\Columns\TextColumn::make('gSuiteUser.email')
                     ->label('Email Address')
-                    ->searchable(),
+                    // ->searchable()
+                    ,
 
                 Tables\Columns\TextColumn::make('gSuiteUser.password')
                     ->label('Password')
