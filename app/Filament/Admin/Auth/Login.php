@@ -6,6 +6,9 @@ use Filament\Forms\Components\Component;
 use Filament\Forms\Components\TextInput;
 use Filament\Pages\Auth\Login as AuthLogin;
 use Illuminate\Validation\ValidationException;
+use Filament\Forms\Components\View;
+use Filament\Forms\Form;
+use Illuminate\Support\Facades\Route;
 
 class Login extends AuthLogin
 {
@@ -18,6 +21,7 @@ class Login extends AuthLogin
                         $this->getIdFormComponent(),
                         $this->getPasswordFormComponent(),
                         $this->getRememberFormComponent(),
+                        View::make('components.login.google-button'),
                     ])
                     ->statePath('data'),
             ),
@@ -47,5 +51,23 @@ class Login extends AuthLogin
         throw ValidationException::withMessages([
             'data.id' => __('filament-panels::pages/auth/login.messages.failed'),
         ]);
+    }
+
+    public function form(Form $form): Form
+    {
+        return $form
+            ->schema([
+                $this->getIdFormComponent(),
+                $this->getPasswordFormComponent(),
+                $this->getRememberFormComponent(),
+                View::make('components.login.google-button'),  // Add Google button here.
+            ]);
+    }
+
+    public function mount(): void
+    {
+        parent::mount();
+
+        $this->form->fill(); // Fill the form with any initial data
     }
 }

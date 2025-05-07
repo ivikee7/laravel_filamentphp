@@ -27,7 +27,12 @@ Route::get('/auth/google', function () {
 })->name('google.login');
 
 Route::get('/auth/google/callback', function () {
-    $googleUser = Socialite::driver('google')->user();
+    try {
+        $googleUser = Socialite::driver('google')->user();
+    } catch (\Exception $e) {
+        // Handle Socialite exceptions (e.g., user denied access, invalid token)
+        return redirect('/login')->with('error', 'Failed to authenticate with Google. Please try again.');
+    }
 
     // Check if the user exists in your database via gSuiteUser relationship
     $user = User::whereHas('gSuiteUser', function ($query) use ($googleUser) {
@@ -38,8 +43,8 @@ Route::get('/auth/google/callback', function () {
         // Log the user in
         Auth::login($user);
     } else {
-        // If the user doesn't exist, redirect to the login page
-        return redirect('/login')->with('error', 'Email not found. Please contact support.');
+        // If the user doesn't exist, redirect to the login page with a more informative message
+        return redirect('/login')->with('error', 'Your Google account is not associated with any account. Please contact support.');
     }
 
     // Redirect the user to the Filament admin panel
