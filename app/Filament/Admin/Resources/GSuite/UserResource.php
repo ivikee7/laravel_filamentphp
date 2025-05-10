@@ -10,6 +10,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -111,8 +112,8 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('changePasswordAtNextSign-In')
                     ->label('Change Password at Next Sign-In')
                     ->default("FALSE")
-                    // ->searchable()
-                    ,
+                // ->searchable()
+                ,
                 Tables\Columns\TextColumn::make('is_active')
                     ->label('New Status [Upload Only]')
                     ->formatStateUsing(fn($state) => $state ? 'Active' : 'Suspended')
@@ -167,7 +168,25 @@ class UserResource extends Resource
                 Tables\Filters\SelectFilter::make('roles')
                     ->label('Roles')
                     ->relationship('roles', 'name'),
-            ])
+                Tables\Filters\Filter::make('id')
+                    ->label('Filter by IDs')
+                    ->query(function (Builder $query, array $data): Builder {
+                        if (array_key_exists('value', $data) && $data['value'] !== null && is_string($data['value'])) {
+                            $ids = array_map('intval', explode(',', $data['value'])); // Explode and convert to integers
+                            $ids = array_filter($ids); // Remove any zero or empty values
+                            if (count($ids) > 0) {
+                                $query->whereIn('id', $ids);
+                            }
+                        }
+                        return $query;
+                    })
+                    ->form([
+                        \Filament\Forms\Components\TextInput::make('value')
+                            ->label('IDs (comma-separated)')
+                            ->placeholder('e.g., 1,2,3,4')
+                            ->helperText('Enter a comma-separated list of IDs'),
+                    ]),
+            ], layout: FiltersLayout::AboveContent)
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
