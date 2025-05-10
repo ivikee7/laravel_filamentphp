@@ -86,7 +86,7 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('orgUnitPath')
                     ->label('Org Unit Path')
                     ->getStateUsing(function ($record) {
-                        $parts = ['/SRCS' . '/School'];
+                        $parts = ['/' . env('APP_NAME') . '/School'];
 
                         // Use the first available role name, or "User" if none
                         $roleName = $record->roles->pluck('name')->first() ?? 'User';
@@ -185,7 +185,7 @@ class UserResource extends Resource
                             ->label('IDs (comma-separated)')
                             ->placeholder('e.g., 1,2,3,4')
                             ->helperText('Enter a comma-separated list of IDs'),
-                    ]),
+                    ])->columnSpanFull(),
             ], layout: FiltersLayout::AboveContent)
             ->actions([
                 Tables\Actions\ViewAction::make(),
