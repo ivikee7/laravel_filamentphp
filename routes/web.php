@@ -55,7 +55,10 @@ Route::get('/auth/google/callback', function () {
 
 Route::get('/generate-student-qrs', function () {
     // Get all student users.
-    $students = User::role('Student')->where('is_active', true)->get();
+    $students = User::role('Student')
+        ->where('is_active', true)
+        ->where('id', '>=', 2490)
+        ->get();
 
     if ($students->isEmpty()) {
         return response()->json(['error' => 'No students found.'], 404); // Handle the case where no students are found.
