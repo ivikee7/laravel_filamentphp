@@ -2,15 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\AcadamicSession;
 use App\Models\AcademicYear;
-use App\Models\AdmissionClass;
-use App\Models\AdmissionSection;
 use App\Models\BloodGroup;
-use App\Models\Classes;
+use App\Models\ClassName;
 use App\Models\Gender;
 use App\Models\Quota;
-use App\Models\Section;
 use App\Models\Student;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -66,21 +62,21 @@ class DatabaseSeeder extends Seeder
         Gender::create(['name' => 'Female', 'created_by' => 1]);
         Gender::create(['name' => 'Other', 'created_by' => 1]);
 
-        Classes::create(['name' => 'Nursery', 'academic_year_id' => $academicYear->id, 'created_by' => 1]);
-        Classes::create(['name' => 'LKG', 'academic_year_id' => $academicYear->id, 'created_by' => 1]);
-        Classes::create(['name' => 'UKG', 'academic_year_id' => $academicYear->id, 'created_by' => 1]);
-        Classes::create(['name' => 'STD-1', 'academic_year_id' => $academicYear->id, 'created_by' => 1]);
-        Classes::create(['name' => 'STD-2', 'academic_year_id' => $academicYear->id, 'created_by' => 1]);
-        Classes::create(['name' => 'STD-3', 'academic_year_id' => $academicYear->id, 'created_by' => 1]);
-        Classes::create(['name' => 'STD-4', 'academic_year_id' => $academicYear->id, 'created_by' => 1]);
-        Classes::create(['name' => 'STD-5', 'academic_year_id' => $academicYear->id, 'created_by' => 1]);
-        Classes::create(['name' => 'STD-6', 'academic_year_id' => $academicYear->id, 'created_by' => 1]);
-        Classes::create(['name' => 'STD-7', 'academic_year_id' => $academicYear->id, 'created_by' => 1]);
-        Classes::create(['name' => 'STD-8', 'academic_year_id' => $academicYear->id, 'created_by' => 1]);
-        Classes::create(['name' => 'STD-9', 'academic_year_id' => $academicYear->id, 'created_by' => 1]);
-        Classes::create(['name' => 'STD-10', 'academic_year_id' => $academicYear->id, 'created_by' => 1]);
-        Classes::create(['name' => 'STD-11', 'academic_year_id' => $academicYear->id, 'created_by' => 1]);
-        Classes::create(['name' => 'STD-12', 'academic_year_id' => $academicYear->id, 'created_by' => 1]);
+        ClassName::create(['name' => 'Nursery', 'created_by' => 1]);
+        ClassName::create(['name' => 'LKG', 'created_by' => 1]);
+        ClassName::create(['name' => 'UKG', 'created_by' => 1]);
+        ClassName::create(['name' => 'STD-1', 'created_by' => 1]);
+        ClassName::create(['name' => 'STD-2', 'created_by' => 1]);
+        ClassName::create(['name' => 'STD-3', 'created_by' => 1]);
+        ClassName::create(['name' => 'STD-4', 'created_by' => 1]);
+        ClassName::create(['name' => 'STD-5', 'created_by' => 1]);
+        ClassName::create(['name' => 'STD-6', 'created_by' => 1]);
+        ClassName::create(['name' => 'STD-7', 'created_by' => 1]);
+        ClassName::create(['name' => 'STD-8', 'created_by' => 1]);
+        ClassName::create(['name' => 'STD-9', 'created_by' => 1]);
+        ClassName::create(['name' => 'STD-10', 'created_by' => 1]);
+        ClassName::create(['name' => 'STD-11', 'created_by' => 1]);
+        ClassName::create(['name' => 'STD-12', 'created_by' => 1]);
 
         User::factory()->create([
             'name' => 'Admin',

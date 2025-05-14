@@ -83,16 +83,16 @@ class StudentResource extends Resource
                                             ->required()
                                             ->default(fn($get) => Registration::find(request()->query('registration_id'))?->name),
                                         Forms\Components\Group::make([
-                                            Forms\Components\TextInput::make('email')
-                                                ->label('GSuite Email')
-                                                ->email()
-                                                ->required()
-                                                ->disabled(fn() => !Filament::auth()->user()?->can('update GSuiteUser')),
-                                            Forms\Components\TextInput::make('password')
-                                                ->label('GSuite Password')
-                                                ->email()
-                                                ->required()
-                                                ->disabled(fn() => !Filament::auth()->user()?->can('update GSuiteUser')),
+//                                            Forms\Components\TextInput::make('email')
+//                                                ->label('GSuite Email')
+//                                                ->email()
+//                                                ->required()
+//                                                ->disabled(fn() => !Filament::auth()->user()?->can('update GSuiteUser')),
+//                                            Forms\Components\TextInput::make('password')
+//                                                ->label('GSuite Password')
+//                                                ->email()
+//                                                ->required()
+//                                                ->disabled(fn() => !Filament::auth()->user()?->can('update GSuiteUser')),
                                         ])->relationship('gSuiteUser')->columns(2),
                                         Forms\Components\Group::make()
                                             ->schema([
