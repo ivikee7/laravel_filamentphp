@@ -5,23 +5,40 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 
-class StudentSection extends Model
+class Invoice extends Model
 {
     use SoftDeletes;
 
-    protected $table = 'student_sections';
-
-    protected $fillable = [
-        'name',
-        'class_id',
-        'room_id',
-        'teacher_id',
-        'creator_id',
-        'updater_id',
+    protected $guarded = []; // Adjust as needed
+    protected $casts = [
+        'invoice_date' => 'date',
+        'due_date' => 'date',
+        'subtotal' => 'decimal:2',
+        'tax' => 'decimal:2',
+        'total' => 'decimal:2',
     ];
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function items(): HasMany
+    {
+        return $this->hasMany(InvoiceItem::class);
+    }
+
+    public function invoiceable(): MorphTo
+    {
+        return $this->morphTo();
+    }
+
+
+    protected $dates = ['deleted_at'];
 
     protected static function boot()
     {
@@ -48,6 +65,7 @@ class StudentSection extends Model
             $model->saveQuietly();
         });
     }
+
     public function createdBy()
     {
         return $this->belongsTo(User::class, 'created_by');
@@ -59,26 +77,5 @@ class StudentSection extends Model
     public function deletedBy()
     {
         return $this->belongsTo(User::class, 'deleted_by');
-    }
-
-
-
-
-    public function class(): BelongsTo
-    {
-        return $this->belongsTo(StudentClass::class);
-    }
-    public function teacher(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
-    public function room(): BelongsTo
-    {
-        return $this->belongsTo(Room::class, 'room_id');
-    }
-
-    public function students(): HasMany
-    {
-        return $this->hasMany(StudentClassAssignment::class, 'section_id');
     }
 }

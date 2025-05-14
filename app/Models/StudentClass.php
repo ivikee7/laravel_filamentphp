@@ -72,4 +72,9 @@ class StudentClass extends Model
     {
         return $this->hasMany(StudentSection::class, 'class_id');
     }
+
+    public function studentClassAssignments(): HasMany
+    {
+        return $this->hasMany(StudentClassAssignment::class, 'class_id');
+    }
 }

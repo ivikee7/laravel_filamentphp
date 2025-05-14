@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\StudentResource\Pages;
+use App\Filament\Admin\Resources\StudentResource\Pages\Strength;
 use App\Filament\Admin\Resources\StudentResource\RelationManagers;
 use App\Models\AcademicYear;
 use App\Models\BloodGroup;
@@ -25,6 +26,7 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
+use Filament\Pages\Page;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\BulkAction;
