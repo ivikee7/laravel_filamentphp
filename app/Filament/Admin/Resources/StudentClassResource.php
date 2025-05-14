@@ -34,9 +34,9 @@ class StudentClassResource extends Resource
                 Forms\Components\Select::make('class_name_id')
                     ->relationship('className', 'name')
                     ->required(),
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(50),
+//                Forms\Components\TextInput::make('name')
+//                    ->required()
+//                    ->maxLength(50),
             ]);
     }
 
