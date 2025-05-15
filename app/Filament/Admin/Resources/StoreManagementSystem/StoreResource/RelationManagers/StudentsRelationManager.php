@@ -31,11 +31,39 @@ class StudentsRelationManager extends RelationManager
             ->query($this->getStudentsQuery())
 //            ->recordTitleAttribute('name')
             ->columns([
-                Tables\Columns\TextColumn::make('name')
+                Tables\Columns\TextColumn::make('id')
+                    ->label('ID')
                     ->searchable()
                     ->sortable()
-                    ->wrap(),
-                Tables\Columns\TextColumn::make('email'),
+                    ->toggleable(isToggledHiddenByDefault: false),
+                Tables\Columns\ImageColumn::make('avatar')
+                    ->circular()
+                    ->size(50)
+                    ->label('Image')
+                    ->toggleable(isToggledHiddenByDefault: false),
+                Tables\Columns\TextColumn::make('name')
+                    ->wrap()
+                    ->searchable()
+                    ->sortable()
+                    ->label('Name')
+                    ->toggleable(isToggledHiddenByDefault: false),
+                Tables\Columns\TextColumn::make('father_name')
+                    ->wrap()
+                    ->searchable()
+                    ->sortable()
+                    ->label('Father Name')
+                    ->toggleable(isToggledHiddenByDefault: false),
+                Tables\Columns\TextColumn::make('mother_name')
+                    ->wrap()
+                    ->searchable()
+                    ->sortable()
+                    ->label('Motner Name')
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('currentStudent.currentClassAssignment.class.className.name')
+                    ->searchable()
+                    ->sortable()
+                    ->label('Class')
+                    ->toggleable(isToggledHiddenByDefault: false),
             ])
             ->filters([
                 //

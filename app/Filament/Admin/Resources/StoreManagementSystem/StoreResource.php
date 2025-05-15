@@ -113,6 +113,7 @@ class StoreResource extends Resource
     {
         return [
             RelationManagers\StudentsRelationManager::class,
+            RelationManagers\ProductsRelationManager::class,
         ];
     }
 
