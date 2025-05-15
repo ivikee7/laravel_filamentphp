@@ -84,7 +84,7 @@ class StudentResource extends Resource
                                             ->required()
                                             ->default(fn($get) => Registration::find(request()->query('registration_id'))?->name)
                                             ->columnSpan(3),
-                                        Forms\Components\Toggle::make('is_active')->inline(false)->required(),
+                                        Forms\Components\Toggle::make('is_active')->default(true)->inline(false)->required(),
                                     ])->columns(4),
 
                                     Forms\Components\Group::make([
