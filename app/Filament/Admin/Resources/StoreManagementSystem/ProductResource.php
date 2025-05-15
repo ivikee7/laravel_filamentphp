@@ -25,15 +25,12 @@ class ProductResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('store_id')
-                    ->numeric()
-                    ->default(null),
-                Forms\Components\TextInput::make('academic_year_id')
-                    ->numeric()
-                    ->default(null),
-                Forms\Components\TextInput::make('class_id')
-                    ->numeric()
-                    ->default(null),
+                Forms\Components\Select::make('store_id')
+                    ->relationship('store', 'name'),
+                Forms\Components\Select::make('academic_year_id')
+                    ->relationship('academicYear', 'name'),
+                Forms\Components\Select::make('class_id')
+                    ->relationship('class', 'name'),
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(100),
@@ -43,7 +40,7 @@ class ProductResource extends Resource
                 Forms\Components\TextInput::make('price')
                     ->required()
                     ->numeric()
-                    ->prefix('$'),
+                    ->prefix('₹'),
 
             ]);
     }
@@ -52,29 +49,32 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('price')
-                    ->money()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('store.name')
-                    ->numeric()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('academicYear.name')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('class.name')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('created_by')
+                Tables\Columns\TextColumn::make('name')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('price')
+                    ->money('INR')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('store.name')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('updated_by')
+                Tables\Columns\TextColumn::make('createdBy.name')
                     ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('deleted_by')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('updatedBy.name')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('deletedBy.name')
+                    ->numeric()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
