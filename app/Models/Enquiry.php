@@ -65,10 +65,12 @@ class Enquiry extends Model
     {
         return $this->belongsTo(User::class, 'created_by');
     }
+
     public function updatedBy()
     {
         return $this->belongsTo(User::class, 'updated_by');
     }
+
     public function deletedBy()
     {
         return $this->belongsTo(User::class, 'deleted_by');
@@ -79,8 +81,9 @@ class Enquiry extends Model
     {
         return $this->belongsTo(ClassName::class);
     }
-    // public function previousClass(): BelongsTo
-    // {
-    //     return $this->belongsTo(StudentClass::class);
-    // }
+
+    public function previousClass(): BelongsTo
+    {
+        return $this->belongsTo(ClassName::class);
+    }
 }

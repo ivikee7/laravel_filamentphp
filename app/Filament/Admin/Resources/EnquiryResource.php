@@ -49,7 +49,7 @@ class EnquiryResource extends Resource
                 Section::make('Admission info')
                     ->schema([
                         Forms\Components\Select::make('class_id')
-                        ->label('Enquiry Class')
+                            ->label('Enquiry Class')
                             ->relationship('class', 'name')
                             ->default(null),
                         Forms\Components\Textarea::make('notes')
@@ -118,11 +118,13 @@ class EnquiryResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('id')
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('name')->wrap()
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('class.name')->wrap()
-                    ->label('Enquiry Class')
+                    ->label('Class')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('gender')
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -131,7 +133,8 @@ class EnquiryResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('father_name')->wrap()
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('mother_name')->wrap()
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -156,13 +159,14 @@ class EnquiryResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('previous_school')->wrap()
                     ->searchable()
+                    ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('notes')
                     ->wrap()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('source')->wrap()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('class.name')->wrap()
+                Tables\Columns\TextColumn::make('previousClass.name')->wrap()
                     ->label('Previous Class')
                     ->numeric()
                     ->sortable()
