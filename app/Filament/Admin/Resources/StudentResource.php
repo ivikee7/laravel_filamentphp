@@ -566,7 +566,7 @@ class StudentResource extends Resource
 
                                     if (!$classId) return [];
 
-                                    return StudentSection::where('class_id', $classId)
+                                    return StudentSection::where('student_class_id', $classId)
                                         ->pluck('name', 'id')
                                         ->toArray();
                                 })
