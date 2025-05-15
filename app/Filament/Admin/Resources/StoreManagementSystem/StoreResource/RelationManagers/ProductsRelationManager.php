@@ -18,8 +18,6 @@ class ProductsRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('store_id')
-                    ->relationship('store', 'name'),
                 Forms\Components\Select::make('academic_year_id')
                     ->relationship('academicYear', 'name'),
                 Forms\Components\Select::make('class_id')
