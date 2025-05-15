@@ -56,56 +56,61 @@ class StudentResource extends Resource
                 Section::make('User info')
                     ->schema([
                         Forms\Components\Grid::make(2) // Create a 2-column layout
-                            ->schema([
-                                // Left Column: Centered Large Avatar
-                                Forms\Components\Group::make()
-                                    ->schema([
-                                        Forms\Components\FileUpload::make('avatar')
-                                            ->image()
-                                            ->avatar()
-                                            ->imageEditor()
-                                            ->hiddenLabel()
-                                            ->imagePreviewHeight(250)
-                                            // disk
-                                            ->disk('public')
-                                            ->directory('media/avatar')
-                                            ->visibility('public')
-                                    ])
-                                    ->columnSpan(1)
-                                    ->extraAttributes([
-                                        'style' => 'display: flex; align-items: center; justify-content: center; height: 100%;',
-                                    ]),
+                        ->schema([
+                            // Left Column: Centered Large Avatar
+                            Forms\Components\Group::make()
+                                ->schema([
+                                    Forms\Components\FileUpload::make('avatar')
+                                        ->image()
+                                        ->avatar()
+                                        ->imageEditor()
+                                        ->hiddenLabel()
+                                        ->imagePreviewHeight(250)
+                                        // disk
+                                        ->disk('public')
+                                        ->directory('media/avatar')
+                                        ->visibility('public')
+                                ])
+                                ->columnSpan(1)
+                                ->extraAttributes([
+                                    'style' => 'display: flex; align-items: center; justify-content: center; height: 100%;',
+                                ]),
 
-                                // Right Column: Other Input Fields
-                                Forms\Components\Group::make()
-                                    ->schema([
+                            // Right Column: Other Input Fields
+                            Forms\Components\Group::make()
+                                ->schema([
+                                    Forms\Components\Group::make([
                                         Forms\Components\TextInput::make('name')
                                             ->required()
-                                            ->default(fn($get) => Registration::find(request()->query('registration_id'))?->name),
-                                        Forms\Components\Group::make([
-                                            Forms\Components\TextInput::make('email')
-                                                ->label('GSuite Email')
-                                                ->email()
-                                                ->disabled(fn() => !Filament::auth()->user()?->can('update GSuiteUser')),
-                                            Forms\Components\TextInput::make('password')
-                                                ->label('GSuite Password')
-                                                ->email()
-                                                ->disabled(fn() => !Filament::auth()->user()?->can('update GSuiteUser')),
-                                        ])->relationship('gSuiteUser')->columns(2),
-                                        Forms\Components\Group::make()
-                                            ->schema([
-                                                Forms\Components\Select::make('gender_id')
-                                                    ->options(Gender::pluck('name', 'id'))
-                                                    ->required()
-                                                    ->default(fn($get) => Registration::find(request()->query('registration_id'))?->gender_id),
-                                                Forms\Components\Select::make('blood_group_id')
-                                                    ->options(BloodGroup::pluck('name', 'id'))
-                                                    ->required()
-                                                    ->default(fn($get) => Registration::find(request()->query('registration_id'))?->blood_group_id),
-                                            ])->columns(2),
-                                    ])
-                                    ->columnSpan(1),
-                            ]),
+                                            ->default(fn($get) => Registration::find(request()->query('registration_id'))?->name)
+                                            ->columnSpan(3),
+                                        Forms\Components\Toggle::make('is_active')->inline(false)->required(),
+                                    ])->columns(4),
+
+                                    Forms\Components\Group::make([
+                                        Forms\Components\TextInput::make('email')
+                                            ->label('GSuite Email')
+                                            ->email()
+                                            ->disabled(fn() => !Filament::auth()->user()?->can('update GSuiteUser')),
+                                        Forms\Components\TextInput::make('password')
+                                            ->label('GSuite Password')
+                                            ->email()
+                                            ->disabled(fn() => !Filament::auth()->user()?->can('update GSuiteUser')),
+                                    ])->relationship('gSuiteUser')->columns(2),
+                                    Forms\Components\Group::make()
+                                        ->schema([
+                                            Forms\Components\Select::make('gender_id')
+                                                ->options(Gender::pluck('name', 'id'))
+                                                ->required()
+                                                ->default(fn($get) => Registration::find(request()->query('registration_id'))?->gender_id),
+                                            Forms\Components\Select::make('blood_group_id')
+                                                ->options(BloodGroup::pluck('name', 'id'))
+                                                ->required()
+                                                ->default(fn($get) => Registration::find(request()->query('registration_id'))?->blood_group_id),
+                                        ])->columns(2),
+                                ])
+                                ->columnSpan(1),
+                        ]),
                     ]),
 
                 Section::make('Admission Info')
@@ -359,8 +364,8 @@ class StudentResource extends Resource
                     ->label('Class')
                     ->options(function () {
                         return StudentClass::with('className')  // Ensure eager load 'className'
-                            ->distinct() // Use distinct for unique class names
-                            ->get()
+                        ->distinct() // Use distinct for unique class names
+                        ->get()
                             ->pluck('className.name', 'className.name')  // Pluck className.name for both key and value
                             ->toArray();
                     })
@@ -544,7 +549,7 @@ class StudentResource extends Resource
                                     if (!$academicYearId) return [];
 
                                     return StudentClass::with('className')  // Eager load the related className
-                                        ->where('academic_year_id', $academicYearId)
+                                    ->where('academic_year_id', $academicYearId)
                                         ->get()
                                         ->pluck('className.name', 'id')  // Pluck related className's name
                                         ->toArray();

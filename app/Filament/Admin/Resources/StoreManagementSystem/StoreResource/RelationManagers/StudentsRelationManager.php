@@ -85,6 +85,9 @@ class StudentsRelationManager extends RelationManager
         return User::role('student') // Spatie Role
         ->whereHas('student.currentClassAssignment.class.className.products', function ($query) use ($store) {
             $query->where('store_id', 1);
-        });
+        })
+            ->whereHas('student.user', function ($query) {
+                $query->where('is_active', true);
+            });
     }
 }
