@@ -26,6 +26,7 @@ class ProductsRelationManager extends RelationManager
                     ->required()
                     ->maxLength(100),
                 Forms\Components\Textarea::make('description')
+                    ->required()
                     ->columnSpanFull(),
                 Forms\Components\TextInput::make('price')
                     ->required()
