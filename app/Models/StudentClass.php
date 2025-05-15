@@ -70,7 +70,7 @@ class StudentClass extends Model
 
     public function sections(): HasMany
     {
-        return $this->hasMany(StudentSection::class, 'class_id');
+        return $this->hasMany(StudentSection::class, 'student_class_id');
     }
 
     public function studentClassAssignments(): HasMany

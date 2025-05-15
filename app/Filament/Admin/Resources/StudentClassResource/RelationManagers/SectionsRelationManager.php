@@ -30,7 +30,8 @@ class SectionsRelationManager extends RelationManager
             ->recordTitleAttribute('name')
             ->columns([
                 Tables\Columns\TextColumn::make('id'),
-                Tables\Columns\TextColumn::make('name')->label('Section Name'),
+                Tables\Columns\TextColumn::make('name')
+                    ->label('Section Name'),
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make()

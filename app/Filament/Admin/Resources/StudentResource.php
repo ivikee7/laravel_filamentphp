@@ -162,7 +162,7 @@ class StudentResource extends Resource
                                                     return [];
                                                 }
 
-                                                return \App\Models\StudentSection::where('class_id', $classId)
+                                                return \App\Models\StudentSection::where('student_class_id', $classId)
                                                     ->pluck('name', 'id')
                                                     ->toArray();
                                             })

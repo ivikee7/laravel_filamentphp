@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
@@ -56,5 +57,9 @@ class ClassName extends Model
     public function classes(): HasMany
     {
         return $this->hasMany(StudentClass::class, 'class_name_id');
+    }
+
+    public function products(): HasMany{
+        return $this->hasMany(Product::class, 'class_id');
     }
 }

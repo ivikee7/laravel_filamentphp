@@ -17,6 +17,7 @@ class StudentSection extends Model
     protected $fillable = [
         'name',
         'class_id',
+        'student_class_id',
         'room_id',
         'teacher_id',
         'creator_id',
@@ -66,7 +67,7 @@ class StudentSection extends Model
 
     public function class(): BelongsTo
     {
-        return $this->belongsTo(StudentClass::class);
+        return $this->belongsTo(StudentClass::class, 'student_class_id');
     }
     public function teacher(): BelongsTo
     {

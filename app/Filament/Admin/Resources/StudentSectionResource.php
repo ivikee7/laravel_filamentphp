@@ -39,7 +39,7 @@ class StudentSectionResource extends Resource
                 //         })->get()->pluck('className.name', 'id')->toArray();
                 //     })
                 //     ->required(),
-                Forms\Components\Select::make('class_id')
+                Forms\Components\Select::make('student_class_id')
                     ->label('Class')
                     ->options(function () {
                         return StudentClass::with('className')

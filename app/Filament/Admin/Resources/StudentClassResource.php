@@ -20,7 +20,7 @@ class StudentClassResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $modelLabel = 'Acadamic Classes';
+    protected static ?string $modelLabel = 'Academic Classes';
 
     protected static ?string $navigationGroup = 'School Management System';
 

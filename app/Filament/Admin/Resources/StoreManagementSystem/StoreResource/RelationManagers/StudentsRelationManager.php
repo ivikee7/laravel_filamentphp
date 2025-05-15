@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Filament\Admin\Resources\StoreResource\RelationManagers;
+namespace App\Filament\Admin\Resources\StoreManagementSystem\StoreResource\RelationManagers;
 
+use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -10,9 +11,9 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class ProductsRelationManager extends RelationManager
+class StudentsRelationManager extends RelationManager
 {
-    protected static string $relationship = 'products';
+    protected static string $relationship = 'students';
 
     public function form(Form $form): Form
     {
@@ -27,9 +28,11 @@ class ProductsRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('name')
+            ->query($this->getStudentsQuery())
+//            ->recordTitleAttribute('name')
             ->columns([
                 Tables\Columns\TextColumn::make('name'),
+                Tables\Columns\TextColumn::make('email'),
             ])
             ->filters([
                 //
@@ -46,5 +49,15 @@ class ProductsRelationManager extends RelationManager
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
+    }
+
+    protected function getStudentsQuery(): Builder
+    {
+        $store = $this->getOwnerRecord(); // current Store instance
+
+        return User::role('student') // Spatie Role
+        ->whereHas('student.currentClassAssignment.class.className.products', function ($query) use ($store) {
+            $query->where('store_id', 1);
+        });
     }
 }
