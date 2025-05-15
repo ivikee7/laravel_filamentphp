@@ -47,6 +47,9 @@ class StoreResource extends Resource
                     ->required()
                     ->email()
                     ->maxLength(100),
+                Forms\Components\Toggle::make('is_active')
+                    ->required()
+                    ->inline(false),
             ]);
     }
 
