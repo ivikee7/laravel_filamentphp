@@ -68,6 +68,16 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
+            ->navigationGroups([
+                'User',
+                'School Management System',
+                'Transport',
+                'Library Management System',
+                'Store Management System',
+                'SMS Services',
+                'G-Suite',
+                'WhatsApp',
+            ])
             ->plugin(FilamentSpatieRolesPermissionsPlugin::make())
             ->plugin(
                 FilamentSpatieLaravelHealthPlugin::make()

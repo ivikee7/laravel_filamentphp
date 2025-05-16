@@ -23,8 +23,8 @@ class UserResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $modelLabel = 'GSuite Users';
-    protected static ?string $navigationGroup = 'Gsuite';
+    protected static ?string $modelLabel = 'G-Suite Users';
+    protected static ?string $navigationGroup = 'G-Suite';
 
     public static function form(Form $form): Form
     {
