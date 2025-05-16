@@ -19,9 +19,7 @@ class StudentsRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
+                //
             ]);
     }
 
@@ -29,7 +27,7 @@ class StudentsRelationManager extends RelationManager
     {
         return $table
             ->query($this->getStudentsQuery())
-//            ->recordTitleAttribute('name')
+            ->recordTitleAttribute('name')
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->label('ID')

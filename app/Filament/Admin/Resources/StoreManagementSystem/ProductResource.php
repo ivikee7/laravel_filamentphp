@@ -41,7 +41,6 @@ class ProductResource extends Resource
                     ->required()
                     ->numeric()
                     ->prefix('₹'),
-
             ]);
     }
 

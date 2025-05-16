@@ -104,14 +104,17 @@ class User extends Authenticatable implements FilamentUser
             $model->saveQuietly();
         });
     }
+
     public function createdBy()
     {
         return $this->belongsTo(User::class, 'created_by');
     }
+
     public function updatedBy()
     {
         return $this->belongsTo(User::class, 'updated_by');
     }
+
     public function deletedBy()
     {
         return $this->belongsTo(User::class, 'deleted_by');
@@ -121,6 +124,7 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->belongsTo(Gender::class, 'gender_id');
     }
+
     public function bloodGroup(): BelongsTo
     {
         return $this->belongsTo(BloodGroup::class, 'blood_group_id');
@@ -130,9 +134,6 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->hasOne(GSuiteUser::class);
     }
-
-
-
 
 
     function admission(): HasOne
@@ -164,6 +165,22 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->hasOne(UserFinancialDetail::class);
     }
+
+
+    public function products(): HasMany
+    {
+        $className = $this->student?->currentClassAssignment?->class?->className;
+
+        return $className
+            ? $className->products()
+            : (new Product)->newQuery()->whereRaw('1 = 0');
+    }
+
+    public function cart(): HasMany
+    {
+        return $this->hasMany(Cart::class, 'user_id');
+    }
+
 
     protected function formattedAttendance(): Attribute
     {

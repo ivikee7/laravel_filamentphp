@@ -3,8 +3,8 @@
 namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\StudentResource\Pages;
-use App\Filament\Admin\Resources\StudentResource\Pages\Strength;
-use App\Filament\Admin\Resources\StudentResource\RelationManagers;
+use App\Filament\Admin\Resources\StudentResource\RelationManagers\CartRelationManager;
+use App\Filament\Admin\Resources\StudentResource\RelationManagers\ProductsRelationManager;
 use App\Models\AcademicYear;
 use App\Models\BloodGroup;
 use App\Models\StudentClass;
@@ -612,7 +612,8 @@ class StudentResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            ProductsRelationManager::class,
+            CartRelationManager::class,
         ];
     }
 
