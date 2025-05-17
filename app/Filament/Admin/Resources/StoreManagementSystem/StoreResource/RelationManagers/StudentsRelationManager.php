@@ -69,6 +69,13 @@ class StudentsRelationManager extends RelationManager
             ->headerActions([
             ])
             ->actions([
+                Tables\Actions\Action::make('products')
+                    ->label('Products')
+                    ->icon('heroicon-o-shopping-cart')
+                    ->url(fn ($record) => route('filament.admin.resources.store-management-system.products.index', [
+                        'student_id' => $record->id,
+                    ]))
+                    ->openUrlInNewTab(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

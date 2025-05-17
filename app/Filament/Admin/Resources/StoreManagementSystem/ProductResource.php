@@ -4,7 +4,9 @@ namespace App\Filament\Admin\Resources\StoreManagementSystem;
 
 use App\Filament\Admin\Resources\StoreManagementSystem\ProductResource\Pages;
 use App\Filament\Admin\Resources\StoreManagementSystem\ProductResource\RelationManagers;
+use App\Models\Cart;
 use App\Models\Product;
+use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -47,6 +49,19 @@ class ProductResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+//            ->modifyQueryUsing(function (Builder $query) {
+//                if ($studentId = request()->query('student_id')) {
+//                    $student = User::find($studentId)?->student;
+//
+//                    if ($student) {
+//                        $classId = $student->currentClassAssignment?->class_id;
+//                        $yearId = $student->currentClassAssignment?->academic_year_id;
+//
+//                        $query->whereHas('class', fn ($q) => $q->where('id', $classId))
+//                            ->where('academic_year_id', $yearId);
+//                    }
+//                }
+//            })
             ->columns([
                 Tables\Columns\TextColumn::make('academicYear.name')
                     ->numeric()
@@ -88,17 +103,25 @@ class ProductResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('add_to_cart')
+                    ->label('Add to Cart')
+                    ->icon('heroicon-o-plus')
+                    ->action(function ($record, array $data) {
+                        $studentId = request()->query('student_id');
+                        if ($studentId) {
+                            Cart::updateOrCreate([
+                                'student_id' => $studentId,
+                                'product_id' => $record->id,
+                            ], [
+                                'quantity' => \DB::raw('quantity + 1'),
+                            ]);
+                        }
+                    })
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                    Tables\Actions\ForceDeleteBulkAction::make(),
-                    Tables\Actions\RestoreBulkAction::make(),
                 ]),
             ]);
     }
