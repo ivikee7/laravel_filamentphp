@@ -51,6 +51,8 @@ Route::get('/auth/google/callback', function () {
     return redirect('/admin');
 });
 
+Route::get('/admin/invoices/{invoice}/print', [\App\Http\Controllers\Admin\StoreManagementSystem\Invoice\InvoicePrintController::class, 'print'])->name('invoice.print');
+
 
 
 // Route::get('/generate-student-qrs', function () {

@@ -3,33 +3,22 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 
-class InvoiceItem extends Model
+class InvoicePayment extends Model
 {
-    use SoftDeletes;
+    use softDeletes;
 
-    protected $guarded = []; // Adjust as needed
-    protected $casts = [
-        'unit_price' => 'decimal:2',
-        'line_total' => 'decimal:2',
+    protected $fillable = [
+        'invoice_id',
+        'amount',
+        'payment_method',
+        'transaction_id',
+        'status',
+        'payment_date',
+        'note',
     ];
-
-    public function invoice(): BelongsTo
-    {
-        return $this->belongsTo(Invoice::class);
-    }
-
-    // public function itemable(): MorphTo
-    // {
-    //     return $this->morphTo();
-    // }
-
-
-    protected $dates = ['deleted_at'];
 
     protected static function boot()
     {
@@ -61,19 +50,17 @@ class InvoiceItem extends Model
     {
         return $this->belongsTo(User::class, 'created_by');
     }
-
     public function updatedBy()
     {
         return $this->belongsTo(User::class, 'updated_by');
     }
-
     public function deletedBy()
     {
         return $this->belongsTo(User::class, 'deleted_by');
     }
 
-    public function product(): belongsTo
+    public function invoice()
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsTo(Invoice::class);
     }
 }

@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::create('invoice_items', function (Blueprint $table) {
             $table->id();
             //
-            $table->foreignId('invoice_id')->constrained()->cascadeOnDelete(); // Item belongs to an Invoice
-            $table->string('description');
+            $table->foreignId('invoice_id'); // Item belongs to an Invoice
+            $table->foreignId('product_id');
             $table->integer('quantity');
-            $table->decimal('unit_price', 10, 2);
-            $table->decimal('line_total', 10, 2); // Store or calculate, storing can simplify queries
+            $table->decimal('price', 10, 2);
+            $table->decimal('total', 10, 2); // Store or calculate, storing can simplify queries
             // You might add a polymorphic relationship here if items can link to Products/Services, but often description and unit_price are enough
             // $table->morphs('itemable'); // Optional: if items link back to Products, Services, etc.
 

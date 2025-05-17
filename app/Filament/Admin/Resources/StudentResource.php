@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\StudentResource\Pages;
 use App\Filament\Admin\Resources\StudentResource\RelationManagers\CartRelationManager;
+use App\Filament\Admin\Resources\StudentResource\RelationManagers\InvoicesRelationManager;
 use App\Filament\Admin\Resources\StudentResource\RelationManagers\ProductsRelationManager;
 use App\Models\AcademicYear;
 use App\Models\BloodGroup;
@@ -614,6 +615,7 @@ class StudentResource extends Resource
         return [
             ProductsRelationManager::class,
             CartRelationManager::class,
+            InvoicesRelationManager::class,
         ];
     }
 

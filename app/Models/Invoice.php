@@ -17,8 +17,8 @@ class Invoice extends Model
     protected $casts = [
         'invoice_date' => 'date',
         'due_date' => 'date',
-        'subtotal' => 'decimal:2',
-        'tax' => 'decimal:2',
+        'sub_total' => 'decimal:2',
+        'discount' => 'decimal:2',
         'total' => 'decimal:2',
     ];
 
@@ -64,6 +64,17 @@ class Invoice extends Model
             $model->deleted_by = null;
             $model->saveQuietly();
         });
+
+        // Auto invoice number
+        static::creating(function ($invoice) {
+            // Only generate if not already set
+            if (empty($invoice->invoice_number)) {
+                $lastInvoice = static::orderBy('id', 'desc')->first();
+                $lastNumber = $lastInvoice ? intval(substr($lastInvoice->invoice_number, -5)) : 0;
+                $newNumber = str_pad($lastNumber + 1, 5, '0', STR_PAD_LEFT);
+                $invoice->invoice_number = 'INV-' . now()->format('Ymd') . '-' . $newNumber;
+            }
+        });
     }
 
     public function createdBy()
@@ -77,5 +88,22 @@ class Invoice extends Model
     public function deletedBy()
     {
         return $this->belongsTo(User::class, 'deleted_by');
+    }
+
+
+
+    public function payments()
+    {
+        return $this->hasMany(InvoicePayment::class);
+    }
+
+    public function totalPaid(): float
+    {
+        return $this->payments()->where('status', 'completed')->sum('amount');
+    }
+
+    public function balanceDue(): float
+    {
+        return $this->total - $this->totalPaid();
     }
 }

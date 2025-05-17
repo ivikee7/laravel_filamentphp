@@ -181,6 +181,10 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasMany(Cart::class, 'user_id');
     }
 
+    public function invoices():HasMany{
+        return $this->hasMany(Invoice::class, 'user_id');
+    }
+
 
     protected function formattedAttendance(): Attribute
     {

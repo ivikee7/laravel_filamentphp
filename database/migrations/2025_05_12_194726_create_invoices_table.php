@@ -20,10 +20,10 @@ return new class extends Migration
             $table->string('invoice_number')->unique()->nullable();
             $table->date('invoice_date');
             $table->date('due_date')->nullable();
-            $table->decimal('subtotal', 10, 2);
-            $table->decimal('tax', 10, 2)->nullable();
+            $table->decimal('sub_total', 10, 2);
+            $table->decimal('discount', 10, 2)->nullable();
             $table->decimal('total', 10, 2);
-            $table->string('currency', 3)->default('USD');
+            $table->string('currency', 3)->default('INR');
             $table->text('notes')->nullable();
             $table->string('status')->default('draft');
             $table->string('invoice_type')->default('standard');
