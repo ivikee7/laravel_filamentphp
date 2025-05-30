@@ -259,7 +259,7 @@ class StudentResource extends Resource
                     ->wrap()
                     ->searchable()
                     ->sortable()
-                    ->label('Motner Name')
+                    ->label('Mother Name')
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('currentStudent.currentClassAssignment.class.className.name')
                     ->searchable()
