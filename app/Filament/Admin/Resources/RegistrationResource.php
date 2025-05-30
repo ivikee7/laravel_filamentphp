@@ -4,11 +4,13 @@ namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\RegistrationResource\Pages;
 use App\Filament\Admin\Resources\RegistrationResource\RelationManagers;
+use App\Filament\Exports\RegistrationExporter;
 use App\Models\AcademicYear;
 use App\Models\Enquiry;
 use App\Models\Gender;
 use App\Models\Registration;
 use App\Models\StudentClass;
+use Filament\Actions;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
@@ -26,7 +28,7 @@ class RegistrationResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    
+
     public static function form(Form $form): Form
     {
         return $form
@@ -265,6 +267,13 @@ class RegistrationResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                     Tables\Actions\ForceDeleteBulkAction::make(),
                     Tables\Actions\RestoreBulkAction::make(),
+                    // Export
+                    Tables\Actions\ExportBulkAction::make()
+                        ->exporter(RegistrationExporter::class)
+                        ->formats([
+                            Actions\Exports\Enums\ExportFormat::Xlsx,
+                            Actions\Exports\Enums\ExportFormat::Csv,
+                        ])
                 ]),
             ]);
     }
