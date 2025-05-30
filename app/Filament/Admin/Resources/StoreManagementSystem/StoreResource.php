@@ -21,6 +21,7 @@ class StoreResource extends Resource
 
     protected static ?string $navigationGroup = 'Store Management System';
 
+
     public static function form(Form $form): Form
     {
         return $form

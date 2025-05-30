@@ -21,6 +21,7 @@ class StoppageResource extends Resource
 
     protected static ?string $navigationGroup = 'Transport';
 
+
     public static function form(Form $form): Form
     {
         return $form
