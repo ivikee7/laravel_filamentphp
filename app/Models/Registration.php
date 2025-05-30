@@ -87,7 +87,13 @@ class Registration extends Model
     {
         return $this->belongsTo(StudentClass::class, 'class_id');
     }
+
     public function class(): BelongsTo
+    {
+        return $this->belongsTo(ClassName::class);
+    }
+
+    public function previousClass(): BelongsTo
     {
         return $this->belongsTo(ClassName::class);
     }
@@ -100,5 +106,9 @@ class Registration extends Model
     {
         // dd($this->hasOne(Student::class, 'registration_id')->get());
         return $this->hasOne(Student::class, 'registration_id')->latestOfMany();
+    }
+
+    public function academicYear(): BelongsTo{
+        return $this->belongsTo(AcademicYear::class, 'academic_year_id');
     }
 }

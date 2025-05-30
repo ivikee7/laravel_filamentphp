@@ -6,6 +6,7 @@ use App\Filament\Admin\Resources\StudentResource\Pages;
 use App\Filament\Admin\Resources\StudentResource\RelationManagers\CartRelationManager;
 use App\Filament\Admin\Resources\StudentResource\RelationManagers\InvoicesRelationManager;
 use App\Filament\Admin\Resources\StudentResource\RelationManagers\ProductsRelationManager;
+use App\Filament\Exports\RegistrationExporter;
 use App\Models\AcademicYear;
 use App\Models\BloodGroup;
 use App\Models\StudentClass;
@@ -21,6 +22,7 @@ use App\Models\User;
 use App\Models\WhatsAppProvider;
 use App\Services\SMSService;
 use App\Services\WhatsApp\WhatsAppService;
+use Filament\Actions;
 use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
@@ -425,6 +427,13 @@ class StudentResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                     Tables\Actions\ForceDeleteBulkAction::make(),
                     Tables\Actions\RestoreBulkAction::make(),
+                    // Export
+                    Tables\Actions\ExportBulkAction::make()
+                        ->exporter(RegistrationExporter::class)
+                        ->formats([
+                            Actions\Exports\Enums\ExportFormat::Xlsx,
+                            Actions\Exports\Enums\ExportFormat::Csv,
+                        ]),
                     BulkAction::make('send_bulk_sms')
                         ->label('Send Bulk SMS')
                         ->form([

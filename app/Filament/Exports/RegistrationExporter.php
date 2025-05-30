@@ -36,18 +36,12 @@ class RegistrationExporter extends Exporter
             ExportColumn::make('payment_amount'),
             ExportColumn::make('payment_mode'),
             ExportColumn::make('payment_notes'),
-            ExportColumn::make('previous_class_id'),
-            ExportColumn::make('academic_year_id'),
             ExportColumn::make('class.name'),
+            ExportColumn::make('academicYear.name'),
+            ExportColumn::make('admissionClass.className.name'),
             ExportColumn::make('enquiry_id'),
             ExportColumn::make('placement_test_date'),
             ExportColumn::make('placement_test_status'),
-            ExportColumn::make('created_by'),
-            ExportColumn::make('updated_by'),
-            ExportColumn::make('deleted_by'),
-            ExportColumn::make('created_at'),
-            ExportColumn::make('updated_at'),
-            ExportColumn::make('deleted_at'),
         ];
     }
 

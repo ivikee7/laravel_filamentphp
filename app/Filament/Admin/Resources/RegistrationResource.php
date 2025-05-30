@@ -52,7 +52,7 @@ class RegistrationResource extends Resource
                             ->maxLength(255)
                             ->default(fn($get) => Enquiry::find(request()->query('enquiry_id'))?->previous_school),
                         Forms\Components\Select::make('previous_class_id')
-                            ->relationship('class', 'name')
+                            ->relationship('previousClass', 'name')
                             ->label('Previous Class')
                             ->default(fn($get) => Enquiry::find(request()->query('enquiry_id'))?->previous_class_id),
                     ])->columns(3),
@@ -233,8 +233,8 @@ class RegistrationResource extends Resource
                 Tables\Columns\TextColumn::make('payment_mode')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('class.name')
-                    ->label('Previus Class')
+                Tables\Columns\TextColumn::make('previousClass.name')
+                    ->label('Previous Class')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('created_at')->wrap()
