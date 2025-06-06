@@ -56,7 +56,7 @@ class StudentResource extends Resource
     {
         return $form
             ->schema([
-                Section::make('User info')
+                Section::make('Student info')
                     ->schema([
                         Forms\Components\Grid::make(2) // Create a 2-column layout
                         ->schema([
@@ -100,20 +100,22 @@ class StudentResource extends Resource
                                             ->email()
                                             ->disabled(fn() => !Filament::auth()->user()?->can('update GSuiteUser')),
                                     ])->relationship('gSuiteUser')->columns(2),
-                                    Forms\Components\Group::make()
-                                        ->schema([
-                                            Forms\Components\Select::make('gender_id')
-                                                ->options(Gender::pluck('name', 'id'))
-                                                ->required()
-                                                ->default(fn($get) => Registration::find(request()->query('registration_id'))?->gender_id),
-                                            Forms\Components\Select::make('blood_group_id')
-                                                ->options(BloodGroup::pluck('name', 'id'))
-                                                ->required()
-                                                ->default(fn($get) => Registration::find(request()->query('registration_id'))?->blood_group_id),
-                                        ])->columns(2),
                                 ])
                                 ->columnSpan(1),
                         ]),
+                        Forms\Components\Group::make()
+                            ->schema([
+                        Forms\Components\DatePicker::make('date_of_birth')->required()
+                            ->default(fn($get) => Registration::find(request()->query('registration_id'))?->date_of_birth),
+                        Forms\Components\Select::make('gender_id')
+                            ->options(Gender::pluck('name', 'id'))
+                            ->required()
+                            ->default(fn($get) => Registration::find(request()->query('registration_id'))?->gender_id),
+                        Forms\Components\Select::make('blood_group_id')
+                            ->options(BloodGroup::pluck('name', 'id'))
+                            ->required()
+                            ->default(fn($get) => Registration::find(request()->query('registration_id'))?->blood_group_id),
+                            ])->columns(4),
                     ]),
 
                 Section::make('Admission Info')
@@ -273,6 +275,11 @@ class StudentResource extends Resource
                     ->sortable()
                     ->label('Section')
                     ->toggleable(isToggledHiddenByDefault: false),
+                Tables\Columns\TextColumn::make('date_of_birth')
+                    ->searchable()
+                    ->sortable()
+                    ->label('DOB')
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('currentStudent.currentClassAssignment.academicYear.name')
                     ->searchable()
                     ->sortable()
