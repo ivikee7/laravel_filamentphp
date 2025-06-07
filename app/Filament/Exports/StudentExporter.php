@@ -37,7 +37,7 @@ class StudentExporter extends Exporter
             ExportColumn::make('user.place_of_birth'),
             ExportColumn::make('user.notes'),
             ExportColumn::make('user.termination_date'),
-            //
+            // Registration
             ExportColumn::make('registration_id'),
             ExportColumn::make('quota.name'),
             ExportColumn::make('admission_number'),
@@ -47,6 +47,7 @@ class StudentExporter extends Exporter
             ExportColumn::make('exit_reason'),
             ExportColumn::make('local_guardian_user_id'),
             ExportColumn::make('local_guardian_relationship'),
+            // Auth
             ExportColumn::make('createdBy.name'),
             ExportColumn::make('updatedBy.name'),
             ExportColumn::make('deletedBy.name'),
