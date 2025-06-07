@@ -7,6 +7,7 @@ use App\Filament\Admin\Resources\StudentResource\RelationManagers\CartRelationMa
 use App\Filament\Admin\Resources\StudentResource\RelationManagers\InvoicesRelationManager;
 use App\Filament\Admin\Resources\StudentResource\RelationManagers\ProductsRelationManager;
 use App\Filament\Exports\RegistrationExporter;
+use App\Filament\Exports\StudentExporter;
 use App\Models\AcademicYear;
 use App\Models\BloodGroup;
 use App\Models\StudentClass;
@@ -105,16 +106,16 @@ class StudentResource extends Resource
                         ]),
                         Forms\Components\Group::make()
                             ->schema([
-                        Forms\Components\DatePicker::make('date_of_birth')->required()
-                            ->default(fn($get) => Registration::find(request()->query('registration_id'))?->date_of_birth),
-                        Forms\Components\Select::make('gender_id')
-                            ->options(Gender::pluck('name', 'id'))
-                            ->required()
-                            ->default(fn($get) => Registration::find(request()->query('registration_id'))?->gender_id),
-                        Forms\Components\Select::make('blood_group_id')
-                            ->options(BloodGroup::pluck('name', 'id'))
-                            ->required()
-                            ->default(fn($get) => Registration::find(request()->query('registration_id'))?->blood_group_id),
+                                Forms\Components\DatePicker::make('date_of_birth')->required()
+                                    ->default(fn($get) => Registration::find(request()->query('registration_id'))?->date_of_birth),
+                                Forms\Components\Select::make('gender_id')
+                                    ->options(Gender::pluck('name', 'id'))
+                                    ->required()
+                                    ->default(fn($get) => Registration::find(request()->query('registration_id'))?->gender_id),
+                                Forms\Components\Select::make('blood_group_id')
+                                    ->options(BloodGroup::pluck('name', 'id'))
+                                    ->required()
+                                    ->default(fn($get) => Registration::find(request()->query('registration_id'))?->blood_group_id),
                             ])->columns(4),
                     ]),
 
@@ -435,8 +436,8 @@ class StudentResource extends Resource
                     Tables\Actions\ForceDeleteBulkAction::make(),
                     Tables\Actions\RestoreBulkAction::make(),
                     // Export
-                    Tables\Actions\ExportBulkAction::make()
-                        ->exporter(RegistrationExporter::class)
+                    Tables\Actions\ExportBulkAction::make('export')
+                        ->exporter(StudentExporter::class)
                         ->formats([
                             Actions\Exports\Enums\ExportFormat::Xlsx,
                             Actions\Exports\Enums\ExportFormat::Csv,
