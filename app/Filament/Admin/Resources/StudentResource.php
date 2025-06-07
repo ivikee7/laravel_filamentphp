@@ -552,7 +552,11 @@ class StudentResource extends Resource
                         ->deselectRecordsAfterCompletion()
                         ->color('success')
                         ->icon('heroicon-o-chat-bubble-left-right'),
-                    BulkAction::make('promote')
+
+                ])
+                    ->label('Message'),
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\BulkAction::make('update-promote')
                         ->label('Promote Students')
                         ->form([
                             Forms\Components\Select::make('new_academic_year_id')
@@ -631,7 +635,34 @@ class StudentResource extends Resource
                         })
                         ->requiresConfirmation()
                         ->deselectRecordsAfterCompletion(),
-                ]),
+                    Tables\Actions\BulkAction::make('update-status')
+                        ->label('Update Status') // Label for the action button
+                        ->icon('heroicon-o-adjustments-horizontal') // Optional: Add an icon
+                        ->color('info') // Optional: Set a color
+                        ->form([ // Define the form for the modal
+                            Forms\Components\Toggle::make('new_status')
+                                ->label('Set Status to Active?') // Label for the toggle switch
+                                ->hint('Toggle to set selected items as Active or Suspended.') // Helpful hint
+                                ->default(false), // Default state when the modal opens
+                        ])
+                        ->action(function (Collection $records, array $data): void {
+                            // Loop through the selected records and update their status
+                            foreach ($records as $record) {
+                                $record->update([
+                                    'is_active' => $data['new_status'], // Use the status value from the form
+                                ]);
+                            }
+
+                            // Optional: Send a notification to the user after completion
+                            Notification::make()
+                                ->title('Status Updated')
+                                ->body('Selected records have been updated successfully!')
+                                ->success()
+                                ->send();
+                        })
+                        ->deselectRecordsAfterCompletion() // Deselect records after the action
+                        ->requiresConfirmation(),
+                ])->label('Update'),
             ]);
     }
 
