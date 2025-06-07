@@ -5,12 +5,17 @@ namespace App\Filament\Admin\Resources;
 use App\Filament\Admin\Resources\UserResource\Pages;
 use App\Filament\Admin\Resources\UserResource\Pages\IDCard;
 use App\Filament\Admin\Resources\UserResource\RelationManagers;
+use App\Filament\Exports\UserExporter;
 use App\Jobs\SendWhatsappMessageJob;
+use App\Models\AcademicYear;
 use App\Models\BloodGroup;
 use App\Models\Gender;
+use App\Models\StudentClass;
+use App\Models\StudentSection;
 use App\Models\User;
 use App\Models\WhatsAppProvider;
 use App\Services\WhatsApp\WhatsAppService;
+use Filament\Actions;
 use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
@@ -23,6 +28,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -374,6 +380,48 @@ class UserResource extends Resource
                         ->color('success')
                         ->icon('heroicon-o-chat-bubble-left-right'),
                 ]),
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\ExportBulkAction::make('export-xlsx')
+                        ->exporter(UserExporter::class)
+                        ->formats([
+                            Actions\Exports\Enums\ExportFormat::Xlsx,
+                        ])->label('Xlsx'),
+                    Tables\Actions\ExportBulkAction::make('export-csv')
+                        ->exporter(UserExporter::class)
+                        ->formats([
+                            Actions\Exports\Enums\ExportFormat::Csv,
+                        ])->label('CSV'),
+                ])
+                    ->label('Export'),
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\BulkAction::make('update-status')
+                        ->label('Update Status') // Label for the action button
+                        ->icon('heroicon-o-adjustments-horizontal') // Optional: Add an icon
+                        ->color('info') // Optional: Set a color
+                        ->form([ // Define the form for the modal
+                            Forms\Components\Toggle::make('new_status')
+                                ->label('Set Status to Active?') // Label for the toggle switch
+                                ->hint('Toggle to set selected items as Active or Suspended.') // Helpful hint
+                                ->default(false), // Default state when the modal opens
+                        ])
+                        ->action(function (Collection $records, array $data): void {
+                            // Loop through the selected records and update their status
+                            foreach ($records as $record) {
+                                $record->update([
+                                    'is_active' => $data['new_status'], // Use the status value from the form
+                                ]);
+                            }
+
+                            // Optional: Send a notification to the user after completion
+                            Notification::make()
+                                ->title('Status Updated')
+                                ->body('Selected records have been updated successfully!')
+                                ->success()
+                                ->send();
+                        })
+                        ->deselectRecordsAfterCompletion() // Deselect records after the action
+                        ->requiresConfirmation(),
+                ])->label('Update'),
             ]);
     }
 

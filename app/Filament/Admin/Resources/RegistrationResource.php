@@ -82,8 +82,8 @@ class RegistrationResource extends Resource
                                 return $academicYearId
                                     ? StudentClass::with('className')  // Eager load the className relationship
                                     ->where('academic_year_id', $academicYearId)
-                                    ->get()
-                                    ->pluck('className.name', 'id') // Pluck name from className relation and id as value
+                                        ->get()
+                                        ->pluck('className.name', 'id') // Pluck name from className relation and id as value
                                     : []; // Empty array if no academic_year_id is set
                             })
                             ->required()
@@ -275,6 +275,19 @@ class RegistrationResource extends Resource
                             Actions\Exports\Enums\ExportFormat::Csv,
                         ])
                 ]),
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\ExportBulkAction::make('export-xlsx')
+                        ->exporter(RegistrationExporter::class)
+                        ->formats([
+                            Actions\Exports\Enums\ExportFormat::Xlsx,
+                        ])->label('Xlsx'),
+                    Tables\Actions\ExportBulkAction::make('export-csv')
+                        ->exporter(RegistrationExporter::class)
+                        ->formats([
+                            Actions\Exports\Enums\ExportFormat::Csv,
+                        ])->label('CSV'),
+                ])
+                    ->label('Export'),
             ]);
     }
 

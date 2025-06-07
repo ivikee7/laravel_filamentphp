@@ -8,6 +8,7 @@ use App\Filament\Admin\Resources\StudentResource\RelationManagers\InvoicesRelati
 use App\Filament\Admin\Resources\StudentResource\RelationManagers\ProductsRelationManager;
 use App\Filament\Exports\RegistrationExporter;
 use App\Filament\Exports\StudentExporter;
+use App\Filament\Exports\UserExporter;
 use App\Models\AcademicYear;
 use App\Models\BloodGroup;
 use App\Models\StudentClass;
