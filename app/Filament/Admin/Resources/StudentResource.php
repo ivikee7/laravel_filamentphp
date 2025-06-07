@@ -435,13 +435,21 @@ class StudentResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                     Tables\Actions\ForceDeleteBulkAction::make(),
                     Tables\Actions\RestoreBulkAction::make(),
-                    // Export
-                    Tables\Actions\ExportBulkAction::make('export')
+                ]),
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\ExportBulkAction::make('export-xlsx')
                         ->exporter(StudentExporter::class)
                         ->formats([
                             Actions\Exports\Enums\ExportFormat::Xlsx,
+                        ])->label('Xlsx'),
+                    Tables\Actions\ExportBulkAction::make('export-csv')
+                        ->exporter(StudentExporter::class)
+                        ->formats([
                             Actions\Exports\Enums\ExportFormat::Csv,
-                        ]),
+                        ])->label('CSV'),
+                ])
+                    ->label('Export'),
+                Tables\Actions\BulkActionGroup::make([
                     BulkAction::make('send_bulk_sms')
                         ->label('Send Bulk SMS')
                         ->form([
