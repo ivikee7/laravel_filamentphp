@@ -6,6 +6,7 @@ use App\Models\User;
 use Filament\Actions\Exports\ExportColumn;
 use Filament\Actions\Exports\Exporter;
 use Filament\Actions\Exports\Models\Export;
+use Illuminate\Support\Facades\Storage;
 
 class UserExporter extends Exporter
 {
@@ -16,6 +17,8 @@ class UserExporter extends Exporter
         return [
             ExportColumn::make('id')
                 ->label('ID'),
+            ExportColumn::make('avatar')
+                ->getStateUsing(fn($record) => $record->avatar ? Storage::disk('public')->url($record->avatar) : null),
             ExportColumn::make('name'),
             ExportColumn::make('email'),
             ExportColumn::make('official_email'),
