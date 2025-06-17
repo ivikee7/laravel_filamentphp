@@ -76,11 +76,9 @@ class UserResource extends Resource
                                             Forms\Components\TextInput::make('email')
                                                 ->label('GSuite Email')
                                                 ->email()
-                                                ->required()
                                                 ->disabled(fn() => !Filament::auth()->user()?->can('update GSuiteUser')),
                                             Forms\Components\TextInput::make('password')
                                                 ->label('GSuite Password')
-                                                ->required()
                                                 ->visible(fn() => Filament::auth()->user()?->isSuperAdmin())
                                                 ->disabled(fn() => !Filament::auth()->user()?->isSuperAdmin()),
                                         ])->relationship('gSuiteUser')->columns(2),
@@ -116,7 +114,7 @@ class UserResource extends Resource
                             ->minLength(10)
                             ->maxLength(10)
                             ->required(),
-                        Forms\Components\TextInput::make('email')->email()->required(),
+                        Forms\Components\TextInput::make('email')->email(),
                     ])->columns(2),
                 Section::make('Address')
                     ->schema([
