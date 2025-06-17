@@ -48,52 +48,52 @@ class UserResource extends Resource
                 Section::make('User info')
                     ->schema([
                         Forms\Components\Grid::make(2) // Create a 2-column layout
-                            ->schema([
-                                // Left Column: Centered Large Avatar
-                                Forms\Components\Group::make()
-                                    ->schema([
-                                        Forms\Components\FileUpload::make('avatar')
-                                            ->image()
-                                            ->avatar()
-                                            ->imageEditor()
-                                            ->hiddenLabel()
-                                            ->imagePreviewHeight(250)
-                                            // disk
-                                            ->disk('public')
-                                            ->directory('media/avatar')
-                                            ->visibility('public')
-                                    ])
-                                    ->columnSpan(1)
-                                    ->extraAttributes([
-                                        'style' => 'display: flex; align-items: center; justify-content: center; height: 100%;',
-                                    ]),
+                        ->schema([
+                            // Left Column: Centered Large Avatar
+                            Forms\Components\Group::make()
+                                ->schema([
+                                    Forms\Components\FileUpload::make('avatar')
+                                        ->image()
+                                        ->avatar()
+                                        ->imageEditor()
+                                        ->hiddenLabel()
+                                        ->imagePreviewHeight(250)
+                                        // disk
+                                        ->disk('public')
+                                        ->directory('media/avatar')
+                                        ->visibility('public')
+                                ])
+                                ->columnSpan(1)
+                                ->extraAttributes([
+                                    'style' => 'display: flex; align-items: center; justify-content: center; height: 100%;',
+                                ]),
 
-                                // Right Column: Other Input Fields
-                                Forms\Components\Group::make()
-                                    ->schema([
-                                        Forms\Components\TextInput::make('name')->required(),
-                                        Forms\Components\Group::make([
-                                            Forms\Components\TextInput::make('email')
-                                                ->label('GSuite Email')
-                                                ->email()
-                                                ->disabled(fn() => !Filament::auth()->user()?->can('update GSuiteUser')),
-                                            Forms\Components\TextInput::make('password')
-                                                ->label('GSuite Password')
-                                                ->visible(fn() => Filament::auth()->user()?->isSuperAdmin())
-                                                ->disabled(fn() => !Filament::auth()->user()?->isSuperAdmin()),
-                                        ])->relationship('gSuiteUser')->columns(2),
-                                        Forms\Components\Group::make()
-                                            ->schema([
-                                                Forms\Components\Select::make('gender_id')
-                                                    ->options(Gender::pluck('name', 'id'))
-                                                    ->required(),
-                                                Forms\Components\Select::make('blood_group_id')
-                                                    ->options(BloodGroup::pluck('name', 'id'))
-                                                    ->required(),
-                                            ])->columns(2),
-                                    ])
-                                    ->columnSpan(1),
-                            ]),
+                            // Right Column: Other Input Fields
+                            Forms\Components\Group::make()
+                                ->schema([
+                                    Forms\Components\TextInput::make('name')->required(),
+                                    Forms\Components\Group::make([
+                                        Forms\Components\TextInput::make('email')
+                                            ->label('GSuite Email')
+                                            ->email()
+                                            ->disabled(fn() => !Filament::auth()->user()?->can('update GSuiteUser')),
+                                        Forms\Components\TextInput::make('password')
+                                            ->label('GSuite Password')
+                                            ->visible(fn() => Filament::auth()->user()?->isSuperAdmin())
+                                            ->disabled(fn() => !Filament::auth()->user()?->isSuperAdmin()),
+                                    ])->relationship('gSuiteUser')->columns(2),
+                                    Forms\Components\Group::make()
+                                        ->schema([
+                                            Forms\Components\Select::make('gender_id')
+                                                ->options(Gender::pluck('name', 'id'))
+                                                ->required(),
+                                            Forms\Components\Select::make('blood_group_id')
+                                                ->options(BloodGroup::pluck('name', 'id'))
+                                                ->required(),
+                                        ])->columns(2),
+                                ])
+                                ->columnSpan(1),
+                        ]),
                     ]),
                 Section::make('Parents info')
                     ->schema([
@@ -196,6 +196,17 @@ class UserResource extends Resource
                             }),
                         Forms\Components\Toggle::make('is_active')->inline(false)->required(),
                     ])->columns(2),
+                Section::make('Record creation info')
+                    ->schema([
+                        Forms\Components\TextInput::make('createdBy.name')->label('Created By'),
+                        Forms\Components\TextInput::make('updatedBy.name')->label('Updated By'),
+                        Forms\Components\TextInput::make('deletedBy.name')->label('Deleted By'),
+                        Forms\Components\DateTimePicker::make('created_at'),
+                        Forms\Components\DateTimePicker::make('updated_at'),
+                        Forms\Components\DateTimePicker::make('deleted_at'),
+                    ])
+                    ->columns(3)
+                ->visibleOn(['view'])
             ]);
     }
 
@@ -260,6 +271,18 @@ class UserResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: false),
                 Tables\Columns\TextColumn::make('email_verified_at')
                     ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('createdBy.name')
+                    ->numeric()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('updatedBy.name')
+                    ->numeric()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('deletedBy.name')
+                    ->numeric()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('created_at')->wrap()
@@ -449,6 +472,7 @@ class UserResource extends Resource
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ])
+            ->with(['createdBy', 'updatedBy', 'deletedBy'])
             ->whereHas('roles', function ($query) {
                 if (!Auth::user()->hasRole('Super Admin')) {
                     $query->whereNot('name', 'Super Admin');

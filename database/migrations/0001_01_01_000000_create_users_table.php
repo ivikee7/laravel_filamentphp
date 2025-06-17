@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             //
             $table->string('name', 50);
-            $table->string('email', 50);
+            $table->string('email', 50)->nullable();
             $table->string('official_email', 50)->nullable();
             $table->string('father_name', 50)->nullable();
             $table->string('mother_name', 60)->nullable();

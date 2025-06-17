@@ -226,13 +226,25 @@ class StudentResource extends Resource
                             ->required()
                             ->default(fn($get) => Registration::find(request()->query('registration_id'))?->pin_code),
                     ])->columns(2),
+                Section::make('Record creation info')
+                    ->schema([
+                        Forms\Components\TextInput::make('createdBy.name')->label('Created By'),
+                        Forms\Components\TextInput::make('updatedBy.name')->label('Updated By'),
+                        Forms\Components\TextInput::make('deletedBy.name')->label('Deleted By'),
+                        Forms\Components\TextInput::make('created_at'),
+                        Forms\Components\TextInput::make('updated_at'),
+                        Forms\Components\TextInput::make('deleted_at'),
+                    ])
+                    ->columns(3)
+                    ->visibleOn(['view']),
 
                 // start only for deleteing registration after admission
                 Forms\Components\TextInput::make('registration_id')
                     ->hidden()
                     ->default(fn() => request()->query('registration_id')),
                 // end only for deleteing registration after admission
-            ]);
+            ])
+            ;
     }
 
     public static function table(Table $table): Table
