@@ -30,7 +30,7 @@ class CreateStudent extends CreateRecord
         // Check if registration_id is missing or invalid
         $registration = Registration::with('student')->find($this->registrationId);
 
-        if (! $registration) {
+        if (!$registration) {
             Notification::make()
                 ->title('Invalid registration')
                 ->danger()
@@ -75,13 +75,19 @@ class CreateStudent extends CreateRecord
 
         $record->assignRole('Student');
 
-        $record->gSuiteUser()->create([
-            'email' => $record->id . '@' . env('ORG_DOMAIN'),
-            'password' => self::generateGsuitePassword([
-                'name' => $record->name,
-                'primary_contact_number' => $record->primary_contact_number,
-            ]),
-        ]);
+        $record->gSuiteUser()->updateOrCreate(
+            [
+                'user_id' => $record->id,
+            ],
+            [
+                'email' => $record->id . '@' . env('ORG_DOMAIN'),
+                'password' => self::generateGsuitePassword([
+                    'name' => $record->name,
+                    'primary_contact_number' => $record->primary_contact_number,
+                ]),
+            ]);
+
+
     }
 
     public static function generateGsuitePassword(array $data): string

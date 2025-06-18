@@ -133,7 +133,7 @@ class User extends Authenticatable implements FilamentUser
 
     public function gSuiteUser(): HasOne
     {
-        return $this->hasOne(GSuiteUser::class);
+        return $this->hasOne(GSuiteUser::class, 'user_id');
     }
 
 

@@ -96,10 +96,13 @@ class StudentResource extends Resource
                                         Forms\Components\TextInput::make('email')
                                             ->label('GSuite Email')
                                             ->email()
+                                            ->visibleOn(['view', 'edit'])
                                             ->disabled(fn() => !Filament::auth()->user()?->can('update GSuiteUser')),
                                         Forms\Components\TextInput::make('password')
                                             ->label('GSuite Password')
-                                            ->email()
+                                            ->password()
+                                            ->revealable()
+                                            ->visibleOn(['view', 'edit'])
                                             ->disabled(fn() => !Filament::auth()->user()?->can('update GSuiteUser')),
                                     ])->relationship('gSuiteUser')->columns(2),
                                 ])

@@ -49,7 +49,7 @@ class RegistrationResource extends Resource
                 Section::make('Previous School info')
                     ->schema([
                         Forms\Components\TextInput::make('previous_school')
-                            ->maxLength(255)
+                            ->maxLength(100)
                             ->default(fn($get) => Enquiry::find(request()->query('enquiry_id'))?->previous_school),
                         Forms\Components\Select::make('previous_class_id')
                             ->relationship('previousClass', 'name')
@@ -227,7 +227,8 @@ class RegistrationResource extends Resource
                     ->numeric()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('previous_school')->wrap()
+                Tables\Columns\TextColumn::make('previous_school')
+                    ->wrap()
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('payment_mode')
