@@ -299,6 +299,16 @@ class StudentResource extends Resource
                     ->sortable()
                     ->label('Academic Year')
                     ->toggleable(isToggledHiddenByDefault: false),
+                Tables\Columns\TextColumn::make('primary_contact_number')
+                    ->searchable()
+                    ->sortable()
+                    ->label('Primary Contact')
+                    ->toggleable(isToggledHiddenByDefault: false),
+                Tables\Columns\TextColumn::make('secondary_contact_number')
+                    ->searchable()
+                    ->sortable()
+                    ->label('Secondary Contact')
+                    ->toggleable(isToggledHiddenByDefault: false),
                 Tables\Columns\TextColumn::make('full_address')
                     ->label('Address')
                     ->getStateUsing(function ($record) {
