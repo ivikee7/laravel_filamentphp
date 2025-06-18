@@ -53,6 +53,12 @@ Route::get('/auth/google/callback', function () {
 
 Route::get('/admin/invoices/{invoice}/print', [\App\Http\Controllers\Admin\StoreManagementSystem\Invoice\InvoicePrintController::class, 'print'])->name('invoice.print');
 
+Route::get('/print-id-card/{user}', function (User $user) {
+    // Eager load any relationships needed for the ID card if they are not directly on User model
+    // Example: if class and section are on a 'student' relationship:
+     $user->load('student');
+    return view('filament.admin.pages.i-d-cards.id-card-print', compact('user'));
+})->name('print.user.id_card');
 
 
 // Route::get('/generate-student-qrs', function () {
