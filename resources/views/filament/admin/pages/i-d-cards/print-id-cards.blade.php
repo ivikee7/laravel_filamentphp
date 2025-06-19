@@ -7,12 +7,6 @@
     <!-- QRCode.js for QR code generation -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode.js/1.0.0/qrcode.min.js"></script>
     <style>
-        .id-card-container .brand-logo,.brand-logo,.brand-name,.brand-address,.brand-contact-info{
-            margin: 0;
-            padding: 0;
-            text-align: center;
-            font-weight: bold;
-        }
         /* Your ID card styling from before */
         .id-card-container {
             width: 2.125in;
@@ -27,9 +21,6 @@
             float: left; /* Arrange multiple cards on a page */
             page-break-inside: avoid; /* Prevent breaking cards across pages */
             position: relative; /* For better positioning if needed */
-        }
-        .id-card-container .brand-name,.brand-address,.brand-contact-info{
-            line-height: normal;
         }
         .brand-logo {height: 40px;margin-right: 10px;}
         .brand-name {height: 40px;margin-right: 0;}
@@ -105,7 +96,7 @@
 
         <!-- ID/Session Section -->
         <div class="id-section">
-            <span>SRCS/ 1</span>
+            <span>SRCS/ {{$record->id}}</span>
             <span>Session : {{$record->currentStudent->currentClassAssignment->academicYear->name}}</span>
         </div>
 
@@ -129,8 +120,9 @@
             <p><strong class="font-semibold">Sec :</strong> {{ $record->currentStudent->currentClassAssignment->section->name ?? '' }}</p>
             <p><strong class="font-semibold">Mob :</strong> {{ $record->primary_contact_number ?? '' }} / {{$record->primary_contact_number ?? ''}}</p>
         </div>
-        <div class="id-card-footer">
-            <p>Signature</p>
+        <div class="id-card-footer flex flex-col justify-end items-end p-2">
+            <img src="/signature/principal_signature.png" alt="Signature" class="h-8 w-auto mb-1 mr-2">
+            <p class="text-xs">Signature</p>
         </div>
     </div>
 @endforeach
