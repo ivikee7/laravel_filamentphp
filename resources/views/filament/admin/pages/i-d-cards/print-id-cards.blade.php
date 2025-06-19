@@ -22,32 +22,13 @@
             page-break-inside: avoid; /* Prevent breaking cards across pages */
             position: relative; /* For better positioning if needed */
         }
-
-        .brand-logo {
-            height: 40px;
-            margin-right: 10px;
+        .brand-logo {height: 40px;margin-right: 10px;}
+        .brand-name {height: 40px;margin-right: 0;}
+        .brand-address {font-size: 0.49rem;color: black;}
+        .brand-contact-info {font-size: 0.6rem;color: black;}
+        .id-card-container .brand-address, .brand-contact-info{
+            font-weight: bold;
         }
-
-        .brand-name {
-            height: 40px;
-            margin-right: 0;
-        }
-
-        .brand-affiliation {
-            font-size: 0.59rem; /* text-xs */
-            color: red; /* Tailwind gray-700 */
-        }
-
-        .brand-address {
-            font-size: 0.49rem; /* smaller text */
-            color: black;
-        }
-
-        .brand-contact-info {
-            font-size: 0.7rem; /* smaller text */
-            color: black;
-        }
-
         .id-section {
             display: flex;
             justify-content: space-between;
