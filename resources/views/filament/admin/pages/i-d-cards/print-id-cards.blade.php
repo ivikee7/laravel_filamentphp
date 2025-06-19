@@ -127,8 +127,8 @@
 
         <div class="student-details">
             <p class="text-center font-bold whitespace-nowrap id-card-student-name">{{ $record->name }}</p>
-            <p><strong class="font-semibold">Class :</strong> {{ $record->currentStudent->currentClassAssignment->class->className->name ?? 'NA' }}</p>
-            <p><strong class="font-semibold">Sec :</strong> {{ $record->currentStudent->currentClassAssignment->section->name ?? 'NA' }}</p>
+            <p><strong class="font-semibold">Class :</strong> {{ $record->currentStudent->currentClassAssignment->class->className->name ?? '' }}</p>
+            <p><strong class="font-semibold">Sec :</strong> {{ $record->currentStudent->currentClassAssignment->section->name ?? '' }}</p>
             <p><strong class="font-semibold">Mob :</strong> {{ $record->primary_contact_number ?? '' }} / {{$record->primary_contact_number ?? ''}}</p>
         </div>
         <div class="id-card-footer">
