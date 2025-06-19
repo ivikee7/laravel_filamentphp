@@ -62,11 +62,6 @@
             align-items: center;
         }
 
-        .id-card-main-content {
-            padding-bottom: 2.5rem; /* Ensure main content doesn't overlap the footer area */
-            /* Adjust this padding based on the height of your footer */
-        }
-
         /* Add any other specific print styles */
         @media print {
             body {
@@ -120,7 +115,7 @@
         </div>
 
         <div class="student-details">
-            <p class="text-center font-bold whitespace-nowrap">{{ $record->name }}</p>
+            <p class="text-center font-bold whitespace-nowrap mt-1 mb-1 text-red-600">{{ $record->name }}</p>
             <p><strong class="font-semibold">Class
                     :</strong> {{ $record->currentStudent->currentClassAssignment->class->className->name ?? '' }}</p>
             <p><strong class="font-semibold">Sec
