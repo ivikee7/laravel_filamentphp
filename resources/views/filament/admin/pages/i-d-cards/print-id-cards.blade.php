@@ -22,20 +22,32 @@
             page-break-inside: avoid; /* Prevent breaking cards across pages */
             position: relative; /* For better positioning if needed */
         }
-        .brand-logo {height: 40px;margin-right: 10px;}
-        .brand-name {height: 40px;margin-right: 0;}
+
+        .brand-logo {
+            height: 40px;
+            margin-right: 10px;
+        }
+
+        .brand-name {
+            height: 40px;
+            margin-right: 0;
+        }
+
         .brand-affiliation {
             font-size: 0.59rem; /* text-xs */
             color: red; /* Tailwind gray-700 */
         }
+
         .brand-address {
             font-size: 0.49rem; /* smaller text */
             color: black;
         }
+
         .brand-contact-info {
             font-size: 0.7rem; /* smaller text */
             color: black;
         }
+
         .id-section {
             display: flex;
             justify-content: space-between;
@@ -48,6 +60,7 @@
             font-weight: bold; /* semibold */
             color: #2d3748; /* Tailwind gray-800 */
         }
+
         .photo-placeholder {
             width: 90px;
             height: 90px;
@@ -59,6 +72,7 @@
             font-size: 0.75rem;
             color: #a0aec0; /* Tailwind gray-500 */
         }
+
         .qr-code-area {
             width: 80px;
             height: 80px;
@@ -66,12 +80,19 @@
             justify-content: center;
             align-items: center;
         }
-        .id-card-student-name{
 
+        .id-card-main-content {
+            padding-bottom: 2.5rem; /* Ensure main content doesn't overlap the footer area */
+            /* Adjust this padding based on the height of your footer */
         }
+
         /* Add any other specific print styles */
         @media print {
-            body { margin: 0; padding: 0; }
+            body {
+                margin: 0;
+                padding: 0;
+            }
+
             .id-card-container {
                 box-shadow: none; /* Remove shadows for print */
                 border: 1px solid #000; /* Ensure borders are visible */
@@ -90,6 +111,7 @@
             <div class="text-center">
                 <p class="brand-address">Bhogipur, Near Shahpur, Jaganpura, Patna-804453</p>
                 <p class="brand-contact-info">Helpline No.+918873002602/03</p>
+
             </div>
         </div>
         <hr>
@@ -104,8 +126,10 @@
         <div class="flex justify-around items-center my-1">
             <div class="photo-placeholder rounded-lg overflow-hidden">
                 <!-- Replace with actual user photo if available -->
-                <img src="{{ $record->avatar ? asset('storage/' . $record->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode($record->name) }}" alt="User Photo"
-                     class="w-full h-full object-cover">
+                <img
+                    src="{{ $record->avatar ? asset('storage/' . $record->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode($record->name) }}"
+                    alt="User Photo"
+                    class="w-full h-full object-cover">
             </div>
             <div class="qr-code-area" id="qrcode">
                 <div class="bg-white p-2 rounded">
@@ -115,14 +139,19 @@
         </div>
 
         <div class="student-details">
-            <p class="text-center font-bold whitespace-nowrap id-card-student-name">{{ $record->name }}</p>
-            <p><strong class="font-semibold">Class :</strong> {{ $record->currentStudent->currentClassAssignment->class->className->name ?? '' }}</p>
-            <p><strong class="font-semibold">Sec :</strong> {{ $record->currentStudent->currentClassAssignment->section->name ?? '' }}</p>
-            <p><strong class="font-semibold">Mob :</strong> {{ $record->primary_contact_number ?? '' }} / {{$record->primary_contact_number ?? ''}}</p>
+            <p class="text-center font-bold whitespace-nowrap">{{ $record->name }}</p>
+            <p><strong class="font-semibold">Class
+                    :</strong> {{ $record->currentStudent->currentClassAssignment->class->className->name ?? '' }}</p>
+            <p><strong class="font-semibold">Sec
+                    :</strong> {{ $record->currentStudent->currentClassAssignment->section->name ?? '' }}</p>
+            <p><strong class="font-semibold">Mob :</strong> {{ $record->primary_contact_number ?? '' }}
+                / {{$record->primary_contact_number ?? ''}}</p>
         </div>
-        <div class="id-card-footer flex flex-col justify-end items-end p-2">
+
+        <!-- The Footer - Positioned Absolutely -->
+        <div class="id-card-footer absolute bottom-0 right-0 flex flex-col justify-end items-end p-2">
             <img src="/signature/principal_signature.png" alt="Signature" class="h-8 w-auto mb-1 mr-2">
-            <p class="text-xs">Signature</p>
+            <p class="text-xs text-gray-700">Signature</p>
         </div>
     </div>
 @endforeach
@@ -132,50 +161,6 @@
     // window.onload = function() {
     //     window.print();
     // };
-</script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const nameElements = document.querySelectorAll('.id-card-student-name');
-
-        nameElements.forEach(nameElement => {
-            const originalFontSize = parseFloat(window.getComputedStyle(nameElement).fontSize);
-            const parentElement = nameElement.parentNode; // The parent element (e.g., a div within your ID card)
-
-            // Ensure the parent element has a defined width, e.g., via CSS
-            // If the parent is the .id-card-container, you'd get its width.
-            // For robust measurement, consider a wrapper around just the name if needed.
-            const containerWidth = parentElement.offsetWidth;
-
-            function adjustFontSize() {
-                // Reset to original size for accurate measurement
-                nameElement.style.fontSize = originalFontSize + 'px';
-
-                // Check if text overflows the container
-                if (nameElement.scrollWidth > containerWidth) {
-                    let currentFontSize = originalFontSize;
-                    // Shrink font size until it fits or reaches a minimum (e.g., 8px)
-                    while (nameElement.scrollWidth > containerWidth && currentFontSize > 8) {
-                        currentFontSize -= 0.5; // Decrease by 0.5px for smoother adjustment
-                        nameElement.style.fontSize = currentFontSize + 'px';
-                    }
-                }
-            }
-
-            // Call adjustment on load
-            adjustFontSize();
-
-            // Optional: Use ResizeObserver for dynamic adjustment if the parent container's size can change
-            // This is more efficient than listening to window.resize for specific element changes.
-            const resizeObserver = new ResizeObserver(entries => {
-                for (let entry of entries) {
-                    if (entry.target === parentElement) {
-                        adjustFontSize();
-                    }
-                }
-            });
-            resizeObserver.observe(parentElement); // Observe the parent element for width changes
-        });
-    });
 </script>
 </body>
 </html>
