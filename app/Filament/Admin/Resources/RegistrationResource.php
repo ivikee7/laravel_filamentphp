@@ -262,6 +262,14 @@ class RegistrationResource extends Resource
                     ->url(fn(Registration $record) => StudentResource::getUrl('create', [
                         'registration_id' => $record->id, // Pass enquiry ID to Registration form
                     ])),
+                Tables\Actions\Action::make('print')
+                    ->label('Print Record')
+                    ->icon('heroicon-o-printer')
+                    ->url(fn ($record) => url()->current() . '?print=true') // A simple way to trigger print mode
+                    ->openUrlInNewTab() // Optional: opens in a new tab for printing
+                    ->extraAttributes([
+                        'onclick' => 'window.print(); return false;', // JavaScript to trigger print
+                    ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

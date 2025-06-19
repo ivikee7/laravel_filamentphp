@@ -23,13 +23,13 @@
         }
 
         .id-card-container {
-            width: 300px; /* Fixed width for an ID card */
-            height: 480px; /* Fixed height for an ID card */
+            width: 2.125in;
+            height: 3.375in;
             background-color: white;
             border: 1px solid #e2e8f0; /* Tailwind gray-200 */
             border-radius: 12px; /* Rounded corners */
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* Shadow */
-            padding: 20px;
+            padding: 10px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -37,17 +37,14 @@
             overflow: hidden; /* Ensure content stays within bounds */
         }
 
-        .header-logo {
-            width: 50px;
-            height: auto;
+        .school-logo {
+            height: 50px;
             margin-right: 10px;
         }
 
         .school-name {
-            font-size: 1.25rem; /* text-xl */
-            font-weight: bold;
-            color: #1a6200; /* Dark green from the image, adjust as needed */
-            line-height: 1.2;
+            height: 50px;
+            margin-right: 0;
         }
 
         .affiliation {
@@ -188,12 +185,13 @@
         }
     </style>
 </head>
-<body onload="window.print()">
+{{--<body onload="window.print()">--}}
+<body>
 <div class="id-card-container">
     <!-- Header Section -->
     <div class="flex items-center justify-center">
-        <img src="{{asset('logo_50.png')}}" alt="School Logo" class="header-logo rounded">
-        <img src="{{asset('logo_name_150.png')}}" alt="School Name" class="header-logo">
+        <img src="{{asset('logo_50.png')}}" alt="School Logo" class="school-logo">
+        <img src="{{asset('logo_name_150.png')}}" alt="School Name" class="school-name">
     </div>
     <div class="flex items-center justify-center border-b pb-1 mb-1">
         <div class="text-center">
@@ -225,7 +223,7 @@
 
     <!-- Student Details Section -->
     <div class="student-details flex-grow">
-        <p class="student-name">{{ $user->name ?? 'AVNI KUMARI' }}</p>
+        <p class="student-name">{{ $user->name ?? 'NA' }}</p>
         <p><strong class="font-semibold">Class :</strong> {{ $user->class ?? 'NA' }}</p>
         <p><strong class="font-semibold">Sec :</strong> {{ $user->section ?? 'NA' }}</p>
         <p><strong class="font-semibold">Mob :</strong> {{ $user->primary_contact_number ?? 'NA' }}</p>

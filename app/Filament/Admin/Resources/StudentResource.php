@@ -476,6 +476,34 @@ class StudentResource extends Resource
                 ])
                     ->label('Export'),
                 Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\BulkAction::make('printIdCards')
+                        ->label('Print ID Cards')
+                        ->icon('heroicon-o-printer')
+                        ->action(function (Collection $records) {
+                            if ($records->isEmpty()) {
+                                \Filament\Notifications\Notification::make()
+                                    ->title('No records selected for printing.')
+                                    ->warning()
+                                    ->send();
+                                return;
+                            }
+
+                            // Get IDs of selected records
+                            $ids = $records->pluck('id')->implode(',');
+
+                            // Redirect to a new tab/window to trigger print
+                            // Use 'new_tab' or similar if you want it to open in a new tab
+                            // (this might be browser-dependent for instant print)
+                            return redirect()->to(route('print.id_cards', ['ids' => $ids]));
+                        })
+                        ->deselectRecordsAfterCompletion()
+                        ->requiresConfirmation()
+                        ->modalHeading('Print Selected ID Cards?')
+                        ->modalDescription('This will open a new window to print ID cards. Please ensure your printer is ready.')
+                        ->modalSubmitActionLabel('Yes, Print')
+                        ->color('success'),
+                ])->label('Print'),
+                Tables\Actions\BulkActionGroup::make([
                     BulkAction::make('send_bulk_sms')
                         ->label('Send Bulk SMS')
                         ->form([

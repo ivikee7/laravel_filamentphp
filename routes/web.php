@@ -57,8 +57,19 @@ Route::get('/print-id-card/{user}', function (User $user) {
     // Eager load any relationships needed for the ID card if they are not directly on User model
     // Example: if class and section are on a 'student' relationship:
      $user->load('student');
-    return view('filament.admin.pages.i-d-cards.id-card-print', compact('user'));
+    return view('filament.admin.pages.i-d-cards.print-id-card', compact('user'));
 })->name('print.user.id_card');
+
+Route::get('/print-id-cards', function (\Illuminate\Http\Request $request) {
+    $ids = $request->query('ids'); // Get IDs from URL query parameter
+    $records = collect();
+
+    if ($ids) {
+        $records = App\Models\User::whereIn('id', explode(',', $ids))->get();
+    }
+
+    return view('filament.admin.pages.i-d-cards.print-id-cards', compact('records'));
+})->name('print.id_cards');
 
 
 // Route::get('/generate-student-qrs', function () {
