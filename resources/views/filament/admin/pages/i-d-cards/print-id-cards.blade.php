@@ -7,7 +7,7 @@
     <!-- QRCode.js for QR code generation -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode.js/1.0.0/qrcode.min.js"></script>
     <style>
-        .id-card-container .brand-logo,.brand-logo,.brand-name,.brand-affiliation,.brand-address,.brand-contact-info{
+        .id-card-container .brand-logo,.brand-logo,.brand-name,.brand-address,.brand-contact-info{
             margin: 0;
             padding: 0;
             text-align: center;
@@ -28,7 +28,7 @@
             page-break-inside: avoid; /* Prevent breaking cards across pages */
             position: relative; /* For better positioning if needed */
         }
-        .id-card-container .brand-name,.brand-affiliation,.brand-address,.brand-contact-info{
+        .id-card-container .brand-name,.brand-address,.brand-contact-info{
             line-height: normal;
         }
         .brand-logo {height: 40px;margin-right: 10px;}
@@ -97,7 +97,6 @@
         </div>
         <div class="flex items-center justify-center">
             <div class="text-center">
-                <p class="brand-affiliation">Affiliated to C.B.S.E. Delhi, Aff. No.-330653</p>
                 <p class="brand-address">Bhogipur, Near Shahpur, Jaganpura, Patna-804453</p>
                 <p class="brand-contact-info">Helpline No.+918873002602/03</p>
             </div>
@@ -117,7 +116,6 @@
                 <img src="{{ $record->avatar ? asset('storage/' . $record->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode($record->name) }}" alt="User Photo"
                      class="w-full h-full object-cover">
             </div>
-{{--            @dd($record->currentStudent->currentClassAssignment->class->className)--}}
             <div class="qr-code-area" id="qrcode">
                 <div class="bg-white p-2 rounded">
                     {!! QrCode::size(80)->generate(route('filament.admin.pages.id-cards.{record}', ['record' => $record->id])) !!}
