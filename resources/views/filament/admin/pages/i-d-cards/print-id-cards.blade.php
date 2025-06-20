@@ -22,14 +22,32 @@
             page-break-inside: avoid; /* Prevent breaking cards across pages */
             position: relative; /* For better positioning if needed */
         }
-        .brand-logo {height: 40px;margin-right: 10px;}
-        .brand-name {height: 40px;margin-right: 0;}
-        .brand-address {font-size: 0.49rem;color: black;}
-        .brand-contact-info {font-size: 0.6rem;color: black;}
-        .id-card-container .brand-address, .brand-contact-info{
+
+        .brand-logo {
+            height: 40px;
+            margin-right: 10px;
+        }
+
+        .brand-name {
+            height: 40px;
+            margin-right: 0;
+        }
+
+        .brand-address {
+            font-size: 0.49rem;
+            color: black;
+        }
+
+        .brand-contact-info {
+            font-size: 0.6rem;
+            color: black;
+        }
+
+        .id-card-container .brand-address, .brand-contact-info {
             font-weight: bold;
         }
-        hr{
+
+        hr {
             border: 2px solid green;
             position: absolute; /* Position relative to the .id-card-container */
             left: 0; /* Align to the left edge of the .id-card-container */
@@ -37,6 +55,11 @@
             margin-top: 0; /* Reset default hr margins */
             margin-bottom: 0; /* Reset default hr margins */
         }
+
+        .id-card-student-info-section {
+
+        }
+
         .id-section {
             display: flex;
             justify-content: space-between;
@@ -100,36 +123,40 @@
         </div>
         <hr>
 
-        <!-- ID/Session Section -->
-        <div class="id-section">
-            <span>SRCS/ {{$record->id}}</span>
-            <span>Session : {{$record->currentStudent->currentClassAssignment->academicYear->name}}</span>
-        </div>
-
-        <!-- Photo and QR Code Section -->
-        <div class="flex justify-around items-center my-1">
-            <div class="photo-placeholder rounded-lg overflow-hidden">
-                <!-- Replace with actual user photo if available -->
-                <img
-                    src="{{ $record->avatar ? asset('storage/' . $record->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode($record->name) }}"
-                    alt="User Photo"
-                    class="w-full h-full object-cover">
+        {{-- ID Card Student inso section --}}
+        <div class="id-card-student-info-section">
+            {{-- ID/Session Section--}}
+            <div class="id-section">
+                <span>SRCS/ {{$record->id}}</span>
+                <span>Session : {{$record->currentStudent->currentClassAssignment->academicYear->name}}</span>
             </div>
-            <div class="qr-code-area" id="qrcode">
-                <div class="bg-white p-2 rounded">
-                    {!! QrCode::size(80)->generate(route('filament.admin.pages.id-cards.{record}', ['record' => $record->id])) !!}
+
+            <!-- Photo and QR Code Section -->
+            <div class="flex justify-around items-center my-1">
+                <div class="photo-placeholder rounded-lg overflow-hidden">
+                    <!-- Replace with actual user photo if available -->
+                    <img
+                        src="{{ $record->avatar ? asset('storage/' . $record->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode($record->name) }}"
+                        alt="User Photo"
+                        class="w-full h-full object-cover">
+                </div>
+                <div class="qr-code-area" id="qrcode">
+                    <div class="bg-white p-2 rounded">
+                        {!! QrCode::size(80)->generate(route('filament.admin.pages.id-cards.{record}', ['record' => $record->id])) !!}
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="student-details">
-            <p class="text-center font-bold whitespace-nowrap mt-1 mb-1 text-red-600">{{ $record->name }}</p>
-            <p><strong class="font-semibold">Class
-                    :</strong> {{ $record->currentStudent->currentClassAssignment->class->className->name ?? '' }}</p>
-            <p><strong class="font-semibold">Sec
-                    :</strong> {{ $record->currentStudent->currentClassAssignment->section->name ?? '' }}</p>
-            <p><strong class="font-semibold">Mob :</strong> {{ $record->primary_contact_number ?? '' }}
-                / {{$record->primary_contact_number ?? ''}}</p>
+            <div class="student-details">
+                <p class="text-center font-bold whitespace-nowrap mt-1 mb-1 text-red-600">{{ $record->name }}</p>
+                <p><strong class="font-semibold">Class
+                        :</strong> {{ $record->currentStudent->currentClassAssignment->class->className->name ?? '' }}
+                </p>
+                <p><strong class="font-semibold">Sec
+                        :</strong> {{ $record->currentStudent->currentClassAssignment->section->name ?? '' }}</p>
+                <p><strong class="font-semibold">Mob :</strong> {{ $record->primary_contact_number ?? '' }}
+                    / {{$record->primary_contact_number ?? ''}}</p>
+            </div>
         </div>
 
         <!-- The Footer - Positioned Absolutely -->
