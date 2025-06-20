@@ -74,8 +74,8 @@
         }
 
         .photo-placeholder {
-            width: 130px;
-            height: 130px;
+            width: 100px;
+            height: 100px;
             border: 1px solid #cbd5e0; /* Tailwind gray-300 */
             background-color: #f0f4f8; /* Lighter background */
             display: flex;
