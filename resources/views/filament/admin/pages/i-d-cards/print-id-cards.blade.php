@@ -29,6 +29,14 @@
         .id-card-container .brand-address, .brand-contact-info{
             font-weight: bold;
         }
+        hr{
+            border: 2px solid green;
+            position: absolute; /* Position relative to the .id-card-container */
+            left: 0; /* Align to the left edge of the .id-card-container */
+            right: 0; /* Align to the right edge of the .id-card-container */
+            margin-top: 0; /* Reset default hr margins */
+            margin-bottom: 0; /* Reset default hr margins */
+        }
         .id-section {
             display: flex;
             justify-content: space-between;
@@ -71,7 +79,7 @@
 
             .id-card-container {
                 box-shadow: none; /* Remove shadows for print */
-                border: 1px solid #000; /* Ensure borders are visible */
+                border: 1px solid #ccc; /* Ensure borders are visible */
             }
         }
     </style>
