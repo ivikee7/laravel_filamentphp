@@ -60,16 +60,34 @@ Route::get('/print-id-card/{user}', function (User $user) {
     return view('filament.admin.pages.i-d-cards.print-id-card', compact('user'));
 })->name('print.user.id_card');
 
-Route::get('/print-id-cards', function (\Illuminate\Http\Request $request) {
+Route::get('/print-student-id-cards', function (\Illuminate\Http\Request $request) {
     $ids = $request->query('ids'); // Get IDs from URL query parameter
     $records = collect();
 
     if ($ids) {
-        $records = App\Models\User::whereIn('id', explode(',', $ids))->get();
+        $records = App\Models\User::whereIn('id', explode(',', $ids))
+            ->whereHas('roles', function (\Illuminate\Database\Eloquent\Builder $query) {
+                $query->whereIn('name', ['Student']);
+            })
+            ->get();
     }
 
-    return view('filament.admin.pages.i-d-cards.print-id-cards', compact('records'));
-})->name('print.id_cards');
+    return view('filament.admin.pages.i-d-cards.print-student-id-cards', compact('records'));
+})->name('print.student_id_cards');
+Route::get('/print-user-id-cards', function (\Illuminate\Http\Request $request) {
+    $ids = $request->query('ids'); // Get IDs from URL query parameter
+    $records = collect();
+
+    if ($ids) {
+        $records = App\Models\User::whereIn('id', explode(',', $ids))
+            ->whereHas('roles', function (\Illuminate\Database\Eloquent\Builder $query) {
+                $query->whereNotIn('name', ['Student']);
+            })
+            ->get();
+    }
+
+    return view('filament.admin.pages.i-d-cards.print-user-id-cards', compact('records'));
+})->name('print.user_id_cards');
 
 
 // Route::get('/generate-student-qrs', function () {

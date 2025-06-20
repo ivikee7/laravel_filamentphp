@@ -494,7 +494,7 @@ class StudentResource extends Resource
                             // Redirect to a new tab/window to trigger print
                             // Use 'new_tab' or similar if you want it to open in a new tab
                             // (this might be browser-dependent for instant print)
-                            return redirect()->to(route('print.id_cards', ['ids' => $ids]));
+                            return redirect()->to(route('print.student_id_cards', ['ids' => $ids]));
                         })
                         ->deselectRecordsAfterCompletion()
                         ->requiresConfirmation()

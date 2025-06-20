@@ -88,14 +88,24 @@ class UserResource extends Resource
                                         ->schema([
                                             Forms\Components\Select::make('gender_id')
                                                 ->options(Gender::pluck('name', 'id'))
+                                                ->label('Gender')
                                                 ->required(),
                                             Forms\Components\Select::make('blood_group_id')
                                                 ->options(BloodGroup::pluck('name', 'id'))
+                                                ->label('Blood Group')
                                                 ->required(),
                                         ])->columns(2),
                                 ])
                                 ->columnSpan(1),
                         ]),
+                        Forms\Components\Group::make()->schema([
+                            Forms\Components\DatePicker::make('date_of_birth')->required(),
+                            Forms\Components\TextInput::make('aadhaar_number')->required(),
+                            Forms\Components\TextInput::make('place_of_birth')->required(),
+                            Forms\Components\TextInput::make('mother_tongue')->required(),
+                            Forms\Components\TextInput::make('notes')->required(),
+                            Forms\Components\DatePicker::make('termination_date')->required()->visibleOn(['view']),
+                        ])->columns(3),
                     ]),
                 Section::make('Parents info')
                     ->schema([
@@ -176,10 +186,6 @@ class UserResource extends Resource
                                 Forms\Components\TextInput::make('esi_number')
                                     ->numeric()
                                     ->required(),
-
-                                // Extra
-                                Forms\Components\TextInput::make('notes')
-                                    ->required(),
                             ])->columns(3)
                     ]),
                 Section::make('Authentication info')
@@ -208,7 +214,7 @@ class UserResource extends Resource
                         Forms\Components\DateTimePicker::make('deleted_at'),
                     ])
                     ->columns(3)
-                ->visibleOn(['view'])
+                    ->visibleOn(['view'])
             ]);
     }
 
@@ -403,6 +409,34 @@ class UserResource extends Resource
                         ->color('success')
                         ->icon('heroicon-o-chat-bubble-left-right'),
                 ]),
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\BulkAction::make('printIdCards')
+                        ->label('Print ID Cards')
+                        ->icon('heroicon-o-printer')
+                        ->action(function (Collection $records) {
+                            if ($records->isEmpty()) {
+                                \Filament\Notifications\Notification::make()
+                                    ->title('No records selected for printing.')
+                                    ->warning()
+                                    ->send();
+                                return;
+                            }
+
+                            // Get IDs of selected records
+                            $ids = $records->pluck('id')->implode(',');
+
+                            // Redirect to a new tab/window to trigger print
+                            // Use 'new_tab' or similar if you want it to open in a new tab
+                            // (this might be browser-dependent for instant print)
+                            return redirect()->to(route('print.user_id_cards', ['ids' => $ids]));
+                        })
+                        ->deselectRecordsAfterCompletion()
+                        ->requiresConfirmation()
+                        ->modalHeading('Print Selected ID Cards?')
+                        ->modalDescription('This will open a new window to print ID cards. Please ensure your printer is ready.')
+                        ->modalSubmitActionLabel('Yes, Print')
+                        ->color('success'),
+                ])->label('Print'),
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\ExportBulkAction::make('export-xlsx')
                         ->exporter(UserExporter::class)
