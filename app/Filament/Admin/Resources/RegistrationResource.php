@@ -262,12 +262,6 @@ class RegistrationResource extends Resource
                     ->url(fn(Registration $record) => StudentResource::getUrl('create', [
                         'registration_id' => $record->id, // Pass enquiry ID to Registration form
                     ])),
-                Tables\Actions\Action::make('print')
-                    ->label('Print')
-                    ->icon('heroicon-o-printer')
-                    ->color('info')
-                    ->url(fn ($record) => RegistrationResource::getUrl('print', ['record' => $record]))
-                    ->openUrlInNewTab(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -312,7 +306,6 @@ class RegistrationResource extends Resource
             'create' => Pages\CreateRegistration::route('/create'),
             'view' => Pages\ViewRegistration::route('/{record}'),
             'edit' => Pages\EditRegistration::route('/{record}/edit'),
-            'print' => Pages\PrintRegistration::route('/{record}/print'), // Register your custom print page
         ];
     }
 

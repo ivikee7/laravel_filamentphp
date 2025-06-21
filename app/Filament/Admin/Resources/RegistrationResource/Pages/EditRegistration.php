@@ -17,12 +17,6 @@ class EditRegistration extends EditRecord
             Actions\DeleteAction::make(),
             Actions\ForceDeleteAction::make(),
             Actions\RestoreAction::make(),
-            Actions\Action::make('print')
-                ->label('Print Record')
-                ->color('info')
-                ->icon('heroicon-o-printer')
-                ->url(fn ($record) => RegistrationResource::getUrl('print', ['record' => $record]))
-                ->openUrlInNewTab(), // Opens the print page in a new tab
         ];
     }
 }

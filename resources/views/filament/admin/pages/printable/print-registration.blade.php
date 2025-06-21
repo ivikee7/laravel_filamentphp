@@ -108,70 +108,13 @@
     </style>
 </head>
 <body>
-@foreach($records as $record)
-    <div class="id-card-container">
-        <div class="flex items-center justify-center">
-            <img src="{{asset('logo_50.png')}}" alt="School Logo" class="brand-logo">
-            <img src="{{asset('logo_name_150.png')}}" alt="School Name" class="brand-name">
-        </div>
-        <div class="flex items-center justify-center">
-            <div class="text-center">
-                <p class="brand-address">Bhogipur, Near Shahpur, Jaganpura, Patna-804453</p>
-                <p class="brand-contact-info">Helpline No.+918873002602/03</p>
 
-            </div>
-        </div>
-        <hr>
-
-        {{-- ID Card Student inso section --}}
-        <div class="id-card-student-info-section">
-            {{-- ID/Session Section--}}
-            <div class="id-section">
-                <span>SRCS/ {{$record->id}}</span>
-                <span>Session : {{$record->currentStudent->currentClassAssignment->academicYear->name}}</span>
-            </div>
-
-            <!-- Photo and QR Code Section -->
-            <div class="flex justify-around items-center my-1">
-                <div class="photo-placeholder rounded-lg overflow-hidden">
-                    <!-- Replace with actual user photo if available -->
-                    <img
-                        src="{{ $record->avatar ? asset('storage/' . $record->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode($record->name) }}"
-                        alt="User Photo"
-                        class="w-full h-full object-cover">
-                </div>
-                <div class="qr-code-area" id="qrcode">
-                    <div class="bg-white p-2 rounded">
-                        {!! QrCode::size(80)->generate(route('filament.admin.pages.id-cards.{record}', ['record' => $record->id])) !!}
-                    </div>
-                </div>
-            </div>
-
-            <div class="student-details">
-                <p class="text-center font-bold whitespace-nowrap mt-1 mb-1 text-red-600">{{ $record->name }}</p>
-                <p><strong class="font-semibold">Class
-                        :</strong> {{ $record->currentStudent->currentClassAssignment->class->className->name ?? '' }}
-                </p>
-                <p><strong class="font-semibold">Sec
-                        :</strong> {{ $record->currentStudent->currentClassAssignment->section->name ?? '' }}</p>
-                <p><strong class="font-semibold">Mob :</strong> {{ $record->primary_contact_number ?? '' }}
-                    / {{$record->primary_contact_number ?? ''}}</p>
-            </div>
-        </div>
-
-        <!-- The Footer - Positioned Absolutely -->
-        <div class="id-card-footer absolute bottom-0 right-0 flex flex-col justify-end items-end p-2">
-            <img src="/signature/principal_signature.png" alt="Signature" class="h-8 w-auto mb-1 mr-2">
-            <p class="text-xs text-gray-700">Signature</p>
-        </div>
-    </div>
-@endforeach
 
 <script>
     // Automatically trigger print dialog when the page loads
-    window.onload = function() {
-        window.print();
-    };
+    // window.onload = function() {
+    //     window.print();
+    // };
 </script>
 </body>
 </html>
