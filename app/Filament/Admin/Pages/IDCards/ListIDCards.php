@@ -120,7 +120,7 @@ class ListIDCards extends Page implements HasTable
 
     public static function canAccess(): bool
     {
-        // return auth()->user()?->can('view-any Attendance', static::class);
-        return true;
+         return auth()->user()?->can('view-any Attendance', static::class);
+//        return true;
     }
 }
