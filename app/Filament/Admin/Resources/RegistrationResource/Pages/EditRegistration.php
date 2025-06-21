@@ -18,13 +18,11 @@ class EditRegistration extends EditRecord
             Actions\ForceDeleteAction::make(),
             Actions\RestoreAction::make(),
             Actions\Action::make('print')
-                ->label('Print')
+                ->label('Print Record')
+                ->color('info')
                 ->icon('heroicon-o-printer')
-                ->url(fn ($record) => route('filament.admin.resources.registrations.view', ['record' => $record->id, 'print' => true]))
-                ->openUrlInNewTab()
-                ->extraAttributes([
-                    'onclick' => 'window.print(); return false;',
-                ]),
+                ->url(fn ($record) => RegistrationResource::getUrl('print', ['record' => $record]))
+                ->openUrlInNewTab(), // Opens the print page in a new tab
         ];
     }
 }

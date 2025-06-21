@@ -263,13 +263,11 @@ class RegistrationResource extends Resource
                         'registration_id' => $record->id, // Pass enquiry ID to Registration form
                     ])),
                 Tables\Actions\Action::make('print')
-                    ->label('Print Record')
+                    ->label('Print')
                     ->icon('heroicon-o-printer')
-                    ->url(fn ($record) => url()->current() . '?print=true') // A simple way to trigger print mode
-                    ->openUrlInNewTab() // Optional: opens in a new tab for printing
-                    ->extraAttributes([
-                        'onclick' => 'window.print(); return false;', // JavaScript to trigger print
-                    ]),
+                    ->color('info')
+                    ->url(fn ($record) => RegistrationResource::getUrl('print', ['record' => $record]))
+                    ->openUrlInNewTab(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -314,6 +312,7 @@ class RegistrationResource extends Resource
             'create' => Pages\CreateRegistration::route('/create'),
             'view' => Pages\ViewRegistration::route('/{record}'),
             'edit' => Pages\EditRegistration::route('/{record}/edit'),
+            'print' => Pages\PrintRegistration::route('/{record}/print'), // Register your custom print page
         ];
     }
 
