@@ -31,9 +31,9 @@ class BookResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('title')
                     ->required()
-                    ->maxLength(100),
+                    ->maxLength(50),
                 Forms\Components\TextInput::make('edition')
-                    ->maxLength(255)
+                    ->maxLength(50)
                     ->default(null),
                 Forms\Components\TextInput::make('price')
                     ->numeric()
