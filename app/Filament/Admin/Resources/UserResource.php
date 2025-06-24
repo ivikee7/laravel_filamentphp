@@ -103,7 +103,7 @@ class UserResource extends Resource
                             Forms\Components\TextInput::make('aadhaar_number')->required(),
                             Forms\Components\TextInput::make('place_of_birth')->required(),
                             Forms\Components\TextInput::make('mother_tongue')->required(),
-                            Forms\Components\TextInput::make('notes')->required(),
+                            Forms\Components\TextInput::make('notes'),
                             Forms\Components\DatePicker::make('termination_date')->required()->visibleOn(['view']),
                         ])->columns(3),
                     ]),
