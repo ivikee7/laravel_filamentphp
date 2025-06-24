@@ -71,7 +71,7 @@ class BookResource extends Resource
                     ->relationship('language', 'name')
                     ->default(null),
                 Forms\Components\Select::make('class_id')
-                    ->relationship('class.className', 'name')
+                    ->relationship('class', 'name')
                     ->default(null),
                 Forms\Components\Select::make('subject_id')
                     ->relationship('subject', 'name')
@@ -89,6 +89,9 @@ class BookResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('id')
+                    ->wrap()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('title')
                     ->wrap()
                     ->searchable(),
@@ -135,7 +138,7 @@ class BookResource extends Resource
                     ->wrap()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('class.className.name')
+                Tables\Columns\TextColumn::make('class.name')
                     ->wrap()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('subject.name')
@@ -178,6 +181,23 @@ class BookResource extends Resource
             ->defaultSort('id', 'desc')
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
+                Tables\Filters\Filter::make('isbn_number_filter') // It's good practice to give filters a descriptive name
+                ->form([
+                    Forms\Components\TextInput::make('isbn_number')
+                        ->label('ISBN Number') // Add a user-friendly label
+                        ->maxLength(100)
+                        ->default(null), // Defaulting to null is usually not necessary unless you have a specific reason
+                ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        // Corrected: Filter by 'isbn_number' column, not 'name'
+                        // Corrected: The second argument of `when` closure is the value itself,
+                        // so we rename `$data` to `$isbnNumber` for clarity within this inner closure.
+                        return $query
+                            ->when(
+                                $data['isbn_number'], // This refers to the value from the form field
+                                fn(Builder $query, $isbnNumber): Builder => $query->where('isbn_number', 'like', '%' . $isbnNumber . '%'),
+                            );
+                    }),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
@@ -218,8 +238,7 @@ class BookResource extends Resource
             ->whereDoesntHave('borrows', function ($query) {
                 $query->whereNull('received_at');
                 $query->whereNull('received_by');
-            })
-        ;
+            });
     }
 
     public static function getNavigationBadge(): ?string

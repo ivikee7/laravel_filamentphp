@@ -101,7 +101,7 @@ class LibraryBook extends Model
     }
     public function class(): BelongsTo
     {
-        return $this->belongsTo(StudentClass::class);
+        return $this->belongsTo(ClassName::class);
     }
 
     public function subject(): BelongsTo
