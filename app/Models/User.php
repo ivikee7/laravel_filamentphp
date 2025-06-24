@@ -8,6 +8,7 @@ use Althinect\FilamentSpatieRolesPermissions\Concerns\HasSuperAdmin;
 use App\Models\Admission;
 use Carbon\Carbon;
 use Filament\Models\Contracts\FilamentUser;
+use Filament\Models\Contracts\HasAvatar;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -18,9 +19,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable implements FilamentUser
+class User extends Authenticatable implements FilamentUser, HasAvatar
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasRoles, HasSuperAdmin, SoftDeletes;
@@ -84,6 +86,15 @@ class User extends Authenticatable implements FilamentUser
         return $this->where('is_active', true)->exists();
         // Example: Allow users with the "admin" role
         // return $this->hasRole(['Super Admin', 'Owner', 'Admin', 'Teacher']); // Replace 'admin' with your role
+    }
+
+    public function getFilamentAvatarUrl(): ?string
+    {
+        if ($this->avatar) {
+            return Storage::url($this->avatar);
+        }
+
+        return null;
     }
 
     protected static function boot()
