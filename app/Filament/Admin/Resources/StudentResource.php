@@ -114,10 +114,12 @@ class StudentResource extends Resource
                                     ->default(fn($get) => Registration::find(request()->query('registration_id'))?->date_of_birth),
                                 Forms\Components\Select::make('gender_id')
                                     ->options(Gender::pluck('name', 'id'))
+                                    ->label('Gender')
                                     ->required()
                                     ->default(fn($get) => Registration::find(request()->query('registration_id'))?->gender_id),
                                 Forms\Components\Select::make('blood_group_id')
                                     ->options(BloodGroup::pluck('name', 'id'))
+                                    ->label('Blood Group')
                                     ->required()
                                     ->default(fn($get) => Registration::find(request()->query('registration_id'))?->blood_group_id),
                             ])->columns(4),

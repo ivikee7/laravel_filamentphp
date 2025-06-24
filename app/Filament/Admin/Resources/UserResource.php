@@ -100,7 +100,11 @@ class UserResource extends Resource
                         ]),
                         Forms\Components\Group::make()->schema([
                             Forms\Components\DatePicker::make('date_of_birth')->required(),
-                            Forms\Components\TextInput::make('aadhaar_number')->required(),
+                            Forms\Components\TextInput::make('aadhaar_number')
+                                ->rules(['digits:12','min_digits:12','max_digits:12'])
+                                ->minLength(12)
+                                ->maxLength(12)
+                                ->required(),
                             Forms\Components\TextInput::make('place_of_birth')->required(),
                             Forms\Components\TextInput::make('mother_tongue')->required(),
                             Forms\Components\TextInput::make('notes'),
