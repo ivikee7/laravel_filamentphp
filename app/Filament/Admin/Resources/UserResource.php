@@ -440,6 +440,32 @@ class UserResource extends Resource
                         ->modalDescription('This will open a new window to print ID cards. Please ensure your printer is ready.')
                         ->modalSubmitActionLabel('Yes, Print')
                         ->color('success'),
+                    Tables\Actions\BulkAction::make('printOutPass')
+                        ->label('Print Out Pass')
+                        ->icon('heroicon-o-printer')
+                        ->action(function (Collection $records) {
+                            if ($records->isEmpty()) {
+                                \Filament\Notifications\Notification::make()
+                                    ->title('No records selected for printing.')
+                                    ->warning()
+                                    ->send();
+                                return;
+                            }
+
+                            // Get IDs of selected records
+                            $ids = $records->pluck('id')->implode(',');
+
+                            // Redirect to a new tab/window to trigger print
+                            // Use 'new_tab' or similar if you want it to open in a new tab
+                            // (this might be browser-dependent for instant print)
+                            return redirect()->to(route('print.user_out_pass', ['ids' => $ids]));
+                        })
+                        ->deselectRecordsAfterCompletion()
+                        ->requiresConfirmation()
+                        ->modalHeading('Print User Out Pass?')
+                        ->modalDescription('This will open a new window to print Out Pass. Please ensure your printer is ready.')
+                        ->modalSubmitActionLabel('Yes, Print')
+                        ->color('warning'),
                 ])->label('Print'),
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\ExportBulkAction::make('export-xlsx')

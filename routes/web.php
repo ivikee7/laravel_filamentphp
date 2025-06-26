@@ -89,6 +89,21 @@ Route::get('/print-user-id-cards', function (\Illuminate\Http\Request $request) 
     return view('filament.admin.pages.i-d-cards.print-user-id-cards', compact('records'));
 })->name('print.user_id_cards');
 
+Route::get('/print-user-out-pass', function (\Illuminate\Http\Request $request) {
+    $ids = $request->query('ids'); // Get IDs from URL query parameter
+    $records = collect();
+
+    if ($ids) {
+        $records = App\Models\User::whereIn('id', explode(',', $ids))
+            ->whereHas('roles', function (\Illuminate\Database\Eloquent\Builder $query) {
+                $query->whereNotIn('name', ['Student']);
+            })
+            ->get();
+    }
+
+    return view('filament.admin.pages.printable.print-user-out-pass', compact('records'));
+})->name('print.user_out_pass');
+
 
 // Route::get('/generate-student-qrs', function () {
 //     // Get all student users.

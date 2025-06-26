@@ -153,9 +153,9 @@
 
 <script>
     // Automatically trigger print dialog when the page loads
-    // window.onload = function() {
-    //     window.print();
-    // };
+    window.onload = function() {
+        window.print();
+    };
 </script>
 </body>
 </html>
