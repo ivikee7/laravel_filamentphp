@@ -3,6 +3,17 @@
 <head>
     <title>Print Out Pass</title>
     <style>
+        /* Global print settings for the page */
+        @page {
+            margin: 0.5in;   /* Standard margins, adjust as needed */
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0; /* Light background for screen viewing */
+            text-align: center;
+        }
         /* Your ID card styling from before */
         .id-card-container {
             width: 3.375in;
@@ -23,13 +34,11 @@
             font-size: 4rem;
             font-weight: bold;
             margin-top: 3rem;
-            text-align: center;
         }
 
         .name {
             font-size: 1rem;
             margin-top: -3.2rem;
-            text-align: center;
         }
 
         /* Add any other specific print styles */
@@ -48,6 +57,12 @@
 </head>
 <body>
 @foreach($records as $record)
+    <div class="id-card-container">
+        <h1 class="title">Out Pass</h1>
+        <p class="name">
+            {{$record->name}}
+        </p>
+    </div>
     <div class="id-card-container">
         <h1 class="title">Out Pass</h1>
         <p class="name">
