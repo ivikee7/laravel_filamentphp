@@ -164,7 +164,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
         return $this->hasOne(Student::class);
     }
 
-    public function currentStudent()
+    public function currentStudent():HasOne
     {
         return $this->hasOne(Student::class)->latestOfMany();
     }

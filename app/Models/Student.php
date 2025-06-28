@@ -48,14 +48,17 @@ class Student extends Model
             $model->saveQuietly();
         });
     }
+
     public function createdBy()
     {
         return $this->belongsTo(User::class, 'created_by');
     }
+
     public function updatedBy()
     {
         return $this->belongsTo(User::class, 'updated_by');
     }
+
     public function deletedBy()
     {
         return $this->belongsTo(User::class, 'deleted_by');
@@ -71,6 +74,7 @@ class Student extends Model
     {
         return $this->hasMany(StudentClassAssignment::class);
     }
+
     public function currentClassAssignment()
     {
         return $this->hasOne(StudentClassAssignment::class)->latestOfMany();
@@ -91,5 +95,10 @@ class Student extends Model
             'id',                // Local key on Student
             'academic_year_id'   // Foreign key on StudentClassAssignment
         )->where('is_current', true);
+    }
+
+    public function registration(): belongsTo
+    {
+        return $this->belongsTo(Registration::class);
     }
 }

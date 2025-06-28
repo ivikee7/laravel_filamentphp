@@ -6,6 +6,7 @@ use App\Filament\Admin\Resources\StudentResource\Pages;
 use App\Filament\Admin\Resources\StudentResource\RelationManagers\CartRelationManager;
 use App\Filament\Admin\Resources\StudentResource\RelationManagers\InvoicesRelationManager;
 use App\Filament\Admin\Resources\StudentResource\RelationManagers\ProductsRelationManager;
+use App\Filament\Admin\Resources\StudentResource\RelationManagers\RegistrationRelationManager;
 use App\Filament\Exports\RegistrationExporter;
 use App\Filament\Exports\StudentExporter;
 use App\Filament\Exports\UserExporter;

@@ -259,6 +259,7 @@ class RegistrationResource extends Resource
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\Action::make('admission')
                     ->label('Admission')
+                    ->hidden(fn($record) => $record->student()->exists())
                     ->url(fn(Registration $record) => StudentResource::getUrl('create', [
                         'registration_id' => $record->id, // Pass enquiry ID to Registration form
                     ])),

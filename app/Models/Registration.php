@@ -104,8 +104,7 @@ class Registration extends Model
 
     public function student(): HasOne
     {
-        // dd($this->hasOne(Student::class, 'registration_id')->get());
-        return $this->hasOne(Student::class, 'registration_id')->latestOfMany();
+        return $this->hasOne(Student::class);
     }
 
     public function academicYear(): BelongsTo{

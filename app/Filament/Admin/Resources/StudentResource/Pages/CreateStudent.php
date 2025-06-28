@@ -26,6 +26,7 @@ class CreateStudent extends CreateRecord
         parent::mount();
 
         $this->registrationId = request()->query('registration_id');
+        $this->data['currentStudent']['registration_id'] = $this->registrationId;
 
         // Check if registration_id is missing or invalid
         $registration = Registration::with('student')->find($this->registrationId);
@@ -58,20 +59,18 @@ class CreateStudent extends CreateRecord
     {
         $data['password'] = Hash::make($data['primary_contact_number']);
         $data['is_active'] = true;
-        $data['student']['registration_id'] = $this->registrationId;
 
         return $data;
     }
 
+
     protected function afterCreate(): void
     {
-        if ($this->registrationId) {
-            $registration = Registration::find($this->registrationId);
-            if ($registration) {
-                $registration->delete();
-            }
-        }
         $record = $this->record;
+
+        $record->currentStudent()->update([
+            'registration_id' => $this->registrationId,
+        ]);
 
         $record->assignRole('Student');
 
@@ -87,7 +86,12 @@ class CreateStudent extends CreateRecord
                 ]),
             ]);
 
-
+        if ($this->registrationId) {
+            $registration = Registration::find($this->registrationId);
+            if ($registration) {
+                $registration->delete();
+            }
+        }
     }
 
     public static function generateGsuitePassword(array $data): string

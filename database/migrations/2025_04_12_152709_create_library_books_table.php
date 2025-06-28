@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('title', 50);
             $table->string('edition', 50)->nullable();
+            $table->string('author', 100)->nullable();
             $table->double('price', 8, 2)->nullable();
             $table->double('pages', 8, 2)->nullable();
             $table->string('isbn_number', 100)->nullable();
