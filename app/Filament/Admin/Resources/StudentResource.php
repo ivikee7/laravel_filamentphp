@@ -151,6 +151,7 @@ class StudentResource extends Resource
                                                 $set('class_id', null),
                                                 $set('section_id', null),
                                             ])
+                                            ->disabledOn('edit')
                                             ->default(fn() => \App\Models\Registration::find(request()->query('registration_id'))?->academic_year_id),
 
                                         Forms\Components\Select::make('class_id')
@@ -170,6 +171,7 @@ class StudentResource extends Resource
                                             ->required()
                                             ->reactive()
                                             ->afterStateUpdated(fn($set) => $set('section_id', null))
+                                            ->disabledOn('edit')
                                             ->default(fn() => \App\Models\Registration::find(request()->query('registration_id'))?->class_id),
 
                                         Forms\Components\Select::make('section_id')
