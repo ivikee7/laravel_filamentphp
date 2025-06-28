@@ -132,6 +132,7 @@ class StudentResource extends Resource
                             ->relationship('currentStudent')
                             ->schema([
                                 Forms\Components\Select::make('quota_id')
+                                    ->label('Quota')
                                     ->options(Quota::pluck('name', 'id'))
                                     ->required(),
                             ])->columns(3),
