@@ -234,6 +234,12 @@ class RegistrationResource extends Resource
                 Tables\Columns\TextColumn::make('payment_mode')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('payment_amount')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('payment_notes')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('previousClass.name')
                     ->label('Previous Class')
                     ->sortable()
