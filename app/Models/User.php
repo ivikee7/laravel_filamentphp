@@ -303,4 +303,10 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
 
         return $section ? "$section" : null;
     }
+
+    // If a User is also a Local Guardian for a Student, you'd have this (optional)
+    public function localGuardianForStudents()
+    {
+        return $this->hasMany(User::class, 'local_guardian_user_id');
+    }
 }
