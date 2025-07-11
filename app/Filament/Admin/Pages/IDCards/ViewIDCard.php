@@ -124,9 +124,9 @@ class ViewIDCard extends Page
 
     public static function canAccess(): bool
     {
-        return auth()->user()?->can('view Attendance', static::class);
-        // return true;
+         return auth()->user()?->can('view Attendance', static::class);
     }
+
 
     public static function canMarkAttendance(): bool
     {
