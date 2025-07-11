@@ -34,12 +34,13 @@ class UserResource extends Resource
                     ->required()
                     ->maxLength(50)
                     ->disabled(),
-                Forms\Components\TextInput::make('official_email')
+                Forms\Components\TextInput::make('gSuiteUser.email')
                     ->email()
                     ->required()
                     ->maxLength(50),
                 Forms\Components\TextInput::make('gSuiteUser.password')
-                    ->required()
+                    ->password()
+                    ->revealable()
                     ->maxLength(255),
             ]);
     }
@@ -47,7 +48,7 @@ class UserResource extends Resource
     public static function query()
     {
         // Simply return the query builder for the User model
-        return User::query()->where('official_email', '!=', '')->hasRole('Student');
+        return User::query()->where('gSuiteUser.email', '!=', '')->hasRole('Student');
     }
 
     public static function table(Table $table): Table
