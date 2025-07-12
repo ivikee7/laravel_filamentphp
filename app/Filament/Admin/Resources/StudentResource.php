@@ -315,7 +315,7 @@ class StudentResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->label('Secondary Contact')
-                    ->toggleable(isToggledHiddenByDefault: false),
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('full_address')
                     ->label('Address')
                     ->getStateUsing(function ($record) {
