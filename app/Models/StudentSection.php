@@ -49,36 +49,44 @@ class StudentSection extends Model
             $model->saveQuietly();
         });
     }
+
     public function createdBy()
     {
         return $this->belongsTo(User::class, 'created_by');
     }
+
     public function updatedBy()
     {
         return $this->belongsTo(User::class, 'updated_by');
     }
+
     public function deletedBy()
     {
         return $this->belongsTo(User::class, 'deleted_by');
     }
 
 
-
-
     public function class(): BelongsTo
     {
         return $this->belongsTo(StudentClass::class, 'student_class_id');
     }
+
     public function teacher(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
+
     public function room(): BelongsTo
     {
         return $this->belongsTo(Room::class, 'room_id');
     }
 
     public function students(): HasMany
+    {
+        return $this->hasMany(StudentClassAssignment::class, 'section_id');
+    }
+
+    public function studentClassAssignments(): HasMany
     {
         return $this->hasMany(StudentClassAssignment::class, 'section_id');
     }

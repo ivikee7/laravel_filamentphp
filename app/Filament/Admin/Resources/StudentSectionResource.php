@@ -84,15 +84,29 @@ class StudentSectionResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('class.academicYear.name')
+                    ->label('Academic Year')
+                    ->searchable()
+                    ->wrap()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('class.className.name')
+                    ->label('Class')
+                    ->searchable()
+                    ->wrap()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Section')
+                    ->wrap()
                     ->searchable(),
+                Tables\Columns\TextColumn::make('studentClassAssignments_count')
+                    ->counts('studentClassAssignments')
+                    ->label('Students'),
                 Tables\Columns\TextColumn::make('room.name')
+                    ->label('Room')
+                    ->wrap()
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('teacher.name')
+                    ->label('Teacher')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('creator.name')
