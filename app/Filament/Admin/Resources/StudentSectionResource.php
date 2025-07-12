@@ -97,8 +97,7 @@ class StudentSectionResource extends Resource
                     ->label('Section')
                     ->wrap()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('studentClassAssignments_count')
-                    ->counts('studentClassAssignments')
+                Tables\Columns\TextColumn::make('student_class_assignments_count')
                     ->label('Students'),
                 Tables\Columns\TextColumn::make('room.name')
                     ->label('Room')
