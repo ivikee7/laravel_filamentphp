@@ -169,7 +169,8 @@ class StudentSectionResource extends Resource
         return parent::getEloquentQuery()
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
-            ]);
+            ])
+            ->withCount('studentClassAssignments');
     }
 
     public static function getNavigationBadge(): ?string
