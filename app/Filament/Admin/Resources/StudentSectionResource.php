@@ -170,16 +170,11 @@ class StudentSectionResource extends Resource
                 SoftDeletingScope::class,
             ])
             ->withCount([
-                'studentClassAssignments', // Keep this if you want the total count
-                'studentClassAssignments as active_user_assigned_count' => function (Builder $query) {
-                    // Apply conditions directly on the studentClassAssignments table (e.g., if 'is_active' was on this table)
-                    // $query->where('studentClassAssignments.is_active', true);
-
-                    // To filter based on the nested 'user' relationship of the 'studentClassAssignment':
+                'studentClassAssignments',
+                'studentClassAssignments as student_class_assignments_count' => function (Builder $query) {
                     $query->whereHas('student.user', function (Builder $userQuery) {
-                        $userQuery->where('is_active', true); // Condition on the 'users' table
-                        // You might also want to prevent counting soft-deleted users if applicable
-                        // $userQuery->whereNull('deleted_at');
+                        $userQuery->where('is_active', true);
+                        $userQuery->whereNull('deleted_at'); // Only if User model uses SoftDeletes
                     });
                 },
             ]);
