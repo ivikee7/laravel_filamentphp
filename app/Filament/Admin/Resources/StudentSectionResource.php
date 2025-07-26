@@ -173,7 +173,7 @@ class StudentSectionResource extends Resource
                 'studentClassAssignments',
                 'studentClassAssignments as student_class_assignments_count' => function (Builder $query) {
                     $query->whereHas('student.user', function (Builder $userQuery) {
-//                        $userQuery->where('is_active', true);
+                        $userQuery->where('is_active', false);
                         $userQuery->whereNull('deleted_at'); // Only if User model uses SoftDeletes
                     });
                 },
