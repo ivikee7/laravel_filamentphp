@@ -305,7 +305,7 @@ class StudentResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->label('Academic Year')
-                    ->toggleable(isToggledHiddenByDefault: false),
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('primary_contact_number')
                     ->searchable()
                     ->sortable()
