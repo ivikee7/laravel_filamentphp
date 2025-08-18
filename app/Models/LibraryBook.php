@@ -28,6 +28,7 @@ class LibraryBook extends Model
         'published_at',
         'notes',
         'author_id',
+        'author',
         'publisher_id',
         'category_id',
         'location_id',

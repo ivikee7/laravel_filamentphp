@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('library_books', function (Blueprint $table) {
             $table->id();
-            $table->string('title', 50);
+            $table->string('title', 100);
             $table->string('edition', 50)->nullable();
             $table->string('author', 100)->nullable();
             $table->double('price', 8, 2)->nullable();
@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('isbn_number', 100)->nullable();
             $table->date('purchased_at')->nullable();
             $table->year('published_at')->nullable();
-            $table->string('notes')->nullable();
+            $table->string('notes', 255)->nullable();
             $table->foreignId('author_id')->unsigned()->nullable();
             $table->foreignId('publisher_id')->unsigned()->nullable();
             $table->foreignId('category_id')->unsigned()->nullable();

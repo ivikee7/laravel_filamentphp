@@ -55,8 +55,11 @@ class BookResource extends Resource
                 Forms\Components\TextInput::make('notes')
                     ->maxLength(255)
                     ->default(null),
-                Forms\Components\Select::make('author_id')
-                    ->relationship('author', 'name')
+//                Forms\Components\Select::make('author_id')
+//                    ->relationship('author', 'name')
+//                    ->default(null),
+                Forms\Components\TextInput::make('author')
+                    ->maxLength(100)
                     ->default(null),
                 Forms\Components\Select::make('publisher_id')
                     ->relationship('publisher', 'name')
@@ -235,10 +238,11 @@ class BookResource extends Resource
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ])
-            ->whereDoesntHave('borrows', function ($query) {
-                $query->whereNull('received_at');
-                $query->whereNull('received_by');
-            });
+//            ->whereDoesntHave('borrows', function ($query) {
+//                $query->whereNull('received_at');
+//                $query->whereNull('received_by');
+//            })
+            ;
     }
 
     public static function getNavigationBadge(): ?string
