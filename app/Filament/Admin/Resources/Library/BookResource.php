@@ -238,10 +238,10 @@ class BookResource extends Resource
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ])
-//            ->whereDoesntHave('borrows', function ($query) {
-//                $query->whereNull('received_at');
-//                $query->whereNull('received_by');
-//            })
+            ->whereDoesntHave('borrows', function ($query) {
+                $query->whereNull('received_at');
+                $query->whereNull('received_by');
+            })
             ;
     }
 
