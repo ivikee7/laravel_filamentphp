@@ -239,10 +239,9 @@ class BookResource extends Resource
                 SoftDeletingScope::class,
             ])
             ->whereDoesntHave('borrows', function ($query) {
-                $query->whereNull('received_at');
-                $query->whereNull('received_by');
-            })
-            ;
+                $query->whereNotNull('received_at');
+                $query->orWhereNotNull('received_by');
+            });
     }
 
     public static function getNavigationBadge(): ?string
