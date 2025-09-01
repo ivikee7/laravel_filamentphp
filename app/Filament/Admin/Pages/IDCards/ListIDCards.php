@@ -2,11 +2,11 @@
 
 namespace App\Filament\Admin\Pages\IDCards;
 
+use Filament\Actions\Action;
 use App\Models\User;
 use Filament\Pages\Page;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Contracts\HasTable;
-use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ViewColumn;
@@ -18,12 +18,12 @@ class ListIDCards extends Page implements HasTable
 {
     use InteractsWithTable;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-document-text';
 
-    protected static string $view = 'filament.admin.pages.i-d-cards.list-i-d-cards';
+    protected string $view = 'filament.admin.pages.i-d-cards.list-i-d-cards';
 
     protected static ?string $slug = 'id-cards';
-    protected static ?string $navigationGroup = 'User';
+    protected static string | \UnitEnum | null $navigationGroup = 'User';
     protected static ?string $navigationLabel = 'ID Cards';
 
     public function table(Table $table): Table
@@ -97,7 +97,7 @@ class ListIDCards extends Page implements HasTable
             ->filters([
                 // Add filters here if needed (class, section, etc.)
             ])
-            ->actions([
+            ->recordActions([
                 Action::make('view')
                     ->label('View')
                     ->icon('heroicon-o-eye')

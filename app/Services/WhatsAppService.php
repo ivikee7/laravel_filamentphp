@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Exception;
 use App\Models\WhatsAppMessage;
 use App\Models\WhatsAppProvider;
 use Illuminate\Support\Facades\Http;
@@ -21,7 +22,7 @@ class WhatsAppService
     public function sendMessage(string $to, string $message): WhatsAppMessage
     {
         if (!$this->provider) {
-            throw new \Exception('No WhatsApp provider configured.');
+            throw new Exception('No WhatsApp provider configured.');
         }
 
         // Store message in the database before sending
@@ -50,7 +51,7 @@ class WhatsAppService
             ]);
 
             return $whatsappMessage;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Error sending WhatsApp message: ' . $e->getMessage());
             $whatsappMessage->update([
                 'status' => 'failed',

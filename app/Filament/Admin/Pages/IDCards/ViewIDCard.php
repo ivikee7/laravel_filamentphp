@@ -2,7 +2,7 @@
 
 namespace App\Filament\Admin\Pages\IDCards;
 
-use App\Filament\Admin\Resources\UserResource;
+use App\Filament\Admin\Resources\Users\UserResource;
 use App\Models\Attendance;
 use App\Models\MessageTemplate;
 use App\Models\SmsProvider;
@@ -12,15 +12,16 @@ use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Panel;
 
 class ViewIDCard extends Page
 {
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-document-text';
 
-    protected static string $view = 'filament.admin.pages.i-d-cards.view-i-d-card';
+    protected string $view = 'filament.admin.pages.i-d-cards.view-i-d-card';
 
     protected static ?string $slug = 'id-cards/{record}';
-    protected static ?string $navigationGroup = 'IDCard';
+    protected static string | \UnitEnum | null $navigationGroup = 'IDCard';
     protected static ?string $navigationLabel = 'View ID Card';
 
     public $record = null;
@@ -44,7 +45,7 @@ class ViewIDCard extends Page
         return false;
     }
 
-    public static function getRouteName(?string $panel = null): string
+    public static function getRouteName(?Panel $panel = null): string
     {
         return parent::generateRouteName('id-cards.view', $panel);
     }

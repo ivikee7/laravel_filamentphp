@@ -222,7 +222,7 @@
     </div>
 
     <!-- Student Details Section -->
-    <div class="student-details flex-grow">
+    <div class="student-details grow">
         <p class="student-name">{{ $user->name ?? 'NA' }}</p>
         <p><strong class="font-semibold">Class :</strong> {{ $user->class ?? 'NA' }}</p>
         <p><strong class="font-semibold">Sec :</strong> {{ $user->section ?? 'NA' }}</p>

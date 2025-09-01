@@ -3,13 +3,13 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-
-use Althinect\FilamentSpatieRolesPermissions\Concerns\HasSuperAdmin;
+use Database\Factories\UserFactory;
 use App\Models\Admission;
 use Carbon\Carbon;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasAvatar;
 use Filament\Panel;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -24,8 +24,8 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements FilamentUser, HasAvatar
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasRoles, HasSuperAdmin, SoftDeletes;
+    /** @use HasFactory<UserFactory> */
+    use HasFactory, Notifiable, HasRoles, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -185,14 +185,15 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
     }
 
 
-    public function products(): HasMany
-    {
-        $className = $this->student?->currentClassAssignment?->class?->className;
+//    public function products(): HasMany
+//    {
+//        $className = $this->student?->currentClassAssignment?->class?->className;
+//
+//        return $className
+//            ? $className->products()
+//            : (new Product)->newQuery()->whereRaw('1 = 0');
+//    }
 
-        return $className
-            ? $className->products()
-            : (new Product)->newQuery()->whereRaw('1 = 0');
-    }
 
     public function cart(): HasMany
     {
@@ -308,5 +309,12 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
     public function localGuardianForStudents()
     {
         return $this->hasMany(User::class, 'local_guardian_user_id');
+    }
+
+
+    // Super Admin
+    public function isSuperAdmin(): bool
+    {
+        return $this->hasRole('Super Admin');
     }
 }

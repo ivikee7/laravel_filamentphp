@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Exception;
 use Illuminate\Support\Facades\Http;
 use App\Models\SmsProvider;
 
@@ -16,7 +17,7 @@ class SMSService
             ->first();
 
         if (!$this->provider) {
-            throw new \Exception("SMS provider not found or inactive.");
+            throw new Exception("SMS provider not found or inactive.");
         }
     }
 

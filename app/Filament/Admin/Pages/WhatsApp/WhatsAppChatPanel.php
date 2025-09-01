@@ -2,10 +2,12 @@
 
 namespace App\Filament\Admin\Pages\WhatsApp;
 
+use Filament\Forms\Contracts\HasForms;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Schemas\Components\Grid;
 use App\Models\WhatsAppMessage;
 use App\Models\WhatsAppProvider;
 use App\Services\WhatsApp\WhatsAppService;
-use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -15,15 +17,15 @@ use Filament\Forms;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 
-class WhatsAppChatPanel extends Page implements Forms\Contracts\HasForms
+class WhatsAppChatPanel extends Page implements HasForms
 {
-    use Forms\Concerns\InteractsWithForms;
+    use InteractsWithForms;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-document-text';
 
-    protected static string $view = 'filament.admin.pages.whats-app.whats-app-chat-panel';
+    protected string $view = 'filament.admin.pages.whats-app.whats-app-chat-panel';
 
-    protected static ?string $navigationGroup = 'WhatsApp';
+    protected static string | \UnitEnum | null $navigationGroup = 'WhatsApp';
 
     protected static ?string $navigationLabel = 'Live Chat';
 

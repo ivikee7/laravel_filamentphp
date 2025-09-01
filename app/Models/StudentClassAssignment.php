@@ -70,7 +70,7 @@ class StudentClassAssignment extends Model
         return $this->belongsTo(User::class, 'deleted_by');
     }
 
-    public function student()
+    public function student():BelongsTo
     {
         return $this->belongsTo(Student::class);
     }

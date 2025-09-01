@@ -2,22 +2,20 @@
 
 namespace App\Filament\Admin\Auth;
 
-use Filament\Forms\Components\Component;
+use Filament\Schemas\Components\View;
+use Filament\Schemas\Components\Component;
+use Filament\Schemas\Schema;
 use Filament\Forms\Components\TextInput;
-use Filament\Pages\Auth\Login as AuthLogin;
 use Illuminate\Validation\ValidationException;
-use Filament\Forms\Components\View;
-use Filament\Forms\Form;
-use Illuminate\Support\Facades\Route;
 
-class Login extends AuthLogin
+class Login extends \Filament\Auth\Pages\Login
 {
     protected function getForms(): array
     {
         return [
             'form' => $this->form(
                 $this->makeForm()
-                    ->schema([
+                    ->components([
                         $this->getIdFormComponent(),
                         $this->getPasswordFormComponent(),
                         $this->getRememberFormComponent(),
@@ -55,10 +53,10 @@ class Login extends AuthLogin
         ]);
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 $this->getIdFormComponent(),
                 $this->getPasswordFormComponent(),
                 $this->getRememberFormComponent(),

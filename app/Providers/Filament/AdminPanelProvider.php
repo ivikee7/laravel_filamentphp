@@ -2,10 +2,11 @@
 
 namespace App\Providers\Filament;
 
-use Althinect\FilamentSpatieRolesPermissions\FilamentSpatieRolesPermissionsPlugin;
 use App\Filament\Admin\Auth\Login;
-use App\Filament\Admin\Pages\ViewLog;
-use App\Filament\Pages\HealthCheckResults;
+use Filament\Pages\Dashboard;
+use Filament\Widgets\AccountWidget;
+use Filament\Support\Enums\Width;
+//use App\Filament\Admin\Auth\Login;
 use Filament\Actions\Action;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -19,7 +20,6 @@ use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Resources\Pages\Page as PagesPage;
 use Filament\Support\Colors\Color;
-use Filament\Support\Enums\MaxWidth;
 use Filament\Tables\Table;
 use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -29,8 +29,6 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use Saade\FilamentLaravelLog\FilamentLaravelLogPlugin;
-use ShuvroRoy\FilamentSpatieLaravelHealth\FilamentSpatieLaravelHealthPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -49,12 +47,12 @@ class AdminPanelProvider extends PanelProvider
             ->discoverPages(in: app_path('Filament/Admin/Pages'), for: 'App\\Filament\\Admin\\Pages')
             ->discoverClusters(in: app_path('Filament/Admin/Clusters'), for: 'App\\Filament\\Admin\\Clusters')
             ->pages([
-                Pages\Dashboard::class,
+                Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Admin/Widgets'), for: 'App\\Filament\\Admin\\Widgets')
             ->widgets([
-                Widgets\AccountWidget::class,
-                // Widgets\FilamentInfoWidget::class,
+                AccountWidget::class,
+                 Widgets\FilamentInfoWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -80,27 +78,8 @@ class AdminPanelProvider extends PanelProvider
                 'G-Suite',
                 'WhatsApp',
             ])
-            ->plugin(FilamentSpatieRolesPermissionsPlugin::make())
-            ->plugin(
-                FilamentSpatieLaravelHealthPlugin::make()
-                    ->authorize(function (): bool {
-                        // Check if the current user has the 'Super Admin' role
-                        return Auth::check() && Auth::user()->hasRole('Super Admin');
-                    })
-            )
-            ->plugin(FilamentLaravelLogPlugin::make()
-                ->authorize(function (): bool {
-                    // Check if the current user has the 'Super Admin' role
-                    return Auth::check() && Auth::user()->hasRole('Super Admin');
-                })
-                ->viewLog(ViewLog::class)
-                ->navigationGroup('Settings')
-                ->navigationLabel('Logs')
-                ->navigationIcon('heroicon-o-bug-ant')
-                ->navigationSort(1)
-                ->slug('logs'))
             ->spa()
-            ->maxContentWidth(MaxWidth::Full)
+            ->maxContentWidth(Width::Full)
             ->sidebarFullyCollapsibleOnDesktop()
             ->bootUsing(function () {
                 Table::configureUsing(function (Table $table): void {
@@ -111,6 +90,6 @@ class AdminPanelProvider extends PanelProvider
             ->favicon(asset('logo_favicon.png'))
             // ->passwordReset() // Password Reset
             ->profile() // Profile
-        ;
+            ;
     }
 }

@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use PhpParser\Node\Expr\FuncCall;
@@ -64,26 +66,45 @@ class Student extends Model
         return $this->belongsTo(User::class, 'deleted_by');
     }
 
+    public function user():BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 
-    public function quota()
+    public function quota():BelongsTo
     {
         return $this->belongsTo(Quota::class);
     }
 
-    public function classAssignments()
+    public function class():belongsTo
     {
-        return $this->hasMany(StudentClassAssignment::class);
+        return $this->belongsTo(StudentClass::class, 'class_id');
     }
 
-    public function currentClassAssignment()
-    {
-        return $this->hasOne(StudentClassAssignment::class)->latestOfMany();
+    public function section():belongsTo{
+        return $this->belongsTo(StudentSection::class, 'section_id');
     }
 
-    public function user()
+    public function classAssignment():HasOne
     {
-        return $this->belongsTo(User::class);
+        return $this->hasOne(StudentClassAssignment::class);
     }
+
+//    public function classAssignments():HasMany
+//    {
+//        return $this->hasMany(StudentClassAssignment::class);
+//    }
+
+//    public function currentClassAssignment(): HasOne
+//    {
+//        return $this->hasOne(StudentClassAssignment::class)->latestOfMany();
+//    }
+//    public function currentClassAssignment(): HasOne
+//    {
+//        return $this->hasOne(StudentClassAssignment::class)->latestOfMany('academic_year_id');
+//    }
+
+
 
     public function currentAcademicYear()
     {
