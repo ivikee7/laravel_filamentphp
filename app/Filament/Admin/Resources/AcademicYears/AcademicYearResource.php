@@ -2,6 +2,8 @@
 
 namespace App\Filament\Admin\Resources\AcademicYears;
 
+use App\Filament\Admin\Resources\AcademicYears\RelationManagers\ClassesRelationManager;
+use App\Filament\Admin\Resources\StudentClasses\RelationManagers\SectionsRelationManager;
 use Filament\Schemas\Schema;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\DatePicker;
@@ -112,7 +114,7 @@ class AcademicYearResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            ClassesRelationManager::class,
         ];
     }
 

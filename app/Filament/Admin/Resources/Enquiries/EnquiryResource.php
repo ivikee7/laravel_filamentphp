@@ -72,7 +72,7 @@ class EnquiryResource extends Resource
                         Textarea::make('notes')
                             ->required()
                             ->columnSpan(2)
-                            ->maxLength(255)
+                            ->maxLength(100)
                             ->rows(5)
                             ->cols(1)
                     ])->columns(3),
