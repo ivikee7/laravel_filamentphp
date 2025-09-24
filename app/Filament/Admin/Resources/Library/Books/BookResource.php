@@ -87,8 +87,14 @@ class BookResource extends Resource
                     ->default(null)
                     ->multiple()
                     ->searchable()
-                    ->preload(),
-                TextInput::make('author')
+                    ->preload()
+                    ->createOptionForm([
+                        TextInput::make('name')
+                            ->required()
+                            ->maxLength(100)
+                            ->unique(),
+                    ]),
+                TextInput::make('author_name')
                     ->maxLength(100)
                     ->default(null)
                     ->live()
@@ -162,6 +168,10 @@ class BookResource extends Resource
                     ->wrap()
                     ->searchable(),
                 TextColumn::make('author.name')
+                    ->wrap()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('author_name')
                     ->wrap()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
