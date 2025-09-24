@@ -167,10 +167,10 @@ class BookResource extends Resource
                 TextColumn::make('notes')
                     ->wrap()
                     ->searchable(),
-                TextColumn::make('author.name')
-                    ->wrap()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+//                TextColumn::make('author.name')
+//                    ->wrap()
+//                    ->sortable()
+//                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('author_name')
                     ->wrap()
                     ->sortable()
