@@ -13,12 +13,42 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+            //
+            $table->string('name', 50);
+            $table->string('email', 50)->nullable();
+            $table->string('official_email', 50)->nullable();
+            $table->string('father_name', 50)->nullable();
+            $table->string('mother_name', 60)->nullable();
+            $table->string('primary_contact_number', 15)->nullable();
+            $table->string('secondary_contact_number', 15)->nullable();
+            $table->string('address', 150)->nullable();
+            $table->string('city', 25)->nullable();
+            $table->string('state', 25)->nullable();
+            $table->integer('pin_code')->nullable();
+            $table->string('avatar', 100)->nullable();
+            $table->boolean('is_active')->nullable();
+            $table->foreignId('blood_group_id')->nullable();
+            $table->foreignId('gender_id')->nullable();
+            //
+            $table->string('aadhaar_number', 15)->nullable();
+            $table->string('mother_tongue', 25)->nullable();
+            $table->date('date_of_birth')->nullable();
+            $table->string('place_of_birth', 50)->nullable();
+            $table->string('notes', 100)->nullable();
+            $table->date('termination_date')->nullable();
+            //
             $table->string('name');
             $table->string('email')->unique();
+            //
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
+            //
+            $table->foreignId('created_by')->nullable();
+            $table->foreignId('updated_by')->nullable();
+            $table->foreignId('deleted_by')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
