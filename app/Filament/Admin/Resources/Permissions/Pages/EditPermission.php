@@ -4,7 +4,6 @@ namespace App\Filament\Admin\Resources\Permissions\Pages;
 
 use App\Filament\Admin\Resources\Permissions\PermissionResource;
 use Filament\Actions\DeleteAction;
-use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\EditRecord;
 
 class EditPermission extends EditRecord
@@ -14,7 +13,6 @@ class EditPermission extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            ViewAction::make(),
             DeleteAction::make(),
         ];
     }
