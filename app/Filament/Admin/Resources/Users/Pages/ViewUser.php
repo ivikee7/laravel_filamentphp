@@ -20,8 +20,6 @@ class ViewUser extends ViewRecord
                 ->url(fn(): string => UserResource::getUrl('id-card', [$this->record->id])),
             Action::make('Transport')
                 ->url(fn(): string => UserResource::getUrl('transport', [$this->record->id])),
-            Action::make('MonthlyAttendance')
-                ->url(fn(): string => UserResource::getUrl('monthly-attendance', [$this->record->id])),
         ];
     }
 }

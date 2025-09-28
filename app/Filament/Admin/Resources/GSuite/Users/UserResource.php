@@ -114,8 +114,8 @@ class UserResource extends Resource
                         $role = ucfirst($roleName);
                         $parts[] = $role;
 
-                        if ($role === 'Student' && $record->currentStudent?->currentClassAssignment) {
-                            $assignment = $record->currentStudent->currentClassAssignment;
+                        if ($role === 'Student' && $record->student?->classAssignment) {
+                            $assignment = $record->student->classAssignment;
 
                             if ($assignment->class?->className?->name) {
                                 $parts[] = $assignment->class->className->name;
@@ -183,9 +183,9 @@ class UserResource extends Resource
                     ])
                     ->label('Status')
                     ->default(true),
-                SelectFilter::make('currentStudent.currentClassAssignment.class_id')
+                SelectFilter::make('student.classAssignment.class_id')
                     ->label('Class')
-                    ->relationship('currentStudent.currentClassAssignment.class.className', 'name'),
+                    ->relationship('student.classAssignment.class.className', 'name'),
                 SelectFilter::make('roles')
                     ->label('Roles')
                     ->relationship('roles', 'name'),

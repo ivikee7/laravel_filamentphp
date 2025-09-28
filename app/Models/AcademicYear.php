@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 
@@ -66,7 +67,11 @@ class AcademicYear extends Model
     {
         return $this->belongsTo(User::class, 'deleted_by');
     }
+    public function studentClass():HasMany{
+        return $this->hasMany(StudentClass::class);
+    }
 
-
-
+    public function studentClasses():HasMany{
+        return $this->hasMany(StudentClass::class);
+    }
 }

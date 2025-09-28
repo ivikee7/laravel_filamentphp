@@ -8,7 +8,9 @@ use App\Models\Subject;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 
@@ -27,7 +29,6 @@ class LibraryBook extends Model
         'purchased_at',
         'published_at',
         'notes',
-        'author_id',
         'author',
         'publisher_id',
         'category_id',
@@ -65,14 +66,17 @@ class LibraryBook extends Model
             $model->saveQuietly();
         });
     }
+
     public function createdBy()
     {
         return $this->belongsTo(User::class, 'created_by');
     }
+
     public function updatedBy()
     {
         return $this->belongsTo(User::class, 'updated_by');
     }
+
     public function deletedBy()
     {
         return $this->belongsTo(User::class, 'deleted_by');
@@ -92,14 +96,17 @@ class LibraryBook extends Model
     {
         return $this->belongsTo(LibraryBookCategory::class);
     }
+
     public function location(): BelongsTo
     {
         return $this->belongsTo(LibraryBookLocation::class);
     }
+
     public function language(): BelongsTo
     {
         return $this->belongsTo(Language::class);
     }
+
     public function class(): BelongsTo
     {
         return $this->belongsTo(ClassName::class);
@@ -109,6 +116,7 @@ class LibraryBook extends Model
     {
         return $this->belongsTo(Subject::class);
     }
+
     public function supplier(): BelongsTo
     {
         return $this->belongsTo(LibraryBookSupplier::class);
@@ -118,11 +126,17 @@ class LibraryBook extends Model
     {
         return $this->hasMany(LibraryBookBorrow::class, 'book_id');
     }
+
     public function scopeOnlyAvailable($query)
     {
         return $query->whereDoesntHave('borrows', function ($q) {
             $q->whereNull('received_at');
             $q->whereNull('received_by');
         });
+    }
+
+    public function authors():BelongsToMany
+    {
+        return $this->belongsToMany(LibraryBookAuthor::class, 'library_book_author', 'book_id', 'author_id');
     }
 }

@@ -81,9 +81,9 @@ class BookResource extends Resource
                 TextInput::make('notes')
                     ->maxLength(255)
                     ->default(null),
-                Select::make('author_id')
+                Select::make('authors')
                     ->label("Author's")
-                    ->relationship('author', 'name')
+                    ->relationship('authors', 'name')
                     ->default(null)
                     ->multiple()
                     ->searchable()
@@ -93,8 +93,12 @@ class BookResource extends Resource
                             ->required()
                             ->maxLength(100)
                             ->unique(),
+                        TextInput::make('notes')
+                            ->required()
+                            ->maxLength(100)
+                            ->unique(),
                     ]),
-                TextInput::make('author_name')
+                TextInput::make('author')
                     ->maxLength(100)
                     ->default(null)
                     ->live()

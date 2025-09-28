@@ -2,9 +2,8 @@
 
 namespace App\Filament\Admin\Resources\AcademicYears\Pages;
 
-use Filament\Actions\EditAction;
 use App\Filament\Admin\Resources\AcademicYears\AcademicYearResource;
-use Filament\Actions;
+use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
 
 class ViewAcademicYear extends ViewRecord

@@ -31,9 +31,9 @@ class BookCategoryResource extends Resource
 {
     protected static ?string $model = LibraryBookCategory::class;
 
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Library Management System';
+    protected static string|\UnitEnum|null $navigationGroup = 'Library Management System';
 
     protected static ?string $navigationLabel = 'Category';
 
@@ -43,7 +43,8 @@ class BookCategoryResource extends Resource
             ->components([
                 TextInput::make('name')
                     ->required()
-                    ->maxLength(50),
+                    ->maxLength(50)
+                    ->unique(),
             ]);
     }
 

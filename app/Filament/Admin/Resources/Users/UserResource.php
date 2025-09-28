@@ -551,7 +551,6 @@ class UserResource extends Resource
         return [
             'index' => ListUsers::route('/'),
             'create' => CreateUser::route('/create'),
-            'monthly-attendance' => MonthlyAttendance::route('/monthly-attendance'),
             'view' => ViewUser::route('/{record}'),
             'edit' => EditUser::route('/{record}/edit'),
             'id-card' => IDCard::route('/{record}/id-card'),

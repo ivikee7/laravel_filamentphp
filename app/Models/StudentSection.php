@@ -86,6 +86,11 @@ class StudentSection extends Model
         return $this->hasMany(StudentClassAssignment::class, 'section_id');
     }
 
+    public function studentClass():BelongsTo
+    {
+        return $this->belongsTo(StudentClass::class, 'id');
+    }
+
     public function studentClassAssignments(): HasMany
     {
         return $this->hasMany(StudentClassAssignment::class, 'section_id');

@@ -15,14 +15,13 @@ return new class extends Migration
             $table->id();
             $table->string('title', 100);
             $table->string('edition', 50)->nullable();
-            $table->string('author_name', 100)->nullable();
+            $table->string('author', 100)->nullable();
             $table->double('price', 8, 2)->nullable();
             $table->double('pages', 8, 2)->nullable();
             $table->string('isbn_number', 100)->nullable();
             $table->date('purchased_at')->nullable();
             $table->year('published_at')->nullable();
             $table->string('notes', 255)->nullable();
-            $table->foreignId('author_id')->unsigned()->nullable();
             $table->foreignId('publisher_id')->unsigned()->nullable();
             $table->foreignId('category_id')->unsigned()->nullable();
             $table->foreignId('location_id')->unsigned()->nullable();
@@ -38,6 +37,11 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
+
+        Schema::create('library_book_author', function (Blueprint $table) {
+            $table->foreignId('book_id')->references('id')->on('library_books');
+            $table->foreignId('author_id')->references('id')->on('library_book_authors');
+        });
     }
 
     /**
@@ -46,5 +50,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('library_books');
+        Schema::dropIfExists('library_book_author');
     }
 };
