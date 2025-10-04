@@ -2,11 +2,14 @@
 
 namespace App\Filament\Admin\Resources\Users\Pages;
 
+use App\Filament\Admin\Pages\IDCard;
+use App\Models\User;
 use Filament\Actions\EditAction;
 use Filament\Actions\Action;
 use App\Filament\Admin\Resources\Users\UserResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ViewRecord;
+use Illuminate\Support\Facades\Auth;
 
 class ViewUser extends ViewRecord
 {
@@ -16,10 +19,11 @@ class ViewUser extends ViewRecord
     {
         return [
             EditAction::make(),
-            Action::make('ID-Card')
-                ->url(fn(): string => UserResource::getUrl('id-card', [$this->record->id])),
-            Action::make('Transport')
-                ->url(fn(): string => UserResource::getUrl('transport', [$this->record->id])),
+            Action::make('id-card')
+                ->url(fn (User $record): string => IDCard::getUrl(['record' => $record]))
+                ->visible(fn (): bool => Auth::user()->can('view Attendance'))
+                ->icon('heroicon-o-identification')
+                ->color('info'),
         ];
     }
 }

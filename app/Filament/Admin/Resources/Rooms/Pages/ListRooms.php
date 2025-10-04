@@ -2,9 +2,8 @@
 
 namespace App\Filament\Admin\Resources\Rooms\Pages;
 
-use Filament\Actions\CreateAction;
 use App\Filament\Admin\Resources\Rooms\RoomResource;
-use Filament\Actions;
+use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
 class ListRooms extends ListRecords

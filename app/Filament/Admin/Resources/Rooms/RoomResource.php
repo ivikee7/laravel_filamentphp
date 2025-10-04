@@ -2,96 +2,44 @@
 
 namespace App\Filament\Admin\Resources\Rooms;
 
-use Filament\Schemas\Schema;
-use Filament\Forms\Components\TextInput;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\TrashedFilter;
-use Filament\Actions\ViewAction;
-use Filament\Actions\EditAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\ForceDeleteBulkAction;
-use Filament\Actions\RestoreBulkAction;
-use App\Filament\Admin\Resources\Rooms\Pages\ListRooms;
 use App\Filament\Admin\Resources\Rooms\Pages\CreateRoom;
-use App\Filament\Admin\Resources\Rooms\Pages\ViewRoom;
 use App\Filament\Admin\Resources\Rooms\Pages\EditRoom;
-use App\Filament\Admin\Resources\RoomResource\Pages;
-use App\Filament\Admin\Resources\RoomResource\RelationManagers;
+use App\Filament\Admin\Resources\Rooms\Pages\ListRooms;
+use App\Filament\Admin\Resources\Rooms\Pages\ViewRoom;
+use App\Filament\Admin\Resources\Rooms\Schemas\RoomForm;
+use App\Filament\Admin\Resources\Rooms\Schemas\RoomInfolist;
+use App\Filament\Admin\Resources\Rooms\Tables\RoomsTable;
 use App\Models\Room;
-use Filament\Forms;
+use BackedEnum;
 use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use UnitEnum;
 
 class RoomResource extends Resource
 {
     protected static ?string $model = Room::class;
 
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    protected static string | \UnitEnum | null $navigationGroup = 'School Management System';
+    protected static string | UnitEnum | null $navigationGroup = "School Management System";
 
     public static function form(Schema $schema): Schema
     {
-        return $schema
-            ->components([
-                TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-                TextInput::make('capacity')
-                    ->required()
-                    ->numeric(),
-            ]);
+        return RoomForm::configure($schema);
+    }
+
+    public static function infolist(Schema $schema): Schema
+    {
+        return RoomInfolist::configure($schema);
     }
 
     public static function table(Table $table): Table
     {
-        return $table
-            ->columns([
-                TextColumn::make('name')
-                    ->searchable(),
-                TextColumn::make('capacity')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('creator.name')
-                    ->numeric()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updater.name')
-                    ->numeric()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('deleted_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-            ])
-            ->defaultSort('id', 'desc')
-            ->filters([
-                TrashedFilter::make(),
-            ])
-            ->recordActions([
-                ViewAction::make(),
-                EditAction::make(),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                    ForceDeleteBulkAction::make(),
-                    RestoreBulkAction::make(),
-                ]),
-            ]);
+        return RoomsTable::configure($table);
     }
 
     public static function getRelations(): array
@@ -111,9 +59,9 @@ class RoomResource extends Resource
         ];
     }
 
-    public static function getEloquentQuery(): Builder
+    public static function getRecordRouteBindingEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()
+        return parent::getRecordRouteBindingEloquentQuery()
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ]);

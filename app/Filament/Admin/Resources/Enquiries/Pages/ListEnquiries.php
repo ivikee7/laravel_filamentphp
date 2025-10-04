@@ -2,9 +2,8 @@
 
 namespace App\Filament\Admin\Resources\Enquiries\Pages;
 
-use Filament\Actions\CreateAction;
 use App\Filament\Admin\Resources\Enquiries\EnquiryResource;
-use Filament\Actions;
+use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
 class ListEnquiries extends ListRecords

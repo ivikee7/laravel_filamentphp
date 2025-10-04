@@ -18,14 +18,14 @@ class StudentSectionInfolist
                 TextEntry::make('teacher.name')
                     ->label('Teacher')
                     ->placeholder('-'),
-                TextEntry::make('created_by')
-                    ->numeric()
+                TextEntry::make('createdBy.name')
+                    ->label('Created by')
                     ->placeholder('-'),
-                TextEntry::make('updated_by')
-                    ->numeric()
+                TextEntry::make('updatedBy.name')
+                    ->label('Updated by')
                     ->placeholder('-'),
-                TextEntry::make('deleted_by')
-                    ->numeric()
+                TextEntry::make('deletedBy.name')
+                    ->label('Deleted by')
                     ->placeholder('-'),
                 TextEntry::make('created_at')
                     ->dateTime()
@@ -35,7 +35,7 @@ class StudentSectionInfolist
                     ->placeholder('-'),
                 TextEntry::make('deleted_at')
                     ->dateTime()
-                    ->visible(fn (StudentSection $record): bool => $record->trashed()),
+                    ->visible(fn(StudentSection $record): bool => $record->trashed()),
             ]);
     }
 }

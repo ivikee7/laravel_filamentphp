@@ -86,4 +86,9 @@ class Enquiry extends Model
     {
         return $this->belongsTo(ClassName::class);
     }
+
+    public function gender(): BelongsTo
+    {
+        return $this->belongsTo(Gender::class);
+    }
 }

@@ -2,9 +2,8 @@
 
 namespace App\Filament\Admin\Resources\Genders\Pages;
 
-use Filament\Actions\EditAction;
 use App\Filament\Admin\Resources\Genders\GenderResource;
-use Filament\Actions;
+use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
 
 class ViewGender extends ViewRecord

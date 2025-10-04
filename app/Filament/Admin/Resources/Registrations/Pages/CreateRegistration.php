@@ -4,12 +4,7 @@ namespace App\Filament\Admin\Resources\Registrations\Pages;
 
 use App\Filament\Admin\Resources\Registrations\RegistrationResource;
 use App\Models\Enquiry;
-use Carbon\Carbon;
-use Filament\Actions;
-use Filament\Forms\Components\Hidden;
-use Filament\Forms\Form;
 use Filament\Resources\Pages\CreateRecord;
-use Illuminate\Support\Facades\Session;
 
 class CreateRegistration extends CreateRecord
 {

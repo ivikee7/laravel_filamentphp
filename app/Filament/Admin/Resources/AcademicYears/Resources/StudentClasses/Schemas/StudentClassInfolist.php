@@ -14,17 +14,17 @@ class StudentClassInfolist
             ->components([
                 TextEntry::make('className.name')
                     ->label('Class name'),
-                TextEntry::make('academic_year_id')
-                    ->numeric()
+                TextEntry::make('academicYear.name')
+                    ->label('Academic year')
                     ->placeholder('-'),
-                TextEntry::make('created_by')
-                    ->numeric()
+                TextEntry::make('createdBy.name')
+                    ->label('Created by')
                     ->placeholder('-'),
-                TextEntry::make('updated_by')
-                    ->numeric()
+                TextEntry::make('updatedBy.name')
+                    ->label('Updated by')
                     ->placeholder('-'),
-                TextEntry::make('deleted_by')
-                    ->numeric()
+                TextEntry::make('deletedBy.name')
+                    ->label('Deleted by')
                     ->placeholder('-'),
                 TextEntry::make('created_at')
                     ->dateTime()

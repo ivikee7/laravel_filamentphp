@@ -2,9 +2,8 @@
 
 namespace App\Filament\Admin\Resources\SentMessages\Pages;
 
-use Filament\Actions\CreateAction;
 use App\Filament\Admin\Resources\SentMessages\SentMessageResource;
-use Filament\Actions;
+use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
 class ListSentMessages extends ListRecords

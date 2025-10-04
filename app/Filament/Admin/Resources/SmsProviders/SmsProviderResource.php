@@ -117,7 +117,7 @@ class SmsProviderResource extends Resource
                             ->inline(false),
 
                     ])->columns(2),
-            ]);
+            ])->columns(1);
     }
 
     public static function table(Table $table): Table

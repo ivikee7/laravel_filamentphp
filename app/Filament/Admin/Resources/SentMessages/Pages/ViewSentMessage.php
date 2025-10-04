@@ -2,9 +2,8 @@
 
 namespace App\Filament\Admin\Resources\SentMessages\Pages;
 
-use Filament\Actions\EditAction;
 use App\Filament\Admin\Resources\SentMessages\SentMessageResource;
-use Filament\Actions;
+use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
 
 class ViewSentMessage extends ViewRecord

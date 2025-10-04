@@ -2,9 +2,8 @@
 
 namespace App\Filament\Admin\Resources\Registrations\Pages;
 
-use Filament\Actions\EditAction;
 use App\Filament\Admin\Resources\Registrations\RegistrationResource;
-use Filament\Actions;
+use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
 
 class ViewRegistration extends ViewRecord
@@ -17,6 +16,4 @@ class ViewRegistration extends ViewRecord
             EditAction::make(),
         ];
     }
-
-
 }

@@ -2,9 +2,8 @@
 
 namespace App\Filament\Admin\Resources\Languages\Pages;
 
-use Filament\Actions\CreateAction;
 use App\Filament\Admin\Resources\Languages\LanguageResource;
-use Filament\Actions;
+use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
 class ListLanguages extends ListRecords

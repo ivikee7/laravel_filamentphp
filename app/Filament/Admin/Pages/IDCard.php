@@ -61,7 +61,7 @@ class IDCard extends Page implements HasInfolists, HasTable
                     ->label('Type'),
                 TextColumn::make('createdBy.name')
                     ->searchable()
-                ->label('Created By')
+                    ->label('Created By')
             ]);
     }
 
@@ -76,32 +76,31 @@ class IDCard extends Page implements HasInfolists, HasTable
                             Grid::make(2)
                                 ->schema([
                                     ImageEntry::make('avatar')
+                                        ->imageSize(150)
                                         ->disk('public')
                                         ->square()
-                                        ->overlap(2)
-                                        ->extraAttributes(['style' => 'text-align: center;background-color:white;padding:1rem;border-radius:5px;display:inline-block;width:auto;box-sizing:border-box;'])
-                                        ->hiddenLabel(),
+                                        ->hiddenLabel()
+                                        ->alignCenter()
+                                        ->default('https://ui-avatars.com/api/?name=' . $this->record->name),
                                     ImageEntry::make('qrcode')
+                                        ->imageSize(150)
                                         ->state(self::getQRCode())
                                         ->square()
-                                        ->overlap(2)
-                                        ->extraAttributes(['style' => 'text-align: center;background-color:white;padding:1rem;border-radius:5px;display:inline-block;width:auto;box-sizing:border-box;'])
-                                        ->hiddenLabel(),
+                                        ->hiddenLabel()
+                                        ->alignCenter(),
                                 ])
-                                ->columns(['xs' => 2, 'sm' => 2, 'md' => 2])
-                                ->extraAttributes([
-                                    'class' => 'place-items-center',
-                                ]),
+                                ->columns(['sm' => 2, 'md' => 2]),
                             TextEntry::make('name')
-                                ->extraAttributes(['style' => 'text-align: center;font-size:2rem;'])
-                                ->hiddenLabel()->wrap(),
+                                ->extraAttributes(['style' => 'font-size:2rem;'])
+                                ->alignCenter()
+                                ->hiddenLabel()
+                                ->wrap(),
                             TextEntry::make('roles.name')
                                 ->extraAttributes(['style' => 'text-align: center;font-size:1rem;'])
                                 ->color('primary')
                                 ->hiddenLabel()->wrap(),
                         ]),
                         Group::make([
-                            TextEntry::make('name')->inlineLabel()->wrap(),
                             TextEntry::make('email')->inlineLabel()->wrap(),
                             TextEntry::make('primary_contact_number')
                                 ->label('Primary Contact')->inlineLabel()->wrap(),
@@ -194,10 +193,24 @@ class IDCard extends Page implements HasInfolists, HasTable
         return Attendance::where('user_id', $record->id)->where('type', $type)->exists();
     }
 
+
     public function markAttendance(string $type): void
     {
         if (!$this->record) {
             Notification::make()->title('Error: User not found')->danger()->send();
+            return;
+        }
+
+        $template = MessageTemplate::where('name', $type)
+            ->where('is_active', true)
+            ->first();
+
+        if (!$template) {
+            Notification::make()
+                ->title('SMS Template Error ' . $type)
+                ->body('SMS template not found.')
+                ->danger()
+                ->send();
             return;
         }
 
@@ -214,7 +227,16 @@ class IDCard extends Page implements HasInfolists, HasTable
             ->success()
             ->send();
 
-        $provider = SmsProvider::find(env('MESSAGE_PROVIDER_ID'));
+        $message = str_replace(
+            ['{{name}}', '{{time}}'],
+            [
+                $this->record->name,
+                $attendance->created_at
+            ],
+            $template->content
+        );
+
+        $provider = SmsProvider::find($template->sms_provider_id);
 
         if (!$provider || !$provider->is_active) {
             Notification::make()
@@ -225,30 +247,9 @@ class IDCard extends Page implements HasInfolists, HasTable
             return;
         }
 
-        $template = MessageTemplate::where('name', $type)->first();
-
-        if (!$template) {
-            Notification::make()
-                ->title('SMS Template Error ' . $type)
-                ->body('SMS template not found.')
-                ->danger()
-                ->send();
-            return;
-        }
-
         $smsService = new SMSService($provider->toArray()); // assuming SMSService accepts provider
 
-        $message = str_replace(
-            ['{{name}}', '{{time}}'],
-            [
-                $this->record->name,
-                $attendance->created_at
-            ],
-            $template->content
-        );
-
         $smsService->sendSms($this->record->primary_contact_number, $message, $template);
-
 
         Notification::make()
             ->title('Message successfully sent')

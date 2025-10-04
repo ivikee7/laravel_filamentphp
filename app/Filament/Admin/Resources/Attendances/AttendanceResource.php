@@ -118,9 +118,6 @@ class AttendanceResource extends Resource
             'monthly-report' => MonthlyReport::route('monthly-report'),
             'view' => ViewAttendance::route('/{record}'),
             'edit' => EditAttendance::route('/{record}/edit'),
-
-            // 👇 Manually define route for MonthlyReport
-            // 'monthly-report' => Pages\MonthlyReport::route('/monthly-report'),
         ];
     }
 
@@ -134,6 +131,6 @@ class AttendanceResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return Attendance::whereDate('created_at', now())->groupBy('user_id')->count();
+        return Attendance::whereDate('created_at', now())->distinct('user_id')->count('user_id');
     }
 }

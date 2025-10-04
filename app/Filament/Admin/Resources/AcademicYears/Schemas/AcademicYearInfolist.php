@@ -20,14 +20,14 @@ class AcademicYearInfolist
                     ->date(),
                 IconEntry::make('is_active')
                     ->boolean(),
-                TextEntry::make('created_by')
-                    ->numeric()
+                TextEntry::make('createdBy.name')
+                    ->label('Created By')
                     ->placeholder('-'),
-                TextEntry::make('updated_by')
-                    ->numeric()
+                TextEntry::make('updatedBy.name')
+                    ->label('Updated By')
                     ->placeholder('-'),
-                TextEntry::make('deleted_by')
-                    ->numeric()
+                TextEntry::make('deletedBy.name')
+                    ->label('Deleted By')
                     ->placeholder('-'),
                 TextEntry::make('created_at')
                     ->dateTime()

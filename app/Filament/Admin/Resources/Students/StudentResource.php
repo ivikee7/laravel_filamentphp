@@ -556,7 +556,7 @@ class StudentResource extends Resource
                     BulkAction::make('send_bulk_sms')
                         ->label('Send Bulk SMS')
                         ->form([
-                            Select::make('provider_id')
+                            Select::make('sms_provider_id')
                                 ->label('SMS Provider')
                                 ->options(SMSProvider::query()->where('is_active', true)->pluck('name', 'id'))
                                 ->searchable()
@@ -569,7 +569,7 @@ class StudentResource extends Resource
                                 ->required(),
                         ])
                         ->action(function (Collection $records, array $data) {
-                            $provider = SmsProvider::find($data['provider_id']);
+                            $provider = SmsProvider::find($data['sms_provider_id']);
 
                             if (!$provider || !$provider->is_active) {
                                 Notification::make()

@@ -2,12 +2,11 @@
 
 namespace App\Filament\Admin\Resources\Rooms\Pages;
 
-use Filament\Actions\ViewAction;
+use App\Filament\Admin\Resources\Rooms\RoomResource;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ForceDeleteAction;
 use Filament\Actions\RestoreAction;
-use App\Filament\Admin\Resources\Rooms\RoomResource;
-use Filament\Actions;
+use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\EditRecord;
 
 class EditRoom extends EditRecord

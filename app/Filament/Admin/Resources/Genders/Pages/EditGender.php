@@ -2,12 +2,11 @@
 
 namespace App\Filament\Admin\Resources\Genders\Pages;
 
-use Filament\Actions\ViewAction;
+use App\Filament\Admin\Resources\Genders\GenderResource;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ForceDeleteAction;
 use Filament\Actions\RestoreAction;
-use App\Filament\Admin\Resources\Genders\GenderResource;
-use Filament\Actions;
+use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\EditRecord;
 
 class EditGender extends EditRecord
