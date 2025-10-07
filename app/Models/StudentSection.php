@@ -14,7 +14,7 @@ class StudentSection extends Model
 
     protected $table = 'student_sections';
 
-    protected $primaryKey = 'name';
+    protected $primaryKey = 'id';
 
     protected $fillable = [
         'name',

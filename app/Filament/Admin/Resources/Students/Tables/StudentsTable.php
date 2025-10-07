@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Admin\Resources\Students\Resources\Products\Tables;
+namespace App\Filament\Admin\Resources\Students\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -12,22 +12,31 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 
-class ProductsTable
+class StudentsTable
 {
     public static function configure(Table $table): Table
     {
         return $table
             ->columns([
-                TextColumn::make('name')
+                TextColumn::make('user.name')
                     ->searchable(),
-                TextColumn::make('price')
-                    ->money()
+                TextColumn::make('registration.name')
+                    ->searchable(),
+                TextColumn::make('quota.name')
+                    ->searchable(),
+                TextColumn::make('admission_number')
+                    ->searchable(),
+                TextColumn::make('current_status')
+                    ->badge(),
+                TextColumn::make('tc_status')
+                    ->badge(),
+                TextColumn::make('leaving_date')
+                    ->date()
                     ->sortable(),
-                TextColumn::make('store.name')
-                    ->searchable(),
-                TextColumn::make('academicYear.name')
-                    ->searchable(),
-                TextColumn::make('class.name')
+                TextColumn::make('local_guardian_user_id')
+                    ->numeric()
+                    ->sortable(),
+                TextColumn::make('local_guardian_relationship')
                     ->searchable(),
                 TextColumn::make('created_by')
                     ->numeric()

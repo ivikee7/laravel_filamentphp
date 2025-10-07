@@ -31,6 +31,14 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
+
+        Schema::create('student_siblings', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('student_id');
+            $table->foreignId('sibling_id');
+            $table->timestamps();
+            $table->unique(['student_id', 'sibling_id']);
+        });
     }
 
     /**

@@ -10,6 +10,7 @@ use Filament\Panel;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -169,6 +170,11 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
     public function students(): HasMany
     {
         return $this->hasMany(Student::class);
+    }
+
+    public function siblings():BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'student_siblings', 'student_id', 'sibling_id');
     }
 
     public function attendances()

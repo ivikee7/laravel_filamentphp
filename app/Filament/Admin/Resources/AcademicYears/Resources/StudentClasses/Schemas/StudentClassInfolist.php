@@ -14,6 +14,8 @@ class StudentClassInfolist
             ->components([
                 TextEntry::make('className.name')
                     ->label('Class name'),
+                TextEntry::make('name')
+                    ->label('Name'),
                 TextEntry::make('academicYear.name')
                     ->label('Academic year')
                     ->placeholder('-'),

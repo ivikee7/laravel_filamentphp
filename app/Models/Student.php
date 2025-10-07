@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -66,26 +67,27 @@ class Student extends Model
         return $this->belongsTo(User::class, 'deleted_by');
     }
 
-    public function user():BelongsTo
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function quota():BelongsTo
+    public function quota(): BelongsTo
     {
         return $this->belongsTo(Quota::class);
     }
 
-    public function class():belongsTo
+    public function class(): belongsTo
     {
         return $this->belongsTo(StudentClass::class, 'class_id');
     }
 
-    public function section():belongsTo{
+    public function section(): belongsTo
+    {
         return $this->belongsTo(StudentSection::class, 'section_id');
     }
 
-    public function classAssignment():HasOne
+    public function classAssignment(): HasOne
     {
         return $this->hasOne(StudentClassAssignment::class);
     }
@@ -105,7 +107,6 @@ class Student extends Model
 //    }
 
 
-
     public function currentAcademicYear()
     {
         return $this->hasOneThrough(
@@ -121,5 +122,15 @@ class Student extends Model
     public function registration(): belongsTo
     {
         return $this->belongsTo(Registration::class);
+    }
+
+    public function localGuardian(): belongsTo
+    {
+        return $this->belongsTo(User::class, 'local_guardian_user_id');
+    }
+
+    public function siblings(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'student_siblings', 'student_id', 'sibling_id');
     }
 }

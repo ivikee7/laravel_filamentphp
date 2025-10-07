@@ -57,20 +57,23 @@ class StudentClassAssignment extends Model
             $assignment->is_current = true;
         });
     }
+
     public function createdBy()
     {
         return $this->belongsTo(User::class, 'created_by');
     }
+
     public function updatedBy()
     {
         return $this->belongsTo(User::class, 'updated_by');
     }
+
     public function deletedBy()
     {
         return $this->belongsTo(User::class, 'deleted_by');
     }
 
-    public function student():BelongsTo
+    public function student(): BelongsTo
     {
         return $this->belongsTo(Student::class);
     }
@@ -79,12 +82,24 @@ class StudentClassAssignment extends Model
     {
         return $this->belongsTo(StudentClass::class);
     }
+
     public function section(): BelongsTo
     {
         return $this->belongsTo(StudentSection::class);
     }
+
     public function academicYear()
     {
         return $this->belongsTo(AcademicYear::class);
+    }
+
+    public function studentClass(): BelongsTo
+    {
+        return $this->belongsTo(StudentClass::class);
+    }
+
+    public function studentSection(): BelongsTo
+    {
+        return $this->belongsTo(StudentSection::class);
     }
 }

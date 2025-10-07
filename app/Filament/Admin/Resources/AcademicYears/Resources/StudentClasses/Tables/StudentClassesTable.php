@@ -20,6 +20,8 @@ class StudentClassesTable
             ->columns([
                 TextColumn::make('className.name')
                     ->searchable(),
+                TextColumn::make('name')
+                    ->searchable(),
                 TextColumn::make('createdBy.name')
                     ->numeric()
                     ->sortable()

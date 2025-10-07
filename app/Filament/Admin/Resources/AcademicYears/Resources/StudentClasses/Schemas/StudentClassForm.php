@@ -15,6 +15,9 @@ class StudentClassForm
                 Select::make('class_name_id')
                     ->relationship('className', 'name')
                     ->required(),
+                TextInput::make('name')
+                    ->required()
+                    ->maxLength(50),
             ]);
     }
 }
