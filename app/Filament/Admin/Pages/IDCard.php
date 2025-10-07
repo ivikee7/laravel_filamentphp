@@ -39,7 +39,7 @@ class IDCard extends Page implements HasInfolists, HasTable
 
     protected static bool $shouldRegisterNavigation = false;
 
-    protected static ?string $slug = 'id-card/{record}';
+    protected static ?string $slug = 'id-cards/{record}';
 
     public ?User $record = null;
 
@@ -85,6 +85,7 @@ class IDCard extends Page implements HasInfolists, HasTable
                                     ImageEntry::make('qrcode')
                                         ->imageSize(150)
                                         ->state(self::getQRCode())
+                                        ->gap(false)
                                         ->square()
                                         ->hiddenLabel()
                                         ->alignCenter(),
@@ -198,6 +199,11 @@ class IDCard extends Page implements HasInfolists, HasTable
     {
         if (!$this->record) {
             Notification::make()->title('Error: User not found')->danger()->send();
+            return;
+        }
+
+        if($this->record->id === auth()->id()) {
+            Notification::make()->title('Error: You can only mark your own attendance')->danger()->send();
             return;
         }
 
