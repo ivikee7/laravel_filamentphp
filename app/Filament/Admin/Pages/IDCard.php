@@ -62,7 +62,7 @@ class IDCard extends Page implements HasInfolists, HasTable
                 TextColumn::make('createdBy.name')
                     ->searchable()
                     ->label('Created By')
-            ]);
+            ])->defaultSort('id', 'desc');
     }
 
     public function infolist(Schema $schema): Schema
@@ -202,21 +202,8 @@ class IDCard extends Page implements HasInfolists, HasTable
             return;
         }
 
-        if($this->record->id === auth()->id()) {
+        if ($this->record->id === auth()->id()) {
             Notification::make()->title('Error: You can only mark your own attendance')->danger()->send();
-            return;
-        }
-
-        $template = MessageTemplate::where('name', $type)
-            ->where('is_active', true)
-            ->first();
-
-        if (!$template) {
-            Notification::make()
-                ->title('SMS Template Error ' . $type)
-                ->body('SMS template not found.')
-                ->danger()
-                ->send();
             return;
         }
 
@@ -232,6 +219,19 @@ class IDCard extends Page implements HasInfolists, HasTable
             ->title(ucwords(str_replace('_', ' ', $type)) . ' marked successfully')
             ->success()
             ->send();
+
+        $template = MessageTemplate::where('name', $type)
+            ->where('is_active', true)
+            ->first();
+
+        if (!$template) {
+            Notification::make()
+                ->title('SMS Template Error ' . $type)
+                ->body('SMS template not found.')
+                ->danger()
+                ->send();
+            return;
+        }
 
         $message = str_replace(
             ['{{name}}', '{{time}}'],
