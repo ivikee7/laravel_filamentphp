@@ -12,6 +12,7 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class StudentsTable
 {
@@ -19,52 +20,106 @@ class StudentsTable
     {
         return $table
             ->columns([
+                TextColumn::make('id')
+                    ->searchable()->sortable(),
                 ImageColumn::make('avatar')
                     ->disk('public')
                     ->visibility('public')
-                    ->circular(),
-                TextColumn::make('user.name')
-                    ->searchable(),
-                TextColumn::make('registration.name')
-                    ->searchable(),
-                TextColumn::make('quota.name')
-                    ->searchable(),
-                TextColumn::make('admission_number')
-                    ->searchable(),
-                TextColumn::make('current_status')
-                    ->badge(),
-                TextColumn::make('tc_status')
-                    ->badge(),
-                TextColumn::make('leaving_date')
-                    ->date()
-                    ->sortable(),
-                TextColumn::make('local_guardian_user_id')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('local_guardian_relationship')
-                    ->searchable(),
-                TextColumn::make('created_by')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('updated_by')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('deleted_by')
-                    ->numeric()
-                    ->sortable(),
+                    ->circular()
+                    ->default(fn ($record) => 'https://ui-avatars.com/api/?name=' . urlencode($record->name)),
+                TextColumn::make('name')
+                    ->searchable()->sortable()->wrap(),
+                TextColumn::make('father_name')
+                    ->searchable()->sortable()->wrap(),
+                TextColumn::make('mother_name')
+                    ->searchable()->sortable()->wrap()->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('student.classAssignment.class.name')
+                    ->searchable()->sortable()->wrap(),
+                TextColumn::make('student.classAssignment.section.name')
+                    ->searchable()->sortable()->wrap(),
+                TextColumn::make('date_of_birth')
+                    ->searchable()->sortable()->wrap()->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('student.classAssignment.academicYear.name')
+                    ->searchable()->sortable()->wrap()->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('primary_contact_number')
+                    ->searchable()->label('Primary contact'),
+                TextColumn::make('secondary_contact_number')
+                    ->searchable()->label('Secondary contact')->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('full_address')
+                    ->label('Address')
+                    ->getStateUsing(function ($record) {
+                        return collect([
+                            $record->address,
+                            $record->city,
+                            $record->state,
+                            $record->pin_code,
+                        ])
+                            ->filter() // Remove null/empty values
+                            ->implode(', ');
+                    })
+                    ->wrap()
+                    ->searchable(query: function ($query, string $search) {
+                        $query->where(function ($q) use ($search) {
+                            $q->where('address', 'like', "%{$search}%")
+                                ->orWhere('city', 'like', "%{$search}%")
+                                ->orWhere('state', 'like', "%{$search}%")
+                                ->orWhere('pin_code', 'like', "%{$search}%");
+                        });
+                    })
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('student.quota.name')
+                    ->searchable()->sortable()->wrap()->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('bloodGroup.name')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('gender.name')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('email')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->label('Email'),
+                TextColumn::make('gSuiteUser.email')->label('GSuite Email')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('gSuiteUser.password')->label('GSuite Pwd')
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('roles.name')
+                    ->badge()
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('is_active')
+                    ->label('Status')
+                    ->sortable()
+                    ->formatStateUsing(fn($state) => $state ? 'Active' : 'Suspended')
+                    ->badge()
+                    ->color(fn($state) => $state ? 'success' : 'danger')
+                    ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
+                    ->label('Created At')
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
+                    ->label('Updated At')
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('deleted_at')
                     ->dateTime()
                     ->sortable()
+                    ->label('Deleted At')
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->defaultSort('id', 'desc')
+            ->modifyQueryUsing(function (Builder $query) {
+                $query->Role('Student');
+            })
             ->filters([
                 TrashedFilter::make(),
             ])

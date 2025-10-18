@@ -64,6 +64,6 @@ class StudentResource extends Resource
         return parent::getRecordRouteBindingEloquentQuery()
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
-            ]);
+            ])->Role('Student');
     }
 }

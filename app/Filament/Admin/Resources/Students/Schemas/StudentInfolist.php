@@ -26,7 +26,8 @@ class StudentInfolist
                                     ->imageSize(150)
                                     ->circular()
                                     ->alignCenter()
-                                    ->hiddenLabel(),
+                                    ->hiddenLabel()
+                                    ->default(fn ($record) => 'https://ui-avatars.com/api/?name=' . urlencode($record->name)),
                                 Group::make()
                                     ->schema([
                                         TextEntry::make('name')->label('Student name'),
