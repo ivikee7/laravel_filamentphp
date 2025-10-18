@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class StudentSection extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, LogsActivity;
 
     protected $table = 'student_sections';
 
@@ -25,6 +27,11 @@ class StudentSection extends Model
         'creator_id',
         'updater_id',
     ];
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()->logFillable();
+    }
 
     protected static function boot()
     {
@@ -88,9 +95,14 @@ class StudentSection extends Model
         return $this->hasMany(StudentClassAssignment::class, 'section_id');
     }
 
-    public function studentClass():BelongsTo
+//    public function studentClass():BelongsTo
+//    {
+//        return $this->belongsTo(StudentClass::class, 'id');
+//    }
+
+    public function studentClass()
     {
-        return $this->belongsTo(StudentClass::class, 'id');
+        return $this->belongsTo(StudentClass::class);
     }
 
     public function studentClassAssignments(): HasMany

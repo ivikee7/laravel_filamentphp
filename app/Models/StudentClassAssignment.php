@@ -6,10 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class StudentClassAssignment extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, LogsActivity;
 
     protected $fillable = [
         'student_id',
@@ -21,6 +23,11 @@ class StudentClassAssignment extends Model
         'creator_id',
         'updater_id',
     ];
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()->logFillable();
+    }
 
     protected static function boot()
     {
@@ -88,18 +95,18 @@ class StudentClassAssignment extends Model
         return $this->belongsTo(StudentSection::class);
     }
 
-    public function academicYear()
+    public function academicYear():BelongsTo
     {
         return $this->belongsTo(AcademicYear::class);
     }
 
     public function studentClass(): BelongsTo
     {
-        return $this->belongsTo(StudentClass::class);
+        return $this->belongsTo(StudentClass::class, 'class_id');
     }
 
     public function studentSection(): BelongsTo
     {
-        return $this->belongsTo(StudentSection::class);
+        return $this->belongsTo(StudentSection::class, 'section_id');
     }
 }

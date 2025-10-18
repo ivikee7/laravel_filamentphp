@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources\Students\Schemas;
 
 use App\Models\Student;
+use App\Models\User;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
 
@@ -53,7 +54,7 @@ class StudentInfolist
                     ->placeholder('-'),
                 TextEntry::make('deleted_at')
                     ->dateTime()
-                    ->visible(fn (Student $record): bool => $record->trashed()),
+                    ->visible(fn (User $record): bool => $record->trashed()),
             ]);
     }
 }
