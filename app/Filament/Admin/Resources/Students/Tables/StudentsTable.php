@@ -8,6 +8,7 @@ use Filament\Actions\EditAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Actions\ViewAction;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
@@ -18,6 +19,10 @@ class StudentsTable
     {
         return $table
             ->columns([
+                ImageColumn::make('avatar')
+                    ->disk('public')
+                    ->visibility('public')
+                    ->circular(),
                 TextColumn::make('user.name')
                     ->searchable(),
                 TextColumn::make('registration.name')

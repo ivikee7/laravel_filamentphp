@@ -114,7 +114,7 @@ class StudentForm
 
                                 Select::make('class_id')
                                     ->label('Class')
-                                    ->relationship('class', 'name', modifyQueryUsing: function (Builder $query, Get $get): Builder {
+                                    ->relationship('studentClass', 'name', modifyQueryUsing: function (Builder $query, Get $get): Builder {
                                         return $query->when($get('academic_year_id'), fn (Builder $q) => $q->where('academic_year_id', $get('academic_year_id')));
                                     })
                                     ->reactive() // Make this field reactive to trigger an update on the section field.
@@ -125,7 +125,7 @@ class StudentForm
                                 Select::make('section_id')
                                     ->label('Section')
                                     ->relationship('studentSection', 'name', modifyQueryUsing: function (Builder $query, Get $get): Builder {
-                                        return $query->when($get('class_id'), fn (Builder $q) => $q->where('class_id', $get('class_id')));
+                                        return $query->when($get('class_id'), fn (Builder $q) => $q->where('student_class_id', $get('class_id')));
                                     })
                                     ->visible(fn (Get $get) => filled($get('class_id'))), // Hide until a class is selected
                             ])->columns(3),
@@ -179,39 +179,39 @@ class StudentForm
                     ])
                     ->columns(2)
                     ->columnSpanFull(),
-                Section::make('Local Guardian info')
-                    ->relationship('student')
-                    ->schema([
-                        Select::make('local_guardian_user_id')
-                            ->relationship('localGuardian', 'name')
-                            ->searchable()
-                            ->preload()
-                            ->default(null),
-                        TextInput::make('local_guardian_relationship')
-                            ->default(null),
-                    ])
-                    ->columns(2)
-                    ->columnSpanFull(),
-                Group::make()
-                    ->relationship('student')
-                    ->schema([
-                        Repeater::make('Siblings info')
-                            ->relationship('siblings')
-                            ->schema([
-                                Select::make('sibling_id')
-                                    ->label('Siblings')
-                                    ->relationship('siblings', 'name')
-                                    ->searchable()
-                                    ->multiple()
-                                    ->preload(),
-                            ])
-                    ]),
+//                Section::make('Local Guardian info')
+//                    ->relationship('student')
+//                    ->schema([
+//                        Select::make('local_guardian_user_id')
+//                            ->relationship('localGuardian', 'name')
+//                            ->searchable()
+//                            ->preload()
+//                            ->default(null),
+//                        TextInput::make('local_guardian_relationship')
+//                            ->default(null),
+//                    ])
+//                    ->columns(2)
+//                    ->columnSpanFull(),
+//                Group::make()
+//                    ->relationship('student')
+//                    ->schema([
+//                        Repeater::make('Siblings info')
+//                            ->relationship('siblings')
+//                            ->schema([
+//                                Select::make('sibling_id')
+//                                    ->label('Siblings')
+//                                    ->relationship('siblings', 'name')
+//                                    ->searchable()
+//                                    ->multiple()
+//                                    ->preload(),
+//                            ])
+//                    ]),
 
                 // start only for deleteing registration after admission
                 Group::make()
                     ->schema([
                         TextInput::make('registration_id')
-                            ->hidden()
+//                            ->hidden()
                             ->default(fn() => request()->query('registration_id')),
                     ])
                 // end only for deleteing registration after admission
