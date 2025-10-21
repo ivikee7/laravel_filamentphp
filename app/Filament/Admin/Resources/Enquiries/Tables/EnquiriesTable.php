@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Resources\Enquiries\Tables;
 use App\Filament\Admin\Resources\Registrations\RegistrationResource;
 use App\Models\Enquiry;
 use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -93,13 +94,15 @@ class EnquiriesTable
                 TrashedFilter::make(),
             ])
             ->recordActions([
-                ViewAction::make(),
+                ActionGroup::make([
+                    ViewAction::make(),
 //                EditAction::make(),
-                Action::make('register')
-                    ->label('Registration')
-                    ->url(fn(Enquiry $record) => RegistrationResource::getUrl('create', [
-                        'enquiry_id' => $record->id, // Pass enquiry ID to Registration form
-                    ])),
+                    Action::make('register')
+                        ->label('Registration')
+                        ->url(fn(Enquiry $record) => RegistrationResource::getUrl('create', [
+                            'enquiry_id' => $record->id, // Pass enquiry ID to Registration form
+                        ]))->icon('heroicon-m-arrow-uturn-right')->color('success'),
+                ]),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

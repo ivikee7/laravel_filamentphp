@@ -208,12 +208,12 @@ class StudentForm
 //                    ]),
 
                 // start only for deleteing registration after admission
-                Group::make()
-                    ->schema([
-                        TextInput::make('registration_id')
-//                            ->hidden()
-                            ->default(fn() => request()->query('registration_id')),
-                    ])
+//                Group::make()
+//                    ->schema([
+//                        TextInput::make('registration_id')
+////                            ->hidden()
+//                            ->default(fn() => request()->query('registration_id')),
+//                    ])
                 // end only for deleteing registration after admission
             ]);
     }

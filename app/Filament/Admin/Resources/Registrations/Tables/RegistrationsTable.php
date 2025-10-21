@@ -6,6 +6,7 @@ use App\Filament\Admin\Resources\Students\StudentResource;
 use App\Filament\Exports\RegistrationExporter;
 use App\Models\Registration;
 use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -110,14 +111,16 @@ class RegistrationsTable
                 TrashedFilter::make(),
             ])
             ->recordActions([
-                ViewAction::make(),
-                EditAction::make(),
-                Action::make('admission')
-                    ->label('Admission')
-                    ->hidden(fn($record) => $record->student()->exists())
-                    ->url(fn(Registration $record) => StudentResource::getUrl('create', [
-                        'registration_id' => $record->id, // Pass enquiry ID to Registration form
-                    ])),
+                ActionGroup::make([
+                    ViewAction::make(),
+                    EditAction::make(),
+                    Action::make('admission')
+                        ->label('Admission')
+                        ->hidden(fn($record) => $record->student()->exists())
+                        ->url(fn(Registration $record) => StudentResource::getUrl('create', [
+                            'registration_id' => $record->id, // Pass enquiry ID to Registration form
+                        ]))->icon('heroicon-m-arrow-uturn-right')->color('success'),
+                ]),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

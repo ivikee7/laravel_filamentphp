@@ -17,7 +17,10 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
+use UnitEnum;
 
 class StudentResource extends Resource
 {
@@ -25,6 +28,7 @@ class StudentResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
+    protected static string | UnitEnum | null $navigationGroup = "User";
     protected static ?string $modelLabel = 'Student';
 
     public static function form(Schema $schema): Schema
@@ -65,5 +69,10 @@ class StudentResource extends Resource
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ])->Role('Student');
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return User::Role('Student')->count();
     }
 }

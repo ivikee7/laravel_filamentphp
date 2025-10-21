@@ -121,7 +121,7 @@ class RegistrationForm
                 Section::make('Address')
                     ->schema([
                         TextInput::make('address')
-                            ->maxLength(255)
+                            ->maxLength(150)
                             ->default(fn($get) => Enquiry::find(request()->query('enquiry_id'))?->address),
                         TextInput::make('city')
                             ->maxLength(25)
@@ -148,7 +148,7 @@ class RegistrationForm
                             ])
                             ->required(),
                         TextInput::make('payment_notes')
-                            ->maxLength(100)
+                            ->maxLength(50)
                             ->required(),
                     ])->columns(3),
                 // start only for deleteing enquiry after registration

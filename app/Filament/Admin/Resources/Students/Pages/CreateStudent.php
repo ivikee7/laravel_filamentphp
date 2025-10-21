@@ -13,6 +13,8 @@ class CreateStudent extends CreateRecord
 {
     protected static string $resource = StudentResource::class;
 
+    public $registrationId;
+
     public function mount(): void
     {
         parent::mount();
@@ -57,7 +59,7 @@ class CreateStudent extends CreateRecord
 
     protected function afterCreate(): void
     {
-        $registrationId = $this->data['registration_id'];
+        $registrationId = $this->registrationId;
         $record = $this->record;
 
         $record->student()->update([

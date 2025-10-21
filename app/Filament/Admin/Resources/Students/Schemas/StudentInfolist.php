@@ -4,11 +4,13 @@ namespace App\Filament\Admin\Resources\Students\Schemas;
 
 use App\Models\Student;
 use App\Models\User;
+use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Facades\Password;
 
 class StudentInfolist
 {
@@ -32,7 +34,18 @@ class StudentInfolist
                                     ->schema([
                                         TextEntry::make('name')->label('Student name'),
                                         TextEntry::make('is_active')
-                                            ->label('Status'),
+                                            ->label('Status')
+                                            ->badge() // Display as a colored badge
+                                            ->color(fn (string $state): string => match ($state) {
+                                                '0' => 'danger',
+                                                '1' => 'success',
+                                                default => 'gray',
+                                            })
+                                            ->formatStateUsing(fn (string $state): string => match ($state) {
+                                                '0' => 'Suspended',
+                                                '1' => 'Active',
+                                                default => 'Unknown',
+                                            }),
                                         TextEntry::make('gSuiteUser.email'),
                                         TextEntry::make('gSuiteUser.password'),
                                     ])->columns(2)

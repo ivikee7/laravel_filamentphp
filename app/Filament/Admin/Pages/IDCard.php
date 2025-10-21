@@ -134,10 +134,10 @@ class IDCard extends Page implements HasInfolists, HasTable
                             ->action(function () {
                                 self::markAttendance('enteredInBus');
                             })->disabled(function ($record) {
-                                return self::checkAttendanceType('enteredInBus', $record);
+                                return self::checkAttendance('enteredInBus', $record);
                             })
                             ->icon(function ($record): ?string {
-                                if (self::checkAttendanceType('enteredInBus', $record)) {
+                                if (self::checkAttendance('enteredInBus', $record)) {
                                     return 'heroicon-o-check-circle'; // Icon when true
                                 }
                                 return null;
@@ -148,10 +148,10 @@ class IDCard extends Page implements HasInfolists, HasTable
                             ->action(function () {
                                 self::markAttendance('enteredInCampus');
                             })->disabled(function ($record) {
-                                return self::checkAttendanceType('enteredInCampus', $record);
+                                return self::checkAttendance('enteredInCampus', $record);
                             })
                             ->icon(function ($record): ?string {
-                                if (self::checkAttendanceType('enteredInCampus', $record)) {
+                                if (self::checkAttendance('enteredInCampus', $record)) {
                                     return 'heroicon-o-check-circle'; // Icon when true
                                 }
                                 return null;
@@ -162,10 +162,10 @@ class IDCard extends Page implements HasInfolists, HasTable
                             ->action(function () {
                                 self::markAttendance('leaveFromCampus');
                             })->disabled(function ($record) {
-                                return self::checkAttendanceType('leaveFromCampus', $record);
+                                return self::checkAttendance('leaveFromCampus', $record);
                             })
                             ->icon(function ($record): ?string {
-                                if (self::checkAttendanceType('leaveFromCampus', $record)) {
+                                if (self::checkAttendance('leaveFromCampus', $record)) {
                                     return 'heroicon-o-check-circle'; // Icon when true
                                 }
                                 return null;
@@ -176,10 +176,10 @@ class IDCard extends Page implements HasInfolists, HasTable
                             ->action(function () {
                                 self::markAttendance('leaveFromBus');
                             })->disabled(function ($record) {
-                                return self::checkAttendanceType('leaveFromBus', $record);
+                                return self::checkAttendance('leaveFromBus', $record);
                             })
                             ->icon(function ($record): ?string {
-                                if (self::checkAttendanceType('leaveFromBus', $record)) {
+                                if (self::checkAttendance('leaveFromBus', $record)) {
                                     return 'heroicon-o-check-circle'; // Icon when true
                                 }
                                 return null;
@@ -189,9 +189,12 @@ class IDCard extends Page implements HasInfolists, HasTable
             ]);
     }
 
-    public function checkAttendanceType($type, $record): string
+    public function checkAttendance($type, $record): string
     {
-        return Attendance::where('user_id', $record->id)->where('type', $type)->exists();
+        return Attendance::where('user_id', $record->id)
+            ->whereDate('created_at', date('Y-m-d', strtotime(now())))
+            ->where('type', $type)
+            ->exists();
     }
 
 
