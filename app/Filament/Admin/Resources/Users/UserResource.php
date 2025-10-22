@@ -258,10 +258,10 @@ class UserResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: false),
                 ImageColumn::make('avatar')
+                    ->disk('public')
+                    ->visibility('public')
                     ->circular()
-                    ->size(50)
-                    ->label('Image')
-                    ->toggleable(isToggledHiddenByDefault: false),
+                    ->default(fn($record) => 'https://ui-avatars.com/api/?name=' . urlencode($record->name)),
                 TextColumn::make('name')
                     ->wrap()
                     ->searchable()
