@@ -573,7 +573,7 @@ class UserResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return User::where('is_active', 1)
+        return User::where('is_active', true)
             ->whereHas('roles', function ($query) {
                 if (!Auth::user()->hasRole('Super Admin')) {
                     $query->whereNot('name', 'Super Admin');
