@@ -10,6 +10,7 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Password;
 
 class StudentInfolist
@@ -29,19 +30,19 @@ class StudentInfolist
                                     ->circular()
                                     ->alignCenter()
                                     ->hiddenLabel()
-                                    ->default(fn ($record) => 'https://ui-avatars.com/api/?name=' . urlencode($record->name)),
+                                    ->default(fn($record) => 'https://ui-avatars.com/api/?name=' . urlencode($record->name)),
                                 Group::make()
                                     ->schema([
                                         TextEntry::make('name')->label('Student name'),
                                         TextEntry::make('is_active')
                                             ->label('Status')
                                             ->badge() // Display as a colored badge
-                                            ->color(fn (string $state): string => match ($state) {
+                                            ->color(fn(string $state): string => match ($state) {
                                                 '0' => 'danger',
                                                 '1' => 'success',
                                                 default => 'gray',
                                             })
-                                            ->formatStateUsing(fn (string $state): string => match ($state) {
+                                            ->formatStateUsing(fn(string $state): string => match ($state) {
                                                 '0' => 'Suspended',
                                                 '1' => 'Active',
                                                 default => 'Unknown',

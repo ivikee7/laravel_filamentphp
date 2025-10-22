@@ -128,7 +128,7 @@
             {{-- ID/Session Section--}}
             <div class="id-section">
                 <span>SRCS/ {{$record->id}}</span>
-                <span>Session : {{$record->currentStudent->currentClassAssignment->academicYear->name}}</span>
+                <span>Session : {{$record->student->classAssignment->academicYear->name}}</span>
             </div>
 
             <!-- Photo and QR Code Section -->
@@ -150,12 +150,11 @@
             <div class="student-details">
                 <p class="text-center font-bold whitespace-nowrap mt-1 mb-1 text-red-600">{{ $record->name }}</p>
                 <p><strong class="font-semibold">Class
-                        :</strong> {{ $record->currentStudent->currentClassAssignment->class->className->name ?? '' }}
+                        :</strong> {{ $record->student->classAssignment->class->className->name ?? '' }}
                 </p>
                 <p><strong class="font-semibold">Sec
-                        :</strong> {{ $record->currentStudent->currentClassAssignment->section->name ?? '' }}</p>
-                <p><strong class="font-semibold">Mob :</strong> {{ $record->primary_contact_number ?? '' }}
-                    / {{$record->primary_contact_number ?? ''}}</p>
+                        :</strong> {{ $record->student->classAssignment->section->name ?? '' }}</p>
+                <p><strong class="font-semibold">Mob :</strong> {{ $record->primary_contact_number ?? '' }}</p>
             </div>
         </div>
 
