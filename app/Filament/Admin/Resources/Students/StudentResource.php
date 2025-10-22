@@ -73,6 +73,6 @@ class StudentResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return User::Role('Student')->count();
+        return User::Role('Student')->where('is_active', true)->count();
     }
 }
