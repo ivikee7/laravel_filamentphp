@@ -76,7 +76,7 @@ class MonthlyReport extends Page implements HasTable
 
                         return $query;
                     })
-            ]);
+            ])->columnManagerColumns(4);
     }
 
     protected function getAttendanceColumns(): array
