@@ -2,7 +2,7 @@
 
 namespace App\Filament\Admin\Resources\Attendances\Pages;
 
-use App\Filament\Admin\Resources\Attendances\Pages\MonthlyReport;
+//use App\Filament\Admin\Resources\Attendances\Pages\MonthlyReport;
 use Filament\Tables\Columns\TextColumn;
 use App\Filament\Admin\Resources\Attendances\AttendanceResource;
 use App\Models\User;
@@ -86,9 +86,9 @@ class MonthlyReport extends Page implements HasTable
             TextColumn::make('name')->label('Name')->sortable()->searchable()->wrap(),
             TextColumn::make('roles.name')->label('Role')->sortable()->searchable()->wrap()
                 ->toggleable(isToggledHiddenByDefault: true),
-            TextColumn::make('currentStudent.currentClassAssignment.class.name')->label('Class')->sortable()->searchable()->wrap()
+            TextColumn::make('student.classAssignment.class.name')->label('Class')->sortable()->searchable()->wrap()
                 ->toggleable(isToggledHiddenByDefault: true),
-            TextColumn::make('currentStudent.currentClassAssignment.section.name')->label('Section')->sortable()->searchable()->wrap()
+            TextColumn::make('student.classAssignment.section.name')->label('Section')->sortable()->searchable()->wrap()
                 ->toggleable(isToggledHiddenByDefault: true),
         ];
 
