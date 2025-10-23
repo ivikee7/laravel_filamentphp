@@ -75,4 +75,9 @@ class StudentResource extends Resource
     {
         return User::Role('Student')->where('is_active', true)->count();
     }
+
+    public static function canEdit(Model $record): bool
+    {
+        return Auth::user()->can('update Student');
+    }
 }
