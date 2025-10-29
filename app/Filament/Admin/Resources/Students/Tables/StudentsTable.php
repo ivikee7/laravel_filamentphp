@@ -44,28 +44,34 @@ class StudentsTable
         return $table
             ->columns([
                 TextColumn::make('id')
-                    ->searchable()->sortable(),
+                    ->searchable()->sortable()
+                    ->toggleable(isToggledHiddenByDefault: false),
                 ImageColumn::make('avatar')
                     ->disk('public')
                     ->visibility('public')
                     ->circular()
-                    ->default(fn($record) => 'https://ui-avatars.com/api/?name=' . urlencode($record->name)),
+                    ->default(fn($record) => 'https://ui-avatars.com/api/?name=' . urlencode($record->name))
+                    ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('name')
                     ->searchable()->sortable()->wrap(),
                 TextColumn::make('father_name')
-                    ->searchable()->sortable()->wrap(),
+                    ->searchable()->sortable()->wrap()
+                    ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('mother_name')
                     ->searchable()->sortable()->wrap()->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('student.classAssignment.class.name')
-                    ->searchable()->sortable()->wrap(),
+                    ->searchable()->sortable()->wrap()
+                    ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('student.classAssignment.section.name')
-                    ->searchable()->sortable()->wrap(),
+                    ->searchable()->sortable()->wrap()
+                    ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('date_of_birth')
                     ->searchable()->sortable()->wrap()->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('student.classAssignment.academicYear.name')
                     ->searchable()->sortable()->wrap()->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('primary_contact_number')
-                    ->searchable()->label('Primary contact'),
+                    ->searchable()->label('Primary contact')
+                    ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('secondary_contact_number')
                     ->searchable()->label('Secondary contact')->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('full_address')
