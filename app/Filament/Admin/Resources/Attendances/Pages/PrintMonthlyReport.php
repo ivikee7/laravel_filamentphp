@@ -15,8 +15,8 @@ class PrintMonthlyReport extends Page
 
     protected static string $layout = 'layouts.print';
 
-    public $getData = [];
-    public $print_data = [];
+    public $getData;
+    public $print_data;
 
     public function mount(): void
     {

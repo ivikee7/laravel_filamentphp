@@ -22,25 +22,24 @@
     </style>
 
     <button onclick="window.print()" class="print-button">Print Report</button>
-    <h2>Monthly Attendance Report</h2>
+    <h2>Monthly Attendance Report ({{  $print_data[0]['start_data'] . ' to ' . $print_data[0]['end_date']  }})</h2>
     <table>
         <thead>
         <tr>
-            @dd($print_data);
-{{--            @foreach($this->print_columns as $label)--}}
-{{--                <th>{{ $label }}</th>--}}
-{{--            @endforeach--}}
+            @foreach($print_data[0]['columns'] as $label => $value)
+                <th>{{ $label }}</th>
+            @endforeach
         </tr>
         </thead>
         <tbody>
-{{--        @foreach($this->printData as $rowData)--}}
-{{--            <tr>--}}
-{{--                @foreach($this->printColumns as $colName)--}}
-{{--                    --}}{{-- Output the pre-processed data --}}
-{{--                    <td>{{ $rowData[$colName] ?? '' }}</td>--}}
-{{--                @endforeach--}}
-{{--            </tr>--}}
-{{--        @endforeach--}}
+                @foreach($print_data[0]['records'] as $record)
+                    <tr>
+                        <td>{{ $record->id ?? '' }}</td>
+                        <td>{{ $record->name ?? '' }}</td>
+                        <td>{{ $record->roles ?? '' }}</td>
+
+                    </tr>
+                @endforeach
         </tbody>
     </table>
 
