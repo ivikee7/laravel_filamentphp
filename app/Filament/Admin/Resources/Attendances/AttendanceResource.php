@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources\Attendances;
 
+use App\Filament\Admin\Resources\Attendances\Pages\PrintMonthlyReport;
 use Filament\Schemas\Schema;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -116,6 +117,7 @@ class AttendanceResource extends Resource
             'index' => ListAttendances::route('/'),
             'create' => CreateAttendance::route('/create'),
             'monthly-report' => MonthlyReport::route('monthly-report'),
+            'print-monthly-report' => PrintMonthlyReport::route('print-monthly-report'),
             'view' => ViewAttendance::route('/{record}'),
             'edit' => EditAttendance::route('/{record}/edit'),
         ];

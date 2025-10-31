@@ -3,6 +3,9 @@
 namespace App\Filament\Admin\Resources\Attendances\Pages;
 
 //use App\Filament\Admin\Resources\Attendances\Pages\MonthlyReport;
+use Filament\Actions\Action;
+use Filament\Actions\BulkAction;
+use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
 use App\Filament\Admin\Resources\Attendances\AttendanceResource;
 use App\Models\User;
@@ -16,6 +19,8 @@ use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Session;
 use Livewire\Attributes\Url;
 
 class MonthlyReport extends Page implements HasTable
@@ -76,8 +81,32 @@ class MonthlyReport extends Page implements HasTable
 
                         return $query;
                     })
-            ])->columnManagerColumns(4)
-            ->paginated([5, 10, 25, 50, 100]);
+            ])
+            ->bulkActions([
+                BulkAction::make('print_selected')
+                    ->label('Print Selected')
+                    ->icon('heroicon-o-printer')
+                    ->color('primary')
+                    ->action(function (Collection $records) {
+                        $print_data = array([
+                            'start_data'=> $this->fromDate,
+                            'end_date' => $this->toDate,
+                            'columns' => $this->getTable()->getColumns(),
+                            'records' => $records->toArray(),
+                        ]);
+
+                        // Store the data in the session
+                        Session::put('print_data', json_encode($print_data));
+
+                        // Open the new page
+                        $printUrl = url('/admin/attendances/print-monthly-report');
+                        $this->js("window.open('{$printUrl}', '_blank');");
+                    })
+            ])
+            ->columnManagerColumns(4)
+            ->paginated([5, 10, 25, 50, 100])
+            ->selectable()
+            ->deselectAllRecordsWhenFiltered();
     }
 
     protected function getAttendanceColumns(): array
@@ -90,7 +119,7 @@ class MonthlyReport extends Page implements HasTable
             TextColumn::make('student.classAssignment.class.name')->label('Class')->sortable()->searchable()->wrap()
                 ->toggleable(isToggledHiddenByDefault: true),
             TextColumn::make('student.classAssignment.section.name')->label('Section')->sortable()->searchable()->wrap()
-                ->toggleable(isToggledHiddenByDefault: true),
+                ->toggleable(isToggledHiddenByDefault: false),
         ];
 
         $startDate = null;
@@ -128,6 +157,7 @@ class MonthlyReport extends Page implements HasTable
 
                         return "$in\n$out"; // Display in and out on separate lines
                     })
+                    ->toggleable(isToggledHiddenByDefault: false)
                     ->wrap();
 
                 $startDate->addDay();
@@ -135,5 +165,18 @@ class MonthlyReport extends Page implements HasTable
         }
 
         return $columns;
+    }
+
+    public function printRecords(array $recordIds): void
+    {
+        // Generate the URL for the raw print page (adjust URL path if necessary)
+        $printUrl = url('/admin/attendances/print-monthly-report?' . http_build_query([
+                'user_ids' => $recordIds,
+                'from_date' => $this->fromDate,
+                'to_date' => $this->toDate,
+            ]));
+
+        // Open the new page in a new window/tab
+        $this->js("window.open('{$printUrl}', '_blank');");
     }
 }
