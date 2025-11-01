@@ -104,17 +104,17 @@ class LibraryBook extends Model
 
     public function language(): BelongsTo
     {
-        return $this->belongsTo(Language::class);
+        return $this->belongsTo(LibraryBookLanguage::class);
     }
 
     public function class(): BelongsTo
     {
-        return $this->belongsTo(ClassName::class);
+        return $this->belongsTo(LibraryBookClass::class);
     }
 
     public function subject(): BelongsTo
     {
-        return $this->belongsTo(Subject::class);
+        return $this->belongsTo(LibraryBookSubject::class);
     }
 
     public function supplier(): BelongsTo

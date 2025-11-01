@@ -37,7 +37,6 @@
                         <td>{{ $record->id ?? '' }}</td>
                         <td>{{ $record->name ?? '' }}</td>
                         <td>{{ $record->roles ?? '' }}</td>
-
                     </tr>
                 @endforeach
         </tbody>
