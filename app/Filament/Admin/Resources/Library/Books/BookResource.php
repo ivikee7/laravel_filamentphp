@@ -207,6 +207,7 @@ class BookResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('accession_number')
                     ->wrap()
+                    ->sortable()
                     ->searchable(),
                 TextColumn::make('createdBy.name')
                     ->wrap()
