@@ -56,20 +56,11 @@ class BusResource extends Resource
                     })
                     ->preload()
                     ->searchable()
-                    ->native(false) // Required to allow custom HTML rendering in the dropdown options
-                    ->allowHtml()  // Explicitly permits HTML tags within the option labels
                     ->getOptionLabelFromRecordUsing(function (Model $record): string {
-                        // $record here refers to the individual 'conductor' model being listed in the dropdown
-
-                        $father_name = htmlspecialchars($record->father_name);
-                        $label = htmlspecialchars($record->name); // Always escape the name for security
-
-                        // Apply a warning color (e.g., amber-500) if the conductor is inactive
+                        $label = htmlspecialchars($record->name);
                         if (!$record->is_active) {
-                            // Tailwind CSS classes applied via a span tag
                             return "{$record->id} | {$label} | {$record->father_name} | (Inactive)";
                         }
-
                         return "{$record->id} | {$label} | {$record->father_name}";
                     }),
                 Select::make('conductor_id')
@@ -78,20 +69,11 @@ class BusResource extends Resource
                     })
                     ->preload()
                     ->searchable()
-                    ->native(false) // Required to allow custom HTML rendering in the dropdown options
-                    ->allowHtml()  // Explicitly permits HTML tags within the option labels
                     ->getOptionLabelFromRecordUsing(function (Model $record): string {
-                        // $record here refers to the individual 'conductor' model being listed in the dropdown
-
-                        $father_name = htmlspecialchars($record->father_name);
-                        $label = htmlspecialchars($record->name); // Always escape the name for security
-
-                        // Apply a warning color (e.g., amber-500) if the conductor is inactive
+                        $label = htmlspecialchars($record->name);
                         if (!$record->is_active) {
-                            // Tailwind CSS classes applied via a span tag
                             return "{$record->id} | {$label} | {$record->father_name} | (Inactive)";
                         }
-
                         return "{$record->id} | {$label} | {$record->father_name}";
                     }),
             ]);
