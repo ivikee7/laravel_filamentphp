@@ -56,7 +56,6 @@ class BusResource extends Resource
                     })
                     ->preload()
                     ->searchable()
-                    ->required()
                     ->native(false) // Required to allow custom HTML rendering in the dropdown options
                     ->allowHtml()  // Explicitly permits HTML tags within the option labels
                     ->getOptionLabelFromRecordUsing(function (Model $record): string {
@@ -68,10 +67,10 @@ class BusResource extends Resource
                         // Apply a warning color (e.g., amber-500) if the conductor is inactive
                         if (!$record->is_active) {
                             // Tailwind CSS classes applied via a span tag
-                            return "{$label} | {$father_name} | (Inactive)";
+                            return "{$record->id} | {$label} | {$record->father_name} | (Inactive)";
                         }
 
-                        return "{$label} | {$father_name}";
+                        return "{$record->id} | {$label} | {$record->father_name}";
                     }),
                 Select::make('conductor_id')
                     ->relationship('conductor', 'name', function ($query) {
@@ -90,10 +89,10 @@ class BusResource extends Resource
                         // Apply a warning color (e.g., amber-500) if the conductor is inactive
                         if (!$record->is_active) {
                             // Tailwind CSS classes applied via a span tag
-                            return "{$label} | {$father_name} | (Inactive)";
+                            return "{$record->id} | {$label} | {$record->father_name} | (Inactive)";
                         }
 
-                        return "{$label} | {$father_name}";
+                        return "{$record->id} | {$label} | {$record->father_name}";
                     }),
             ]);
     }
