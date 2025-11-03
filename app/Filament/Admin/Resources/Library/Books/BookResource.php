@@ -144,6 +144,8 @@ class BookResource extends Resource
             ->columns([
                 TextColumn::make('id')
                     ->wrap()
+                    ->numeric()
+                    ->sortable()
                     ->searchable(),
                 TextColumn::make('title')
                     ->wrap()
