@@ -17,8 +17,8 @@ return new class extends Migration
             $table->string('registration_number', 50)->unique();
             $table->string('model', 50)->nullable();
             $table->integer('seating_capacity');
-            $table->foreignId('driver_id')->constrained('users');
-            $table->foreignId('conductor_id')->nullable()->constrained('users');
+            $table->foreignId('driver_id')->constrained('users')->nullable();
+            $table->foreignId('conductor_id')->nullable()->constrained('users')->nullable();
             $table->boolean('is_active')->default(true);
             //
             $table->foreignId('created_by')->nullable();
