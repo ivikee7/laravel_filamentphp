@@ -133,7 +133,7 @@ class BookResource extends Resource
                     ->default(null),
                 TextInput::make('accession_number')
                     ->maxLength(50)
-                    ->default(null),
+                    ->disabledOn(['edit']),
             ])->columns(3);
     }
 
