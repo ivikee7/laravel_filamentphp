@@ -60,6 +60,7 @@ class BusResource extends Resource
                     ->relationship('conductor', 'name', function ($query) {
                         return $query->role(env("ROLE_CONDUCTOR"));
                     })
+                    ->preload()
                     ->searchable(),
             ]);
     }
