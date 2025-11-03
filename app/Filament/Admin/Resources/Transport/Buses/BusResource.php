@@ -52,12 +52,12 @@ class BusResource extends Resource
                 Select::make('driver_id')
                     ->relationship('driver', 'name', function ($query) {
                         return $query->role(env("ROLE_DRIVER")); // Exclude 'Student'
-                    })
+                    })->searchable()
                     ->required(),
                 Select::make('conductor_id')
                     ->relationship('conductor', 'name', function ($query) {
                         return $query->role(env("ROLE_CONDUCTOR")); // Exclude 'Student'
-                    }),
+                    })->searchable(),
             ]);
     }
 
