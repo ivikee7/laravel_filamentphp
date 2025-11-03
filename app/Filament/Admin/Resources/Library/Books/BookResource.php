@@ -260,6 +260,7 @@ class BookResource extends Resource
                             );
                     }),
             ])
+            ->columnManagerColumns(4)
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
