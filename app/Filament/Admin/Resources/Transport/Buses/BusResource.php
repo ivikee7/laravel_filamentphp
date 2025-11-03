@@ -55,7 +55,7 @@ class BusResource extends Resource
                         return $query->role(env("ROLE_DRIVER"));
                     })
                     ->preload()
-                    ->searchable()
+                    ->searchable(['id','name', 'father_name'])
                     ->getOptionLabelFromRecordUsing(function (Model $record): string {
                         $label = htmlspecialchars($record->name);
                         if (!$record->is_active) {
@@ -68,7 +68,7 @@ class BusResource extends Resource
                         return $query->role(env("ROLE_CONDUCTOR"));
                     })
                     ->preload()
-                    ->searchable()
+                    ->searchable(['id','name', 'father_name'])
                     ->getOptionLabelFromRecordUsing(function (Model $record): string {
                         $label = htmlspecialchars($record->name);
                         if (!$record->is_active) {
