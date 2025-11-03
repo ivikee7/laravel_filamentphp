@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources\Library\Books;
 
+use Faker\Core\Number;
 use Filament\Schemas\Schema;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\DatePicker;
@@ -206,6 +207,7 @@ class BookResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('accession_number')
+                    ->numeric()
                     ->wrap()
                     ->sortable()
                     ->searchable(),
