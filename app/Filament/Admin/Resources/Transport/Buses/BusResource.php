@@ -25,15 +25,16 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class BusResource extends Resource
 {
     protected static ?string $model = TransportBus::class;
 
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Transport';
+    protected static string|\UnitEnum|null $navigationGroup = 'Transport';
 
 
     public static function form(Schema $schema): Schema
@@ -55,13 +56,45 @@ class BusResource extends Resource
                     })
                     ->preload()
                     ->searchable()
-                    ->required(),
+                    ->required()
+                    ->native(false) // Required to allow custom HTML rendering in the dropdown options
+                    ->allowHtml()  // Explicitly permits HTML tags within the option labels
+                    ->getOptionLabelFromRecordUsing(function (Model $record): string {
+                        // $record here refers to the individual 'conductor' model being listed in the dropdown
+
+                        $father_name = htmlspecialchars($record->father_name);
+                        $label = htmlspecialchars($record->name); // Always escape the name for security
+
+                        // Apply a warning color (e.g., amber-500) if the conductor is inactive
+                        if (!$record->is_active) {
+                            // Tailwind CSS classes applied via a span tag
+                            return "{$label} | {$father_name} | (Inactive)";
+                        }
+
+                        return "{$label} | {$father_name}";
+                    }),
                 Select::make('conductor_id')
                     ->relationship('conductor', 'name', function ($query) {
                         return $query->role(env("ROLE_CONDUCTOR"));
                     })
                     ->preload()
-                    ->searchable(),
+                    ->searchable()
+                    ->native(false) // Required to allow custom HTML rendering in the dropdown options
+                    ->allowHtml()  // Explicitly permits HTML tags within the option labels
+                    ->getOptionLabelFromRecordUsing(function (Model $record): string {
+                        // $record here refers to the individual 'conductor' model being listed in the dropdown
+
+                        $father_name = htmlspecialchars($record->father_name);
+                        $label = htmlspecialchars($record->name); // Always escape the name for security
+
+                        // Apply a warning color (e.g., amber-500) if the conductor is inactive
+                        if (!$record->is_active) {
+                            // Tailwind CSS classes applied via a span tag
+                            return "{$label} | {$father_name} | (Inactive)";
+                        }
+
+                        return "{$label} | {$father_name}";
+                    }),
             ]);
     }
 
