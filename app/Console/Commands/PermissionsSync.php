@@ -12,7 +12,7 @@ use Symfony\Component\Finder\Finder;
 
 class PermissionsSync extends Command
 {
-    protected $signature = 'permissions:sync {--clean : Delete old permissions without asking for confirmation}';
+    protected $signature = 'app:permissions-sync {--clean : Delete old permissions without asking for confirmation}';
     protected $description = 'Generate and synchronize permissions based on application policies.';
 
     public function handle()
