@@ -81,7 +81,7 @@ class ModelHasPermission extends Page implements HasTable
                                     $component->state(null);
                                 })
                         ),
-                ]),
+                ])->authorize("update ModelHasPermission"),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
@@ -90,4 +90,8 @@ class ModelHasPermission extends Page implements HasTable
             ]);
     }
 
+    public static function canAccess(): bool
+    {
+        return auth()->user()->can(['view-any ModelHasPermission']);
+    }
 }
