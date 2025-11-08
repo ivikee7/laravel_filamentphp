@@ -107,6 +107,7 @@ class RegistrationsTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true)->wrap(),
             ])
+            ->defaultSort('id', 'desc')
             ->filters([
                 TrashedFilter::make(),
             ])
