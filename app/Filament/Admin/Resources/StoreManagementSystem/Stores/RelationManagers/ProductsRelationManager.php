@@ -2,6 +2,8 @@
 
 namespace App\Filament\Admin\Resources\StoreManagementSystem\Stores\RelationManagers;
 
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -28,9 +30,21 @@ class ProductsRelationManager extends RelationManager
         return $schema
             ->components([
                 Select::make('academic_year_id')
-                    ->relationship('academicYear', 'name'),
+                    ->label('Academic Year')
+                    ->relationship('academicYear', 'name')
+                    ->required()
+                    ->reactive() // Required to trigger reactivity on dependent fields
+                    ->afterStateUpdated(function (Set $set) {
+                        $set('class_id', null);
+                    }),
                 Select::make('class_id')
-                    ->relationship('class', 'name'),
+                    ->label('Class')
+                    ->relationship('studentClass', 'name', modifyQueryUsing: function (Builder $query, Get $get): Builder {
+                        return $query->when($get('academic_year_id'), fn (Builder $q) => $q->where('academic_year_id', $get('academic_year_id')));
+                    })
+                    ->reactive() // Make this field reactive to trigger an update on the section field.
+                    ->required()
+                    ->disabled(fn (Get $get) => !filled($get('academic_year_id'))), // Hide until an academic year is selected
                 TextInput::make('name')
                     ->required()
                     ->maxLength(100),
@@ -50,11 +64,9 @@ class ProductsRelationManager extends RelationManager
             ->recordTitleAttribute('name')
             ->columns([
                 TextColumn::make('academicYear.name')
-                    ->numeric()
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('class.name')
-                    ->numeric()
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('name')
@@ -64,20 +76,16 @@ class ProductsRelationManager extends RelationManager
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('store.name')
-                    ->numeric()
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('createdBy.name')
-                    ->numeric()
                     ->sortable()
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updatedBy.name')
-                    ->numeric()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('deletedBy.name')
-                    ->numeric()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources\StoreManagementSystem\Stores;
 
+use App\Filament\Admin\Resources\StoreManagementSystem\Stores\Pages\Students;
 use App\Filament\Resources\StoreManagementSystem\Stores\RelationManagers\UsersRelationManager;
 use Filament\Schemas\Schema;
 use Filament\Forms\Components\TextInput;
@@ -133,7 +134,6 @@ class StoreResource extends Resource
     public static function getRelations(): array
     {
         return [
-            StudentsRelationManager::class,
             ProductsRelationManager::class,
         ];
     }
@@ -144,6 +144,8 @@ class StoreResource extends Resource
             'index' => ListStores::route('/'),
             'create' => CreateStore::route('/create'),
             'view' => ViewStore::route('/{record}'),
+            'students' => Students::route('/{record}/students'),
+            'cart' => Students::route('/{record}/students/{student}/cart'),
             'edit' => EditStore::route('/{record}/edit'),
         ];
     }
