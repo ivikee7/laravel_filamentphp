@@ -6,6 +6,8 @@ use App\Filament\Admin\Resources\StoreManagementSystem\Stores\StoreResource;
 use App\Filament\Admin\Resources\Students\StudentResource;
 use App\Models\Student;
 use App\Models\User;
+use Filament\Forms\Components\Repeater\TableColumn;
+use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Pages\Concerns\InteractsWithRecord;
 use Filament\Resources\Pages\Page;
@@ -34,8 +36,15 @@ class Students extends Page
         return $schema
             ->record(self::getStudents())
             ->components([
-                TextEntry::make('name'),
-                TextEntry::make('price'),
+                RepeatableEntry::make('Products')
+                    ->table([
+                        TableColumn::make('Product'),
+                        TableColumn::make('Price'),
+                    ])
+                    ->schema([
+                        TextEntry::make('name'),
+                        TextEntry::make('price'),
+                    ])
             ]);
     }
 
