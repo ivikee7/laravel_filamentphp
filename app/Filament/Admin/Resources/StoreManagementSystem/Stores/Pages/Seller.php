@@ -41,11 +41,11 @@ class Seller extends Page implements HasTable
         return $table->query(User::Role('Student'))
             ->columns([
                 TextColumn::make('id')->label('ID'),
-                TextColumn::make('name')->searchable()->label('Name'),
-                TextColumn::make('student.classAssignment.class.name')->searchable()->label('Class'),
-                TextColumn::make('student.classAssignment.section.name')->searchable()->label('Section'),
-                TextColumn::make('father_name')->searchable()->label('Father Name'),
-                TextColumn::make('mother_name')->searchable()->label('Mother Name'),
+                TextColumn::make('name')->searchable()->label('Name')->wrap(),
+                TextColumn::make('student.classAssignment.class.name')->searchable()->label('Class')->wrap(),
+                TextColumn::make('student.classAssignment.section.name')->searchable()->label('Section')->wrap(),
+                TextColumn::make('father_name')->searchable()->label('Father Name')->wrap(),
+                TextColumn::make('mother_name')->searchable()->label('Mother Name')->wrap(),
             ])
             ->defaultSort('id', 'desc')
             ->recordActions([
