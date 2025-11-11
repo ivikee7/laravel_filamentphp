@@ -2,6 +2,11 @@
 
 namespace App\Filament\Admin\Resources\StoreManagementSystem\Stores;
 
+use App\Filament\Admin\Resources\StoreManagementSystem\Stores\Pages\Seller;
+use App\Filament\Admin\Resources\StoreManagementSystem\Stores\Pages\StoreInvoices;
+use App\Filament\Admin\Resources\StoreManagementSystem\Stores\Pages\StoreTransactions;
+use App\Filament\Admin\Resources\StoreManagementSystem\Stores\Pages\StudentCart;
+use App\Filament\Admin\Resources\StoreManagementSystem\Stores\Pages\StudentProducts;
 use App\Filament\Admin\Resources\StoreManagementSystem\Stores\Pages\Students;
 use App\Filament\Resources\StoreManagementSystem\Stores\RelationManagers\UsersRelationManager;
 use Filament\Schemas\Schema;
@@ -144,9 +149,13 @@ class StoreResource extends Resource
             'index' => ListStores::route('/'),
             'create' => CreateStore::route('/create'),
             'view' => ViewStore::route('/{record}'),
-            'students' => Students::route('/{record}/students'),
-            'cart' => Students::route('/{record}/students/{student}/cart'),
             'edit' => EditStore::route('/{record}/edit'),
+            // custom
+            'seller' => Seller::route('/{record}/seller'),
+            'students-products' => StudentProducts::route('/{record}/seller/{student}/products'),
+            'students-cart' => StudentCart::route('/{record}/seller-student/{student}/cart'),
+            'invoices' => StoreInvoices::route('/{record}/invoices'),
+            'transactions' => StoreTransactions::route('/{record}/transactions'),
         ];
     }
 
