@@ -3,13 +3,20 @@
 namespace App\Filament\Admin\Resources\StoreManagementSystem\Stores\Pages;
 
 use App\Filament\Admin\Resources\StoreManagementSystem\Stores\StoreResource;
+use App\Models\User;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\Concerns\InteractsWithRecord;
 use Filament\Resources\Pages\Page;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Concerns\InteractsWithTable;
+use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Table;
+use Illuminate\Database\Query\Builder;
 
-class Seller extends Page
+class Seller extends Page implements HasTable
 {
     use InteractsWithRecord;
+    use InteractsWithTable;
 
     protected static string $resource = StoreResource::class;
 
@@ -27,5 +34,24 @@ class Seller extends Page
             Action::make('invoices')->url(StoreResource::getUrl('invoices', ['record' => $this->record])),
             Action::make('transactions')->url(StoreResource::getUrl('transactions', ['record' => $this->record])),
         ];
+    }
+
+    public function table(Table $table): Table
+    {
+        return $table->query(User::Role('Student'))
+            ->columns([
+                TextColumn::make('id')->label('ID'),
+                TextColumn::make('name')->searchable()->label('Name'),
+                TextColumn::make('student.classAssignment.class.name')->searchable()->label('Class'),
+                TextColumn::make('student.classAssignment.section.name')->searchable()->label('Section'),
+                TextColumn::make('father_name')->searchable()->label('Father Name'),
+                TextColumn::make('mother_name')->searchable()->label('Mother Name'),
+            ])
+            ->defaultSort('id', 'desc')
+            ->recordActions([
+                Action::make('students-products')
+                    ->url((fn($record): string => StoreResource::getUrl('students-products', [$this->record->id, $record->id])))
+                    ->label('Products'),
+            ]);
     }
 }
