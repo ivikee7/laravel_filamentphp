@@ -51,7 +51,8 @@ class Seller extends Page implements HasTable
             ->recordActions([
                 Action::make('students-products')
                     ->url((fn($record): string => StoreResource::getUrl('students-products', [$this->record->id, $record->id])))
-                    ->label('Products'),
+                    ->label('')
+                    ->icon('heroicon-s-arrow-top-right-on-square'),
             ]);
     }
 }
