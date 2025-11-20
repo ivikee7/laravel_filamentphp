@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources\Stores\Pages;
 
 use App\Filament\Admin\Resources\Stores\StoreResource;
+use App\Models\User;
 use Filament\Resources\Pages\Concerns\InteractsWithRecord;
 use Filament\Resources\Pages\Page;
 
@@ -18,4 +19,5 @@ class StudentProducts extends Page
     {
         $this->record = $this->resolveRecord($record);
     }
+
 }

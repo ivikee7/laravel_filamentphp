@@ -169,7 +169,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
         return $this->hasOne(Student::class);
     }
 
-    public function currentStudent():HasOne
+    public function currentStudent(): HasOne
     {
         return $this->hasOne(Student::class)->latestOfMany();
     }
@@ -179,7 +179,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
         return $this->hasMany(Student::class);
     }
 
-    public function siblings():BelongsToMany
+    public function siblings(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'student_siblings', 'student_id', 'sibling_id');
     }
@@ -210,7 +210,8 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
         return $this->hasMany(Cart::class, 'user_id');
     }
 
-    public function invoices():HasMany{
+    public function invoices(): HasMany
+    {
         return $this->hasMany(Invoice::class, 'user_id');
     }
 
