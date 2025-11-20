@@ -13,7 +13,16 @@ return new class extends Migration
     {
         Schema::create('store_transections', function (Blueprint $table) {
             $table->id();
+            //
+            $table->foreignId('store_invoice_id');
+            $table->double('amount');
+            $table->string('remarks', 100)->nullable();
+            //
+            $table->foreignId('created_by')->nullable();
+            $table->foreignId('updated_by')->nullable();
+            $table->foreignId('deleted_by')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -4,25 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 
-class Store extends Model
+class StoreTransaction extends Model
 {
     use softDeletes;
 
     protected $fillable = [
-        'name',
-        'address',
-        'city',
-        'state',
-        'pin_code',
-        'phone',
-        'email',
-        'is_active',
+        'store_id',
+        'subtotal_amount',
+        'discount_amount',
+        'total_amount',
     ];
 
     protected static function boot()
@@ -66,27 +59,7 @@ class Store extends Model
         return $this->belongsTo(User::class, 'deleted_by');
     }
 
-    public function storeInvoices(): HasMany
-    {
-        return $this->hasMany(StoreInvoice::class, 'store_id');
-    }
-
-    public function storeProducts(): HasMany
-    {
-        return $this->hasMany(StoreProduct::class, 'store_id');
-    }
-
-    public function students(): HasManyThrough
-    {
-        return $this->hasManyThrough(
-            Student::class,
-            Product::class,
-            'store_id',           // Foreign key on the products table...
-            'id',                 // Local key on the students table...
-            'id',                 // Local key on the stores table...
-            'class_id'            // Foreign key on the products table...
-        )->whereHas('classAssignment.class.studentClassAssignments.class.className.products', function ($query) {
-            $query->where('store_id', $this->id);
-        });
+    public function storeInvoice():BelongsTo{
+        return $this->belongsTo(StoreInvoice::class, 'store_id');
     }
 }

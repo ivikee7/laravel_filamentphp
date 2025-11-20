@@ -11,13 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('store_invoices', function (Blueprint $table) {
+        Schema::create('store_products', function (Blueprint $table) {
             $table->id();
             //
-            $table->foreignId('store_id');
-            $table->double('subtotal_amount');
-            $table->double('discount_amount');
-            $table->double('total_amount');
+            $table->string('name', 100);
+            $table->text('description');
+            $table->decimal('price', 8, 2);
+            $table->foreignId('store_id')->nullable();
+            $table->foreignId('academic_year_id')->nullable();
+            $table->foreignId('class_id')->nullable();
             //
             $table->foreignId('created_by')->nullable();
             $table->foreignId('updated_by')->nullable();
@@ -32,6 +34,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('store_invoices');
+        Schema::dropIfExists('store_products');
     }
 };

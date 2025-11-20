@@ -77,7 +77,8 @@ class Product extends Model
         return $this->belongsTo(StudentClass::class, 'class_id');
     }
 
-    public function studentClass(): BelongsTo{
+    public function studentClass(): BelongsTo
+    {
         return $this->belongsTo(StudentClass::class, 'class_id');
     }
 }

@@ -4,25 +4,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 
-class Store extends Model
+class StoreProduct extends Model
 {
     use softDeletes;
 
     protected $fillable = [
         'name',
-        'address',
-        'city',
-        'state',
-        'pin_code',
-        'phone',
-        'email',
-        'is_active',
+        'description',
+        'price',
+        'store_id',
+        'academic_year_id',
+        'class_id',
     ];
 
     protected static function boot()
@@ -66,27 +61,23 @@ class Store extends Model
         return $this->belongsTo(User::class, 'deleted_by');
     }
 
-    public function storeInvoices(): HasMany
+
+    public function store(): BelongsTo
     {
-        return $this->hasMany(StoreInvoice::class, 'store_id');
+        return $this->belongsTo(Store::class, 'store_id');
     }
 
-    public function storeProducts(): HasMany
+    public function academicYear(): BelongsTo
     {
-        return $this->hasMany(StoreProduct::class, 'store_id');
+        return $this->belongsTo(AcademicYear::class, 'academic_year_id');
     }
 
-    public function students(): HasManyThrough
+    public function class(): BelongsTo
     {
-        return $this->hasManyThrough(
-            Student::class,
-            Product::class,
-            'store_id',           // Foreign key on the products table...
-            'id',                 // Local key on the students table...
-            'id',                 // Local key on the stores table...
-            'class_id'            // Foreign key on the products table...
-        )->whereHas('classAssignment.class.studentClassAssignments.class.className.products', function ($query) {
-            $query->where('store_id', $this->id);
-        });
+        return $this->belongsTo(StudentClass::class, 'class_id');
+    }
+
+    public function studentClass(): BelongsTo{
+        return $this->belongsTo(StudentClass::class, 'class_id');
     }
 }

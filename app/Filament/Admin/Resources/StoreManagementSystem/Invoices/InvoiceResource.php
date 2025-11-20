@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources\StoreManagementSystem\Invoices;
 
+use App\Models\StoreInvoice;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Actions\ViewAction;
@@ -25,7 +26,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class InvoiceResource extends Resource
 {
-    protected static ?string $model = Invoice::class;
+    protected static ?string $model = StoreInvoice::class;
 
     protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-rectangle-stack';
 
