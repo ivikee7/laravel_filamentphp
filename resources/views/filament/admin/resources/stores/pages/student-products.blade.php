@@ -8,6 +8,16 @@
         {{ $this->storeInfolist }}
     </x-filament::section>
 
+    <div>
+        {{ $this->table }}
+    </div>
+
+
+
+
+
+
+
 
     {{--    --}}{{-- Listen for the event dispatched from PHP to refresh computed properties in JS --}}
     {{--    <div x-data @cart-updated.window="$wire.$refresh()">--}}

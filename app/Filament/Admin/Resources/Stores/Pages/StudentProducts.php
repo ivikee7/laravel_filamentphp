@@ -18,14 +18,19 @@ use Filament\Resources\Pages\Page;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Concerns\InteractsWithTable;
+use Filament\Tables\Contracts\HasTable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\View\View;
+use Filament\Tables\Table;
 
-class StudentProducts extends Page implements HasInfolists
+class StudentProducts extends Page implements HasInfolists, HasTable
 {
     use InteractsWithRecord;
     use InteractsWithInfolists;
+    use InteractsWithTable;
 
     protected static string $resource = StoreResource::class;
 
@@ -157,16 +162,48 @@ class StudentProducts extends Page implements HasInfolists
                     ->hiddenLabel(),
             ]);
     }
-    public function studentInfolist(Schema $schema): Schema{
+
+    public function studentInfolist(Schema $schema): Schema
+    {
         return $schema->record($this->targetStudent)
             ->components([
                 TextEntry::make('name')
-                ->prefix('Name: ')
-                ->hiddenLabel(),
+                    ->prefix('Name: ')
+                    ->hiddenLabel(),
                 TextEntry::make('father_name')
-                ->prefix('Father Name: ')
-                ->hiddenLabel(),
+                    ->prefix('Father Name: ')
+                    ->hiddenLabel(),
 
+            ]);
+    }
+
+    public function table(Table $table): Table
+    {
+        // We need to filter this query based on the current context (store_id, class_id, academic_year_id)
+        return $table
+            ->query(
+                StoreProduct::query()
+                    ->where('store_id', $this->record->id)
+                    ->where('class_id', $this->academicClass_id)
+                    ->where('academic_year_id', $this->academicYear_id)
+            )
+            ->columns([
+                TextColumn::make('name')->searchable(),
+                TextColumn::make('description')->searchable(),
+                TextColumn::make('price')->money('INR'),
+                // ... other columns
+            ])
+            ->filters([
+                // ...
+            ])
+            ->actions([
+                // If you want to use a Table Action for "Add to Cart"
+//                 \Filament\Tables\Actions\Action::make('addToCart')
+//                     ->action(fn (StoreProduct $record) => $this->addToCart($record->id))
+//                     ->label('Add'),
+            ])
+            ->headerActions([
+                // ...
             ]);
     }
 }
