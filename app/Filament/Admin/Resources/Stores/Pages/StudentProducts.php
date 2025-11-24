@@ -66,31 +66,33 @@ class StudentProducts extends Page implements HasInfolists, HasTable
     }
 
 
-    public function products(): Collection
-    {
-        if (empty($this->academicClass_id) || empty($this->academicYear_id)) {
-            return collect([]);
-        }
+//    public function products(): Collection
+//    {
+//        if (empty($this->academicClass_id) || empty($this->academicYear_id)) {
+//            return collect([]);
+//        }
+//
+//        return $this->getStoreProductQuery()->get();
+//    }
 
+    public function getStoreProductQuery(): Builder
+    {
         return StoreProduct::query()
             ->where('store_id', $this->record->id)
             ->where('class_id', $this->academicClass_id)
             ->where('academic_year_id', $this->academicYear_id)
-            ->get();
+            ->whereNotIn('id', $this->getCartQuery()->pluck('store_product_id'));
     }
 
-    // Helper function to get the current cart query scope for this student
     protected function getCartQuery(): Builder
     {
-        return StoreCart::query()->where('user_id', $this->targetStudent->id);
+        return StoreCart::query()
+            ->where('user_id', $this->targetStudent->id);
     }
 
-    // --- Computed Properties for the View ---
-
-    public function getCartItemsProperty(): Collection
+    public function getCartItemsProperty(): Builder
     {
-        // This runs every time Livewire updates the DOM (and listens for 'cartUpdated' event)
-        return $this->getCartQuery()->with('storeProduct')->get();
+        return $this->getCartQuery()->with('storeProduct');
     }
 
     public function getTotalProperty(): float
@@ -100,52 +102,26 @@ class StudentProducts extends Page implements HasInfolists, HasTable
         });
     }
 
-    // --- Cart Actions (Methods called by wire:click) ---
-
     public function addToCart(int $storeProductId): void
     {
         $cartItem = $this->getCartQuery()
+            ->withWhereRelation('storeProduct', 'store_id', $this->record->id)
             ->where('store_product_id', $storeProductId)
-            ->first();
+            ->exists();
 
         if ($cartItem) {
-            $cartItem->increment('quantity');
-        } else {
-            StoreCart::create([
-                'user_id' => $this->targetStudent->id,
-                'store_product_id' => $storeProductId,
-                'quantity' => 1,
-                // Add any other necessary fields
-            ]);
+            Notification::make('already-in-cart')->title('Already in Cart')->warning()->send();
+            return;
         }
+
+        StoreCart::create([
+            'user_id' => $this->targetStudent->id,
+            'store_product_id' => $storeProductId,
+            'quantity' => 1,
+        ]);
 
         Notification::make()->title('Added to Cart')->success()->send();
         // Dispatch event to force the Blade view's computed properties to refresh
-        $this->dispatch('cartUpdated');
-    }
-
-    public function decreaseQuantity(int $storeProductId): void
-    {
-        $cartItem = $this->getCartQuery()
-            ->where('store_product_id', $storeProductId)
-            ->first();
-
-        if ($cartItem && $cartItem->quantity > 1) {
-            $cartItem->decrement('quantity');
-        } elseif ($cartItem && $cartItem->quantity <= 1) {
-            $this->removeFromCart($storeProductId);
-        }
-
-        $this->dispatch('cartUpdated');
-    }
-
-    public function removeFromCart(int $storeProductId): void
-    {
-        $this->getCartQuery()
-            ->where('store_product_id', $storeProductId)
-            ->delete();
-
-        Notification::make()->title('Removed from Cart')->success()->send();
         $this->dispatch('cartUpdated');
     }
 
@@ -156,12 +132,6 @@ class StudentProducts extends Page implements HasInfolists, HasTable
         $this->dispatch('cartUpdated');
     }
 
-    // Optional: Add a checkout method that processes the cart items into an order
-    public function checkout(): void
-    {
-        // Logic to move items from CartItem table to Orders/OrderItems tables
-        Notification::make()->title('Checkout not implemented yet.')->warning()->send();
-    }
 
     // Note: Use the Infolist class for type hinting, not Schema directly
     public function storeInfolist(Schema $infolist): Schema
@@ -194,14 +164,8 @@ class StudentProducts extends Page implements HasInfolists, HasTable
 
     public function table(Table $table): Table
     {
-        // We need to filter this query based on the current context (store_id, class_id, academic_year_id)
         return $table
-            ->query(
-                StoreProduct::query()
-                    ->where('store_id', $this->record->id)
-                    ->where('class_id', $this->academicClass_id)
-                    ->where('academic_year_id', $this->academicYear_id)
-            )
+            ->query($this->getStoreProductQuery())
             ->columns([
                 TextColumn::make('name')->searchable(),
                 TextColumn::make('description')->searchable(),
@@ -209,11 +173,8 @@ class StudentProducts extends Page implements HasInfolists, HasTable
             ])
             ->recordActions([
                 Action::make('addToCart')
-                    ->action(function (Model $record): void { // Ensure type hint for $record if desired
-                        Notification::make()
-                            ->title("Added {$record->name} to cart") // Updated notification title for better context
-                            ->success()
-                            ->send();
+                    ->action(function (Model $record): void {
+                        $this->addToCart($record->id);
                     }),
             ])
             ->filters([
