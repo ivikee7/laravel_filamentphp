@@ -64,7 +64,7 @@ class StoreResource extends Resource
             // custom
             'seller' => Seller::route('/{record}/seller'),
             'students-products' => StudentProducts::route('/{record}/seller/{student}/products'),
-//            'students-cart' => StudentCart::route('/{record}/seller-student/{student}/cart'),
+            'students-cart' => StudentCart::route('/{record}/seller-student/{student}/cart'),
 //            'invoices' => StoreInvoices::route('/{record}/invoices'),
 //            'transactions' => StoreTransactions::route('/{record}/transactions'),
         ];

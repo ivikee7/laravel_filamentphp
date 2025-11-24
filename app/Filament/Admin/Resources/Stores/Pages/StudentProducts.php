@@ -9,6 +9,8 @@ use App\Models\StoreCart;
 use App\Models\StoreProduct;
 use App\Models\StudentClass;
 use App\Models\User;
+use Filament\Actions\Action;
+use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
@@ -22,9 +24,11 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\View\View;
 use Filament\Tables\Table;
+
 
 class StudentProducts extends Page implements HasInfolists, HasTable
 {
@@ -49,6 +53,16 @@ class StudentProducts extends Page implements HasInfolists, HasTable
 
         $this->academicYear_id = $this->targetStudent->student->classAssignment->academic_year_id ?? null;
         $this->academicClass_id = $this->targetStudent->student->classAssignment->class_id ?? null;
+    }
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Action::make('seller')
+                ->url(StoreResource::getUrl('seller', ['record' => $this->record])),
+            Action::make('Cart')
+                ->url(StoreResource::getUrl('students-cart', ['record' => $this->record, 'student' => $this->targetStudent]))
+        ];
     }
 
 
@@ -149,11 +163,12 @@ class StudentProducts extends Page implements HasInfolists, HasTable
         Notification::make()->title('Checkout not implemented yet.')->warning()->send();
     }
 
-    public function storeInfolist(Schema $schema): Schema
+    // Note: Use the Infolist class for type hinting, not Schema directly
+    public function storeInfolist(Schema $infolist): Schema
     {
-        return $schema
-            ->record($this->record)
-            ->components([
+        return $infolist
+            ->record($this->record) // Record is usually set on the main infolist or component
+            ->schema([ // Use schema() instead of components() for layout definitions
                 TextEntry::make('name')
                     ->prefix('Name: ')
                     ->hiddenLabel(),
@@ -163,17 +178,17 @@ class StudentProducts extends Page implements HasInfolists, HasTable
             ]);
     }
 
-    public function studentInfolist(Schema $schema): Schema
+    public function studentInfolist(Schema $infolist): Schema
     {
-        return $schema->record($this->targetStudent)
-            ->components([
+        return $infolist
+            ->record($this->targetStudent) // Record is usually set on the main infolist or component
+            ->schema([ // Use schema() instead of components()
                 TextEntry::make('name')
                     ->prefix('Name: ')
                     ->hiddenLabel(),
                 TextEntry::make('father_name')
                     ->prefix('Father Name: ')
                     ->hiddenLabel(),
-
             ]);
     }
 
@@ -191,16 +206,18 @@ class StudentProducts extends Page implements HasInfolists, HasTable
                 TextColumn::make('name')->searchable(),
                 TextColumn::make('description')->searchable(),
                 TextColumn::make('price')->money('INR'),
-                // ... other columns
+            ])
+            ->recordActions([
+                Action::make('addToCart')
+                    ->action(function (Model $record): void { // Ensure type hint for $record if desired
+                        Notification::make()
+                            ->title("Added {$record->name} to cart") // Updated notification title for better context
+                            ->success()
+                            ->send();
+                    }),
             ])
             ->filters([
                 // ...
-            ])
-            ->actions([
-                // If you want to use a Table Action for "Add to Cart"
-//                 \Filament\Tables\Actions\Action::make('addToCart')
-//                     ->action(fn (StoreProduct $record) => $this->addToCart($record->id))
-//                     ->label('Add'),
             ])
             ->headerActions([
                 // ...
