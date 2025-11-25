@@ -4,9 +4,9 @@
         {{ $this->studentInfolist }}
     </x-filament::section>
 
-    <x-filament::section heading="Store info">
-        {{ $this->storeInfolist }}
-    </x-filament::section>
+{{--    <x-filament::section heading="Store info">--}}
+{{--        {{ $this->storeInfolist }}--}}
+{{--    </x-filament::section>--}}
 
     <div>
         {{ $this->table }}

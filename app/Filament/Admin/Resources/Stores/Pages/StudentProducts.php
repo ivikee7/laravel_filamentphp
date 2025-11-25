@@ -159,7 +159,12 @@ class StudentProducts extends Page implements HasInfolists, HasTable
                 TextEntry::make('father_name')
                     ->prefix('Father Name: ')
                     ->hiddenLabel(),
-            ]);
+                TextEntry::make('mother_name')->prefix('Mother Name: ')->hiddenLabel(),
+                TextEntry::make('address')->prefix('Address: ')->hiddenLabel(),
+                TextEntry::make('city')->prefix('City: ')->hiddenLabel(),
+                TextEntry::make('state')->prefix('State: ')->hiddenLabel(),
+                TextEntry::make('pin_code')->prefix('Pin Code: ')->hiddenLabel(),
+            ])->columns(3);
     }
 
     public function table(Table $table): Table
