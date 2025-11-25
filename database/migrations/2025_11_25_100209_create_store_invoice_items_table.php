@@ -11,14 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('store_invoices', function (Blueprint $table) {
+        Schema::create('store_invoice_items', function (Blueprint $table) {
             $table->id();
             //
-            $table->foreignId('user_id');
-            $table->foreignId('store_id');
-            $table->double('subtotal_amount');
-            $table->double('discount_amount');
-            $table->double('total_amount');
+            $table->foreignId('store_invoice_id');
+            $table->foreignId('store_product_id');
+            $table->string('name');
+            $table->string('description')->nullable();
+            $table->double('price');
+            $table->double('quantity');
             //
             $table->foreignId('created_by')->nullable();
             $table->foreignId('updated_by')->nullable();
@@ -33,6 +34,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('store_invoices');
+        Schema::dropIfExists('store_invoice_items');
     }
 };

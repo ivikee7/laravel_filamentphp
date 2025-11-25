@@ -3,18 +3,18 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 
-class StoreTransaction extends Model
+class StoreInvoiceItem extends Model
 {
-    use softDeletes;
+    use SoftDeletes;
 
     protected $fillable = [
-        'store_invoice_id',
-        'amount',
-        'remarks',
+        'store_id',
+        'subtotal_amount',
+        'discount_amount',
+        'total_amount',
     ];
 
     protected static function boot()
@@ -56,10 +56,5 @@ class StoreTransaction extends Model
     public function deletedBy()
     {
         return $this->belongsTo(User::class, 'deleted_by');
-    }
-
-    public function storeInvoice(): BelongsTo
-    {
-        return $this->belongsTo(StoreInvoice::class, 'store_id');
     }
 }

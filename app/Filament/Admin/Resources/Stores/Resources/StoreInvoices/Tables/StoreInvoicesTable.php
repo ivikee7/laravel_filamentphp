@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources\Stores\Resources\StoreInvoices\Tables;
 
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -18,43 +19,47 @@ class StoreInvoicesTable
     {
         return $table
             ->columns([
-                TextColumn::make('subtotal_amount')
+                TextColumn::make('id')->label('#')->searchable()->wrap(),
+                TextColumn::make('user.id')->label('User Id')->searchable()->wrap(),
+                TextColumn::make('user.name')->label('Student')->searchable()->wrap(),
+                TextColumn::make('subtotal_amount')->label('Subtotal')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('discount_amount')
+                TextColumn::make('discount_amount')->label('Discount')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('total_amount')
+                TextColumn::make('total_amount')->label('Total')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('created_by')
-                    ->numeric()
+                TextColumn::make('createdBy.name')->wrap()
                     ->sortable(),
-                TextColumn::make('updated_by')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('deleted_by')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('created_at')
+                TextColumn::make('updatedBy.name')
+                    ->sortable()->wrap()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('deletedBy.name')->wrap()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('created_at')->wrap()
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
+                TextColumn::make('updated_at')->wrap()
                     ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('deleted_at')
+                    ->sortable(),
+                TextColumn::make('deleted_at')->wrap()
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->defaultSort('id', 'desc')
             ->filters([
                 TrashedFilter::make(),
             ])
             ->recordActions([
-                ViewAction::make(),
-                EditAction::make(),
+                ActionGroup::make([
+                    ViewAction::make(),
+                    EditAction::make(),
+                ])->label('More'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

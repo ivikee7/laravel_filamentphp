@@ -29,7 +29,8 @@ class Seller extends Page implements HasTable
     protected function getHeaderActions(): array
     {
         return [
-            Action::make('seller')->url(\App\Filament\Admin\Resources\Stores\StoreResource::getUrl('seller', ['record' => $this->record])),
+            Action::make('store')->url(StoreResource::getUrl('view', ['record' => $this->record])),
+            Action::make('seller')->url(StoreResource::getUrl('seller', ['record' => $this->record]))->color('success'),
 //            Action::make('invoices')->url(StoreResource::getUrl('invoices', ['record' => $this->record])),
 //            Action::make('transactions')->url(StoreResource::getUrl('transactions', ['record' => $this->record])),
         ];

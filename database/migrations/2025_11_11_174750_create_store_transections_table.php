@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('store_transections', function (Blueprint $table) {
+        Schema::create('store_transactions', function (Blueprint $table) {
             $table->id();
             //
             $table->foreignId('store_invoice_id');

@@ -13,6 +13,7 @@ class StoreInvoice extends Model
     use softDeletes;
 
     protected $fillable = [
+        'user_id',
         'store_id',
         'subtotal_amount',
         'discount_amount',
@@ -60,12 +61,18 @@ class StoreInvoice extends Model
         return $this->belongsTo(User::class, 'deleted_by');
     }
 
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
     public function store(): BelongsTo
     {
         return $this->belongsTo(Store::class, 'store_id');
     }
 
-    public function storeTransaction():HasMany{
+    public function storeTransactions(): HasMany
+    {
         return $this->hasMany(StoreTransaction::class, 'store_invoice_id');
     }
 }

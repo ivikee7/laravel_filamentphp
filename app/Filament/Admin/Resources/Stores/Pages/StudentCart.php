@@ -4,7 +4,10 @@ namespace App\Filament\Admin\Resources\Stores\Pages;
 
 use App\Filament\Admin\Resources\Stores\StoreResource;
 use App\Models\Cart;
+use App\Models\Invoice;
 use App\Models\StoreCart;
+use App\Models\StoreInvoice;
+use App\Models\StoreInvoiceItem;
 use App\Models\StoreProduct;
 use App\Models\Student;
 use App\Models\User;
@@ -43,7 +46,57 @@ class StudentCart extends Page implements HasTable
             Action::make('seller')->url(StoreResource::getUrl('seller', ['record' => $this->record])),
             Action::make('student-products')
                 ->label('Product\'s')->url(StoreResource::getUrl('students-products', ['record' => $this->record, $this->student])),
+            Action::make('generate-invoice')->action($this->generateInvoice()),
         ];
+    }
+
+    public function generateInvoice()
+    {
+        // 1. Retrieve cart items first to calculate amounts
+        $cartItems = $this->getCartQuery()->with('storeProduct')->get();
+
+        $subtotal = 0;
+        // Ensure all items have necessary data structure for calculation
+        foreach ($cartItems as $item) {
+            // Assuming $item->price and $item->quantity are available
+            $subtotal += ($item->storeProduct->price * $item->quantity);
+        }
+
+        // 2. Calculate discount and total (Example logic, adjust as needed)
+        $discount = 0; // Implement your actual discount logic here
+        $total = $subtotal - $discount;
+
+        // 3. Create the main Invoice record using the calculated values
+        $invoice = StoreInvoice::create([
+            'user_id' => $this->student->id,
+            'store_id' => $this->record->id,
+            'subtotal_amount' => $subtotal,
+            'discount_amount' => $discount,
+            'total_amount' => $total,
+        ]);
+
+        // 4. Prepare invoice items data for bulk insert
+        $invoiceItemsData = [];
+        $invoiceId = $invoice->id;
+
+        foreach ($cartItems as $item) {
+            $invoiceItemsData[] = [
+                'store_invoice_id' => $invoiceId,
+                'store_product_id' => $item->storeProduct->id,
+                'name' => $item->storeProduct->name,
+                'description' => $item->storeProduct->description,
+                'quantity' => $item->quantity,
+                'price' => $item->storeProduct->price,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+        }
+
+        // 5. Perform bulk insertion of all invoice items in a single query
+        StoreInvoiceItem::insert($invoiceItemsData);
+
+        // Optional: Return the created invoice object
+        return $invoice;
     }
 
     public function table(Table $table): Table
@@ -85,7 +138,7 @@ class StudentCart extends Page implements HasTable
 
     protected function getCartQuery(): Builder
     {
-        return StoreCart::query()->withWhereRelation('storeProduct','store_id' , $this->record->id)
+        return StoreCart::query()->withWhereRelation('storeProduct', 'store_id', $this->record->id)
             ->where('user_id', $this->student->id);
     }
 }
