@@ -71,6 +71,14 @@ class StoreInvoice extends Model
         return $this->belongsTo(Store::class, 'store_id');
     }
 
+    public function storeProducts(): HasMany{
+        return $this->hasMany(StoreProduct::class, 'store_invoice_id');
+    }
+    public function storeInvoiceItems():hasMany{
+        return $this->hasMany(StoreInvoiceItem::class, 'store_invoice_id');
+    }
+
+
     public function storeTransactions(): HasMany
     {
         return $this->hasMany(StoreTransaction::class, 'store_invoice_id');

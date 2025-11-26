@@ -28,6 +28,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\View\View;
 use Filament\Tables\Table;
+use Livewire\Component;
 
 
 class StudentProducts extends Page implements HasInfolists, HasTable
@@ -65,18 +66,15 @@ class StudentProducts extends Page implements HasInfolists, HasTable
         ];
     }
 
-
-//    public function products(): Collection
-//    {
-//        if (empty($this->academicClass_id) || empty($this->academicYear_id)) {
-//            return collect([]);
-//        }
-//
-//        return $this->getStoreProductQuery()->get();
-//    }
+    #[On('refreshTable')]
+    public function refreshTableData(): void
+    {
+        $this->fillTable();
+    }
 
     public function getStoreProductQuery(): Builder
     {
+        // The key is this query: it excludes items already in the cart.
         return StoreProduct::query()
             ->where('store_id', $this->record->id)
             ->where('class_id', $this->academicClass_id)
@@ -100,29 +98,6 @@ class StudentProducts extends Page implements HasInfolists, HasTable
         return $this->cartItems->sum(function ($item) {
             return $item->quantity * ($item->storeProduct->price ?? 0);
         });
-    }
-
-    public function addToCart(int $storeProductId): void
-    {
-        $cartItem = $this->getCartQuery()
-            ->withWhereRelation('storeProduct', 'store_id', $this->record->id)
-            ->where('store_product_id', $storeProductId)
-            ->exists();
-
-        if ($cartItem) {
-            Notification::make('already-in-cart')->title('Already in Cart')->warning()->send();
-            return;
-        }
-
-        StoreCart::create([
-            'user_id' => $this->targetStudent->id,
-            'store_product_id' => $storeProductId,
-            'quantity' => 1,
-        ]);
-
-        Notification::make()->title('Added to Cart')->success()->send();
-        // Dispatch event to force the Blade view's computed properties to refresh
-        $this->dispatch('cartUpdated');
     }
 
     public function clearCart(): void
@@ -178,8 +153,22 @@ class StudentProducts extends Page implements HasInfolists, HasTable
             ])
             ->recordActions([
                 Action::make('addToCart')
-                    ->action(function (Model $record): void {
-                        $this->addToCart($record->id);
+                    ->action(function (Model $record, Component $livewire): void {
+                        // ... (cart item existence checks and creation logic remain the same) ...
+
+                        StoreCart::create([
+                            'user_id' => $this->targetStudent->id,
+                            'store_product_id' => $record->id,
+                            'quantity' => 1,
+                        ]);
+
+                        Notification::make()->title('Added to Cart')->success()->send();
+
+                        // --- Change this line ---
+                        // $livewire->dispatch('refreshTable');
+
+                        // Use the magic string event for a full component refresh
+                        $livewire->dispatch('$refresh');
                     }),
             ])
             ->filters([

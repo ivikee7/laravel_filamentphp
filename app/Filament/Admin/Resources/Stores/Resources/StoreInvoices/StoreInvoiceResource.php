@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Resources\Stores\Resources\StoreInvoices;
 use App\Filament\Admin\Resources\Stores\Resources\StoreInvoices\Pages\CreateStoreInvoice;
 use App\Filament\Admin\Resources\Stores\Resources\StoreInvoices\Pages\EditStoreInvoice;
 use App\Filament\Admin\Resources\Stores\Resources\StoreInvoices\Pages\ViewStoreInvoice;
+use App\Filament\Admin\Resources\Stores\Resources\StoreInvoices\RelationManagers\StoreInvoiceItemsRelationManager;
 use App\Filament\Admin\Resources\Stores\Resources\StoreInvoices\RelationManagers\StoreTransactionsRelationManager;
 use App\Filament\Admin\Resources\Stores\Resources\StoreInvoices\Schemas\StoreInvoiceForm;
 use App\Filament\Admin\Resources\Stores\Resources\StoreInvoices\Schemas\StoreInvoiceInfolist;
@@ -47,6 +48,7 @@ class StoreInvoiceResource extends Resource
     {
         return [
             StoreTransactionsRelationManager::class,
+            StoreInvoiceItemsRelationManager::class,
         ];
     }
 

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->double('subtotal_amount');
             $table->double('discount_amount');
             $table->double('total_amount');
+            $table->string('remarks', 100)->nullable();
             //
             $table->foreignId('created_by')->nullable();
             $table->foreignId('updated_by')->nullable();

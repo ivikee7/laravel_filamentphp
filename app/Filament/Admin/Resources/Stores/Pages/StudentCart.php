@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources\Stores\Pages;
 
+use App\Filament\Admin\Resources\Stores\Resources\StoreInvoices\StoreInvoiceResource;
 use App\Filament\Admin\Resources\Stores\StoreResource;
 use App\Models\Cart;
 use App\Models\Invoice;
@@ -20,6 +21,7 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 class StudentCart extends Page implements HasTable
 {
@@ -46,7 +48,6 @@ class StudentCart extends Page implements HasTable
             Action::make('seller')->url(StoreResource::getUrl('seller', ['record' => $this->record])),
             Action::make('student-products')
                 ->label('Product\'s')->url(StoreResource::getUrl('students-products', ['record' => $this->record, $this->student])),
-            Action::make('generate-invoice')->action($this->generateInvoice()),
         ];
     }
 
@@ -95,7 +96,7 @@ class StudentCart extends Page implements HasTable
         // 5. Perform bulk insertion of all invoice items in a single query
         StoreInvoiceItem::insert($invoiceItemsData);
 
-        // Optional: Return the created invoice object
+        Notification::make()->title('Invoice #' . $invoiceId . ' Generated!')->body('Invoice Generated Successfully!');
         return $invoice;
     }
 
@@ -111,18 +112,42 @@ class StudentCart extends Page implements HasTable
                 TextColumn::make('quantity'),
                 TextColumn::make('ProductTotal'),
             ])->recordActions([
-//                Action::make("cart-increase")
-//                    ->label('+')->button()
-//                    ->action(fn() => StoreCart::query()),
-//                Action::make("cart-decrease")
-//                    ->label('-')
-//                    ->button()
-//                    ->action(fn() => StoreCart::query())
+                Action::make('cart-increase')
+                    ->label('+')
+                    ->button()
+                    ->action(function (Model $record) {
+                        $record->increment('quantity');
+                    }),
+                Action::make("cart-decrease")
+                    ->label('-')
+                    ->button()
+                    ->action(function (Model $record) {
+                        if ($record->quantity >= 2) {
+                            $record->decrement('quantity');
+                            return;
+                        }
+                        $record->delete();
+                    }),
             ])->headerActions([
                 Action::make("cart-remove")
                     ->label('Clear Cart')
                     ->action(fn() => $this->clearCart())
                     ->color('danger'),
+                Action::make('generateInvoice')
+                    ->label('Generate Invoice')
+                    ->color('success')
+                    ->visible(function (): bool {
+                        return $this->getCartQuery()->exists();
+                    })
+                    ->action(function () {
+                        $invoice = $this->generateInvoice();
+                        Notification::make()
+                            ->title('Invoice generated successfully.')
+                            ->success()
+                            ->send();
+                        $this->clearCart();
+                        return redirect()->to(StoreInvoiceResource::getUrl('view', ['store' => $this->record->id, 'record' => $invoice->id]));
+                    }),
             ]);
     }
 

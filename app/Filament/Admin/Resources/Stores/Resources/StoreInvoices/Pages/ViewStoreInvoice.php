@@ -16,4 +16,6 @@ class ViewStoreInvoice extends ViewRecord
             EditAction::make(),
         ];
     }
+
+    protected $listeners = ['$refresh' => '$refresh'];
 }
