@@ -61,6 +61,6 @@ class StoreInvoiceItem extends Model
 
     public function storeInvoice(): BelongsTo
     {
-        return $this->belongsTo(StoreInvoice::class, 'store_id');
+        return $this->belongsTo(StoreInvoice::class, 'store_invoice_id');
     }
 }

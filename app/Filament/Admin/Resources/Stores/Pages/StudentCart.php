@@ -129,10 +129,6 @@ class StudentCart extends Page implements HasTable
                         $record->delete();
                     }),
             ])->headerActions([
-                Action::make("cart-remove")
-                    ->label('Clear Cart')
-                    ->action(fn() => $this->clearCart())
-                    ->color('danger'),
                 Action::make('generateInvoice')
                     ->label('Generate Invoice')
                     ->color('success')
@@ -148,6 +144,10 @@ class StudentCart extends Page implements HasTable
                         $this->clearCart();
                         return redirect()->to(StoreInvoiceResource::getUrl('view', ['store' => $this->record->id, 'record' => $invoice->id]));
                     }),
+                Action::make("cart-remove")
+                    ->label('Clear Cart')
+                    ->action(fn() => $this->clearCart())
+                    ->color('danger'),
             ]);
     }
 

@@ -6,6 +6,7 @@ use App\Filament\Admin\Resources\Stores\StoreResource;
 use App\Models\AcademicYear;
 use App\Models\Product;
 use App\Models\StoreCart;
+use App\Models\StoreInvoiceItem;
 use App\Models\StoreProduct;
 use App\Models\StudentClass;
 use App\Models\User;
@@ -19,6 +20,7 @@ use Filament\Resources\Pages\Concerns\InteractsWithRecord;
 use Filament\Resources\Pages\Page;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
@@ -54,6 +56,7 @@ class StudentProducts extends Page implements HasInfolists, HasTable
 
         $this->academicYear_id = $this->targetStudent->student->classAssignment->academic_year_id ?? null;
         $this->academicClass_id = $this->targetStudent->student->classAssignment->class_id ?? null;
+
     }
 
     protected function getHeaderActions(): array
@@ -74,12 +77,19 @@ class StudentProducts extends Page implements HasInfolists, HasTable
 
     public function getStoreProductQuery(): Builder
     {
-        // The key is this query: it excludes items already in the cart.
         return StoreProduct::query()
             ->where('store_id', $this->record->id)
             ->where('class_id', $this->academicClass_id)
             ->where('academic_year_id', $this->academicYear_id)
-            ->whereNotIn('id', $this->getCartQuery()->pluck('store_product_id'));
+            ->whereNotIn('id', $this->getCartQuery()->pluck('store_product_id'))
+            ->whereNotIn('id', $this->getStoreInvoiceItemsQuery()->pluck('store_product_id'));
+    }
+
+    // check already purchased items
+    protected function getStoreInvoiceItemsQuery(): Builder
+    {
+        return StoreInvoiceItem::query()
+            ->withWhereRelation('storeInvoice', 'store_id', $this->record->id);
     }
 
     protected function getCartQuery(): Builder
@@ -107,8 +117,6 @@ class StudentProducts extends Page implements HasInfolists, HasTable
         $this->dispatch('cartUpdated');
     }
 
-
-    // Note: Use the Infolist class for type hinting, not Schema directly
     public function storeInfolist(Schema $infolist): Schema
     {
         return $infolist
@@ -154,21 +162,22 @@ class StudentProducts extends Page implements HasInfolists, HasTable
             ->recordActions([
                 Action::make('addToCart')
                     ->action(function (Model $record, Component $livewire): void {
-                        // ... (cart item existence checks and creation logic remain the same) ...
+                        $user_id = $this->targetStudent->id;
+                        $product_id = $record->id;
+
+                        if (StoreCart::query()->where('store_product_id', $product_id)->where('user_id', $user_id)->exists()) {
+                            Notification::make()->title('Product Already Exists in Cart')->warning()->send();
+                            return;
+                        }
 
                         StoreCart::create([
-                            'user_id' => $this->targetStudent->id,
-                            'store_product_id' => $record->id,
+                            'user_id' => $user_id,
+                            'store_product_id' => $product_id,
                             'quantity' => 1,
                         ]);
 
                         Notification::make()->title('Added to Cart')->success()->send();
 
-                        // --- Change this line ---
-                        // $livewire->dispatch('refreshTable');
-
-                        // Use the magic string event for a full component refresh
-                        $livewire->dispatch('$refresh');
                     }),
             ])
             ->filters([
