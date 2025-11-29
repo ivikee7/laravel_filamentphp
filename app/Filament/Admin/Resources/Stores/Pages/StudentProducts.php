@@ -11,6 +11,7 @@ use App\Models\StoreProduct;
 use App\Models\StudentClass;
 use App\Models\User;
 use Filament\Actions\Action;
+use Filament\Actions\Contracts\HasActions;
 use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
@@ -33,7 +34,7 @@ use Filament\Tables\Table;
 use Livewire\Component;
 
 
-class StudentProducts extends Page implements HasInfolists, HasTable
+class StudentProducts extends Page implements HasInfolists, HasTable, HasActions
 {
     use InteractsWithRecord;
     use InteractsWithInfolists;

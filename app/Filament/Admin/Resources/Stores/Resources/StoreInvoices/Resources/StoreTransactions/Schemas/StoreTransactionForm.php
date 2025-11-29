@@ -17,7 +17,8 @@ class StoreTransactionForm
                 TextInput::make('amount')
                     ->numeric()
                     ->required()
-                    ->minValue(1),
+                    ->minValue(1)
+                    ,
                 TextInput::make('remarks')->maxLength(100),
             ]);
     }

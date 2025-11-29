@@ -27,60 +27,30 @@ class StoreInvoiceInfolist
                     ->numeric()->hiddenLabel()->prefix('Discount: '),
                 TextEntry::make('total_amount')
                     ->numeric()->hiddenLabel()->prefix('Total: '),
-                TextEntry::make('created_by')
-                    ->numeric()->hiddenLabel()->prefix('Created By: ')
+                TextEntry::make('totalPaidAmount')
+                    ->numeric()->hiddenLabel()->prefix('Paid: ')->color('success'),
+                TextEntry::make('totalDueAmount')
+                    ->numeric()->hiddenLabel()->prefix('Due: ')->color('danger'),
+                TextEntry::make('remarks'),
+                TextEntry::make('createdBy.name')->label('Created By')
+                    ->numeric()
                     ->placeholder('-'),
-                TextEntry::make('updated_by')
-                    ->numeric()->hiddenLabel()->prefix('Updated By: ')
+                TextEntry::make('updatedBy.name')
+                    ->numeric()->label('Updated By')
                     ->placeholder('-'),
-                TextEntry::make('deleted_by')
-                    ->numeric()->hiddenLabel()->prefix('Deleted By: ')
+                TextEntry::make('deletedBy.name')
+                    ->numeric()->label('Deleted By')
                     ->placeholder('-'),
                 TextEntry::make('created_at')
-                    ->dateTime()->hiddenLabel()->prefix('Created At: ')
+                    ->dateTime()->label('Created At')
                     ->placeholder('-'),
                 TextEntry::make('updated_at')
-                    ->dateTime()->hiddenLabel()->prefix('Updated At: ')
+                    ->dateTime()->label('Updated At')
                     ->placeholder('-'),
                 TextEntry::make('deleted_at')
-                    ->dateTime()->hiddenLabel()->prefix('Deleted At: ')
+                    ->dateTime()->label('Deleted At')
                     ->visible(fn(StoreInvoice $record): bool => $record->trashed()),
-                Action::make('discount')
-                    ->label('Apply Discount')
-                    ->color('primary')
-                    ->modalHeading('Apply Discount to Cart')
-                    ->form([
-                        TextInput::make('discount_amount')
-                            ->label('Amount (₹)')
-                            ->numeric()
-                            ->minValue(0)
-                            ->maxValue(function(Model $record) {
-                                return $record->subtotal_amount;
-                            })
-                            ->helperText('Enter a fixed amount discount.')
-                            ->required(),
-                        TextInput::make('remarks')
-                            ->label('Remarks')
-                            ->maxLength(100)
-                    ])
-                    ->action(function (array $data, Model $record, Component $livewire) {
-                        $invoice = StoreInvoice::query()->findOrFail($record->id);
-                        $invoice_subtotal_amount = $invoice->subtotal_amount;
-                        $invoice_grand_total = $invoice_subtotal_amount - $data['discount_amount'];
-                        $invoice->discount_amount = $data['discount_amount'];
-                        $invoice->total_amount = $invoice_grand_total;
-                        $invoice->remarks = $data['remarks'];
-                        $invoice->save();
-
-                        Notification::make()
-                            ->title("Discount '{$data['discount_amount']}' applied successfully!")
-                            ->success()
-                            ->send();
-
-                        $livewire->dispatch('$refresh');
-                    }),
-
-            ]);
+            ])->columns(3);
     }
 
 }

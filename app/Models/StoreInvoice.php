@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -71,10 +72,13 @@ class StoreInvoice extends Model
         return $this->belongsTo(Store::class, 'store_id');
     }
 
-    public function storeProducts(): HasMany{
+    public function storeProducts(): HasMany
+    {
         return $this->hasMany(StoreProduct::class, 'store_invoice_id');
     }
-    public function storeInvoiceItems():hasMany{
+
+    public function storeInvoiceItems(): hasMany
+    {
         return $this->hasMany(StoreInvoiceItem::class, 'store_invoice_id');
     }
 
@@ -82,5 +86,21 @@ class StoreInvoice extends Model
     public function storeTransactions(): HasMany
     {
         return $this->hasMany(StoreTransaction::class, 'store_invoice_id');
+    }
+
+    protected function totalPaidAmount(): Attribute
+    {
+        return Attribute::get(function () {
+            return $this->storeTransactions()->sum('amount');
+        });
+    }
+
+    protected function totalDueAmount(): Attribute
+    {
+        return Attribute::get(function () {
+            $totalAmount = $this->total_amount;
+            $paidAmount = $this->storeTransactions()->sum('amount');
+            return $totalAmount - $paidAmount;
+        });
     }
 }

@@ -22,6 +22,15 @@ class StoreTransactionsTable
                 TextColumn::make('store_invoice_id')->label('Invoice'),
                 TextColumn::make('amount'),
                 TextColumn::make('remarks'),
+                TextColumn::make('createdBy.name')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('updatedBy.name')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('deletedBy.name')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: false),
@@ -29,15 +38,6 @@ class StoreTransactionsTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('deleted_at')->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('createdBy')
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updatedBy')
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('deletedBy')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
