@@ -28,14 +28,20 @@ class ViewStoreInvoice extends ViewRecord
                     TextInput::make('discount_amount')
                         ->label('Amount (₹)')
                         ->numeric()
+                        ->default(function (Model $record) {
+                            return $record->discount_amount;
+                        })
                         ->minValue(0)
                         ->maxValue(function (Model $record) {
-                            return $record->subtotal_amount;
+                            return ($record->subtotal_amount - $record->total_paid_amount);
                         })
                         ->helperText('Enter a fixed amount discount.')
                         ->required(),
                     TextInput::make('remarks')
                         ->label('Remarks')
+                        ->default(function (Model $record) {
+                            return $record->remarks;
+                        })
                         ->maxLength(100)
                 ])
                 ->action(function (array $data, Model $record, Component $livewire) {

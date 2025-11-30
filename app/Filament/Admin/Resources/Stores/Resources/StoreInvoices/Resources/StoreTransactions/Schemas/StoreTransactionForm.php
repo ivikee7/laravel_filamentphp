@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources\Stores\Resources\StoreInvoices\Resources\StoreTransactions\Schemas;
 
 use App\Models\StoreInvoice;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
@@ -18,9 +19,17 @@ class StoreTransactionForm
                     ->numeric()
                     ->required()
                     ->minValue(1)
-                    ,
+                    ->maxValue(function (): ?float {
+                        return StoreInvoice::query()
+                            ->findOrFail(request()->route('store_invoice'))
+                            ->total_due_amount;
+                    })
+                    ->placeholder(function (): ?float {
+                        return StoreInvoice::query()
+                            ->findOrFail(request()->route('store_invoice'))
+                            ->total_due_amount;
+                    }),
                 TextInput::make('remarks')->maxLength(100),
             ]);
     }
-
 }
