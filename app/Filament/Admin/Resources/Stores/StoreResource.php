@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources\Stores;
 
+use App\Filament\Admin\Resources\Stores\Pages\Counters;
 use App\Filament\Admin\Resources\Stores\Pages\Seller;
 use App\Filament\Admin\Resources\Stores\Pages\StoreInvoices;
 use App\Filament\Admin\Resources\Stores\Pages\StoreTransactions;
@@ -24,6 +25,7 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use SebastianBergmann\LinesOfCode\Counter;
 
 class StoreResource extends Resource
 {
@@ -67,6 +69,7 @@ class StoreResource extends Resource
             'students-cart' => StudentCart::route('/{record}/seller-student/{student}/cart'),
 //            'invoices' => StoreInvoices::route('/{record}/invoices'),
 //            'transactions' => StoreTransactions::route('/{record}/transactions'),
+            'counters' => Counters::route('/{record}/counters'),
         ];
     }
 
