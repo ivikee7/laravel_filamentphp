@@ -31,6 +31,12 @@ class StoreInvoicesTable
                 TextColumn::make('total_amount')->label('Total')
                     ->numeric()
                     ->sortable(),
+                TextColumn::make('total_paid_amount')->label('Paid')
+                    ->numeric()
+                    ->sortable(),
+                TextColumn::make('total_due_amount')->label('Due')
+                    ->numeric()
+                    ->sortable(),
                 TextColumn::make('createdBy.name')->wrap()
                     ->sortable(),
                 TextColumn::make('updatedBy.name')

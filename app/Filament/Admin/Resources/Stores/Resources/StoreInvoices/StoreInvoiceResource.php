@@ -6,6 +6,7 @@ use App\Filament\Admin\Resources\Stores\Resources\StoreInvoices\Pages\CreateStor
 use App\Filament\Admin\Resources\Stores\Resources\StoreInvoices\Pages\EditStoreInvoice;
 use App\Filament\Admin\Resources\Stores\Resources\StoreInvoices\Pages\ViewStoreInvoice;
 use App\Filament\Admin\Resources\Stores\Resources\StoreInvoices\RelationManagers\StoreInvoiceItemsRelationManager;
+use App\Filament\Admin\Resources\Stores\Resources\StoreInvoices\RelationManagers\StoreInvoiceTransactionsRelationManager;
 use App\Filament\Admin\Resources\Stores\Resources\StoreInvoices\RelationManagers\StoreTransactionsRelationManager;
 use App\Filament\Admin\Resources\Stores\Resources\StoreInvoices\Schemas\StoreInvoiceForm;
 use App\Filament\Admin\Resources\Stores\Resources\StoreInvoices\Schemas\StoreInvoiceInfolist;
@@ -29,6 +30,8 @@ class StoreInvoiceResource extends Resource
 
     protected static ?string $parentResource = StoreResource::class;
 
+    protected static ?string $modelLabel = "Invoice";
+
     public static function form(Schema $schema): Schema
     {
         return StoreInvoiceForm::configure($schema);
@@ -47,7 +50,7 @@ class StoreInvoiceResource extends Resource
     public static function getRelations(): array
     {
         return [
-            StoreTransactionsRelationManager::class,
+            StoreInvoiceTransactionsRelationManager::class,
             StoreInvoiceItemsRelationManager::class,
         ];
     }

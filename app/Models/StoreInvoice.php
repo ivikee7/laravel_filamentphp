@@ -83,15 +83,15 @@ class StoreInvoice extends Model
     }
 
 
-    public function storeTransactions(): HasMany
+    public function storeInvoiceTransactions(): HasMany
     {
-        return $this->hasMany(StoreTransaction::class, 'store_invoice_id');
+        return $this->hasMany(StoreInvoiceTransaction::class, 'store_invoice_id');
     }
 
     protected function totalPaidAmount(): Attribute
     {
         return Attribute::get(function () {
-            return $this->storeTransactions()->sum('amount');
+            return $this->storeInvoiceTransactions()->sum('amount');
         });
     }
 
@@ -99,7 +99,7 @@ class StoreInvoice extends Model
     {
         return Attribute::get(function () {
             $totalAmount = $this->total_amount;
-            $paidAmount = $this->storeTransactions()->sum('amount');
+            $paidAmount = $this->storeInvoiceTransactions()->sum('amount');
             return $totalAmount - $paidAmount;
         });
     }

@@ -3,8 +3,16 @@
 namespace App\Filament\Admin\Resources\Stores\Schemas;
 
 use App\Models\Store;
+use App\Models\StoreInvoiceTransaction;
+use Filament\Forms\Components\TextInput;
+use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Livewire;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Filament\Tables\Table;
+use function Laravel\Prompts\form;
 
 class StoreInfolist
 {
@@ -44,7 +52,7 @@ class StoreInfolist
                     ->placeholder('-'),
                 TextEntry::make('deleted_at')
                     ->dateTime()
-                    ->visible(fn (Store $record): bool => $record->trashed()),
+                    ->visible(fn(Store $record): bool => $record->trashed()),
             ]);
     }
 }

@@ -2,16 +2,16 @@
 
 namespace App\Filament\Admin\Resources\Stores\Resources\StoreInvoices\RelationManagers;
 
-use App\Filament\Admin\Resources\Stores\Resources\StoreInvoices\Resources\StoreTransactions\StoreTransactionResource;
+use App\Filament\Admin\Resources\Stores\Resources\StoreInvoices\Resources\StoreInvoiceTransactions\StoreInvoiceTransactionResource;
 use Filament\Actions\CreateAction;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Table;
 
-class StoreTransactionsRelationManager extends RelationManager
+class StoreInvoiceTransactionsRelationManager extends RelationManager
 {
-    protected static string $relationship = 'storeTransactions';
+    protected static string $relationship = 'storeInvoiceTransactions';
 
-    protected static ?string $relatedResource = StoreTransactionResource::class;
+    protected static ?string $relatedResource = StoreInvoiceTransactionResource::class;
 
     public function table(Table $table): Table
     {

@@ -16,6 +16,7 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class StoreInvoiceItemResource extends Resource
@@ -25,6 +26,8 @@ class StoreInvoiceItemResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     protected static ?string $parentResource = StoreInvoiceResource::class;
+
+    protected static ?string $modelLabel = 'Items';
 
     public static function form(Schema $schema): Schema
     {
@@ -63,5 +66,10 @@ class StoreInvoiceItemResource extends Resource
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ]);
+    }
+
+    public static function canCreate(): bool
+    {
+        return false;
     }
 }

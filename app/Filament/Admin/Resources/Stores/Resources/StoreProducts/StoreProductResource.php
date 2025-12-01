@@ -26,6 +26,8 @@ class StoreProductResource extends Resource
 
     protected static ?string $parentResource = StoreResource::class;
 
+    protected static ?string $modelLabel = "Product";
+
     public static function form(Schema $schema): Schema
     {
         return StoreProductForm::configure($schema);

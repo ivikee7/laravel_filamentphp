@@ -7,12 +7,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 
-class StoreTransaction extends Model
+class StoreInvoiceTransaction extends Model
 {
     use softDeletes;
 
     protected $fillable = [
         'store_invoice_id',
+        'method',
         'amount',
         'remarks',
     ];

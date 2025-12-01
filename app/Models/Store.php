@@ -90,15 +90,20 @@ class Store extends Model
         });
     }
 
-    public function transactionCounters(): HasManyThrough
+    public function storeIntransactionCounters(): HasManyThrough
     {
         return $this->hasManyThrough(
-            StoreTransaction::class,  // Related model
+            StoreInvoiceTransaction::class,  // Related model
             StoreInvoice::class,     // Through model
             'store_id',              // Foreign key on through model
             'store_invoice_id',   // Foreign key on related model
             'id',                   // Local key on countries
             'id'              // Local key on users
         );
+    }
+
+    public function counters(): HasMany
+    {
+        return $this->hasMany(User::class, 'created_by');
     }
 }
