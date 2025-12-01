@@ -1,22 +1,22 @@
 <?php
 
-namespace App\Filament\Admin\Resources\Enquiries\Widgets;
+namespace App\Filament\Admin\Resources\Website\Enquiries\Widgets;
 
-use App\Models\Enquiry;
+use App\Models\WebsiteEnquiry;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 
-class EnquiryWidget extends ChartWidget
+class WebsiteEnquiryWidget extends ChartWidget
 {
-    protected ?string $heading = 'Enquiries Chart';
+    protected ?string $heading = 'Website Enquiry Chart';
 
     protected int | string | array $columnSpan = 'full';
 
     protected function getData(): array
     {
         // 1. Fetch data grouped by year and month
-        $data = Enquiry::select(
+        $data = WebsiteEnquiry::select(
             DB::raw('count(id) as count'),
             DB::raw('YEAR(created_at) as year'),
             DB::raw('MONTH(created_at) as month')
@@ -64,5 +64,4 @@ class EnquiryWidget extends ChartWidget
     {
         return 'line';
     }
-
 }

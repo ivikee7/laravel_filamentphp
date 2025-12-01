@@ -1,26 +1,29 @@
 <?php
 
-namespace App\Filament\Admin\Resources\Enquiries\Widgets;
+namespace App\Filament\Admin\Resources\Registrations\Widgets;
 
-use App\Models\Enquiry;
+use App\Models\Registration;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 
-class EnquiryWidget extends ChartWidget
+class RegistrationWidget extends ChartWidget
 {
-    protected ?string $heading = 'Enquiries Chart';
+    protected ?string $heading = 'Registration Widget';
 
-    protected int | string | array $columnSpan = 'full';
+    protected int|string|array $columnSpan = 'full';
+
+    protected bool $isCollapsible = true;
 
     protected function getData(): array
     {
         // 1. Fetch data grouped by year and month
-        $data = Enquiry::select(
+        $data = Registration::select(
             DB::raw('count(id) as count'),
             DB::raw('YEAR(created_at) as year'),
             DB::raw('MONTH(created_at) as month')
         )
+            ->withTrashed()
             ->groupBy('year', 'month')
             ->orderBy('year', 'asc')
             ->orderBy('month', 'asc')
@@ -64,5 +67,4 @@ class EnquiryWidget extends ChartWidget
     {
         return 'line';
     }
-
 }

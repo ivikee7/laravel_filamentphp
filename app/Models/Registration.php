@@ -104,7 +104,7 @@ class Registration extends Model
 
     public function student(): HasOne
     {
-        return $this->hasOne(Student::class);
+        return $this->hasOne(Student::class, 'registration_id', 'id');
     }
 
     public function academicYear(): BelongsTo{

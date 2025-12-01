@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources\Enquiries;
 
 use App\Filament\Admin\Resources\Enquiries\Pages\CreateEnquiry;
 use App\Filament\Admin\Resources\Enquiries\Pages\EditEnquiry;
+use App\Filament\Admin\Resources\Enquiries\Pages\EnquiryAnalytics;
 use App\Filament\Admin\Resources\Enquiries\Pages\ListEnquiries;
 use App\Filament\Admin\Resources\Enquiries\Pages\ViewEnquiry;
 use App\Filament\Admin\Resources\Enquiries\Schemas\EnquiryForm;

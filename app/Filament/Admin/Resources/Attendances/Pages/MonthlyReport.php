@@ -47,7 +47,9 @@ class MonthlyReport extends Page implements HasTable
     {
         return $table
             ->query(
-                $user = User::query()->with(['attendances' => function ($q) {
+                User::query()->whereDoesntHave('roles', function ($query) {
+                    $query->whereIn('name', ['Super Admin']);
+                })->with(['attendances' => function ($q) {
                     if ($this->fromDate) {
                         $q->whereDate('created_at', '>=', $this->fromDate);
                     }
@@ -89,7 +91,7 @@ class MonthlyReport extends Page implements HasTable
                     ->color('primary')
                     ->action(function (Collection $records) {
                         $print_data = array([
-                            'start_data'=> $this->fromDate,
+                            'start_data' => $this->fromDate,
                             'end_date' => $this->toDate,
                             'columns' => $this->getTable()->getColumns(),
                             'records' => $records->toArray(),

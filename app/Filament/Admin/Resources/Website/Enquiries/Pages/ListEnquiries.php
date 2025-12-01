@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources\Website\Enquiries\Pages;
 
+use App\Filament\Admin\Resources\Website\Enquiries\Widgets\WebsiteEnquiryWidget;
 use Filament\Actions\CreateAction;
 use App\Filament\Admin\Resources\Website\Enquiries\EnquiryResource;
 use Filament\Actions;
@@ -15,6 +16,13 @@ class ListEnquiries extends ListRecords
     {
         return [
             CreateAction::make(),
+        ];
+    }
+
+    protected function getFooterWidgets(): array
+    {
+        return [
+          WebsiteEnquiryWidget::class,
         ];
     }
 }
