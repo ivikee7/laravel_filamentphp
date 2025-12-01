@@ -9,6 +9,7 @@ use App\Filament\Admin\Resources\Enquiries\Pages\ViewEnquiry;
 use App\Filament\Admin\Resources\Enquiries\Schemas\EnquiryForm;
 use App\Filament\Admin\Resources\Enquiries\Schemas\EnquiryInfolist;
 use App\Filament\Admin\Resources\Enquiries\Tables\EnquiriesTable;
+use App\Filament\Admin\Resources\Enquiries\Widgets\EnquiryWidget;
 use App\Models\Enquiry;
 use BackedEnum;
 use Filament\Resources\Resource;
