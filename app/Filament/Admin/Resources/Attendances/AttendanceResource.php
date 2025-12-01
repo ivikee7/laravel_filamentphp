@@ -33,9 +33,9 @@ class AttendanceResource extends Resource
 {
     protected static ?string $model = Attendance::class;
 
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static string | \UnitEnum | null $navigationGroup = 'User';
+    protected static string|\UnitEnum|null $navigationGroup = 'User';
 
     public static function form(Schema $schema): Schema
     {
@@ -49,8 +49,10 @@ class AttendanceResource extends Resource
                     ->required()
                     ->searchable()
                     ->preload(),
+                Forms\Components\DateTimePicker::make('created_at')
+                    ->required(),
                 Select::make('creator_id')
-                    ->relationship('creator', 'name')
+                    ->relationship('createdBy', 'name')
                     ->default(null),
                 TextInput::make('type')
                     ->maxLength(20)
