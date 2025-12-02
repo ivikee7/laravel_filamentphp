@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 
 class RegistrationWidget extends ChartWidget
 {
-    protected ?string $heading = 'Registration';
+    protected ?string $heading = 'Registration Chart';
 
     protected int|string|array $columnSpan = 'full';
 
