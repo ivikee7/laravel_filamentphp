@@ -21,6 +21,7 @@ class WebsiteEnquiryWidget extends ChartWidget
             DB::raw('YEAR(created_at) as year'),
             DB::raw('MONTH(created_at) as month')
         )
+            ->withTrashed()
             ->groupBy('year', 'month')
             ->orderBy('year', 'asc')
             ->orderBy('month', 'asc')
