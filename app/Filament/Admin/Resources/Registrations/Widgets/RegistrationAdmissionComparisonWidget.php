@@ -19,46 +19,60 @@ class RegistrationAdmissionComparisonWidget extends ChartWidget
 
     protected function getData(): array
     {
-        // Define common base query logic
-        $baseQuery = function ($query) {
-            return $query
-                ->select(
-                    DB::raw('count(id) as count'),
-                    // We only group by month now
-                    DB::raw('MONTH(created_at) as month')
-                )
-                ->withTrashed()
-                ->groupBy('month')
-                ->orderBy('month', 'asc');
+        // Define how far back you want the timeline to start (e.g., 2 years ago)
+        $startDate = Carbon::now()->subYears(2)->startOfMonth();
+
+        // Common query parts
+        $querySelect = [
+            DB::raw('count(id) as count'),
+            // Use CONCAT or similar for a clean YYYY-MM label for sorting and display
+            DB::raw("DATE_FORMAT(created_at, '%Y-%m') as period"),
+        ];
+
+        // --- 1. Fetch ALL Registrations chronologically ---
+        $allRegistrations = Registration::select($querySelect)
+            ->withTrashed()
+            ->where('created_at', '>=', $startDate)
+            ->groupBy('period')
+            ->orderBy('period', 'asc')
+            ->get();
+
+        // --- 2. Fetch Admissions chronologically using whereHas('student') ---
+        $admissions = Registration::select($querySelect)
+            ->whereHas('student') // Use your existing relationship
+            ->withTrashed()
+            ->where('created_at', '>=', $startDate)
+            ->groupBy('period')
+            ->orderBy('period', 'asc')
+            ->get();
+
+        // We need a complete list of all periods (e.g., 2023-01, 2023-02, ..., 2025-11)
+        $allPeriods = $allRegistrations->pluck('period')->merge($admissions->pluck('period'))->unique()->sort()->values();
+
+        // Helper to map results to the full timeline, filling gaps with zeros
+        $mapToTimelineData = function ($results, $allPeriods) {
+            $dataMap = $results->pluck('count', 'period');
+            return $allPeriods->map(function ($period) use ($dataMap) {
+                return $dataMap->get($period, 0);
+            })->toArray();
         };
 
-        // --- 1. Fetch ALL Registrations data (Aggregated by month, all years) ---
-        $allRegistrationsAggregated = $baseQuery(Registration::query())->get();
+        $registrationData = $mapToTimelineData($allRegistrations, $allPeriods);
+        $admissionsData = $mapToTimelineData($admissions, $allPeriods);
 
-        // --- 2. Fetch Admissions data (Aggregated by month, all years) ---
-        $admissionsAggregated = $baseQuery(Registration::whereHas('student'))->get();
+        // Map the YYYY-MM labels to a cleaner format for the chart's footer (e.g., "Jan 23", "Feb 23")
+        $chartLabels = $allPeriods->map(function ($period) {
+            return Carbon::createFromFormat('Y-m', $period)->format('M y');
+        })->toArray();
 
-        // Colors for the two lines:
+        // Colors
         $registrationColor = '#FF6384'; // Red
         $admissionColor = '#36A2EB';    // Blue
-
-        // Helper function to map flat results into a 12-month array
-        $mapToMonthlyArray = function ($results) {
-            $monthlyDataPoints = array_fill(0, 12, 0); // 0-indexed array for Chart.js
-            foreach ($results as $record) {
-                // DB month (1-12) maps to array index (0-11)
-                $monthlyDataPoints[$record->month - 1] = $record->count;
-            }
-            return $monthlyDataPoints;
-        };
-
-        $registrationData = $mapToMonthlyArray($allRegistrationsAggregated);
-        $admissionsData = $mapToMonthlyArray($admissionsAggregated);
 
         return [
             'datasets' => [
                 [
-                    'label' => 'Total Registrations (All Time Monthly Avg)',
+                    'label' => 'Total Registrations',
                     'data' => $registrationData,
                     'backgroundColor' => $registrationColor . '40',
                     'borderColor' => $registrationColor,
@@ -66,7 +80,7 @@ class RegistrationAdmissionComparisonWidget extends ChartWidget
                     'borderWidth' => 2,
                 ],
                 [
-                    'label' => 'Admissions (All Time Monthly Avg)',
+                    'label' => 'Total Admissions',
                     'data' => $admissionsData,
                     'backgroundColor' => $admissionColor . '40',
                     'borderColor' => $admissionColor,
@@ -74,8 +88,8 @@ class RegistrationAdmissionComparisonWidget extends ChartWidget
                     'borderWidth' => 2,
                 ],
             ],
-            // The labels on the X-axis are fixed Jan-Dec
-            'labels' => ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            // These labels now represent the full chronological timeline
+            'labels' => $chartLabels,
         ];
     }
 
