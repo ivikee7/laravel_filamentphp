@@ -14,8 +14,6 @@ class RegistrationAdmissionWidget extends ChartWidget
 
     protected bool $isCollapsible = true;
 
-    protected ?string $maxHeight = '300px';
-
     protected function getData(): array
     {
         $startDate = Carbon::now()->subYears(4)->startOfYear();
