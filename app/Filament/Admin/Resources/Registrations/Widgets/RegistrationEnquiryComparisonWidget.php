@@ -2,19 +2,20 @@
 
 namespace App\Filament\Admin\Resources\Registrations\Widgets;
 
+use App\Models\Enquiry;
 use App\Models\Registration;
 use Filament\Widgets\ChartWidget;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
-class RegistrationAdmissionComparisonWidget extends ChartWidget
+class RegistrationEnquiryComparisonWidget extends ChartWidget
 {
-    protected ?string $heading = 'Registration vs Admission Comparison Chart';
+    protected ?string $heading = 'Registration vs Enquiry Comparison Chart';
 
     protected int|string|array $columnSpan = 'full';
 
     protected bool $isCollapsible = true;
+
     protected ?string $maxHeight = '300px';
 
     protected function getData(): array
@@ -30,7 +31,7 @@ class RegistrationAdmissionComparisonWidget extends ChartWidget
         ];
 
         // --- 1. Fetch ALL Registrations chronologically ---
-        $allRegistrations = Registration::select($querySelect)
+        $registrations = Registration::select($querySelect)
             ->withTrashed()
             ->where('created_at', '>=', $startDate)
             ->groupBy('period')
@@ -38,8 +39,7 @@ class RegistrationAdmissionComparisonWidget extends ChartWidget
             ->get();
 
         // --- 2. Fetch Admissions chronologically using whereHas('student') ---
-        $admissions = Registration::select($querySelect)
-            ->whereHas('student') // Use your existing relationship
+        $enquiries = Enquiry::select($querySelect)
             ->withTrashed()
             ->where('created_at', '>=', $startDate)
             ->groupBy('period')
@@ -47,7 +47,7 @@ class RegistrationAdmissionComparisonWidget extends ChartWidget
             ->get();
 
         // We need a complete list of all periods (e.g., 2023-01, 2023-02, ..., 2025-11)
-        $allPeriods = $allRegistrations->pluck('period')->merge($admissions->pluck('period'))->unique()->sort()->values();
+        $allPeriods = $registrations->pluck('period')->merge($enquiries->pluck('period'))->unique()->sort()->values();
 
         // Helper to map results to the full timeline, filling gaps with zeros
         $mapToTimelineData = function ($results, $allPeriods) {
@@ -57,8 +57,8 @@ class RegistrationAdmissionComparisonWidget extends ChartWidget
             })->toArray();
         };
 
-        $registrationData = $mapToTimelineData($allRegistrations, $allPeriods);
-        $admissionsData = $mapToTimelineData($admissions, $allPeriods);
+        $registrationData = $mapToTimelineData($registrations, $allPeriods);
+        $enquiriesData = $mapToTimelineData($enquiries, $allPeriods);
 
         // Map the YYYY-MM labels to a cleaner format for the chart's footer (e.g., "Jan 23", "Feb 23")
         $chartLabels = $allPeriods->map(function ($period) {
@@ -67,7 +67,7 @@ class RegistrationAdmissionComparisonWidget extends ChartWidget
 
         // Colors
         $registrationColor = '#FF6384'; // Red
-        $admissionColor = '#36A2EB';    // Blue
+        $enquiryColor = '#36A2EB';    // Blue
 
         return [
             'datasets' => [
@@ -80,10 +80,10 @@ class RegistrationAdmissionComparisonWidget extends ChartWidget
                     'borderWidth' => 2,
                 ],
                 [
-                    'label' => 'Total Admissions',
-                    'data' => $admissionsData,
-                    'backgroundColor' => $admissionColor . '40',
-                    'borderColor' => $admissionColor,
+                    'label' => 'Total Enquiries',
+                    'data' => $enquiriesData,
+                    'backgroundColor' => $enquiryColor . '40',
+                    'borderColor' => $enquiryColor,
                     'tension' => 0.4,
                     'borderWidth' => 2,
                 ],
