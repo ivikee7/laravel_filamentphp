@@ -20,7 +20,7 @@ class RegistrationAdmissionComparisonWidget extends ChartWidget
     protected function getData(): array
     {
         // Define how far back you want the timeline to start (e.g., 2 years ago)
-        $startDate = Carbon::now()->subYears(2)->startOfMonth();
+        $startDate = Carbon::now()->subYears(1)->startOfMonth();
 
         // Common query parts
         $querySelect = [
