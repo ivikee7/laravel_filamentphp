@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources\Registrations\Pages;
 
 use App\Filament\Admin\Resources\Registrations\RegistrationResource;
+use App\Filament\Admin\Resources\Registrations\Widgets\RegistrationAdmissionComparisonWidget;
 use App\Filament\Admin\Resources\Registrations\Widgets\RegistrationAdmissionWidget;
 use App\Filament\Admin\Resources\Registrations\Widgets\RegistrationWidget;
 use App\Filament\Admin\Resources\Registrations\Widgets\RegistrationWithoutAdmissionWidget;
@@ -28,6 +29,7 @@ class ListRegistrations extends ListRecords
             RegistrationWidget::class,
             RegistrationAdmissionWidget::class,
             RegistrationWithoutAdmissionWidget::class,
+            RegistrationAdmissionComparisonWidget::class,
         ];
     }
 }
