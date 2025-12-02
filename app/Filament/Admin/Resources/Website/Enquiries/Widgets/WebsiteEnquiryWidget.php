@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Resources\Website\Enquiries\Widgets;
 use App\Models\WebsiteEnquiry;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class WebsiteEnquiryWidget extends ChartWidget
@@ -15,6 +16,8 @@ class WebsiteEnquiryWidget extends ChartWidget
 
     protected function getData(): array
     {
+        $startDate = Carbon::now()->subYears(5)->startOfYear();
+        
         // 1. Fetch data grouped by year and month
         $data = WebsiteEnquiry::select(
             DB::raw('count(id) as count'),
@@ -22,6 +25,7 @@ class WebsiteEnquiryWidget extends ChartWidget
             DB::raw('MONTH(created_at) as month')
         )
             ->withTrashed()
+            ->where('created_at', '>=', $startDate)
             ->groupBy('year', 'month')
             ->orderBy('year', 'asc')
             ->orderBy('month', 'asc')

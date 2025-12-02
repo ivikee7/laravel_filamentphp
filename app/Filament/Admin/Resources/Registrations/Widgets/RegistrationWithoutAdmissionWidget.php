@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Resources\Registrations\Widgets;
 use App\Models\Registration;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class RegistrationWithoutAdmissionWidget extends ChartWidget
@@ -15,6 +16,8 @@ class RegistrationWithoutAdmissionWidget extends ChartWidget
 
     protected function getData(): array
     {
+        $startDate = Carbon::now()->subYears(5)->startOfYear();
+
         // 1. Fetch data grouped by year and month
         $data = Registration::select(
             DB::raw('count(id) as count'),
@@ -23,6 +26,7 @@ class RegistrationWithoutAdmissionWidget extends ChartWidget
         )
             ->whereDoesntHave('student')
             ->withTrashed()
+            ->where('created_at', '>=', $startDate)
             ->groupBy('year', 'month')
             ->orderBy('year', 'asc')
             ->orderBy('month', 'asc')
