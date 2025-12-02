@@ -16,7 +16,7 @@ class RegistrationAdmissionWidget extends ChartWidget
 
     protected function getData(): array
     {
-        $startDate = Carbon::now()->subYears(5)->startOfYear();
+        $startDate = Carbon::now()->subYears(4)->startOfYear();
 
         // 1. Fetch data grouped by year and month
         $data = Registration::select(
