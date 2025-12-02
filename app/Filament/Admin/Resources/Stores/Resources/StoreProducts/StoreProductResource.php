@@ -53,9 +53,9 @@ class StoreProductResource extends Resource
     public static function getPages(): array
     {
         return [
-            'create' => CreateStoreProduct::route('/create'),
-            'view' => ViewStoreProduct::route('/{record}'),
-            'edit' => EditStoreProduct::route('/{record}/edit'),
+//            'create' => CreateStoreProduct::route('/create'),
+//            'view' => ViewStoreProduct::route('/{record}'),
+//            'edit' => EditStoreProduct::route('/{record}/edit'),
         ];
     }
 
