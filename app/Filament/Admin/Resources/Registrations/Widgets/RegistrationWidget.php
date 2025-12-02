@@ -15,6 +15,8 @@ class RegistrationWidget extends ChartWidget
     protected int|string|array $columnSpan = 'full';
 
     protected bool $isCollapsible = true;
+    
+    protected ?string $maxHeight = '300px';
 
     protected function getData(): array
     {

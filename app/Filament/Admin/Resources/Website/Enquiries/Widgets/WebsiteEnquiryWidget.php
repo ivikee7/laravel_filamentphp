@@ -14,6 +14,8 @@ class WebsiteEnquiryWidget extends ChartWidget
 
     protected int | string | array $columnSpan = 'full';
 
+    protected ?string $maxHeight = '300px';
+
     protected function getData(): array
     {
         $startDate = Carbon::now()->subYears(4)->startOfYear();
