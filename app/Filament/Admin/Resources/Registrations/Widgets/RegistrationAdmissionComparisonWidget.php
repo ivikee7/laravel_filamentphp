@@ -19,73 +19,61 @@ class RegistrationAdmissionComparisonWidget extends ChartWidget
 
     protected function getData(): array
     {
-        $startDate = Carbon::now()->subYears(1)->startOfYear();
-        $colors = ['#FF6384', '#36A2EB']; // Red for Registrations, Blue for Admissions
-
-        // --- 1. Fetch ALL Registrations data (Registrations dataset) ---
-        $allRegistrations = Registration::select(
-            DB::raw('count(id) as count'),
-            DB::raw('YEAR(created_at) as year'),
-            DB::raw('MONTH(created_at) as month')
-        )
-            ->withTrashed()
-            ->where('created_at', '>=', $startDate)
-            ->groupBy('year', 'month')
-            ->orderBy('year', 'asc')
-            ->orderBy('month', 'asc')
-            ->get();
-
-        // --- 2. Fetch Admissions data (Admissions dataset) ---
-        // Assuming your Registration model has a 'student' relationship (hasOne/belongsTo Student model)
-        $admissions = Registration::select(
-            DB::raw('count(registrations.id) as count'),
-            DB::raw('YEAR(registrations.created_at) as year'),
-            DB::raw('MONTH(registrations.created_at) as month')
-        )
-            ->whereHas('student')
-            ->withTrashed()
-            ->where('registrations.created_at', '>=', $startDate)
-            ->groupBy('year', 'month')
-            ->orderBy('year', 'asc')
-            ->orderBy('month', 'asc')
-            ->get();
-
-
-        // Group data by year for processing
-        $groupedRegistrations = $allRegistrations->groupBy('year');
-        $groupedAdmissions = $admissions->groupBy('year');
-
-        $datasets = [];
-
-        // Helper to process and add a dataset to the array
-        $processDataset = function ($dataCollection, $label, $color, &$datasetsArray) {
-            foreach ($dataCollection as $year => $monthlyRecords) {
-                // Initialize data points for all 12 months with 0
-                $monthlyDataPoints = array_fill(1, 12, 0);
-
-                // Fill in the actual counts where data exists
-                foreach ($monthlyRecords as $record) {
-                    $monthlyDataPoints[$record->month] = $record->count;
-                }
-
-                $datasetsArray[] = [
-                    'label' => $label . ' ' . $year, // e.g., 'Registrations 2024'
-                    'data' => array_values($monthlyDataPoints),
-                    'backgroundColor' => $color . '40',
-                    'borderColor' => $color,
-                    'tension' => 0.4,
-                    'borderWidth' => 2,
-                ];
-            }
+        // Define common base query logic
+        $baseQuery = function ($query) {
+            return $query
+                ->select(
+                    DB::raw('count(id) as count'),
+                    // We only group by month now
+                    DB::raw('MONTH(created_at) as month')
+                )
+                ->withTrashed()
+                ->groupBy('month')
+                ->orderBy('month', 'asc');
         };
 
-        // Add both datasets to the final array
-        $processDataset($groupedRegistrations, 'Total Registrations', $colors[0], $datasets);
-        $processDataset($groupedAdmissions, 'Admissions (Students)', $colors[1], $datasets);
+        // --- 1. Fetch ALL Registrations data (Aggregated by month, all years) ---
+        $allRegistrationsAggregated = $baseQuery(Registration::query())->get();
 
+        // --- 2. Fetch Admissions data (Aggregated by month, all years) ---
+        $admissionsAggregated = $baseQuery(Registration::whereHas('student'))->get();
+
+        // Colors for the two lines:
+        $registrationColor = '#FF6384'; // Red
+        $admissionColor = '#36A2EB';    // Blue
+
+        // Helper function to map flat results into a 12-month array
+        $mapToMonthlyArray = function ($results) {
+            $monthlyDataPoints = array_fill(0, 12, 0); // 0-indexed array for Chart.js
+            foreach ($results as $record) {
+                // DB month (1-12) maps to array index (0-11)
+                $monthlyDataPoints[$record->month - 1] = $record->count;
+            }
+            return $monthlyDataPoints;
+        };
+
+        $registrationData = $mapToMonthlyArray($allRegistrationsAggregated);
+        $admissionsData = $mapToMonthlyArray($admissionsAggregated);
 
         return [
-            'datasets' => $datasets,
+            'datasets' => [
+                [
+                    'label' => 'Total Registrations (All Time Monthly Avg)',
+                    'data' => $registrationData,
+                    'backgroundColor' => $registrationColor . '40',
+                    'borderColor' => $registrationColor,
+                    'tension' => 0.4,
+                    'borderWidth' => 2,
+                ],
+                [
+                    'label' => 'Admissions (All Time Monthly Avg)',
+                    'data' => $admissionsData,
+                    'backgroundColor' => $admissionColor . '40',
+                    'borderColor' => $admissionColor,
+                    'tension' => 0.4,
+                    'borderWidth' => 2,
+                ],
+            ],
             // The labels on the X-axis are fixed Jan-Dec
             'labels' => ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
         ];
