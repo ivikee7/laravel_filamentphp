@@ -53,9 +53,9 @@ class StoreInvoiceTransactionResource extends Resource
     public static function getPages(): array
     {
         return [
-            'create' => CreateStoreInvoiceTransaction::route('/create'),
-            'view' => ViewStoreInvoiceTransaction::route('/{record}'),
-            'edit' => EditStoreInvoiceTransaction::route('/{record}/edit'),
+//            'create' => CreateStoreInvoiceTransaction::route('/create'),
+//            'view' => ViewStoreInvoiceTransaction::route('/{record}'),
+//            'edit' => EditStoreInvoiceTransaction::route('/{record}/edit'),
         ];
     }
 
