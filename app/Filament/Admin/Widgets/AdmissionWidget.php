@@ -12,8 +12,6 @@ class AdmissionWidget extends ChartWidget
 {
     protected ?string $heading = 'Admission Widget';
 
-    protected ?string $maxHeight = '300px';
-
     protected function getData(): array
     {
         $startDate = Carbon::now()->subYears(4)->startOfYear();

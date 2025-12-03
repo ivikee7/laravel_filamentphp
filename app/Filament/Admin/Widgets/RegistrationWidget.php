@@ -16,11 +16,12 @@ class RegistrationWidget extends ChartWidget
     {
         $startDate = Carbon::now()->subYears(4)->startOfYear();
         // 1. Fetch data grouped by year and month
-        $data = Registration::select(
-            DB::raw('count(id) as count'),
-            DB::raw('YEAR(created_at) as year'),
-            DB::raw('MONTH(created_at) as month')
-        )
+        $data = Registration::query()
+            ->select(
+                DB::raw('count(id) as count'),
+                DB::raw('YEAR(created_at) as year'),
+                DB::raw('MONTH(created_at) as month')
+            )
             ->withTrashed()
             ->where('created_at', '>=', $startDate)
             ->groupBy('year', 'month')
