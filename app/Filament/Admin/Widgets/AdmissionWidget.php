@@ -12,6 +12,8 @@ class AdmissionWidget extends ChartWidget
 {
     protected ?string $heading = 'Admission Widget';
 
+    protected static ?int $sort = 4;
+
     protected function getData(): array
     {
         $startDate = Carbon::now()->subYears(4)->startOfYear();

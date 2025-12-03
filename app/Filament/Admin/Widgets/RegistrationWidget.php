@@ -12,6 +12,8 @@ class RegistrationWidget extends ChartWidget
 {
     protected ?string $heading = 'Registration Widget';
 
+    protected static ?int $sort = 5;
+
     protected function getData(): array
     {
         $startDate = Carbon::now()->subYears(4)->startOfYear();

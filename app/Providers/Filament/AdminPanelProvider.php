@@ -3,6 +3,12 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Admin\Pages\IDCard;
+use App\Filament\Admin\Widgets\AdmissionWidget;
+use App\Filament\Admin\Widgets\EnquiryWidget;
+use App\Filament\Admin\Widgets\RegistrationWidget;
+use App\Filament\Admin\Widgets\TodayAdmissionWidget;
+use App\Filament\Admin\Widgets\TodayRegistrationWidget;
+use App\Models\Enquiry;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -15,6 +21,7 @@ use Filament\Support\Enums\Width;
 use Filament\Tables\Table;
 use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
+use Filament\Widgets\Widget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
