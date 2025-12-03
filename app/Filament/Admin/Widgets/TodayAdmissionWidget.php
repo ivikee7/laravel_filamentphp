@@ -29,6 +29,7 @@ class TodayAdmissionWidget extends StatsOverviewWidget
         // Format the count into a Filament Stat card
         return [
             Stat::make('Today\'s Admissions', $todayAdmissionsCount)
+                ->columnSpan(3)
                 ->description('New students signed up today')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success'),
