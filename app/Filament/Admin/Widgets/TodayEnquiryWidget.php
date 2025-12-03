@@ -20,13 +20,13 @@ class TodayEnquiryWidget extends StatsOverviewWidget
         $todayEnd = Carbon::today()->endOfDay();
 
         // Query the User model for today's count with the 'student' relationship
-        $todayRegistrationsCount = Enquiry::query()
+        $todayEnquiriesCount = Enquiry::query()
             ->whereBetween('created_at', [$todayStart, $todayEnd])
             ->count();
 
         // Format the count into a Filament Stat card
         return [
-            Stat::make('Today\'s Registrations', $todayRegistrationsCount)
+            Stat::make('Today\'s Enquiries', $todayEnquiriesCount)
                 ->description('New students signed up today')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success'),
