@@ -3,9 +3,8 @@
 namespace App\Filament\Admin\Resources\Stores;
 
 use App\Filament\Admin\Resources\Stores\Pages\Counters;
+use App\Filament\Admin\Resources\Stores\Pages\ListStudents;
 use App\Filament\Admin\Resources\Stores\Pages\Seller;
-use App\Filament\Admin\Resources\Stores\Pages\StoreInvoices;
-use App\Filament\Admin\Resources\Stores\Pages\StoreTransactions;
 use App\Filament\Admin\Resources\Stores\Pages\StudentCart;
 use App\Filament\Admin\Resources\Stores\Pages\StudentProducts;
 use App\Filament\Admin\Resources\Stores\Pages\CreateStore;
@@ -64,9 +63,11 @@ class StoreResource extends Resource
             'view' => ViewStore::route('/{record}'),
             'edit' => EditStore::route('/{record}/edit'),
             // custom
+            'list-students' => ListStudents::route('/{record}/list-students'),
+            //
             'seller' => Seller::route('/{record}/seller'),
-            'students-products' => StudentProducts::route('/{record}/seller/{student}/products'),
-            'students-cart' => StudentCart::route('/{record}/seller-student/{student}/cart'),
+            'students-products' => StudentProducts::route('/{record}/list-students/{student}/products'),
+            'students-cart' => StudentCart::route('/{record}/list-students/{student}/cart'),
 //            'invoices' => StoreInvoices::route('/{record}/invoices'),
 //            'transactions' => StoreTransactions::route('/{record}/transactions'),
             'counters' => Counters::route('/{record}/counters'),

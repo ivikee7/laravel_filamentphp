@@ -20,39 +20,40 @@ class StoreInfolist
     {
         return $schema
             ->components([
-                TextEntry::make('name'),
-                TextEntry::make('address')
-                    ->placeholder('-'),
-                TextEntry::make('city')
-                    ->placeholder('-'),
-                TextEntry::make('state')
-                    ->placeholder('-'),
-                TextEntry::make('pin_code')
-                    ->placeholder('-'),
-                TextEntry::make('phone')
-                    ->placeholder('-'),
-                TextEntry::make('email')
-                    ->label('Email address')
-                    ->placeholder('-'),
-                TextEntry::make('is_active'),
-                TextEntry::make('created_by')
-                    ->numeric()
-                    ->placeholder('-'),
-                TextEntry::make('updated_by')
-                    ->numeric()
-                    ->placeholder('-'),
-                TextEntry::make('deleted_by')
-                    ->numeric()
-                    ->placeholder('-'),
-                TextEntry::make('created_at')
-                    ->dateTime()
-                    ->placeholder('-'),
-                TextEntry::make('updated_at')
-                    ->dateTime()
-                    ->placeholder('-'),
-                TextEntry::make('deleted_at')
-                    ->dateTime()
-                    ->visible(fn(Store $record): bool => $record->trashed()),
+                Section::make()->schema([
+                    TextEntry::make('name')->hiddenLabel()->prefix('Name: '),
+                    TextEntry::make('address')->hiddenLabel()->prefix('Address: ')
+                        ->placeholder('-'),
+                    TextEntry::make('city')->hiddenLabel()->prefix('City: ')
+                        ->placeholder('-'),
+                    TextEntry::make('state')->hiddenLabel()->prefix('State: ')
+                        ->placeholder('-'),
+                    TextEntry::make('pin_code')->hiddenLabel()->prefix('Pin Code: ')
+                        ->placeholder('-'),
+                    TextEntry::make('phone')->hiddenLabel()->prefix('Phone: ')
+                        ->placeholder('-'),
+                    TextEntry::make('email')->hiddenLabel()->prefix('Email Address: ')
+                        ->label('Email address')
+                        ->placeholder('-'),
+                    TextEntry::make('is_active')->hiddenLabel()->prefix('Status: '),
+                    TextEntry::make('createdBy.name')->hiddenLabel()->prefix('Created By: ')
+                        ->placeholder('-'),
+                    TextEntry::make('updatedBy.name')->hiddenLabel()->prefix('Updated By: ')
+                        ->placeholder('-'),
+                    TextEntry::make('deletedBy.name')->hiddenLabel()->prefix('Deleted By: ')
+                        ->placeholder('-'),
+                    TextEntry::make('created_at')->hiddenLabel()->prefix('Created At: ')
+                        ->dateTime()
+                        ->placeholder('-'),
+                    TextEntry::make('updated_at')->hiddenLabel()->prefix('Updated At: ')
+                        ->dateTime()
+                        ->placeholder('-'),
+                    TextEntry::make('deleted_at')->hiddenLabel()->prefix('Deleted At: ')
+                        ->dateTime()
+                        ->visible(fn(Store $record): bool => $record->trashed()),
+                ])
+                    ->columns(3)
+                    ->columnSpanFull()
             ]);
     }
 }

@@ -5,16 +5,15 @@ namespace App\Filament\Admin\Resources\Stores\Resources\StoreInvoices;
 use App\Filament\Admin\Resources\Stores\Resources\StoreInvoices\Pages\CreateStoreInvoice;
 use App\Filament\Admin\Resources\Stores\Resources\StoreInvoices\Pages\EditStoreInvoice;
 use App\Filament\Admin\Resources\Stores\Resources\StoreInvoices\Pages\InvoiceItems;
+use App\Filament\Admin\Resources\Stores\Resources\StoreInvoices\Pages\InvoiceTransactions;
 use App\Filament\Admin\Resources\Stores\Resources\StoreInvoices\Pages\ViewStoreInvoice;
 use App\Filament\Admin\Resources\Stores\Resources\StoreInvoices\RelationManagers\StoreInvoiceItemsRelationManager;
 use App\Filament\Admin\Resources\Stores\Resources\StoreInvoices\RelationManagers\StoreInvoiceTransactionsRelationManager;
-use App\Filament\Admin\Resources\Stores\Resources\StoreInvoices\RelationManagers\StoreTransactionsRelationManager;
 use App\Filament\Admin\Resources\Stores\Resources\StoreInvoices\Schemas\StoreInvoiceForm;
 use App\Filament\Admin\Resources\Stores\Resources\StoreInvoices\Schemas\StoreInvoiceInfolist;
 use App\Filament\Admin\Resources\Stores\Resources\StoreInvoices\Tables\StoreInvoicesTable;
 use App\Filament\Admin\Resources\Stores\StoreResource;
 use App\Models\StoreInvoice;
-use App\Models\StoreTransaction;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -53,7 +52,6 @@ class StoreInvoiceResource extends Resource
         return [
             StoreInvoiceTransactionsRelationManager::class,
             StoreInvoiceItemsRelationManager::class,
-            InvoiceItems::class,
         ];
     }
 

@@ -148,6 +148,8 @@ class StudentProducts extends Page implements HasInfolists, HasTable, HasActions
                 TextEntry::make('city')->prefix('City: ')->hiddenLabel(),
                 TextEntry::make('state')->prefix('State: ')->hiddenLabel(),
                 TextEntry::make('pin_code')->prefix('Pin Code: ')->hiddenLabel(),
+                TextEntry::make('student.classAssignment.class.name')->prefix('Class: ')->hiddenLabel(),
+                TextEntry::make('student.classAssignment.section.name')->prefix('Section: ')->hiddenLabel(),
             ])->columns(3);
     }
 
