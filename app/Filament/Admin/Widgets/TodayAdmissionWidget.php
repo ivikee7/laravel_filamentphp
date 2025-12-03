@@ -26,13 +26,15 @@ class TodayAdmissionWidget extends StatsOverviewWidget
             ->whereBetween('created_at', [$todayStart, $todayEnd])
             ->count();
 
+        $color = ($todayAdmissionsCount > 0) ? 'success' : 'warning';
+
         // Format the count into a Filament Stat card
         return [
             Stat::make('Today\'s Admissions', $todayAdmissionsCount)
                 ->columnSpan(3)
                 ->description('New students signed up today')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
-                ->color('success'),
+                ->color($color),
         ];
     }
 }

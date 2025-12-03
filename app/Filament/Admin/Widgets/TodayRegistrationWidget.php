@@ -26,13 +26,15 @@ class TodayRegistrationWidget extends StatsOverviewWidget
             ->whereBetween('created_at', [$todayStart, $todayEnd])
             ->count();
 
+        $color = ($todayRegistrationsCount > 0) ? 'success' : 'warning';
+
         // Format the count into a Filament Stat card
         return [
             Stat::make('Today\'s Registrations', $todayRegistrationsCount)
                 ->columnSpan(3)
                 ->description('New students signed up today')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
-                ->color('success'),
+                ->color($color),
         ];
     }
 }
