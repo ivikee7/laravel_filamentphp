@@ -8,21 +8,19 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
-class RegistrationAdmissionWidget extends ChartWidget
+class RegistrationWidget extends ChartWidget
 {
-    protected ?string $heading = 'Registration Admission Widget';
+    protected ?string $heading = 'Registration Widget';
 
     protected function getData(): array
     {
-        $startDate = Carbon::now()->subMonths(12)->startOfYear();
-
+        $startDate = Carbon::now()->subYears(4)->startOfYear();
         // 1. Fetch data grouped by year and month
         $data = Registration::select(
             DB::raw('count(id) as count'),
             DB::raw('YEAR(created_at) as year'),
             DB::raw('MONTH(created_at) as month')
         )
-            ->whereHas('student')
             ->withTrashed()
             ->where('created_at', '>=', $startDate)
             ->groupBy('year', 'month')
