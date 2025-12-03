@@ -28,7 +28,7 @@ class TodayWebsiteEnquiryWidget extends StatsOverviewWidget
         return [
             Stat::make('Today\'s Website Enquiries', $todayWebsiteEnquiriesCount)
                 ->columnSpan(3)
-                ->description('New students signed up today')
+                ->description('New users signed up today')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success'),
         ];
