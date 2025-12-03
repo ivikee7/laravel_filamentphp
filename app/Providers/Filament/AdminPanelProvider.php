@@ -44,8 +44,6 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 AccountWidget::class,
 //                FilamentInfoWidget::class,
-                \App\Filament\Admin\Resources\Registrations\Widgets\RegistrationAdmissionComparisonWidget::class,
-                \App\Filament\Admin\Resources\Registrations\Widgets\RegistrationEnquiryComparisonWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
