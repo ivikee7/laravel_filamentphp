@@ -33,7 +33,7 @@ class ListProducts extends Page implements HasTable, HasForms
     {
         return [
             Action::make('store')->url(StoreResource::getUrl('view', ['record' => $this->record])),
-            Action::make('list-products')->url(StoreResource::getUrl('list-products', ['record' => $this->record])),
+            Action::make('list-invoices')->url(StoreResource::getUrl('list-invoices', ['record' => $this->record])),
             Action::make('list-transactions')->url(StoreResource::getUrl('list-transactions', ['record' => $this->record])),
             Action::make('list-students')->url(StoreResource::getUrl('list-students', ['record' => $this->record])),
         ];
