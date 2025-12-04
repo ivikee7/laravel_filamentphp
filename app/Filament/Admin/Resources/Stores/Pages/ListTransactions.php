@@ -4,12 +4,19 @@ namespace App\Filament\Admin\Resources\Stores\Pages;
 
 use App\Filament\Admin\Resources\Stores\StoreResource;
 use Filament\Actions\Action;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
 use Filament\Resources\Pages\Concerns\InteractsWithRecord;
 use Filament\Resources\Pages\Page;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Concerns\InteractsWithTable;
+use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
-class ListTransactions extends Page
+class ListTransactions extends Page implements HasTable, HasForms
 {
-    use InteractsWithRecord;
+    use InteractsWithRecord, InteractsWithTable, InteractsWithForms;
 
     protected static string $resource = StoreResource::class;
 
@@ -27,5 +34,26 @@ class ListTransactions extends Page
             Action::make('list-invoices')->url(StoreResource::getUrl('list-invoices', ['record' => $this->record])),
             Action::make('list-students')->url(StoreResource::getUrl('list-students', ['record' => $this->record])),
         ];
+    }
+
+    protected function table(Table $table): Table
+    {
+        return $table
+            ->query($this->getTableQuery()) // Define the base query
+            ->columns([
+                TextColumn::make('id')->label('#')->sortable()->searchable(),
+                TextColumn::make('user.id')->label('User Id')->sortable()->searchable(),
+                TextColumn::make('user.name')->label('Name')->sortable()->searchable(),
+                TextColumn::make('subtotal_amount')->label('Subtotal'),
+                TextColumn::make('discount_amount')->label('Discount'),
+                TextColumn::make('total_amount')->label('Total'),
+                TextColumn::make('total_paid_amount')->label('Paid'),
+                TextColumn::make('total_due_amount')->label('Due'),
+            ]);
+    }
+
+    protected function getTableQuery(): Builder
+    {
+        return $this->record->storeInvoices->storeInvoiceTransactions->getQuery();
     }
 }
