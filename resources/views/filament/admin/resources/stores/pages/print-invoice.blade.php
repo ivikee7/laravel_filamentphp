@@ -188,9 +188,19 @@
             <div class="flex-end">
                 <div class="w-half">
                     <div class="flex-between border-t-total">
-                        <span class="font-bold">Total Amount Due:</span>
+                        <span class="font-bold">Total:</span>
                         <span
-                            class="font-bold">{{ number_format($this->invoice->total_due_amount ?? 8000.00, 2) }}</span>
+                            class="font-bold">{{ number_format($this->invoice->total_amount ?? 00, 2) }}</span>
+                    </div>
+                    <div class="flex-between border-t-total">
+                        <span class="font-bold">Paid:</span>
+                        <span
+                            class="font-bold">{{ number_format($this->invoice->total_paid_amount ?? 00, 2) }}</span>
+                    </div>
+                    <div class="flex-between border-t-total">
+                        <span class="font-bold">Due:</span>
+                        <span
+                            class="font-bold">{{ number_format($this->invoice->total_due_amount ?? 00, 2) }}</span>
                     </div>
                 </div>
             </div>
