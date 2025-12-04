@@ -25,12 +25,15 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use SebastianBergmann\LinesOfCode\Counter;
+use UnitEnum;
 
 class StoreResource extends Resource
 {
     protected static ?string $model = Store::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+
+    protected static string | UnitEnum | null $navigationGroup = 'Store management system';
 
     public static function form(Schema $schema): Schema
     {
