@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources\Stores;
 
 use App\Filament\Admin\Resources\Stores\Pages\ListInvoices;
+use App\Filament\Admin\Resources\Stores\Pages\ListProducts;
 use App\Filament\Admin\Resources\Stores\Pages\ListStudents;
 use App\Filament\Admin\Resources\Stores\Pages\ListTransactions;
 use App\Filament\Admin\Resources\Stores\Pages\PrintInvoice;
@@ -34,7 +35,7 @@ class StoreResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    protected static string | UnitEnum | null $navigationGroup = 'Store management system';
+    protected static string|UnitEnum|null $navigationGroup = 'Store management system';
 
     public static function form(Schema $schema): Schema
     {
@@ -67,6 +68,7 @@ class StoreResource extends Resource
             'view' => ViewStore::route('/{record}'),
             'edit' => EditStore::route('/{record}/edit'),
             //
+            'list-products' => ListProducts::route('/{record}/list-products'),
             'list-students' => ListStudents::route('/{record}/list-students'),
             'students-products' => StudentProducts::route('/{record}/list-students/{student}/products'),
             'students-cart' => StudentCart::route('/{record}/list-students/{student}/cart'),

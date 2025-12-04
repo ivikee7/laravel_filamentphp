@@ -30,6 +30,7 @@ class ListStudents extends Page implements HasTable
     {
         return [
             Action::make('store')->url(StoreResource::getUrl('view', ['record' => $this->record])),
+            Action::make('list-products')->url(StoreResource::getUrl('list-products', ['record' => $this->record])),
             Action::make('list-invoices')->url(StoreResource::getUrl('list-invoices', ['record' => $this->record])),
             Action::make('list-transactions')->url(StoreResource::getUrl('list-transactions', ['record' => $this->record])),
         ];
