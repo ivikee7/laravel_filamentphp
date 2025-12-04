@@ -64,13 +64,11 @@ class StoreResource extends Resource
             'edit' => EditStore::route('/{record}/edit'),
             // custom
             'list-students' => ListStudents::route('/{record}/list-students'),
-            //
-            'seller' => Seller::route('/{record}/seller'),
             'students-products' => StudentProducts::route('/{record}/list-students/{student}/products'),
             'students-cart' => StudentCart::route('/{record}/list-students/{student}/cart'),
+            //
 //            'invoices' => StoreInvoices::route('/{record}/invoices'),
 //            'transactions' => StoreTransactions::route('/{record}/transactions'),
-            'counters' => Counters::route('/{record}/counters'),
         ];
     }
 

@@ -63,8 +63,7 @@ class StudentProducts extends Page implements HasInfolists, HasTable, HasActions
     protected function getHeaderActions(): array
     {
         return [
-            Action::make('seller')
-                ->url(StoreResource::getUrl('seller', ['record' => $this->record])),
+            Action::make('list-students')->url(StoreResource::getUrl('list-students', ['record' => $this->record])),
             Action::make('Cart')
                 ->url(StoreResource::getUrl('students-cart', ['record' => $this->record, 'student' => $this->targetStudent]))
         ];

@@ -45,7 +45,7 @@ class StudentCart extends Page implements HasTable
     protected function getHeaderActions(): array
     {
         return [
-            Action::make('seller')->url(StoreResource::getUrl('seller', ['record' => $this->record])),
+            Action::make('list-students')->url(StoreResource::getUrl('list-students', ['record' => $this->record])),
             Action::make('student-products')
                 ->label('Product\'s')->url(StoreResource::getUrl('students-products', ['record' => $this->record, $this->student])),
         ];
