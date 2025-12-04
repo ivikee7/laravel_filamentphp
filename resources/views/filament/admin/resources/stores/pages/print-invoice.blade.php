@@ -17,17 +17,17 @@
             <div>
                 <div>
                     <h2>To:</h2>
-                    <p>{{ $this->invoice->user->name ?? '' }}</p>
-                    <p>{{ $this->invoice->user->address ?? '' }}</p>
-                    <p>{{ $this->invoice->user->email ?? '' }}</p>
+                    <p>Address: {{ $this->invoice->user->name ?? '' }}, {{ $this->invoice->user->address ?? '' }}</p>
+                    <p>Contact: {{ $this->invoice->user->primary_contact_number ?? '' }}
+                        , {{ $this->invoice->user->secondary_contact_number ?? '' }}</p>
                 </div>
 
                 <div>
                     <h2>From:</h2>
                     <p>{{ $record->name ?? '' }}</p>
-                    <p>{{ $record->address ?? '' }}</p>
-                    <p>Phone: {{ $record->phone ?? '' }} |
-                        Email: {{ $record->email ?? '' }}</p>
+                    <p>Address: {{ $record->address ?? '' }}, {{ $record->city ?? '' }}, {{ $record->state ?? '' }}
+                        , {{ $record->pin_code ?? '' }}</p>
+                    <p>Contact: {{ $record->phone ?? '' }}, {{ $record->email ?? '' }}</p>
                 </div>
             </div>
 
