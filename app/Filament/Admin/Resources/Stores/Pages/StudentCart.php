@@ -105,12 +105,21 @@ class StudentCart extends Page implements HasTable
         return $table
             ->query($this->getCartQuery())
             ->columns([
-                TextColumn::make('storeProduct.id')->label('Product ID'),
-                TextColumn::make('storeProduct.name')->label('Name'),
-                TextColumn::make('storeProduct.description')->label('Description'),
-                TextColumn::make('storeProduct.price'),
-                TextColumn::make('quantity'),
-                TextColumn::make('ProductTotal'),
+                TextColumn::make('storeProduct.id')
+                    ->wrap()
+                    ->label('Product ID'),
+                TextColumn::make('storeProduct.name')
+                    ->wrap()
+                    ->label('Name'),
+                TextColumn::make('storeProduct.description')
+                    ->wrap()
+                    ->label('Description'),
+                TextColumn::make('storeProduct.price')
+                    ->wrap(),
+                TextColumn::make('quantity')
+                    ->wrap(),
+                TextColumn::make('ProductTotal')
+                    ->wrap(),
             ])->recordActions([
                 Action::make('cart-increase')
                     ->label('+')

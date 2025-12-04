@@ -19,9 +19,9 @@ class ViewStore extends ViewRecord
     {
         return [
             EditAction::make(),
+            Action::make('list-invoices')->url(StoreResource::getUrl('list-invoices', ['record' => $this->record])),
+            Action::make('list-transactions')->url(StoreResource::getUrl('list-transactions', ['record' => $this->record])),
             Action::make('list-students')->url(StoreResource::getUrl('list-students', ['record' => $this->record])),
-//            Action::make('invoices')->url(StoreResource::getUrl('invoices', ['record' => $this->record])),
-//            Action::make('transactions')->url(StoreResource::getUrl('transactions', ['record' => $this->record])),
         ];
     }
 

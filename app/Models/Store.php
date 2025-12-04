@@ -92,7 +92,7 @@ class Store extends Model
         });
     }
 
-    public function storeIntransactionCounters(): HasManyThrough
+    public function storeInvoiceTransactions(): HasManyThrough
     {
         return $this->hasManyThrough(
             StoreInvoiceTransaction::class,  // Related model
