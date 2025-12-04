@@ -28,4 +28,5 @@ class ListInvoices extends Page
             Action::make('list-students')->url(StoreResource::getUrl('list-students', ['record' => $this->record])),
         ];
     }
+    
 }
