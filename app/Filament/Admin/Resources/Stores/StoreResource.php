@@ -70,7 +70,7 @@ class StoreResource extends Resource
             'list-students' => ListStudents::route('/{record}/list-students'),
             'students-products' => StudentProducts::route('/{record}/list-students/{student}/products'),
             'students-cart' => StudentCart::route('/{record}/list-students/{student}/cart'),
-            'print-invoice' => PrintInvoice::route('/{record}/store-invoices/{invoice}/print'),
+            'print-invoice' => PrintInvoice::route('/{record}/store-invoices/{invoiceId}/print'),
             //
             'list-invoices' => ListInvoices::route('/{record}/list-invoices'),
             'list-transactions' => ListTransactions::route('/{record}/list-transactions'),

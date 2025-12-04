@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources\Stores\Resources\StoreInvoices\Pages;
 
 use App\Filament\Admin\Resources\Stores\Resources\StoreInvoices\StoreInvoiceResource;
+use App\Filament\Admin\Resources\Stores\StoreResource;
 use App\Models\StoreInvoice;
 use Filament\Actions\Action;
 use Filament\Actions\EditAction;
@@ -103,6 +104,24 @@ class ViewStoreInvoice extends ViewRecord
 
                     $livewire->dispatch('$refresh');
                 }),
+            Action::make('print-invoice')
+                // We use the $record variable provided by the parent ViewRecord class scope,
+                // which IS the current StoreInvoice model itself.
+                ->url(function (Model $record): string {
+                    // $record is the StoreInvoice instance here.
+
+                    // The route we defined previously expected a 'store' ID first ({record})
+                    // and then the 'invoice' ID ({invoiceId}).
+                    // We must determine which Store the invoice belongs to first.
+
+                    return StoreResource::getUrl('print-invoice', [
+                        // Get the store ID from the invoice record
+                        'record' => $record->store_id,
+                        // The invoice ID is the record's ID
+                        'invoiceId' => $record->id
+                    ]);
+                })
+                ->openUrlInNewTab(),
         ];
     }
 
