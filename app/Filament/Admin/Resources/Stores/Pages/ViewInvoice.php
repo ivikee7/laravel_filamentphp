@@ -224,14 +224,11 @@ class ViewInvoice extends Page implements HasTable, HasForms, HasInfolists
     protected function table(Table $table): Table
     {
         return $table
-            ->query($this->getTableQuery()) // Define the base query
+            ->query($this->getTableQuery())
             ->columns([
                 TextColumn::make('id')->label('#')->sortable()->searchable()->wrap(),
                 TextColumn::make('storeInvoice.id')->label('InvoiceId')->sortable()->searchable()->wrap(),
-                TextColumn::make('storeProduct.id')->label('PID')->sortable()->searchable()->wrap(),
-                TextColumn::make('name')->label('Name')->sortable()->searchable()->wrap(),
-                TextColumn::make('description')->label('Description')->sortable()->searchable()->wrap(),
-                TextColumn::make('price')->label('Price')->sortable()->searchable()->wrap(),
+                TextColumn::make('amount')->sortable()->searchable()->wrap(),
                 TextColumn::make('createdBy.name')
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->label('Created By')->wrap(),
@@ -247,35 +244,6 @@ class ViewInvoice extends Page implements HasTable, HasForms, HasInfolists
 
     protected function getTableQuery(): Builder
     {
-        return StoreInvoiceItem::query()
-            ->withWhereRelation('storeInvoice', 'store_id', $this->record->id);
-    }
-
-
-    // Invoice payments table
-    protected function getPaymentsTable(): Table
-    {
-        return $this->makeTable('payments')
-            ->query($this->getPaymentsTableQuery())
-            ->columns([
-                TextColumn::make('id'),
-                TextColumn::make('amount'),
-                TextColumn::make('createdBy.name')->label('Created By')->toggleable(isToggledHiddenByDefault: false),
-                TextColumn::make('updatedBy.name')->label('Updated By')->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('deletedBy.name')->label('Deleted By')->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('created_at')->dateTime()->toggleable(isToggledHiddenByDefault: false),
-                TextColumn::make('updated_at')->dateTime()->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('deleted_at')->dateTime()->toggleable(isToggledHiddenByDefault: true),
-            ])
-            ->heading('Payment History');
-    }
-
-    protected function getPaymentsTableQuery(): Builder
-    {
-//        dd($this->invoice->storeInvoiceTransactions()->getQuery()->get());
-//        dd($this->invoiceId);
-//        dd(StoreInvoiceTransaction::where('store_invoice_id', $this->invoiceId)->get());
-//        return StoreInvoiceTransaction::where('store_invoice_id', $this->invoiceId)->getQuery()->query();
         return $this->invoice->storeInvoiceTransactions()->getQuery();
     }
 }

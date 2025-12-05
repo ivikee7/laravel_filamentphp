@@ -7,7 +7,6 @@
             }}
         @endforeach
     </div>
-    {{ $this->getPaymentsTable() }}
     {{ $this->table }}
 
 </x-filament-panels::page>
