@@ -13,39 +13,11 @@
         text-decoration: none;
     }
 </style>
+@stack('styles')
 <body>
-<!-- The content of your print-monthly-report view will be injected here -->
+
 {{ $slot }}
 
-{{-- Script to automatically trigger print and return to the previous page --}}
-<script>
-    // Function to handle the print process
-    function doPrintAndReturn() {
-        window.focus(); // Ensure the window is active
-        window.print();
-    }
-
-    // Add event listener for when printing is finished or canceled using modern API
-    if (window.matchMedia) {
-        var mediaQueryList = window.matchMedia('print');
-        mediaQueryList.addListener(function (mql) {
-            if (!mql.matches) {
-                // This fires when the user closes the print dialog
-                window.history.back();
-            }
-        });
-    }
-
-    // Fallback for browsers that don't support matchMedia for print events
-    window.onafterprint = function () {
-        window.history.back();
-    };
-
-    // Trigger the process immediately when the page loads
-    window.onload = function () {
-        doPrintAndReturn();
-    }
-</script>
-
+@stack('scripts')
 </body>
 </html>
