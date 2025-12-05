@@ -5,15 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $title ?? config('app.name') }}</title>
     <!-- If you need Tailwind or specific styles, link them here -->
+    @stack('styles')
 </head>
-<style>
-    * {
-        margin: 0;
-        padding: 0;
-        text-decoration: none;
-    }
-</style>
-@stack('styles')
 <body>
 
 {{ $slot }}

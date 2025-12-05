@@ -1,10 +1,19 @@
 @push('styles')
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            text-decoration: none;
+        }
+
+        body {
+            padding: 0.5rem;
+        }
+
         .grid-container {
-            display: grid !important; /* Establishes a grid container */
-            /* Defines two columns: one fixed width (200px), one flexible (1fr) */
+            display: grid !important;
             grid-template-columns: 50% 1fr !important;
-            gap: 10px !important; /* Adds space between the grid items */
+            gap: 10px !important;
         }
 
         .item {
@@ -12,11 +21,37 @@
             border: 1px solid #ccc !important;
         }
 
-        /*.table {*/
-        /*    border: 1px solid black !important;*/
-        /*    display: block !important;*/
-        /*    width: 100% !important;*/
-        /*}*/
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 0.1rem; /* Add padding inside cells */
+            text-align: left; /* Align text to the left */
+            vertical-align: top; /* Align content to the top of the cell */
+        }
+
+        th {
+            background-color: #f2f2f2; /* Light grey background for headers */
+            font-weight: bold; /* Bold text for headers */
+        }
+
+        /* Table Bordered Styling (using a class for reusability) */
+        .table-bordered {
+            border: 1px solid #dee2e6; /* Outer border for the entire table */
+        }
+
+        .table-bordered th,
+        .table-bordered td {
+            border: 1px solid #dee2e6; /* Borders for individual cells */
+        }
+
+        /* Optional: Styling for hover effect on rows */
+        .table-hover tbody tr:hover {
+            background-color: #f5f5f5; /* Light grey background on hover */
+        }
     </style>
 @endpush
 
@@ -25,14 +60,14 @@
         @for($i=0; $i<2;$i++)
             <div class="item">
                 <div>
-                    <h1>INVOICE</h1>
+                    <h3>INVOICE</h3>
                 </div>
-                <table>
+                <table class="table">
                     <tr>
                         <td>
                             <div>
                                 <p>Invoice #: {{ $this->invoice->id }}</p>
-                                <h2>To:</h2>
+                                <h4>To:</h4>
                                 <p>Address: {{ $this->invoice->user->name ?? '' }}
                                     , {{ $this->invoice->user->address ?? '' }}</p>
                                 <p>Contact: {{ $this->invoice->user->primary_contact_number ?? '' }}
@@ -44,7 +79,7 @@
                         <td>
                             <div>
                                 <p>Date: {{ $this->invoice->created_at->format('M d, Y') }}</p>
-                                <h2>From:</h2>
+                                <h4>From:</h4>
                                 <p>{{ $record->name ?? '' }}</p>
                                 <p>Address: {{ $record->address ?? '' }}, {{ $record->city ?? '' }}
                                     , {{ $record->state ?? '' }}
@@ -55,11 +90,11 @@
                     </tr>
                 </table>
 
-                <table class="table">
+                <table class="table table-bordered">
                     <thead>
                     <tr>
                         <th>Description</th>
-                        <th>Quantity</th>
+                        <th>Qty</th>
                         <th>Price</th>
                         <th>Total</th>
                     </tr>
@@ -85,21 +120,22 @@
                     </tbody>
                     <tfoot>
                     <tr>
-                        <td></td>
-                        <td></td>
-                        <td>Total</td>
+                        <td rowspan="4"></td>
+                        <td colspan="2">Total</td>
                         <td>{{ number_format($this->invoice->total_amount ?? 00, 2) }}</td>
                     </tr>
                     <tr>
-                        <td></td>
-                        <td></td>
-                        <td>Paid</td>
+                        @if($this->invoice->discount_amount > 0)
+                            <td colspan="2">Discount</td>
+                            <td>{{ number_format($this->invoice->discount_amount ?? 00, 2) }}</td>
+                        @endif
+                    </tr>
+                    <tr>
+                        <td colspan="2">Paid</td>
                         <td>{{ number_format($this->invoice->total_paid_amount ?? 00, 2) }}</td>
                     </tr>
                     <tr>
-                        <td></td>
-                        <td></td>
-                        <td>Due</td>
+                        <td colspan="2">Due</td>
                         <td>{{ number_format($this->invoice->total_due_amount ?? 00, 2) }}</td>
                     </tr>
                     </tfoot>
@@ -108,3 +144,34 @@
         @endfor
     </div>
 </div>
+
+@push('scripts')
+    <script>
+        // Function to handle the print process
+        function doPrintAndReturn() {
+            window.focus(); // Ensure the window is active
+            window.print();
+        }
+
+        // Add event listener for when printing is finished or canceled using modern API
+        if (window.matchMedia) {
+            var mediaQueryList = window.matchMedia('print');
+            mediaQueryList.addListener(function (mql) {
+                if (!mql.matches) {
+                    // This fires when the user closes the print dialog
+                    window.history.back();
+                }
+            });
+        }
+
+        // Fallback for browsers that don't support matchMedia for print events
+        window.onafterprint = function () {
+            window.history.back();
+        };
+
+        // Trigger the process immediately when the page loads
+        window.onload = function () {
+            doPrintAndReturn();
+        }
+    </script>
+@endpush
