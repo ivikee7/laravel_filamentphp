@@ -12,6 +12,7 @@ use App\Filament\Admin\Resources\Stores\Pages\StudentProducts;
 use App\Filament\Admin\Resources\Stores\Pages\CreateStore;
 use App\Filament\Admin\Resources\Stores\Pages\EditStore;
 use App\Filament\Admin\Resources\Stores\Pages\ListStores;
+use App\Filament\Admin\Resources\Stores\Pages\ViewInvoice;
 use App\Filament\Admin\Resources\Stores\Pages\ViewStore;
 use App\Filament\Admin\Resources\Stores\RelationManagers\StoreInvoicesRelationManager;
 use App\Filament\Admin\Resources\Stores\RelationManagers\StoreProductsRelationManager;
@@ -75,6 +76,8 @@ class StoreResource extends Resource
             'print-invoice' => PrintInvoice::route('/{record}/store-invoices/{invoiceId}/print'),
             //
             'list-invoices' => ListInvoices::route('/{record}/list-invoices'),
+            'view-invoice' => ViewInvoice::route('/{record}/list-invoices/{invoiceId}'),
+            //
             'list-transactions' => ListTransactions::route('/{record}/list-transactions'),
         ];
     }

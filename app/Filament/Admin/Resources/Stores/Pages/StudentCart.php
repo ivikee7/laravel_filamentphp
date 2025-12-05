@@ -74,6 +74,7 @@ class StudentCart extends Page implements HasTable
             'subtotal_amount' => $subtotal,
             'discount_amount' => $discount,
             'total_amount' => $total,
+            'created_by' => auth()->id(),
         ]);
 
         // 4. Prepare invoice items data for bulk insert

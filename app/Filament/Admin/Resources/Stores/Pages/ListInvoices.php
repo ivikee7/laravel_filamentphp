@@ -51,6 +51,13 @@ class ListInvoices extends Page implements HasTable, HasForms
                 TextColumn::make('total_amount')->label('Total'),
                 TextColumn::make('total_paid_amount')->label('Paid'),
                 TextColumn::make('total_due_amount')->label('Due'),
+            ])->recordActions([
+                Action::make('view-invoice')
+                    ->label('View')
+                    ->url(fn($record): string => StoreResource::getUrl('view-invoice', [
+                        'record' => $this->record->id,
+                        'invoiceId' => $record->id,
+                    ])),
             ]);
     }
 

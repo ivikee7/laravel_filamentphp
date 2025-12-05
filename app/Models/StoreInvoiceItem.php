@@ -16,6 +16,9 @@ class StoreInvoiceItem extends Model
         'subtotal_amount',
         'discount_amount',
         'total_amount',
+        'created_by',
+        'updated_by',
+        'deleted_by',
     ];
 
     protected static function boot()
@@ -62,5 +65,10 @@ class StoreInvoiceItem extends Model
     public function storeInvoice(): BelongsTo
     {
         return $this->belongsTo(StoreInvoice::class, 'store_invoice_id');
+    }
+
+    public function storeProduct(): BelongsTo
+    {
+        return $this->belongsTo(StoreProduct::class, 'store_product_id');
     }
 }
