@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 
 class RegistrationAdmissionWidget extends ChartWidget
 {
-    protected ?string $heading = 'Registration (Admission) Chart';
+    protected ?string $heading = 'Registration (Successful Admissions) Chart';
 
     protected bool $isCollapsible = true;
 
