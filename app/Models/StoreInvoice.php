@@ -19,6 +19,7 @@ class StoreInvoice extends Model
         'subtotal_amount',
         'discount_amount',
         'total_amount',
+        'remarks',
     ];
 
     protected static function boot()
@@ -98,9 +99,14 @@ class StoreInvoice extends Model
     protected function totalDueAmount(): Attribute
     {
         return Attribute::get(function () {
-            $totalAmount = $this->total_amount;
-            $paidAmount = $this->storeInvoiceTransactions()->sum('amount');
-            return $totalAmount - $paidAmount;
+            $subtotalAmount = $this->subtotal_amount ?? 0; // Good practice to handle nulls
+
+            // FIX: Access as a property (snake_case), do not call as a function ()
+            $totalPaidAmount = $this->total_paid_amount;
+
+            $discountAmount = $this->discount_amount ?? 0;
+
+            return $subtotalAmount - $totalPaidAmount - $discountAmount;
         });
     }
 }

@@ -54,7 +54,7 @@ class CollectionStatusChart extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => 'Total Amount Collected Daily',
+                    'label' => 'Total Amount Collected',
                     'data' => $data,
                     'borderColor' => 'rgb(75, 192, 192)',
                     'backgroundColor' => 'rgba(75, 192, 192, 0.1)',

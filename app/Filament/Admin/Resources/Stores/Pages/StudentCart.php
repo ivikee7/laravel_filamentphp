@@ -152,9 +152,9 @@ class StudentCart extends Page implements HasTable
                             ->success()
                             ->send();
                         $this->clearCart();
-                        return redirect()->to(StoreInvoiceResource::getUrl('view', ['store' => $this->record->id, 'record' => $invoice->id]));
+                        return redirect()->to(StoreResource::getUrl('view-invoice', ['record' => $this->record->id, 'invoiceId' => $invoice->id]));
                     }),
-                Action::make("cart-remove")
+                Action::make("clear-cart")
                     ->label('Clear Cart')
                     ->action(fn() => $this->clearCart())
                     ->color('danger'),
@@ -164,11 +164,6 @@ class StudentCart extends Page implements HasTable
     public function clearCart(): void
     {
         $this->getCartQuery()->delete();
-        Notification::make()
-            ->title('Cart Cleared')
-            ->success()
-            ->send();
-        $this->dispatch('cartUpdated');
     }
 
     protected function getCartQuery(): Builder

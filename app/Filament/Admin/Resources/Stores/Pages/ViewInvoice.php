@@ -64,92 +64,72 @@ class ViewInvoice extends Page implements HasTable, HasForms, HasInfolists
         return $infolist
             ->record($this->invoice)
             ->schema([
-                Section::make('Invoice')->schema([
-                    Group::make()->schema([
-                        TextEntry::make('id')
-                            ->prefix('Invoice #: ')
-                            ->hiddenLabel(),
-                        TextEntry::make('user.name')
-                            ->label('name')->prefix('Name: ')->hiddenLabel(),
-                        TextEntry::make('user.address')
-                            ->label('Address')
-                            ->getStateUsing(function ($record): string {
-                                $user = $record->user;
-
-                                if (!$user) {
-                                    return 'N/A';
-                                }
-
-                                return $user->address . ', ' .
-                                    $user->city . ', ' .
-                                    $user->state . ', ' .
-                                    $user->pin_code;
+                Section::make('Invoice')
+                    ->headerActions([
+                        Action::make('print-invoice')
+                            ->url(function (Model $record): string {
+                                return StoreResource::getUrl('print-invoice', [
+                                    'record' => $this->record->id,
+                                    'invoiceId' => $record->id
+                                ]);
                             })
-                            ->prefix('Address: ')
-                            ->hiddenLabel(),
-                        TextEntry::make('user.primary_contact_number')->prefix('Contact number: ')->hiddenLabel(),
-                        TextEntry::make('user.email')->prefix('Email: ')->hiddenLabel(),
-                    ]),
-                    Group::make()->schema([
-                        TextEntry::make('created_at')
-                            ->prefix('Date: ')
-                            ->hiddenLabel(),
-                        TextEntry::make('store.name')
-                            ->prefix('Name: ')
-                            ->hiddenLabel(),
-                        TextEntry::make('store.address')
-                            ->label('Address')
-                            ->getStateUsing(function ($record): string {
-                                $store = $record->store;
-
-                                if (!$store) {
-                                    return 'N/A';
-                                }
-
-                                return $store->address . ', ' .
-                                    $store->city . ', ' .
-                                    $store->state . ', ' .
-                                    $store->pin_code;
-                            })
-                            ->prefix('Address: ')
-                            ->hiddenLabel(),
-                        TextEntry::make('store.phone')->prefix('Contact number: ')->hiddenLabel(),
-                        TextEntry::make('store.email')->prefix('Email: ')->hiddenLabel(),
+                            ->openUrlInNewTab(),
                     ])
-                ])->columns(2),
-                Section::make('Payment')->components([
-                    TextEntry::make('subtotal_amount')
-                        ->numeric()->hiddenLabel()->prefix('Subtotal: '),
-                    TextEntry::make('discount_amount')
-                        ->numeric()->hiddenLabel()->prefix('Discount: '),
-                    TextEntry::make('total_amount')
-                        ->numeric()->hiddenLabel()->prefix('Total: '),
-                    TextEntry::make('totalPaidAmount')
-                        ->numeric()->hiddenLabel()->prefix('Paid: ')->color('success'),
-                    TextEntry::make('totalDueAmount')
-                        ->numeric()->hiddenLabel()->prefix('Due: ')->color('danger'),
-                    TextEntry::make('remarks'),
-                    TextEntry::make('createdBy.name')->label('Created By')
-                        ->numeric()
-                        ->placeholder('-'),
-                    TextEntry::make('updatedBy.name')
-                        ->numeric()->label('Updated By')
-                        ->placeholder('-'),
-                    TextEntry::make('deletedBy.name')
-                        ->numeric()->label('Deleted By')
-                        ->placeholder('-'),
-                    TextEntry::make('created_at')
-                        ->dateTime()->label('Created At')
-                        ->placeholder('-'),
-                    TextEntry::make('updated_at')
-                        ->dateTime()->label('Updated At')
-                        ->placeholder('-'),
-                    TextEntry::make('deleted_at')
-                        ->dateTime()->label('Deleted At')
-                        ->visible(fn(StoreInvoice $record): bool => $record->trashed()),
-                ])->columns(5),
-                Group::make()->schema([
-                    Actions::make([
+                    ->schema([
+                        Group::make()->schema([
+                            TextEntry::make('id')
+                                ->prefix('Invoice #: ')
+                                ->hiddenLabel(),
+                            TextEntry::make('user.name')
+                                ->label('name')->prefix('Name: ')->hiddenLabel(),
+                            TextEntry::make('user.address')
+                                ->label('Address')
+                                ->getStateUsing(function ($record): string {
+                                    $user = $record->user;
+
+                                    if (!$user) {
+                                        return 'N/A';
+                                    }
+
+                                    return $user->address . ', ' .
+                                        $user->city . ', ' .
+                                        $user->state . ', ' .
+                                        $user->pin_code;
+                                })
+                                ->prefix('Address: ')
+                                ->hiddenLabel(),
+                            TextEntry::make('user.primary_contact_number')->prefix('Contact number: ')->hiddenLabel(),
+                            TextEntry::make('user.email')->prefix('Email: ')->hiddenLabel(),
+                        ]),
+                        Group::make()->schema([
+                            TextEntry::make('created_at')
+                                ->prefix('Date: ')
+                                ->hiddenLabel(),
+                            TextEntry::make('store.name')
+                                ->prefix('Name: ')
+                                ->hiddenLabel(),
+                            TextEntry::make('store.address')
+                                ->label('Address')
+                                ->getStateUsing(function ($record): string {
+                                    $store = $record->store;
+
+                                    if (!$store) {
+                                        return 'N/A';
+                                    }
+
+                                    return $store->address . ', ' .
+                                        $store->city . ', ' .
+                                        $store->state . ', ' .
+                                        $store->pin_code;
+                                })
+                                ->prefix('Address: ')
+                                ->hiddenLabel(),
+                            TextEntry::make('store.phone')->prefix('Contact number: ')->hiddenLabel(),
+                            TextEntry::make('store.email')->prefix('Email: ')->hiddenLabel(),
+                        ])
+                    ])->columns(2),
+                Section::make('Payment')
+                    ->headerActions([
                         Action::make('make-payment')
                             ->label('Payment')
                             ->modalHeading('Invoice payment')
@@ -157,20 +137,17 @@ class ViewInvoice extends Page implements HasTable, HasForms, HasInfolists
                                 Group::make([
                                     TextInput::make('amount')
                                         ->label('Amount (₹)')
-                                        ->minValue(0)
-                                        // Use 'Get' to access other form values if needed, but 'Model $record'
-                                        // still refers to the current table record for the max value calculation.
+                                        ->minValue(1)
                                         ->maxValue(function (Model $record) {
-                                            // Ensure these attributes exist on your StoreInvoice model
                                             return ($record->subtotal_amount - $record->discount_amount - $record->total_paid_amount);
                                         })
-                                        ->numeric() // Add numeric validation if it's a number field
+                                        ->numeric()
                                         ->required(),
                                     Select::make('method')->options([
                                         'bank' => 'Bank',
                                         'cash' => 'Cash',
                                         'upi' => 'UPI',
-                                    ]),
+                                    ])->required(),
                                     TextInput::make('remarks')
                                         ->label('Remarks')
                                         ->maxLength(100),
@@ -183,55 +160,83 @@ class ViewInvoice extends Page implements HasTable, HasForms, HasInfolists
                                     'method' => $data['method'],
                                     'created_by' => auth()->id(),
                                 ]);
-                            }),
-                        Action::make('make-discount')
-                            ->label('Apply Discount')
-                            ->color('primary')
-                            ->modalHeading('Apply Discount to Cart')
-                            ->schema([
-                                TextInput::make('discount_amount')
-                                    ->label('Amount (₹)')
-                                    ->numeric()
-                                    ->default(function (Model $record) {
-                                        return $record->discount_amount;
-                                    })
-                                    ->minValue(0)
-                                    ->maxValue(function (Model $record) {
-                                        return ($record->subtotal_amount - $record->total_paid_amount);
-                                    })
-                                    ->helperText('Enter a fixed amount discount.')
-                                    ->required(),
-                                TextInput::make('remarks')
-                                    ->label('Remarks')
-                                    ->default(function (Model $record) {
-                                        return $record->remarks;
-                                    })
-                                    ->maxLength(100)
-                            ])
-                            ->action(function (array $data, Model $record): void {
-                                $invoice = StoreInvoice::query()->findOrFail($record->id);
-                                $invoice_subtotal_amount = $invoice->subtotal_amount;
-                                $invoice_grand_total = $invoice_subtotal_amount - $data['discount_amount'];
-                                $invoice->discount_amount = $data['discount_amount'];
-                                $invoice->total_amount = $invoice_grand_total;
-                                $invoice->remarks = $data['remarks'];
-                                $invoice->save();
 
                                 Notification::make()
-                                    ->title("Discount '{$data['discount_amount']}' applied successfully!")
+                                    ->title("Payment of {$data['amount']} was successful!")
+                                    ->success()
+                                    ->send();
+
+                            }),
+                        Action::make('make-discount')
+                            ->label('Discount')
+                            ->modalHeading('Discount')
+                            ->schema([
+                                Group::make([
+                                    TextInput::make('discount_amount')
+                                        ->label('Amount (₹)')
+                                        ->default(function (Model $record) {
+                                            return $record->discount_amount;
+                                        })
+                                        ->minValue(0)
+                                        ->maxValue(function (Model $record) {
+                                            return ($record->subtotal_amount - $record->total_paid_amount);
+                                        })
+                                        ->numeric()
+                                        ->required(),
+                                    TextInput::make('remarks')
+                                        ->label('Remarks')
+                                        ->default(function (Model $record) {
+                                            return $record->remarks;
+                                        })
+                                        ->maxLength(100),
+                                ])->columns(2)
+                            ])
+                            ->action(function (array $data, Model $record): void {
+                                $record->update([
+                                    'discount_amount' => $data['discount_amount'],
+                                    'total_amount' => $record->subtotal_amount - $data['discount_amount'],
+                                    'remarks' => $data['remarks'],
+                                    'updated_by' => auth()->id(),
+                                ]);
+                                Notification::make()
+                                    ->title("{$data['discount_amount']} discount applied successfully!")
                                     ->success()
                                     ->send();
                             }),
-                        Action::make('print-invoice')
-                            ->url(function (Model $record): string {
-                                return StoreResource::getUrl('print-invoice', [
-                                    'record' => $this->record->id,
-                                    'invoiceId' => $record->id
-                                ]);
-                            })
-                            ->openUrlInNewTab(),
-                    ]),
-                ]),
+                    ])
+                    ->components([
+                        TextEntry::make('subtotal_amount')
+                            ->numeric()->hiddenLabel()->prefix('Subtotal: '),
+                        TextEntry::make('discount_amount')
+                            ->numeric()->hiddenLabel()->prefix('Discount: '),
+                        TextEntry::make('total_amount')
+                            ->numeric()->hiddenLabel()->prefix('Total: '),
+                        TextEntry::make('total_paid_amount')
+                            ->numeric()->hiddenLabel()->prefix('Paid: ')->color('success'),
+                        TextEntry::make('total_due_amount')
+                            ->numeric()->hiddenLabel()->prefix('Due: ')->color('danger'),
+                        TextEntry::make('remarks'),
+                        TextEntry::make('createdBy.name')->label('Created By')
+                            ->numeric()
+                            ->placeholder('-'),
+                        TextEntry::make('updatedBy.name')
+                            ->numeric()->label('Updated By')
+                            ->placeholder('-'),
+                        TextEntry::make('deletedBy.name')
+                            ->numeric()->label('Deleted By')
+                            ->placeholder('-')
+                            ->visible(fn(StoreInvoice $record): bool => $record->trashed()),
+                        TextEntry::make('created_at')
+                            ->dateTime()->label('Created At')
+                            ->placeholder('-'),
+                        TextEntry::make('updated_at')
+                            ->dateTime()->label('Updated At')
+                            ->placeholder('-'),
+                        TextEntry::make('deleted_at')
+                            ->dateTime()->label('Deleted At')
+                            ->visible(fn(StoreInvoice $record): bool => $record->trashed()),
+                    ])
+                    ->columns(5),
             ]);
     }
 
@@ -256,7 +261,9 @@ class ViewInvoice extends Page implements HasTable, HasForms, HasInfolists
                 TextColumn::make('created_at')->toggleable(isToggledHiddenByDefault: true)->wrap(),
                 TextColumn::make('updated_at')->toggleable(isToggledHiddenByDefault: true)->wrap(),
                 TextColumn::make('deleted_at')->toggleable(isToggledHiddenByDefault: true)->wrap(),
-            ])->heading('Payment History');
+            ])
+            ->defaultSort('id', 'desc')
+            ->heading('Payment History');
     }
 
     protected function getTableQuery(): Builder

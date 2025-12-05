@@ -70,7 +70,8 @@
                                 <p>Invoice #: {{ $this->invoice->id }}</p>
                                 <h4>To:</h4>
                                 <p>Name: {{ $this->invoice->user->name ?? '' }}</p>
-                                <p>Address: {{ $this->invoice->user->address ?? '' }}, {{ $this->invoice->user->city ?? '' }}
+                                <p>Address: {{ $this->invoice->user->address ?? '' }}
+                                    , {{ $this->invoice->user->city ?? '' }}
                                     , {{ $this->invoice->user->state ?? '' }}
                                     , {{ $this->invoice->user->pin_code ?? '' }}</p>
                                 <p>Contact: {{ $this->invoice->user->primary_contact_number ?? '' }}</p>
@@ -122,15 +123,19 @@
                     </tbody>
                     <tfoot>
                     <tr>
-                        <td rowspan="4"></td>
-                        <td colspan="2">Total</td>
-                        <td>{{ number_format($this->invoice->total_amount ?? 00, 2) }}</td>
+                        <td rowspan="5"></td>
+                        <td colspan="2">Sub Total</td>
+                        <td>{{ number_format($this->invoice->subtotal_amount ?? 00, 2) }}</td>
                     </tr>
                     <tr>
                         @if($this->invoice->discount_amount > 0)
                             <td colspan="2">Discount</td>
                             <td>{{ number_format($this->invoice->discount_amount ?? 00, 2) }}</td>
                         @endif
+                    </tr>
+                    <tr>
+                        <td colspan="2">Total</td>
+                        <td>{{ number_format($this->invoice->total_amount ?? 00, 2) }}</td>
                     </tr>
                     <tr>
                         <td colspan="2">Paid</td>
