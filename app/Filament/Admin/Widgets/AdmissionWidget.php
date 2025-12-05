@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 
 class AdmissionWidget extends ChartWidget
 {
-    protected ?string $heading = 'Registration (Admission) Widget';
+    protected ?string $heading = 'Admission Widget';
 
     protected static ?int $sort = 4;
 
