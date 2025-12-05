@@ -59,13 +59,6 @@ class ViewInvoice extends Page implements HasTable, HasForms, HasInfolists
         ];
     }
 
-    public function getInvoiceActions(): array
-    {
-        return [
-
-        ];
-    }
-
     public function invoiceInfolist(Schema $infolist): Schema
     {
         return $infolist
@@ -124,12 +117,42 @@ class ViewInvoice extends Page implements HasTable, HasForms, HasInfolists
                         TextEntry::make('store.email')->prefix('Email: ')->hiddenLabel(),
                     ])
                 ])->columns(2),
+                Section::make('Payment')->components([
+                    TextEntry::make('subtotal_amount')
+                        ->numeric()->hiddenLabel()->prefix('Subtotal: '),
+                    TextEntry::make('discount_amount')
+                        ->numeric()->hiddenLabel()->prefix('Discount: '),
+                    TextEntry::make('total_amount')
+                        ->numeric()->hiddenLabel()->prefix('Total: '),
+                    TextEntry::make('totalPaidAmount')
+                        ->numeric()->hiddenLabel()->prefix('Paid: ')->color('success'),
+                    TextEntry::make('totalDueAmount')
+                        ->numeric()->hiddenLabel()->prefix('Due: ')->color('danger'),
+                    TextEntry::make('remarks'),
+                    TextEntry::make('createdBy.name')->label('Created By')
+                        ->numeric()
+                        ->placeholder('-'),
+                    TextEntry::make('updatedBy.name')
+                        ->numeric()->label('Updated By')
+                        ->placeholder('-'),
+                    TextEntry::make('deletedBy.name')
+                        ->numeric()->label('Deleted By')
+                        ->placeholder('-'),
+                    TextEntry::make('created_at')
+                        ->dateTime()->label('Created At')
+                        ->placeholder('-'),
+                    TextEntry::make('updated_at')
+                        ->dateTime()->label('Updated At')
+                        ->placeholder('-'),
+                    TextEntry::make('deleted_at')
+                        ->dateTime()->label('Deleted At')
+                        ->visible(fn(StoreInvoice $record): bool => $record->trashed()),
+                ])->columns(5),
                 Group::make()->schema([
                     Actions::make([
                         Action::make('make-payment')
                             ->label('Payment')
                             ->modalHeading('Invoice payment')
-                            // Define the form fields directly
                             ->schema([
                                 Group::make([
                                     TextInput::make('amount')
@@ -153,21 +176,15 @@ class ViewInvoice extends Page implements HasTable, HasForms, HasInfolists
                                         ->maxLength(100),
                                 ])->columns(2)
                             ])
-                            // Define what happens when the action is submitted
                             ->action(function (array $data, Model $record): void {
-                                // Use the $data array (which contains 'amount' and 'remarks')
-                                // and the $record (the current StoreInvoice) to create the transaction.
-
                                 $record->storeInvoiceTransactions()->create([
                                     'amount' => $data['amount'],
                                     'remarks' => $data['remarks'],
                                     'method' => $data['method'],
                                     'created_by' => auth()->id(),
                                 ]);
-
-                                // You might want to dispatch a notification or refresh the page here
                             }),
-                        Action::make('discount')
+                        Action::make('make-discount')
                             ->label('Apply Discount')
                             ->color('primary')
                             ->modalHeading('Apply Discount to Cart')
@@ -191,7 +208,7 @@ class ViewInvoice extends Page implements HasTable, HasForms, HasInfolists
                                     })
                                     ->maxLength(100)
                             ])
-                            ->action(function (array $data, Model $record, Component $livewire) {
+                            ->action(function (array $data, Model $record): void {
                                 $invoice = StoreInvoice::query()->findOrFail($record->id);
                                 $invoice_subtotal_amount = $invoice->subtotal_amount;
                                 $invoice_grand_total = $invoice_subtotal_amount - $data['discount_amount'];
@@ -204,8 +221,6 @@ class ViewInvoice extends Page implements HasTable, HasForms, HasInfolists
                                     ->title("Discount '{$data['discount_amount']}' applied successfully!")
                                     ->success()
                                     ->send();
-
-                                $livewire->dispatch('$refresh');
                             }),
                         Action::make('print-invoice')
                             ->url(function (Model $record): string {
@@ -228,7 +243,9 @@ class ViewInvoice extends Page implements HasTable, HasForms, HasInfolists
             ->columns([
                 TextColumn::make('id')->label('#')->sortable()->searchable()->wrap(),
                 TextColumn::make('storeInvoice.id')->label('InvoiceId')->sortable()->searchable()->wrap(),
+                TextColumn::make('method')->sortable()->searchable()->wrap(),
                 TextColumn::make('amount')->sortable()->searchable()->wrap(),
+                TextColumn::make('remarks')->searchable()->wrap(),
                 TextColumn::make('createdBy.name')
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->label('Created By')->wrap(),
@@ -239,7 +256,7 @@ class ViewInvoice extends Page implements HasTable, HasForms, HasInfolists
                 TextColumn::make('created_at')->toggleable(isToggledHiddenByDefault: true)->wrap(),
                 TextColumn::make('updated_at')->toggleable(isToggledHiddenByDefault: true)->wrap(),
                 TextColumn::make('deleted_at')->toggleable(isToggledHiddenByDefault: true)->wrap(),
-            ])->heading('Items');
+            ])->heading('Payment History');
     }
 
     protected function getTableQuery(): Builder
