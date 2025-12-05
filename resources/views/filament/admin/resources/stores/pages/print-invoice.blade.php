@@ -7,7 +7,8 @@
         }
 
         body {
-            padding: 0.5rem;
+            /*padding: 0.5rem;*/
+            font-size: 0.8rem;
         }
 
         .grid-container {
@@ -68,10 +69,11 @@
                             <div>
                                 <p>Invoice #: {{ $this->invoice->id }}</p>
                                 <h4>To:</h4>
-                                <p>Address: {{ $this->invoice->user->name ?? '' }}
-                                    , {{ $this->invoice->user->address ?? '' }}</p>
-                                <p>Contact: {{ $this->invoice->user->primary_contact_number ?? '' }}
-                                    , {{ $this->invoice->user->secondary_contact_number ?? '' }}</p>
+                                <p>Name: {{ $this->invoice->user->name ?? '' }}</p>
+                                <p>Address: {{ $this->invoice->user->address ?? '' }}, {{ $this->invoice->user->city ?? '' }}
+                                    , {{ $this->invoice->user->state ?? '' }}
+                                    , {{ $this->invoice->user->pin_code ?? '' }}</p>
+                                <p>Contact: {{ $this->invoice->user->primary_contact_number ?? '' }}</p>
                                 <p>
                                     Class: {{ $this->invoice->user->student->classAssignment->class->name ?? '' }}</p>
                             </div>
