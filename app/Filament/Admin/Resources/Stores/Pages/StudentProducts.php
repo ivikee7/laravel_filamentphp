@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Resources\Stores\Pages;
 use App\Filament\Admin\Resources\Stores\StoreResource;
 use App\Models\AcademicYear;
 use App\Models\Product;
+use App\Models\Store;
 use App\Models\StoreCart;
 use App\Models\StoreInvoiceItem;
 use App\Models\StoreProduct;
@@ -26,8 +27,8 @@ use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\View\View;
 use Filament\Tables\Table;
@@ -75,10 +76,14 @@ class StudentProducts extends Page implements HasInfolists, HasTable, HasActions
         $this->fillTable();
     }
 
-    public function getStoreProductQuery(): Builder
+    public function getStoreQuery(): Builder
     {
-        return StoreProduct::query()
-            ->where('store_id', $this->record->id)
+        return Store::find($this->record->id)->getQuery();
+    }
+
+    public function getStoreProductTableQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        return StoreProduct::where('store_id', $this->record->id)
             ->where('class_id', $this->academicClass_id)
             ->where('academic_year_id', $this->academicYear_id)
             ->whereNotIn('id', $this->getCartQuery()->pluck('store_product_id'))
@@ -88,15 +93,15 @@ class StudentProducts extends Page implements HasInfolists, HasTable, HasActions
     // check already purchased items
     protected function getStoreInvoiceItemsQuery(): Builder
     {
-        return StoreInvoiceItem::query()
-            ->withWhereRelation('storeInvoice', 'store_id', $this->record->id)
-            ->withWhereRelation('storeInvoice', 'user_id', $this->targetStudent->id);
+        return StoreInvoiceItem::withWhereRelation('storeInvoice', 'store_id', $this->record->id)
+            ->withWhereRelation('storeInvoice', 'user_id', $this->targetStudent->id)
+            ->getQuery();
     }
 
     protected function getCartQuery(): Builder
     {
-        return StoreCart::query()
-            ->where('user_id', $this->targetStudent->id);
+        return StoreCart::where('user_id', $this->targetStudent->id)
+            ->getQuery();
     }
 
     public function getCartItemsProperty(): Builder
@@ -156,7 +161,7 @@ class StudentProducts extends Page implements HasInfolists, HasTable, HasActions
     public function table(Table $table): Table
     {
         return $table
-            ->query($this->getStoreProductQuery())
+            ->query($this->getStoreProductTableQuery())
             ->columns([
                 TextColumn::make('name')->searchable(),
                 TextColumn::make('description')->searchable(),

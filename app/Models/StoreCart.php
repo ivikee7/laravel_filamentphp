@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Auth;
 
 class StoreCart extends Model
 {
-    use softDeletes;
 
     protected $fillable = [
         'user_id',
@@ -32,16 +31,6 @@ class StoreCart extends Model
                 $model->updated_by = Auth::id();
             }
         });
-        static::deleting(function ($model) {
-            if (Auth::check()) {
-                $model->deleted_by = Auth::id();
-                $model->saveQuietly();
-            }
-        });
-        static::restoring(function ($model) {
-            $model->deleted_by = null;
-            $model->saveQuietly();
-        });
     }
 
     public function createdBy()
@@ -52,11 +41,6 @@ class StoreCart extends Model
     public function updatedBy()
     {
         return $this->belongsTo(User::class, 'updated_by');
-    }
-
-    public function deletedBy()
-    {
-        return $this->belongsTo(User::class, 'deleted_by');
     }
 
     public function storeProduct(): BelongsTo
