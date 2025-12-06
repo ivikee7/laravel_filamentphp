@@ -127,7 +127,7 @@ class ViewInvoice extends Page implements HasTable, HasForms, HasInfolists
                             TextEntry::make('store.phone')->prefix('Contact number: ')->hiddenLabel(),
                             TextEntry::make('store.email')->prefix('Email: ')->hiddenLabel(),
                         ])
-                    ])->columns(2),
+                    ])->columns(['sm' => 2]),
                 Section::make('Payment')
                     ->headerActions([
                         Action::make('make-payment')
@@ -189,7 +189,7 @@ class ViewInvoice extends Page implements HasTable, HasForms, HasInfolists
                                             return $record->remarks;
                                         })
                                         ->maxLength(100),
-                                ])->columns(2)
+                                ])
                             ])
                             ->action(function (array $data, Model $record): void {
                                 $record->update([
@@ -236,7 +236,7 @@ class ViewInvoice extends Page implements HasTable, HasForms, HasInfolists
                             ->dateTime()->label('Deleted At')
                             ->visible(fn(StoreInvoice $record): bool => $record->trashed()),
                     ])
-                    ->columns(5),
+                    ->columns(['sm'=>2,'md' => 4, 'lg'=>5]),
             ]);
     }
 
@@ -252,13 +252,13 @@ class ViewInvoice extends Page implements HasTable, HasForms, HasInfolists
                 TextColumn::make('amount')->sortable()->searchable()->wrap(),
                 TextColumn::make('remarks')->searchable()->wrap(),
                 TextColumn::make('createdBy.name')
-                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->toggleable(isToggledHiddenByDefault: false)
                     ->label('Created By')->wrap(),
                 TextColumn::make('updatedBy.name')
                     ->toggleable(isToggledHiddenByDefault: true)->label('Updated By')->wrap(),
                 TextColumn::make('deletedBy.name')
                     ->toggleable(isToggledHiddenByDefault: true)->label('Deleted By')->wrap(),
-                TextColumn::make('created_at')->toggleable(isToggledHiddenByDefault: true)->wrap(),
+                TextColumn::make('created_at')->toggleable(isToggledHiddenByDefault: false)->wrap(),
                 TextColumn::make('updated_at')->toggleable(isToggledHiddenByDefault: true)->wrap(),
                 TextColumn::make('deleted_at')->toggleable(isToggledHiddenByDefault: true)->wrap(),
             ])

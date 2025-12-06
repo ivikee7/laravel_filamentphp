@@ -56,7 +56,7 @@ class ListTransactions extends Page implements HasTable, HasForms
                 TextColumn::make('created_at')->toggleable(isToggledHiddenByDefault: false)->wrap(),
                 TextColumn::make('updated_at')->toggleable(isToggledHiddenByDefault: true)->wrap(),
                 TextColumn::make('deleted_at')->toggleable(isToggledHiddenByDefault: true)->wrap(),
-            ]);
+            ])->defaultSort('id', 'desc');
     }
 
     protected function getTableQuery(): Builder

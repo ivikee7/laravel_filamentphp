@@ -94,6 +94,7 @@ class ListProducts extends Page implements HasTable, HasForms
     public function table(Table $table): Table
     {
         return $table->query($this->getTableQuery())->columns([
+            TextColumn::make('id'),
             TextColumn::make('academicYear.name')->label('Academic Year')->searchable()->sortable()->wrap(),
             TextColumn::make('class.name')->label('Class')->searchable()->sortable()->wrap(),
             TextColumn::make('name')->searchable()->sortable()->wrap(),

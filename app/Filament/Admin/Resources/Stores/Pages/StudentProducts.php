@@ -3,37 +3,28 @@
 namespace App\Filament\Admin\Resources\Stores\Pages;
 
 use App\Filament\Admin\Resources\Stores\StoreResource;
-use App\Models\AcademicYear;
-use App\Models\Product;
-use App\Models\Store;
 use App\Models\StoreCart;
 use App\Models\StoreInvoiceItem;
 use App\Models\StoreProduct;
-use App\Models\StudentClass;
 use App\Models\User;
 use Filament\Actions\Action;
 use Filament\Actions\Contracts\HasActions;
-use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\Concerns\InteractsWithRecord;
 use Filament\Resources\Pages\Page;
-use Filament\Schemas\Components\Grid;
-use Filament\Schemas\Components\Section;
-use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+
+// Use an alias for clarity
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Query\Builder;
-use Illuminate\Support\Collection;
-use Illuminate\View\View;
 use Filament\Tables\Table;
 use Livewire\Component;
-
 
 class StudentProducts extends Page implements HasInfolists, HasTable, HasActions
 {
@@ -45,20 +36,21 @@ class StudentProducts extends Page implements HasInfolists, HasTable, HasActions
 
     protected string $view = 'filament.admin.resources.stores.pages.student-products';
 
-    public ?User $targetStudent = null;
+    public $student = null;
     public $academicYear_id = null;
     public $academicClass_id = null;
 
     public function mount(int|string $record, int|string $student): void
     {
         $this->record = $this->resolveRecord($record);
-        $this->targetStudent = User::query()
+        // Ensure student loading is robust
+        $this->student = User::query()
             ->with(['student.classAssignment'])
             ->findOrFail($student);
 
-        $this->academicYear_id = $this->targetStudent->student->classAssignment->academic_year_id ?? null;
-        $this->academicClass_id = $this->targetStudent->student->classAssignment->class_id ?? null;
-
+        // Safely set academic context
+        $this->academicYear_id = $this->student->student->classAssignment->academic_year_id ?? null;
+        $this->academicClass_id = $this->student->student->classAssignment->class_id ?? null;
     }
 
     protected function getHeaderActions(): array
@@ -66,88 +58,117 @@ class StudentProducts extends Page implements HasInfolists, HasTable, HasActions
         return [
             Action::make('list-students')->url(StoreResource::getUrl('list-students', ['record' => $this->record])),
             Action::make('Cart')
-                ->url(StoreResource::getUrl('students-cart', ['record' => $this->record, 'student' => $this->targetStudent]))
+                ->url(StoreResource::getUrl('students-cart', ['record' => $this->record, 'student' => $this->student])),
         ];
     }
 
-    #[On('refreshTable')]
     public function refreshTableData(): void
     {
-        $this->fillTable();
+        $this->getTable()->deselectAll();
     }
 
-    public function getStoreQuery(): Builder
+    /**
+     * Corrected to return an Eloquent Builder.
+     */
+    protected function getTableQuery(): EloquentBuilder
     {
-        return Store::find($this->record->id)->getQuery();
-    }
 
-    public function getStoreProductTableQuery(): \Illuminate\Database\Eloquent\Builder
-    {
-        return StoreProduct::where('store_id', $this->record->id)
+        $cartProductIds = StoreCart::where('user_id', $this->student->id)->pluck('store_product_id');
+
+        $purchasedProductIds = StoreInvoiceItem::query()
+            ->whereHas('storeInvoice', function (EloquentBuilder $query) {
+                $query->where('store_id', $this->record->id)
+                    ->where('user_id', $this->student->id);
+            })
+            ->pluck('store_product_id');
+
+        $excludedProductIds = $cartProductIds->merge($purchasedProductIds)->unique();
+
+        return StoreProduct::query()
+            ->where('store_id', $this->record->id)
             ->where('class_id', $this->academicClass_id)
             ->where('academic_year_id', $this->academicYear_id)
-            ->whereNotIn('id', $this->getCartQuery()->pluck('store_product_id'))
-            ->whereNotIn('id', $this->getStoreInvoiceItemsQuery()->pluck('store_product_id'));
+            ->whereNotIn('id', $excludedProductIds);
     }
 
-    // check already purchased items
-    protected function getStoreInvoiceItemsQuery(): Builder
+    // Renamed to getCartItems to follow standard convention
+    public function getCartItemsProperty(): EloquentBuilder
     {
-        return StoreInvoiceItem::withWhereRelation('storeInvoice', 'store_id', $this->record->id)
-            ->withWhereRelation('storeInvoice', 'user_id', $this->targetStudent->id)
-            ->getQuery();
-    }
-
-    protected function getCartQuery(): Builder
-    {
-        return StoreCart::where('user_id', $this->targetStudent->id)
-            ->getQuery();
-    }
-
-    public function getCartItemsProperty(): Builder
-    {
-        return $this->getCartQuery()->with('storeProduct');
+        return StoreCart::where('user_id', $this->student->id)
+            ->with('storeProduct');
     }
 
     public function getTotalProperty(): float
     {
-        return $this->cartItems->sum(function ($item) {
+        return $this->cartItems->get()->sum(function ($item) { // Added ->get() to resolve the builder
             return $item->quantity * ($item->storeProduct->price ?? 0);
         });
     }
 
     public function clearCart(): void
     {
-        $this->getCartQuery()->delete();
+        StoreCart::where('user_id', $this->student->id)->delete();
         Notification::make()->title('Cart Cleared')->success()->send();
-        $this->dispatch('cartUpdated');
+        // Dispatch the table refresh event after clearing cart
+        $this->dispatch('refreshTable');
     }
 
+    public function table(Table $table): Table
+    {
+        // ✅ CORRECTED: Pass the Eloquent Builder directly to ->query()
+        return $table
+            ->query($this->getTableQuery())
+            ->columns([
+                TextColumn::make('name')->searchable()->sortable(),
+                TextColumn::make('description')->wrap()->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('price')->money('INR')->sortable(),
+            ])
+            ->recordActions([
+                Action::make('addToCart')
+                    ->label('Add to Cart')
+                    ->action(function ($record, Model $item): void {
+
+                        $user_id = $this->student->id;
+                        $product_id = $item->id;
+
+                        // Check existence is mostly redundant due to getTableQuery(), but safe for concurrency.
+                        if (StoreCart::where('store_product_id', $product_id)->where('user_id', $user_id)->exists()) {
+                            Notification::make()->title('Product Already Exists in Cart')->warning()->send();
+                            return;
+                        }
+
+                        $this->record->carts()->create([
+                            'user_id' => $user_id,
+                            'store_product_id' => $product_id,
+                            'quantity' => 1,
+                        ]);
+
+                        Notification::make()->title('Added to Cart')->success()->send();
+
+                        // Dispatch event to refresh the table and remove the added product from the list
+                        $this->dispatch('refreshTable');
+                    }),
+            ]);
+    }
+
+    // Infolist methods remain fine, just minor cleanup
     public function storeInfolist(Schema $infolist): Schema
     {
         return $infolist
-            ->record($this->record) // Record is usually set on the main infolist or component
-            ->schema([ // Use schema() instead of components() for layout definitions
-                TextEntry::make('name')
-                    ->prefix('Name: ')
-                    ->hiddenLabel(),
-                TextEntry::make('address')
-                    ->prefix('Address: ')
-                    ->hiddenLabel(),
+            ->record($this->record)
+            ->schema([
+                TextEntry::make('name')->prefix('Name: ')->hiddenLabel(),
+                TextEntry::make('address')->prefix('Address: ')->hiddenLabel(),
             ]);
     }
 
     public function studentInfolist(Schema $infolist): Schema
     {
         return $infolist
-            ->record($this->targetStudent) // Record is usually set on the main infolist or component
-            ->schema([ // Use schema() instead of components()
-                TextEntry::make('name')
-                    ->prefix('Name: ')
-                    ->hiddenLabel(),
-                TextEntry::make('father_name')
-                    ->prefix('Father Name: ')
-                    ->hiddenLabel(),
+            ->record($this->student)
+            ->schema([
+                TextEntry::make('name')->prefix('Name: ')->hiddenLabel(),
+                TextEntry::make('father_name')->prefix('Father Name: ')->hiddenLabel(),
                 TextEntry::make('mother_name')->prefix('Mother Name: ')->hiddenLabel(),
                 TextEntry::make('address')->prefix('Address: ')->hiddenLabel(),
                 TextEntry::make('city')->prefix('City: ')->hiddenLabel(),
@@ -156,42 +177,5 @@ class StudentProducts extends Page implements HasInfolists, HasTable, HasActions
                 TextEntry::make('student.classAssignment.class.name')->prefix('Class: ')->hiddenLabel(),
                 TextEntry::make('student.classAssignment.section.name')->prefix('Section: ')->hiddenLabel(),
             ])->columns(3);
-    }
-
-    public function table(Table $table): Table
-    {
-        return $table
-            ->query($this->getStoreProductTableQuery())
-            ->columns([
-                TextColumn::make('name')->searchable(),
-                TextColumn::make('price')->money('INR'),
-            ])
-            ->recordActions([
-                Action::make('addToCart')
-                    ->action(function (Model $record, Component $livewire): void {
-                        $user_id = $this->targetStudent->id;
-                        $product_id = $record->id;
-
-                        if (StoreCart::query()->where('store_product_id', $product_id)->where('user_id', $user_id)->exists()) {
-                            Notification::make()->title('Product Already Exists in Cart')->warning()->send();
-                            return;
-                        }
-
-                        StoreCart::create([
-                            'user_id' => $user_id,
-                            'store_product_id' => $product_id,
-                            'quantity' => 1,
-                        ]);
-
-                        Notification::make()->title('Added to Cart')->success()->send();
-
-                    }),
-            ])
-            ->filters([
-                // ...
-            ])
-            ->headerActions([
-                // ...
-            ]);
     }
 }

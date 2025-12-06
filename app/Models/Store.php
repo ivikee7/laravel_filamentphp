@@ -109,4 +109,9 @@ class Store extends Model
         return $this->hasMany(User::class, 'created_by');
     }
 
+    public function carts(): HasMany
+    {
+        return $this->hasMany(StoreCart::class, 'store_id');
+    }
+
 }

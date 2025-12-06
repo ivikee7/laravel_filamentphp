@@ -12,6 +12,7 @@ class StoreCart extends Model
 {
 
     protected $fillable = [
+        'store_id',
         'user_id',
         'store_product_id',
         'quantity',
@@ -41,6 +42,10 @@ class StoreCart extends Model
     public function updatedBy()
     {
         return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    public function store(): BelongsTo{
+        return $this->belongsTo(Store::class, 'store_id');
     }
 
     public function storeProduct(): BelongsTo

@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('store_carts', function (Blueprint $table) {
             $table->id();
             //
+            $table->foreignId('store_id')->index();
             $table->foreignId('user_id');
             $table->foreignId('store_product_id')->nullable();
             $table->integer('quantity')->default(0);
