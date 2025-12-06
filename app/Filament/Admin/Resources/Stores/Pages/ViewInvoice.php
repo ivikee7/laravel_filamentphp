@@ -208,7 +208,7 @@ class ViewInvoice extends Page implements HasTable, HasForms, HasInfolists
                         TextEntry::make('subtotal_amount')
                             ->numeric()->hiddenLabel()->prefix('Subtotal: '),
                         TextEntry::make('discount_amount')
-                            ->numeric()->hiddenLabel()->prefix('Discount: '),
+                            ->numeric()->hiddenLabel()->prefix('Discount: ')->color('warning'),
                         TextEntry::make('total_amount')
                             ->numeric()->hiddenLabel()->prefix('Total: '),
                         TextEntry::make('total_paid_amount')
