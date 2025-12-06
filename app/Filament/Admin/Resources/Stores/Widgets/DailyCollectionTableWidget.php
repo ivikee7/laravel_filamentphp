@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Resources\Stores\Widgets;
 use App\Models\StoreInvoiceTransaction;
 use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
+use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
@@ -76,14 +77,16 @@ class DailyCollectionTableWidget extends TableWidget
                     return TextColumn::make("amount_{$safeMethod}")
                         ->label(Str::headline($method)) // Converts 'credit_card' to 'Credit Card'
                         ->money('INR') // Optional: Change currency as needed
-                        ->sortable();
+                        ->sortable()
+                        ->summarize(Sum::make()->money('INR')->label(''));
                 }, $paymentMethods),
                 [
                     TextColumn::make('total_amount')
                         ->label('Total Collection')
                         ->money('INR') // Optional: Change currency as needed
                         ->weight('bold')
-                        ->sortable(),
+                        ->sortable()
+                        ->summarize(Sum::make()->money('INR')->label('')),
                 ]
             ))
             ->filters([
