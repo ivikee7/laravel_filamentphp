@@ -24,7 +24,6 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 // Use an alias for clarity
 use Illuminate\Database\Eloquent\Model;
 use Filament\Tables\Table;
-use Livewire\Component;
 
 class StudentProducts extends Page implements HasInfolists, HasTable, HasActions
 {
@@ -62,14 +61,7 @@ class StudentProducts extends Page implements HasInfolists, HasTable, HasActions
         ];
     }
 
-    public function refreshTableData(): void
-    {
-        $this->getTable()->deselectAll();
-    }
 
-    /**
-     * Corrected to return an Eloquent Builder.
-     */
     protected function getTableQuery(): EloquentBuilder
     {
 
@@ -115,7 +107,6 @@ class StudentProducts extends Page implements HasInfolists, HasTable, HasActions
 
     public function table(Table $table): Table
     {
-        // ✅ CORRECTED: Pass the Eloquent Builder directly to ->query()
         return $table
             ->query($this->getTableQuery())
             ->columns([
@@ -145,8 +136,6 @@ class StudentProducts extends Page implements HasInfolists, HasTable, HasActions
 
                         Notification::make()->title('Added to Cart')->success()->send();
 
-                        // Dispatch event to refresh the table and remove the added product from the list
-                        $this->dispatch('refreshTable');
                     }),
             ]);
     }
