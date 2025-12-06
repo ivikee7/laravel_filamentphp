@@ -86,7 +86,6 @@ class StudentCart extends Page implements HasTable
                 'store_invoice_id' => $invoiceId,
                 'store_product_id' => $item->storeProduct->id,
                 'name' => $item->storeProduct->name,
-                'description' => $item->storeProduct->description,
                 'quantity' => $item->quantity,
                 'price' => $item->storeProduct->price,
                 'created_at' => now(),
@@ -112,9 +111,6 @@ class StudentCart extends Page implements HasTable
                 TextColumn::make('storeProduct.name')
                     ->wrap()
                     ->label('Name'),
-                TextColumn::make('storeProduct.description')
-                    ->wrap()
-                    ->label('Description'),
                 TextColumn::make('storeProduct.price')
                     ->wrap(),
                 TextColumn::make('quantity')

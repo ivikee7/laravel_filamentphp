@@ -83,9 +83,6 @@ class ListProducts extends Page implements HasTable, HasForms
                     TextInput::make('name')
                         ->required()
                         ->maxLength(100),
-                    Textarea::make('description')
-                        ->required()
-                        ->columnSpanFull(),
                     TextInput::make('price')
                         ->required()
                         ->numeric()
@@ -100,7 +97,6 @@ class ListProducts extends Page implements HasTable, HasForms
             TextColumn::make('academicYear.name')->label('Academic Year')->searchable()->sortable()->wrap(),
             TextColumn::make('class.name')->label('Class')->searchable()->sortable()->wrap(),
             TextColumn::make('name')->searchable()->sortable()->wrap(),
-            TextColumn::make('description')->searchable()->sortable()->wrap(),
             TextColumn::make('price')->searchable()->sortable()->wrap(),
             TextColumn::make('createdBy.name')->label('Created by')
                 ->searchable()->sortable()
@@ -150,9 +146,6 @@ class ListProducts extends Page implements HasTable, HasForms
                         TextInput::make('name')
                             ->required()
                             ->maxLength(100),
-                        Textarea::make('description')
-                            ->required()
-                            ->columnSpanFull(),
                         TextInput::make('price')
                             ->required()
                             ->numeric()

@@ -164,7 +164,6 @@ class StudentProducts extends Page implements HasInfolists, HasTable, HasActions
             ->query($this->getStoreProductTableQuery())
             ->columns([
                 TextColumn::make('name')->searchable(),
-                TextColumn::make('description')->searchable(),
                 TextColumn::make('price')->money('INR'),
             ])
             ->recordActions([
