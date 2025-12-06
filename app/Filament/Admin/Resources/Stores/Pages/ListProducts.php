@@ -114,7 +114,51 @@ class ListProducts extends Page implements HasTable, HasForms
             TextColumn::make('created_at')->toggleable(isToggledHiddenByDefault: true),
             TextColumn::make('updated_at')->toggleable(isToggledHiddenByDefault: true),
             TextColumn::make('deleted_at')->toggleable(isToggledHiddenByDefault: true),
-        ]);
+        ])
+            ->defaultSort('id', 'desc')
+            ->recordActions([
+                Action::make('edit-product')
+                    ->label('Edit')
+                    ->modelLabel('Edit Product')
+                    ->model(StoreProduct::class)
+                    ->fillForm(fn(StoreProduct $record): array => $record->toArray()) // <--- ADD THIS LINE
+                    ->action(function (array $data, StoreProduct $record): void {
+                        $record->update($data);
+
+                        Notification::make()
+                            ->title("Product {$record->name} successfully updated!")
+                            ->success()
+                            ->send();
+                    })
+                    ->schema([
+                        Select::make('academic_year_id')
+                            ->label('Academic Year')
+                            ->relationship('academicYear', 'name') // Corrected to 'academicYear'
+                            ->required()
+                            ->reactive()
+                            ->afterStateUpdated(function (Set $set) {
+                                $set('class_id', null);
+                            }),
+                        Select::make('class_id')
+                            ->label('Class')
+                            ->relationship('studentClass', 'name', modifyQueryUsing: function (Builder $query, Get $get): Builder {
+                                return $query->when($get('academic_year_id'), fn(Builder $q) => $q->where('academic_year_id', $get('academic_year_id')));
+                            })
+                            ->reactive()
+                            ->required()
+                            ->visible(fn(Get $get) => filled($get('academic_year_id'))),
+                        TextInput::make('name')
+                            ->required()
+                            ->maxLength(100),
+                        Textarea::make('description')
+                            ->required()
+                            ->columnSpanFull(),
+                        TextInput::make('price')
+                            ->required()
+                            ->numeric()
+                            ->prefix('₹'),
+                    ]),
+            ]);
     }
 
     protected function getTableQuery(): Builder

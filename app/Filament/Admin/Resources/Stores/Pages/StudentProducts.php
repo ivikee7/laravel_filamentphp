@@ -89,7 +89,8 @@ class StudentProducts extends Page implements HasInfolists, HasTable, HasActions
     protected function getStoreInvoiceItemsQuery(): Builder
     {
         return StoreInvoiceItem::query()
-            ->withWhereRelation('storeInvoice', 'store_id', $this->record->id);
+            ->withWhereRelation('storeInvoice', 'store_id', $this->record->id)
+            ->withWhereRelation('storeInvoice', 'user_id', $this->targetStudent->id);
     }
 
     protected function getCartQuery(): Builder
