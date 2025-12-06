@@ -141,7 +141,14 @@ class StudentCart extends Page implements HasTable
             ])->headerActions([
                 Action::make("clear-cart")
                     ->label('Clear Cart')
-                    ->action(fn() => $this->clearCart())
+                    ->action(function () {
+                        if (count($this->getCartQuery()->get()) <= 0) {
+                            Notification::make()->title('Empty Cart')->body('Cart does not have any item!')->warning()->send();
+                            return;
+                        }
+                        $this->clearCart();
+                        Notification::make()->title('Clear Cart')->body('Cart Cleared Successfully!')->success()->send();
+                    })
                     ->color('danger'),
                 Action::make('generateInvoice')
                     ->label('Generate Invoice')
