@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -17,9 +16,9 @@ return new class extends Migration
             $table->foreignId('store_invoice_id');
             $table->foreignId('store_product_id');
             $table->string('name');
-            $table->string('description')->nullable();
             $table->double('price');
             $table->double('quantity');
+            $table->double('total');
             //
             $table->foreignId('created_by')->nullable();
             $table->foreignId('updated_by')->nullable();

@@ -12,6 +12,13 @@ class StoreInvoiceItem extends Model
     use SoftDeletes;
 
     protected $fillable = [
+        'store_invoice_id',
+        'store_product_id',
+        'name',
+        'price',
+        'quantity',
+        'total',
+
         'store_id',
         'subtotal_amount',
         'discount_amount',

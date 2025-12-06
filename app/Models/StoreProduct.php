@@ -12,10 +12,9 @@ class StoreProduct extends Model
     use softDeletes;
 
     protected $fillable = [
-        'name',
-        'description',
-        'price',
         'store_id',
+        'name',
+        'price',
         'academic_year_id',
         'class_id',
     ];
@@ -77,7 +76,8 @@ class StoreProduct extends Model
         return $this->belongsTo(StudentClass::class, 'class_id');
     }
 
-    public function studentClass(): BelongsTo{
+    public function studentClass(): BelongsTo
+    {
         return $this->belongsTo(StudentClass::class, 'class_id');
     }
 }
