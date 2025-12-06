@@ -56,8 +56,7 @@ class StoreResource extends Resource
     public static function getRelations(): array
     {
         return [
-            StoreInvoicesRelationManager::class,
-            StoreProductsRelationManager::class,
+            //
         ];
     }
 
