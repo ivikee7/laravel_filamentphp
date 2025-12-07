@@ -3,7 +3,9 @@
 namespace App\Filament\Admin\Resources\Stores\Schemas;
 
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
+use Filament\Tables\Columns\ToggleColumn;
 
 class StoreForm
 {
@@ -20,7 +22,10 @@ class StoreForm
                 TextInput::make('state')
                     ->default(null),
                 TextInput::make('pin_code')
-                    ->default(null),
+                    ->default(null)
+                    ->numeric()
+                    ->minLength(4)
+                    ->maxLength(8),
                 TextInput::make('phone')
                     ->tel()
                     ->default(null),
@@ -28,9 +33,8 @@ class StoreForm
                     ->label('Email address')
                     ->email()
                     ->default(null),
-                TextInput::make('is_active')
-                    ->required()
-                    ->default('0'),
+                Toggle::make('is_active')
+                    ->default(true),
             ]);
     }
 }

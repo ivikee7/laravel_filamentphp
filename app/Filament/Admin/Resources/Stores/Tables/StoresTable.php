@@ -8,7 +8,9 @@ use Filament\Actions\EditAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Actions\ViewAction;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 
@@ -38,7 +40,8 @@ class StoresTable
                     ->label('Email address')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('is_active')
+                ToggleColumn::make('is_active')
+                    ->disabled()
                     ->searchable(),
                 TextColumn::make('created_by')
                     ->wrap()

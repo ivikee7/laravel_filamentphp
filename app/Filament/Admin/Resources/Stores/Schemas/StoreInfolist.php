@@ -5,12 +5,15 @@ namespace App\Filament\Admin\Resources\Stores\Schemas;
 use App\Models\Store;
 use App\Models\StoreInvoiceTransaction;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\ToggleButtons;
+use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Livewire;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Filament\Support\View\Components\ToggleComponent;
 use Filament\Tables\Table;
 use function Laravel\Prompts\form;
 
@@ -35,7 +38,7 @@ class StoreInfolist
                     TextEntry::make('email')->hiddenLabel()->prefix('Email Address: ')
                         ->label('Email address')
                         ->placeholder('-'),
-                    TextEntry::make('is_active')->hiddenLabel()->prefix('Status: '),
+                    IconEntry::make('is_active')->inlineLabel()->boolean()->label('Active'),
                     TextEntry::make('createdBy.name')->hiddenLabel()->prefix('Created By: ')
                         ->placeholder('-'),
                     TextEntry::make('updatedBy.name')->hiddenLabel()->prefix('Updated By: ')
