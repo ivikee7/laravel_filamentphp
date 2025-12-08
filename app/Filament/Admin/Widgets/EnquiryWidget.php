@@ -12,7 +12,7 @@ class EnquiryWidget extends ChartWidget
 {
     protected ?string $heading = 'Enquiry Widget';
 
-    protected static ?int $sort = 6;
+    protected static ?int $sort = 7;
 
     protected function getData(): array
     {

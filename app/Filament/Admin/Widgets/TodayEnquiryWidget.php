@@ -11,7 +11,7 @@ class TodayEnquiryWidget extends StatsOverviewWidget
 {
     protected static ?int $sort = 3;
 
-    protected int | string | array $columnSpan = 1;
+    protected int|string|array $columnSpan = 1;
 
     protected function getStats(): array
     {
@@ -29,10 +29,10 @@ class TodayEnquiryWidget extends StatsOverviewWidget
         // Format the count into a Filament Stat card
         return [
             Stat::make('Today\'s Enquiries', $todayEnquiriesCount)
-                ->columnSpan(3)
                 ->description('New students signed up today')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
-                ->color($color),
+                ->color($color)
+                ->columnSpan(1),
         ];
     }
 }

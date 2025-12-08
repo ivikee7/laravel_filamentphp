@@ -12,7 +12,7 @@ class AdmissionWidget extends ChartWidget
 {
     protected ?string $heading = 'Admission Widget';
 
-    protected static ?int $sort = 4;
+    protected static ?int $sort = 6;
 
     protected function getData(): array
     {

@@ -10,9 +10,9 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 class TodayAdmissionWidget extends StatsOverviewWidget
 {
 
-    protected static ?int $sort = 1;
+    protected static ?int $sort = 2;
 
-    protected int | string | array $columnSpan = 1;
+    protected int|string|array $columnSpan = 1;
 
     protected function getStats(): array
     {
@@ -31,10 +31,10 @@ class TodayAdmissionWidget extends StatsOverviewWidget
         // Format the count into a Filament Stat card
         return [
             Stat::make('Today\'s Admissions', $todayAdmissionsCount)
-                ->columnSpan(3)
                 ->description('New students signed up today')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
-                ->color($color),
+                ->color($color)
+                ->columnSpan(1),
         ];
     }
 }

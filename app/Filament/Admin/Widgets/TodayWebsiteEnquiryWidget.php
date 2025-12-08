@@ -9,7 +9,7 @@ use Illuminate\Support\Carbon;
 
 class TodayWebsiteEnquiryWidget extends StatsOverviewWidget
 {
-    protected static ?int $sort = 3;
+    protected static ?int $sort = 4;
 
     protected int|string|array $columnSpan = 1;
 
@@ -29,10 +29,10 @@ class TodayWebsiteEnquiryWidget extends StatsOverviewWidget
         // Format the count into a Filament Stat card
         return [
             Stat::make('Today\'s Website Enquiries', $todayWebsiteEnquiriesCount)
-                ->columnSpan(3)
                 ->description('New users signed up today')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
-                ->color($color),
+                ->color($color)
+                ->columnSpan(1),
         ];
     }
 }
