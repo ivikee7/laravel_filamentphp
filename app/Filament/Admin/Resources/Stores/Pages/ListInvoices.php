@@ -46,6 +46,7 @@ class ListInvoices extends Page implements HasTable, HasForms
                 TextColumn::make('id')->label('#')->sortable()->searchable(),
                 TextColumn::make('user.id')->label('User Id')->sortable()->searchable(),
                 TextColumn::make('user.name')->label('Name')->sortable()->searchable(),
+                TextColumn::make('user.student.classAssignment.class.name')->label('Class')->sortable()->searchable(),
                 TextColumn::make('subtotal_amount')->label('Subtotal'),
                 TextColumn::make('discount_amount')->label('Discount'),
                 TextColumn::make('total_amount')->label('Total'),

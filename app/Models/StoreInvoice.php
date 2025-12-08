@@ -16,6 +16,7 @@ class StoreInvoice extends Model
     protected $fillable = [
         'user_id',
         'store_id',
+        'class_id',
         'subtotal_amount',
         'discount_amount',
         'total_amount',

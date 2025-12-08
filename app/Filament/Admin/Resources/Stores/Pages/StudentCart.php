@@ -2,7 +2,6 @@
 
 namespace App\Filament\Admin\Resources\Stores\Pages;
 
-use App\Filament\Admin\Resources\Stores\Resources\StoreInvoices\StoreInvoiceResource;
 use App\Filament\Admin\Resources\Stores\StoreResource;
 use App\Models\Cart;
 use App\Models\Invoice;
@@ -71,6 +70,7 @@ class StudentCart extends Page implements HasTable
         $invoice = StoreInvoice::create([
             'user_id' => $this->student->id,
             'store_id' => $this->record->id,
+            'class_id' => $this->student->student->classAssignment->class_id,
             'subtotal_amount' => $subtotal,
             'discount_amount' => $discount,
             'total_amount' => $total,
@@ -88,6 +88,7 @@ class StudentCart extends Page implements HasTable
                 'name' => $item->storeProduct->name,
                 'quantity' => $item->quantity,
                 'price' => $item->storeProduct->price,
+                'total' => $item->storeProduct->price * $item->quantity,
                 'created_at' => now(),
                 'updated_at' => now(),
             ];

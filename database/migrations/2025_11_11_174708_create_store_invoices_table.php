@@ -16,6 +16,7 @@ return new class extends Migration
             //
             $table->foreignId('user_id');
             $table->foreignId('store_id');
+            $table->foreignId('class_id')->nullable();
             $table->double('subtotal_amount');
             $table->double('discount_amount');
             $table->double('total_amount');
