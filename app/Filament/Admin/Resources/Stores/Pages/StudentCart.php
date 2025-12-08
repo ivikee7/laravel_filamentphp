@@ -45,8 +45,8 @@ class StudentCart extends Page implements HasTable
     {
         return [
             Action::make('list-students')->url(StoreResource::getUrl('list-students', ['record' => $this->record])),
-            Action::make('student-products')
-                ->label('Product\'s')->url(StoreResource::getUrl('students-products', ['record' => $this->record, $this->student])),
+            Action::make('list-student-product')
+                ->url(StoreResource::getUrl('list-student-product', ['record' => $this->record, $this->student])),
         ];
     }
 

@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources\Stores;
 
 use App\Filament\Admin\Resources\Stores\Pages\ListInvoices;
 use App\Filament\Admin\Resources\Stores\Pages\ListProducts;
+use App\Filament\Admin\Resources\Stores\Pages\ListStudentProduct;
 use App\Filament\Admin\Resources\Stores\Pages\ListStudents;
 use App\Filament\Admin\Resources\Stores\Pages\ListTransactions;
 use App\Filament\Admin\Resources\Stores\Pages\PrintInvoice;
@@ -70,6 +71,7 @@ class StoreResource extends Resource
             //
             'list-products' => ListProducts::route('/{record}/list-products'),
             'list-students' => ListStudents::route('/{record}/list-students'),
+            'list-student-product' => ListStudentProduct::route('/{record}/list-students/{student}/list-student-product'),
             'students-products' => StudentProducts::route('/{record}/list-students/{student}/products'),
             'students-cart' => StudentCart::route('/{record}/list-students/{student}/cart'),
             'print-invoice' => PrintInvoice::route('/{record}/store-invoices/{invoiceId}/print'),

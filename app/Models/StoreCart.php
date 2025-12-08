@@ -44,13 +44,19 @@ class StoreCart extends Model
         return $this->belongsTo(User::class, 'updated_by');
     }
 
-    public function store(): BelongsTo{
+    public function store(): BelongsTo
+    {
         return $this->belongsTo(Store::class, 'store_id');
     }
 
     public function storeProduct(): BelongsTo
     {
         return $this->belongsTo(StoreProduct::class);
+    }
+
+    public function product(): BelongsTo
+    {
+        return $this->belongsTo(StoreProduct::class, 'store_product_id');
     }
 
     public function getProductTotalAttribute(): float

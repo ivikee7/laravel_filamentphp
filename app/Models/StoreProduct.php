@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 
@@ -79,5 +81,10 @@ class StoreProduct extends Model
     public function studentClass(): BelongsTo
     {
         return $this->belongsTo(StudentClass::class, 'class_id');
+    }
+
+    public function cart(): HasMany
+    {
+        return $this->hasMany(StoreCart::class, 'store_product_id');
     }
 }

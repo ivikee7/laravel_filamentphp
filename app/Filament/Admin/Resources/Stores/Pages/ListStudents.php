@@ -47,11 +47,11 @@ class ListStudents extends Page implements HasTable
                 TextColumn::make('father_name')->searchable()->label('Father Name')->wrap(),
                 TextColumn::make('mother_name')->searchable()->label('Mother Name')->wrap(),
             ])
-            ->recordUrl((fn($record): string => StoreResource::getUrl('students-products', [$this->record->id, $record->id])))
+            ->recordUrl((fn($record): string => StoreResource::getUrl('list-student-product', [$this->record->id, $record->id])))
             ->defaultSort('id', 'desc')
             ->recordActions([
-                Action::make('students-products')
-                    ->url((fn($record): string => StoreResource::getUrl('students-products', [$this->record->id, $record->id])))
+                Action::make('list-student-product')
+                    ->url((fn($record): string => StoreResource::getUrl('list-student-product', [$this->record->id, $record->id])))
                     ->label('')
                     ->icon('heroicon-s-arrow-uturn-right'),
             ]);
