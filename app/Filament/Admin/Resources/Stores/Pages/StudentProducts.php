@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources\Stores\Pages;
 
 use App\Filament\Admin\Resources\Stores\StoreResource;
 use App\Models\StoreCart;
+use App\Models\StoreInvoice;
 use App\Models\StoreInvoiceItem;
 use App\Models\StoreProduct;
 use App\Models\User;
@@ -24,6 +25,7 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 // Use an alias for clarity
 use Illuminate\Database\Eloquent\Model;
 use Filament\Tables\Table;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 
 class StudentProducts extends Page implements HasInfolists, HasTable, HasActions
 {
@@ -60,7 +62,6 @@ class StudentProducts extends Page implements HasInfolists, HasTable, HasActions
                 ->url(StoreResource::getUrl('students-cart', ['record' => $this->record, 'student' => $this->student])),
         ];
     }
-
 
     protected function getTableQuery(): EloquentBuilder
     {
