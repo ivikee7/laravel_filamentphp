@@ -146,8 +146,8 @@ class ViewInvoice extends Page implements HasTable, HasForms, HasInfolists
                                     ->money('INR'),
                                 TextEntry::make('quantity')
                                     ->label('Qty'),
-                                TextEntry::make('line_total')
-                                    ->label('Line Total')
+                                TextEntry::make('total')
+                                    ->label('Total')
                                     ->state(fn($record) => $record->quantity * $record->price)
                                     ->money('INR'),
                             ])
@@ -191,6 +191,7 @@ class ViewInvoice extends Page implements HasTable, HasForms, HasInfolists
                         Action::make('make-payment')
                             ->label('Payment')
                             ->modalHeading('Invoice payment')
+                            ->authorize(auth()->user()->can('create StoreInvoiceTransection'))
                             ->schema([
                                 Group::make([
                                     TextInput::make('amount')
@@ -228,6 +229,7 @@ class ViewInvoice extends Page implements HasTable, HasForms, HasInfolists
                         Action::make('make-discount')
                             ->label('Discount')
                             ->modalHeading('Discount')
+                            ->authorize(auth()->user()->can('update StoreInvoice'))
                             ->schema([
                                 Group::make([
                                     TextInput::make('discount_amount')
@@ -294,18 +296,5 @@ class ViewInvoice extends Page implements HasTable, HasForms, HasInfolists
     protected function getTableQuery(): Builder
     {
         return $this->invoice->storeInvoiceTransactions()->getQuery();
-    }
-
-    public function getItemTableQuery(): Builder
-    {
-        return $this->invoice->getInvoiceItems()->getQuery();
-    }
-
-    protected function itemsTable(Table $table): Table
-    {
-        return $table->query($this->getItemTableQuery())
-            ->columns([
-                TextColumn::make('store_invoice_id')->sortable()->searchable()->label('Invoice Id'),
-            ]);
     }
 }

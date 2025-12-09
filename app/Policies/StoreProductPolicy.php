@@ -13,7 +13,7 @@ class StoreProductPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->checkPermissionTo('view-any StoreProduct');
     }
 
     /**
@@ -21,7 +21,7 @@ class StoreProductPolicy
      */
     public function view(User $user, StoreProduct $storeProduct): bool
     {
-        return false;
+        return $user->checkPermissionTo('view StoreProduct');
     }
 
     /**
@@ -29,7 +29,7 @@ class StoreProductPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->checkPermissionTo('create StoreProduct');
     }
 
     /**
@@ -37,7 +37,7 @@ class StoreProductPolicy
      */
     public function update(User $user, StoreProduct $storeProduct): bool
     {
-        return false;
+        return $user->checkPermissionTo('update StoreProduct');
     }
 
     /**
@@ -45,7 +45,7 @@ class StoreProductPolicy
      */
     public function delete(User $user, StoreProduct $storeProduct): bool
     {
-        return false;
+        return $user->checkPermissionTo('delete StoreProduct');
     }
 
     /**
@@ -53,7 +53,7 @@ class StoreProductPolicy
      */
     public function restore(User $user, StoreProduct $storeProduct): bool
     {
-        return false;
+        return $user->checkPermissionTo('restore StoreProduct');
     }
 
     /**
@@ -61,6 +61,6 @@ class StoreProductPolicy
      */
     public function forceDelete(User $user, StoreProduct $storeProduct): bool
     {
-        return false;
+        return $user->checkPermissionTo('force-delete StoreProduct');
     }
 }

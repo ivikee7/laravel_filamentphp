@@ -13,7 +13,7 @@ class StoreInvoicePolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->checkPermissionTo('view-any StoreInvoice');
     }
 
     /**
@@ -21,7 +21,7 @@ class StoreInvoicePolicy
      */
     public function view(User $user, StoreInvoice $storeInvoice): bool
     {
-        return false;
+        return $user->checkPermissionTo('view StoreInvoice');
     }
 
     /**
@@ -29,7 +29,7 @@ class StoreInvoicePolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->checkPermissionTo('create StoreInvoice');
     }
 
     /**
@@ -37,7 +37,7 @@ class StoreInvoicePolicy
      */
     public function update(User $user, StoreInvoice $storeInvoice): bool
     {
-        return false;
+        return $user->checkPermissionTo('update StoreInvoice');
     }
 
     /**
@@ -45,7 +45,7 @@ class StoreInvoicePolicy
      */
     public function delete(User $user, StoreInvoice $storeInvoice): bool
     {
-        return false;
+        return $user->checkPermissionTo('delete StoreInvoice');
     }
 
     /**
@@ -53,7 +53,7 @@ class StoreInvoicePolicy
      */
     public function restore(User $user, StoreInvoice $storeInvoice): bool
     {
-        return false;
+        return $user->checkPermissionTo('restore StoreInvoice');
     }
 
     /**
@@ -61,6 +61,11 @@ class StoreInvoicePolicy
      */
     public function forceDelete(User $user, StoreInvoice $storeInvoice): bool
     {
-        return false;
+        return $user->checkPermissionTo('force-delete StoreInvoice');
+    }
+
+    public function discount(User $user, StoreInvoice $storeInvoice): bool
+    {
+        return $user->checkPermissionTo('discount StoreInvoice');
     }
 }

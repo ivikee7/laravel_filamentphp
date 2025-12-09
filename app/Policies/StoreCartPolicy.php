@@ -13,7 +13,7 @@ class StoreCartPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->checkPermissionTo('view-any StoreCart');
     }
 
     /**
@@ -21,7 +21,7 @@ class StoreCartPolicy
      */
     public function view(User $user, StoreCart $storeCart): bool
     {
-        return false;
+        return $user->checkPermissionTo('view StoreCart');
     }
 
     /**
@@ -29,7 +29,7 @@ class StoreCartPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->checkPermissionTo('create StoreCart');
     }
 
     /**
@@ -37,7 +37,7 @@ class StoreCartPolicy
      */
     public function update(User $user, StoreCart $storeCart): bool
     {
-        return false;
+        return $user->checkPermissionTo('update StoreCart');
     }
 
     /**
@@ -45,7 +45,7 @@ class StoreCartPolicy
      */
     public function delete(User $user, StoreCart $storeCart): bool
     {
-        return false;
+        return $user->checkPermissionTo('delete StoreCart');
     }
 
     /**
@@ -53,7 +53,7 @@ class StoreCartPolicy
      */
     public function restore(User $user, StoreCart $storeCart): bool
     {
-        return false;
+        return $user->checkPermissionTo('restore StoreCart');
     }
 
     /**
@@ -61,6 +61,6 @@ class StoreCartPolicy
      */
     public function forceDelete(User $user, StoreCart $storeCart): bool
     {
-        return false;
+        return $user->checkPermissionTo('force-delete StoreCart');
     }
 }
