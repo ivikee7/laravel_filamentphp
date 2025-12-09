@@ -51,6 +51,7 @@ class ListProducts extends Page implements HasTable, HasForms
             Action::make('list-students')->url(StoreResource::getUrl('list-students', ['record' => $this->record])),
             Action::make('create')
                 ->modelLabel('Create Product')
+                ->authorize(auth()->user()->can('create StoreProduct'))
                 ->model(StoreProduct::class)
                 ->action(function (array $data, Model $record): void {
                     $data['store_id'] = $record->id;
@@ -118,6 +119,7 @@ class ListProducts extends Page implements HasTable, HasForms
                 Action::make('edit-product')
                     ->label('Edit')
                     ->modelLabel('Edit Product')
+                    ->authorize(auth()->user()->can('update StoreProduct'))
                     ->model(StoreProduct::class)
                     ->fillForm(fn(StoreProduct $record): array => $record->toArray()) // <--- ADD THIS LINE
                     ->action(function (array $data, StoreProduct $record): void {
