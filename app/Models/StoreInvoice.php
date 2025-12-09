@@ -69,6 +69,11 @@ class StoreInvoice extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    public function class(): BelongsTo
+    {
+        return $this->belongsTo(StudentClass::class, 'class_id');
+    }
+
     public function store(): BelongsTo
     {
         return $this->belongsTo(Store::class, 'store_id');

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -16,6 +17,12 @@ class StoreCart extends Model
         'user_id',
         'store_product_id',
         'quantity',
+    ];
+
+    protected $appends = ['product_total'];
+
+    protected $casts = [
+        'product_total' => 'decimal:2',
     ];
 
     protected static function boot()
@@ -64,6 +71,17 @@ class StoreCart extends Model
         $price = $this->storeProduct->price ?? 0;
         $quantity = $this->quantity ?? 0;
         return (float)$price * (int)$quantity;
+    }
+
+    protected function productTotal(): Attribute
+    {
+        return Attribute::get(function () {
+
+            $price = $this->storeProduct->price ?? 0;
+            $quantity = $this->quantity ?? 0;
+
+            return (float)$price * (int)$quantity;
+        });
     }
 
     public function getGrandTotalAttribute($store_id, $user_id, $academicYear_id): float

@@ -7,10 +7,12 @@ use App\Models\StoreInvoice;
 use App\Models\StoreInvoiceItem;
 use App\Models\StoreInvoiceTransaction;
 use Filament\Actions\Action;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
@@ -100,6 +102,7 @@ class ViewInvoice extends Page implements HasTable, HasForms, HasInfolists
                                 ->hiddenLabel(),
                             TextEntry::make('user.primary_contact_number')->prefix('Contact number: ')->hiddenLabel(),
                             TextEntry::make('user.email')->prefix('Email: ')->hiddenLabel(),
+                            TextEntry::make('class.name')->prefix('Class: ')->hiddenLabel(),
                         ]),
                         Group::make()->schema([
                             TextEntry::make('created_at')
@@ -126,9 +129,64 @@ class ViewInvoice extends Page implements HasTable, HasForms, HasInfolists
                                 ->hiddenLabel(),
                             TextEntry::make('store.phone')->prefix('Contact number: ')->hiddenLabel(),
                             TextEntry::make('store.email')->prefix('Email: ')->hiddenLabel(),
-                        ])
+                        ]),
+                        RepeatableEntry::make('storeInvoiceItems')
+                            ->hiddenLabel()
+                            ->table([
+                                RepeatableEntry\TableColumn::make('Name'),
+                                RepeatableEntry\TableColumn::make('Price'),
+                                RepeatableEntry\TableColumn::make('Quantity'),
+                                RepeatableEntry\TableColumn::make('Total'),
+                            ])
+                            ->schema([
+                                TextEntry::make('name')
+                                    ->label('Product'),
+                                TextEntry::make('price')
+                                    ->label('Unit Price')
+                                    ->money('INR'),
+                                TextEntry::make('quantity')
+                                    ->label('Qty'),
+                                TextEntry::make('line_total')
+                                    ->label('Line Total')
+                                    ->state(fn($record) => $record->quantity * $record->price)
+                                    ->money('INR'),
+                            ])
+                            ->columnSpanFull(),
                     ])->columns(['sm' => 2]),
                 Section::make('Payment')
+                    ->components([
+                        TextEntry::make('subtotal_amount')->numeric()->money('INR')
+                            ->numeric()->hiddenLabel()->prefix('Subtotal: '),
+                        TextEntry::make('discount_amount')->numeric()->money('INR')
+                            ->numeric()->hiddenLabel()->prefix('Discount: ')->color('warning'),
+                        TextEntry::make('total_amount')->numeric()->money('INR')
+                            ->numeric()->hiddenLabel()->prefix('Total: '),
+                        TextEntry::make('total_paid_amount')->numeric()->money('INR')
+                            ->numeric()->hiddenLabel()->prefix('Paid: ')->color('success'),
+                        TextEntry::make('total_due_amount')->numeric()->money('INR')
+                            ->numeric()->hiddenLabel()->prefix('Due: ')->color('danger'),
+                        TextEntry::make('remarks'),
+                        TextEntry::make('createdBy.name')->label('Created By')
+                            ->numeric()
+                            ->placeholder('-'),
+                        TextEntry::make('updatedBy.name')
+                            ->numeric()->label('Updated By')
+                            ->placeholder('-'),
+                        TextEntry::make('deletedBy.name')
+                            ->numeric()->label('Deleted By')
+                            ->placeholder('-')
+                            ->visible(fn(StoreInvoice $record): bool => $record->trashed()),
+                        TextEntry::make('created_at')
+                            ->dateTime()->label('Created At')
+                            ->placeholder('-'),
+                        TextEntry::make('updated_at')
+                            ->dateTime()->label('Updated At')
+                            ->placeholder('-'),
+                        TextEntry::make('deleted_at')
+                            ->dateTime()->label('Deleted At')
+                            ->visible(fn(StoreInvoice $record): bool => $record->trashed()),
+                    ])
+                    ->columns(['sm' => 2, 'md' => 4, 'lg' => 5])
                     ->headerActions([
                         Action::make('make-payment')
                             ->label('Payment')
@@ -203,40 +261,7 @@ class ViewInvoice extends Page implements HasTable, HasForms, HasInfolists
                                     ->success()
                                     ->send();
                             }),
-                    ])
-                    ->components([
-                        TextEntry::make('subtotal_amount')
-                            ->numeric()->hiddenLabel()->prefix('Subtotal: '),
-                        TextEntry::make('discount_amount')
-                            ->numeric()->hiddenLabel()->prefix('Discount: ')->color('warning'),
-                        TextEntry::make('total_amount')
-                            ->numeric()->hiddenLabel()->prefix('Total: '),
-                        TextEntry::make('total_paid_amount')
-                            ->numeric()->hiddenLabel()->prefix('Paid: ')->color('success'),
-                        TextEntry::make('total_due_amount')
-                            ->numeric()->hiddenLabel()->prefix('Due: ')->color('danger'),
-                        TextEntry::make('remarks'),
-                        TextEntry::make('createdBy.name')->label('Created By')
-                            ->numeric()
-                            ->placeholder('-'),
-                        TextEntry::make('updatedBy.name')
-                            ->numeric()->label('Updated By')
-                            ->placeholder('-'),
-                        TextEntry::make('deletedBy.name')
-                            ->numeric()->label('Deleted By')
-                            ->placeholder('-')
-                            ->visible(fn(StoreInvoice $record): bool => $record->trashed()),
-                        TextEntry::make('created_at')
-                            ->dateTime()->label('Created At')
-                            ->placeholder('-'),
-                        TextEntry::make('updated_at')
-                            ->dateTime()->label('Updated At')
-                            ->placeholder('-'),
-                        TextEntry::make('deleted_at')
-                            ->dateTime()->label('Deleted At')
-                            ->visible(fn(StoreInvoice $record): bool => $record->trashed()),
-                    ])
-                    ->columns(['sm'=>2,'md' => 4, 'lg'=>5]),
+                    ]),
             ]);
     }
 
@@ -269,5 +294,18 @@ class ViewInvoice extends Page implements HasTable, HasForms, HasInfolists
     protected function getTableQuery(): Builder
     {
         return $this->invoice->storeInvoiceTransactions()->getQuery();
+    }
+
+    public function getItemTableQuery(): Builder
+    {
+        return $this->invoice->getInvoiceItems()->getQuery();
+    }
+
+    protected function itemsTable(Table $table): Table
+    {
+        return $table->query($this->getItemTableQuery())
+            ->columns([
+                TextColumn::make('store_invoice_id')->sortable()->searchable()->label('Invoice Id'),
+            ]);
     }
 }

@@ -15,12 +15,14 @@ use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\Concerns\InteractsWithRecord;
 use Filament\Resources\Pages\Page;
+use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class StudentCart extends Page implements HasTable
 {
@@ -56,13 +58,17 @@ class StudentCart extends Page implements HasTable
         // 1. Retrieve cart items first to calculate amounts
         $cartItems = $this->getCartQuery()->with('storeProduct')->get();
 
-        $subtotal = 0;
-        // Ensure all items have necessary data structure for calculation
-        foreach ($cartItems as $item) {
-            // Assuming $item->price and $item->quantity are available
-            $subtotal += ($item->storeProduct->price * $item->quantity);
-        }
+        // A. Use the same logic as the table's calculation to get the subtotal
+        $subtotal = $this->getCartQuery()
+            ->selectRaw('SUM(store_products.price * store_carts.quantity) as subtotal')
+            // We must perform the join here because we're not using 'with' for this aggregate query
+            ->join('store_products', 'store_carts.store_product_id', '=', 'store_products.id')
+            ->value('subtotal');
 
+        // Make sure $subtotal is a number, not null if the cart is empty
+        $subtotal = (float) ($subtotal ?? 0);
+
+        // ... (rest of the generateInvoice method continues from step 2)
         // 2. Calculate discount and total (Example logic, adjust as needed)
         $discount = 0; // Implement your actual discount logic here
         $total = $subtotal - $discount;
@@ -102,6 +108,28 @@ class StudentCart extends Page implements HasTable
         return $invoice;
     }
 
+    protected function getCartQuery(): Builder
+    {
+        // 1. Get the base query for StoreCart items
+        return StoreCart::query()
+            // 2. Eager load the storeProduct relationship for display and invoice generation
+            ->with(['storeProduct'])
+            // 3. Apply necessary filters (store and user)
+            ->withWhereRelation('storeProduct', 'store_id', $this->record->id)
+            ->where('user_id', $this->student->id)
+
+            // 4. *** IMPLEMENT THE PERFORMANT CALCULATION HERE ***
+            // We use addSelect and join to calculate (price * quantity) for each cart item
+            ->addSelect([
+                // product_total is calculated by joining the price from the store_products table
+                // and multiplying it by the quantity in the store_carts table.
+                'product_total' => StoreProduct::query()
+                    ->select(DB::raw('store_products.price * store_carts.quantity'))
+                    ->whereColumn('store_carts.store_product_id', 'store_products.id')
+                    ->limit(1)
+            ]);
+    }
+
     public function table(Table $table): Table
     {
         return $table
@@ -114,11 +142,15 @@ class StudentCart extends Page implements HasTable
                     ->wrap()
                     ->label('Name'),
                 TextColumn::make('storeProduct.price')
-                    ->wrap(),
+                    ->wrap()
+                    ->money('INR'),
                 TextColumn::make('quantity')
                     ->wrap(),
-                TextColumn::make('ProductTotal')
-                    ->wrap(),
+                TextColumn::make('product_total')
+                    ->wrap()
+                    ->money('INR')
+                    ->summarize(Sum::make()->money('INR')->label(''))
+                ,
             ])->recordActions([
                 Action::make('cart-increase')
                     ->label('+')
@@ -171,9 +203,5 @@ class StudentCart extends Page implements HasTable
         $this->getCartQuery()->delete();
     }
 
-    protected function getCartQuery(): Builder
-    {
-        return StoreCart::query()->withWhereRelation('storeProduct', 'store_id', $this->record->id)
-            ->where('user_id', $this->student->id);
-    }
+
 }

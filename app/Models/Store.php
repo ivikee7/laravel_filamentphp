@@ -114,4 +114,5 @@ class Store extends Model
         return $this->hasMany(StoreCart::class, 'store_id');
     }
 
+
 }

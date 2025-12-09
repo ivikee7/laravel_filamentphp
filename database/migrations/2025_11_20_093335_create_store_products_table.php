@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -14,11 +13,11 @@ return new class extends Migration
         Schema::create('store_products', function (Blueprint $table) {
             $table->id();
             //
-            $table->string('name', 100);
-            $table->decimal('price', 8, 2);
             $table->foreignId('store_id')->nullable();
             $table->foreignId('academic_year_id')->nullable();
             $table->foreignId('class_id')->nullable();
+            $table->string('name', 100);
+            $table->decimal('price', 8, 2);
             //
             $table->foreignId('created_by')->nullable();
             $table->foreignId('updated_by')->nullable();

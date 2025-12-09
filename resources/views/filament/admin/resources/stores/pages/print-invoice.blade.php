@@ -1,61 +1,3 @@
-@push('styles')
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            text-decoration: none;
-        }
-
-        body {
-            /*padding: 0.5rem;*/
-            font-size: 0.7rem;
-        }
-
-        .grid-container {
-            display: grid !important;
-            grid-template-columns: 50% 1fr !important;
-            gap: 10px !important;
-        }
-
-        .item {
-            padding: 15px !important;
-            border: 1px solid #ccc !important;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th,
-        td {
-            padding: 0.1rem; /* Add padding inside cells */
-            text-align: left; /* Align text to the left */
-            vertical-align: top; /* Align content to the top of the cell */
-        }
-
-        th {
-            background-color: #f2f2f2; /* Light grey background for headers */
-            font-weight: bold; /* Bold text for headers */
-        }
-
-        /* Table Bordered Styling (using a class for reusability) */
-        .table-bordered {
-            border: 1px solid #dee2e6; /* Outer border for the entire table */
-        }
-
-        .table-bordered th,
-        .table-bordered td {
-            border: 1px solid #dee2e6; /* Borders for individual cells */
-        }
-
-        /* Optional: Styling for hover effect on rows */
-        .table-hover tbody tr:hover {
-            background-color: #f5f5f5; /* Light grey background on hover */
-        }
-    </style>
-@endpush
-
 <div>
     <div class="grid-container">
         @for($i=0; $i<2;$i++)
@@ -151,6 +93,64 @@
         @endfor
     </div>
 </div>
+
+@push('styles')
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            text-decoration: none;
+        }
+
+        body {
+            /*padding: 0.5rem;*/
+            font-size: 0.7rem;
+        }
+
+        .grid-container {
+            display: grid !important;
+            grid-template-columns: 50% 1fr !important;
+            gap: 10px !important;
+        }
+
+        .item {
+            padding: 15px !important;
+            border: 1px solid #ccc !important;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 0.1rem; /* Add padding inside cells */
+            text-align: left; /* Align text to the left */
+            vertical-align: top; /* Align content to the top of the cell */
+        }
+
+        th {
+            background-color: #f2f2f2; /* Light grey background for headers */
+            font-weight: bold; /* Bold text for headers */
+        }
+
+        /* Table Bordered Styling (using a class for reusability) */
+        .table-bordered {
+            border: 1px solid #dee2e6; /* Outer border for the entire table */
+        }
+
+        .table-bordered th,
+        .table-bordered td {
+            border: 1px solid #dee2e6; /* Borders for individual cells */
+        }
+
+        /* Optional: Styling for hover effect on rows */
+        .table-hover tbody tr:hover {
+            background-color: #f5f5f5; /* Light grey background on hover */
+        }
+    </style>
+@endpush
 
 @push('scripts')
     <script>

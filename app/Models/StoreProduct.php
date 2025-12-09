@@ -15,10 +15,11 @@ class StoreProduct extends Model
 
     protected $fillable = [
         'store_id',
-        'name',
-        'price',
         'academic_year_id',
         'class_id',
+        'name',
+        'price',
+        'multiple',
     ];
 
     protected static function boot()
@@ -83,7 +84,7 @@ class StoreProduct extends Model
         return $this->belongsTo(StudentClass::class, 'class_id');
     }
 
-    public function cart(): HasMany
+    public function storeCarts(): HasMany
     {
         return $this->hasMany(StoreCart::class, 'store_product_id');
     }

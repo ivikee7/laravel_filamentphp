@@ -22,7 +22,6 @@ class PrintInvoice extends Page
         $this->record = $this->resolveRecord($record);
 
         if ($invoiceId) {
-            // Assuming 'storeInvoices' is the correct relationship name
             $this->invoice = $this->record->storeInvoices()->findOrFail($invoiceId);
         }
     }
@@ -32,7 +31,7 @@ class PrintInvoice extends Page
         return 'layouts.print'; // Points to resources/views/layouts/print.blade.php
     }
 
-    public function getTitle(): string | Htmlable
+    public function getTitle(): string|Htmlable
     {
         return 'Print Invoice';
     }
