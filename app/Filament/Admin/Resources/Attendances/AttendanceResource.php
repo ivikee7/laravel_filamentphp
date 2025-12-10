@@ -119,7 +119,6 @@ class AttendanceResource extends Resource
         return [
             'index' => ListAttendances::route('/'),
             'create' => CreateAttendance::route('/create'),
-            'attendance-rtps' => AttendanceRTSP::route('/attendance-rtps'),
             'monthly-report' => MonthlyReport::route('monthly-report'),
             'print-monthly-report' => PrintMonthlyReport::route('print-monthly-report'),
             'view' => ViewAttendance::route('/{record}'),
