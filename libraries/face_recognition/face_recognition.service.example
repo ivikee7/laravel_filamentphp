@@ -1,0 +1,26 @@
+[Unit]
+Description=Gunicorn instance for Facial Recognition API
+After=network.target
+
+[Service]
+# User and Group to run the service under (MUST NOT be root)
+User=www-data
+Group=www-data
+
+# The directory where the run script is located
+WorkingDirectory=/app_directory/face_recognition/
+
+# The command to start the service
+# This points to the script we created in Step 2
+ExecStart=/app_directory/face_recognition/run_gunicorn.sh
+
+# Restart if the process fails
+Restart=always
+RestartSec=3
+
+# Standard output and error logs
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
