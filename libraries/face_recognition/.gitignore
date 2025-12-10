@@ -40,8 +40,6 @@ gunicorn.pid
 *~
 
 # 7 config file
-/config.py
-./config.py
 config.py
 face_recognition.service
 run_gunicorn.sh
