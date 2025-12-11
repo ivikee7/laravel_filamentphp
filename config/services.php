@@ -42,4 +42,10 @@ return [
         'redirect' => env('GOOGLE_REDIRECT_URI'),
     ],
 
+    'compreface' => [
+        'host' => env('COMPREFACE_HOST'),
+        'port' => env('COMPREFACE_PORT'),
+        'api_key' => env('COMPREFACE_RECOGNITION_API_KEY'),
+    ],
+
 ];
