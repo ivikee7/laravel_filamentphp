@@ -7,10 +7,12 @@ use Illuminate\Support\Facades\Route;
 // Without Auth
 Route::match(array('GET', 'POST'), '/website-enquiries', [WebsiteEnquiryController::class, 'store']);
 Route::post('/biometric-data', [\App\Http\Controllers\Biometric\BiometricController::class, 'store']);
+Route::post('/hikvision/attendance', [\App\Http\Controllers\Api\Hikvision\BiometricAttendanceController::class, 'store']);
 
 
 Route::post('/whatsapp/webhook', [WebhookController::class, 'handle']);
 // Route::get('/whatsapp/webhook', [WebhookController::class, 'verify']);
 Route::match(['GET', 'POST'], '/whatsapp/webhook', [WebhookController::class, 'verify']);
+
 
 
