@@ -29,7 +29,8 @@ class BiometricAttendanceController extends Controller
             $status = $details['attendanceStatus'];
             if ($status === 'undefined') {
                 // Example: If before 12 PM Check-in, else Check-out
-                $status = now()->hour < 12 ? 'checkIn' : 'checkOut';
+                // $status = now()->hour < 12 ? 'checkIn' : 'checkOut';
+                $status = 'marked';
             }
 
             Attendance::create([
