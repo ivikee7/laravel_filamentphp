@@ -11,28 +11,35 @@ class BiometricAttendanceController extends Controller
 {
     public function store(Request $request)
     {
-        // Hikvision pushes events in JSON or XML. Laravel's $request->all() handles both.
-        $data = $request->all();
+        // 1. Get the outer array
+        $outerData = $request->all();
 
-        Log::debug($data);
-
-        // 1. Identify the user and timestamp from the device payload
-        $employeeId = $data['employeeNoString'] ?? null;
-        $timestamp = $data['dateTime'] ?? now();
-        $status = $data['attendanceStatus'] ?? 'checkIn'; // e.g., checkIn, checkOut
-
-        if (!$employeeId) {
-            return response()->json(['status' => 'error', 'message' => 'No employee ID'], 400);
+        if (!isset($outerData['event_log'])) {
+            return response()->json(['error' => 'Invalid Format'], 400);
         }
 
-        // 2. Map to your existing Attendance model
-        Attendance::create([
-            'user_id' => $employeeId,
-            'created_at' => $timestamp,
-            'type' => $status,
-        ]);
+        Log::debug($outerData);
 
-        // 3. IMPORTANT: Hikvision requires a 200 OK response to stop retrying the push
-        return response()->json(['status' => 'success'], 200);
+        // 2. Decode the inner JSON string provided in your debug log
+        $eventData = json_decode($outerData['event_log'], true);
+
+        // 3. Extract data specifically from 'AccessControllerEvent'
+        $details = $eventData['AccessControllerEvent'] ?? [];
+
+        // Only log to database if it's a valid scan (subEventType 1 is usually a success)
+        // subEventType 1024 is often just a heartbeat or door status
+        if (isset($details['subEventType']) && $details['subEventType'] == 1) {
+
+            Attendance::create([
+                'user_id' => $details['employeeNoString'],
+                'created_at'  => $eventData['dateTime'] ?? now(),
+                'type'        => $details['attendanceStatus'] ?? 'checkIn',
+            ]);
+
+            return response()->json(['status' => 'Success'], 200);
+        }
+
+        // Return 200 even for heartbeats so the device doesn't keep retrying
+        return response()->json(['status' => 'Heartbeat Received'], 200);
     }
 }
