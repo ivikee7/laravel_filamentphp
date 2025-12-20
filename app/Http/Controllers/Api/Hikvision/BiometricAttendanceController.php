@@ -19,22 +19,34 @@ class BiometricAttendanceController extends Controller
 
         $eventData = json_decode($outerData['event_log'], true);
         $details = $eventData['AccessControllerEvent'] ?? [];
-
-        // Check for Employee ID (1436 in your log)
         $employeeId = $details['employeeNoString'] ?? null;
 
         if ($employeeId) {
-            // Logic to determine status if device sends 'undefined'
-            $status = $details['attendanceStatus'];
-            if ($status === 'undefined') {
-                // Example: If before 12 PM Check-in, else Check-out
-                // $status = now()->hour < 12 ? 'checkIn' : 'checkOut';
-                $status = 'marked';
+            $punchTime = Carbon::parse($eventData['dateTime']);
+            $status = $details['attendanceStatus'] === 'undefined' ? 'marked' : $details['attendanceStatus'];
+
+            // 1. Prevent Exact Duplicates (Same user, same second)
+            $exists = Attendance::where('user_id', $employeeId)
+                ->where('created_at', $punchTime)
+                ->exists();
+
+            if ($exists) {
+                return response()->json(['status' => 'duplicate_ignored'], 200);
+            }
+
+            // 2. Prevent Mis-punches (e.g., same user within 60 seconds)
+            $recentPunch = Attendance::where('user_id', $employeeId)
+                ->where('created_at', '>=', $punchTime->copy()->subMinutes(1))
+                ->where('created_at', '<=', $punchTime->copy()->addMinutes(1))
+                ->exists();
+
+            if ($recentPunch) {
+                return response()->json(['status' => 'mis_punch_ignored'], 200);
             }
 
             Attendance::create([
                 'user_id' => $employeeId,
-                'created_at' => Carbon::parse($eventData['dateTime']),
+                'created_at' => $punchTime,
                 'type' => $status,
             ]);
 
