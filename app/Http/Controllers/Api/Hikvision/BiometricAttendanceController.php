@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Attendance;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class BiometricAttendanceController extends Controller
 {
@@ -20,6 +21,8 @@ class BiometricAttendanceController extends Controller
         $eventData = json_decode($outerData['event_log'], true);
         $details = $eventData['AccessControllerEvent'] ?? [];
         $employeeId = $details['employeeNoString'] ?? null;
+
+        Log::debug($eventData);
 
         if ($employeeId) {
             $punchTime = Carbon::parse($eventData['dateTime']);
