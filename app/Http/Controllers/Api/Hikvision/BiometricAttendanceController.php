@@ -26,7 +26,8 @@ class BiometricAttendanceController extends Controller
 
         if ($employeeId) {
             $punchTime = Carbon::parse($eventData['dateTime']);
-            $status = $details['attendanceStatus'] === 'undefined' ? 'marked' : $details['attendanceStatus'];
+//            $type = $details['attendanceStatus'] === 'undefined' ? 'marked' : $details['attendanceStatus'];
+            $type = $details['deviceName'];
 
             // 1. Prevent Exact Duplicates (Same user, same second)
             $exists = Attendance::where('user_id', $employeeId)
@@ -50,7 +51,7 @@ class BiometricAttendanceController extends Controller
             Attendance::create([
                 'user_id' => $employeeId,
                 'created_at' => $punchTime,
-                'type' => $status,
+                'type' => $type,
             ]);
 
             return response()->json(['status' => 'success'], 200);
