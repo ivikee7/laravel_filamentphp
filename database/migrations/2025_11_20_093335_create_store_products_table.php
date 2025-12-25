@@ -18,6 +18,7 @@ return new class extends Migration {
             $table->foreignId('class_id')->nullable();
             $table->string('name', 100);
             $table->decimal('price', 8, 2);
+            $table->boolean('is_multiple')->default(true);
             //
             $table->foreignId('created_by')->nullable();
             $table->foreignId('updated_by')->nullable();
