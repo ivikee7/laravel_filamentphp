@@ -18,7 +18,9 @@ use Filament\Resources\Pages\Page;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
@@ -63,32 +65,37 @@ class ListProducts extends Page implements HasTable, HasForms
                         ->send();
                 })
                 ->schema([
-                    Select::make('academic_year_id')
-                        ->label('Academic Year')
-                        ->relationship('storeProducts.academicYear', 'name')
-                        ->required()
-                        ->reactive()
-                        // CORRECTED: Clearing 'class_id' instead of 'student_class_id'
-                        ->afterStateUpdated(function (Set $set) {
-                            $set('class_id', null);
-                        }),
-                    Select::make('class_id')
-                        ->label('Class')
-                        ->relationship('storeProducts.studentClass', 'name', modifyQueryUsing: function (Builder $query, Get $get): Builder {
-                            // Ensure the query is scoped by the selected academic year ID
-                            return $query->when($get('academic_year_id'), fn(Builder $q) => $q->where('academic_year_id', $get('academic_year_id')));
-                        })
-                        ->reactive() // Make this field reactive to trigger dependent updates (though none are strictly needed here)
-                        ->required()
-                        // Hide until an academic year is selected
-                        ->visible(fn(Get $get) => filled($get('academic_year_id'))),
-                    TextInput::make('name')
-                        ->required()
-                        ->maxLength(100),
-                    TextInput::make('price')
-                        ->required()
-                        ->numeric()
-                        ->prefix('₹'),
+                    Group::make([
+                        TextInput::make('name')
+                            ->required()
+                            ->maxLength(100),
+                        TextInput::make('price')
+                            ->required()
+                            ->numeric()
+                            ->prefix('₹'),
+                        Toggle::make('is_multiple')
+                            ->default(true)
+                            ->helperText('Indicates if multiple quantities of this product can be purchased.'),
+                        Select::make('academic_year_id')
+                            ->label('Academic Year')
+                            ->relationship('storeProducts.academicYear', 'name')
+//                            ->required()
+                            ->reactive()
+                            // CORRECTED: Clearing 'class_id' instead of 'student_class_id'
+                            ->afterStateUpdated(function (Set $set) {
+                                $set('class_id', null);
+                            }),
+                        Select::make('class_id')
+                            ->label('Class')
+                            ->relationship('storeProducts.studentClass', 'name', modifyQueryUsing: function (Builder $query, Get $get): Builder {
+                                // Ensure the query is scoped by the selected academic year ID
+                                return $query->when($get('academic_year_id'), fn(Builder $q) => $q->where('academic_year_id', $get('academic_year_id')));
+                            })
+//                            ->reactive() // Make this field reactive to trigger dependent updates (though none are strictly needed here)
+                            ->required()
+                            // Hide until an academic year is selected
+                            ->visible(fn(Get $get) => filled($get('academic_year_id'))),
+                    ])->columns(3),
                 ]),
         ];
     }
@@ -97,10 +104,16 @@ class ListProducts extends Page implements HasTable, HasForms
     {
         return $table->query($this->getTableQuery())->columns([
             TextColumn::make('id'),
-            TextColumn::make('academicYear.name')->label('Academic Year')->searchable()->sortable()->wrap(),
-            TextColumn::make('class.name')->label('Class')->searchable()->sortable()->wrap(),
             TextColumn::make('name')->searchable()->sortable()->wrap(),
             TextColumn::make('price')->searchable()->sortable()->wrap(),
+            IconColumn::make('is_multiple')
+                ->boolean()
+                ->trueIcon('heroicon-o-check-badge')
+                ->falseIcon('heroicon-o-x-circle')
+                ->trueColor('success')
+                ->falseColor('danger'),
+            TextColumn::make('academicYear.name')->label('Academic Year')->searchable()->sortable()->wrap(),
+            TextColumn::make('class.name')->label('Class')->searchable()->sortable()->wrap(),
             TextColumn::make('createdBy.name')->label('Created by')
                 ->searchable()->sortable()
                 ->wrap()->toggleable(isToggledHiddenByDefault: true),
@@ -131,29 +144,32 @@ class ListProducts extends Page implements HasTable, HasForms
                             ->send();
                     })
                     ->schema([
-                        Select::make('academic_year_id')
-                            ->label('Academic Year')
-                            ->relationship('academicYear', 'name') // Corrected to 'academicYear'
-                            ->required()
-                            ->reactive()
-                            ->afterStateUpdated(function (Set $set) {
-                                $set('class_id', null);
-                            }),
-                        Select::make('class_id')
-                            ->label('Class')
-                            ->relationship('studentClass', 'name', modifyQueryUsing: function (Builder $query, Get $get): Builder {
-                                return $query->when($get('academic_year_id'), fn(Builder $q) => $q->where('academic_year_id', $get('academic_year_id')));
-                            })
-                            ->reactive()
-                            ->required()
-                            ->visible(fn(Get $get) => filled($get('academic_year_id'))),
-                        TextInput::make('name')
-                            ->required()
-                            ->maxLength(100),
-                        TextInput::make('price')
-                            ->required()
-                            ->numeric()
-                            ->prefix('₹'),
+                        Group::make([
+                            TextInput::make('name')
+                                ->required()
+                                ->maxLength(100),
+                            TextInput::make('price')
+                                ->required()
+                                ->numeric()
+                                ->prefix('₹'),
+                            Toggle::make('is_multiple')
+                                ->default(true)
+                                ->helperText('Indicates if multiple quantities of this product can be purchased.'),
+                            Select::make('academic_year_id')
+                                ->label('Academic Year')
+                                ->relationship('academicYear', 'name') // Corrected to 'academicYear'
+                                ->reactive()
+                                ->afterStateUpdated(function (Set $set) {
+                                    $set('class_id', null);
+                                }),
+                            Select::make('class_id')
+                                ->label('Class')
+                                ->relationship('studentClass', 'name', modifyQueryUsing: function (Builder $query, Get $get): Builder {
+                                    return $query->when($get('academic_year_id'), fn(Builder $q) => $q->where('academic_year_id', $get('academic_year_id')));
+                                })
+                                ->required()
+                                ->visible(fn(Get $get) => filled($get('academic_year_id'))),
+                        ])->columns(3),
                     ]),
             ]);
     }

@@ -19,7 +19,7 @@ class StoreProduct extends Model
         'class_id',
         'name',
         'price',
-        'multiple',
+        'is_multiple',
     ];
 
     protected static function boot()

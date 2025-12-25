@@ -60,10 +60,9 @@ class StudentCart extends Page implements HasTable
 
         // A. Use the same logic as the table's calculation to get the subtotal
         $subtotal = $this->getCartQuery()
-            ->selectRaw('SUM(store_products.price * store_carts.quantity) as subtotal')
-            // We must perform the join here because we're not using 'with' for this aggregate query
+            ->getQuery() // This gets the underlying Query Builder without Eloquent's default selects
             ->join('store_products', 'store_carts.store_product_id', '=', 'store_products.id')
-            ->value('subtotal');
+            ->sum(DB::raw('store_products.price * store_carts.quantity'));
 
         // Make sure $subtotal is a number, not null if the cart is empty
         $subtotal = (float) ($subtotal ?? 0);

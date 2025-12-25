@@ -81,12 +81,22 @@ class ListStudentProduct extends Page implements HasTable
             ->where('user_id', $this->student->id);
     }
 
+//    public function getInvoiceItemsQuery(): EloquentBuilder
+//    {
+//        return StoreInvoiceItem::with('storeInvoice')
+//            ->withWhereRelation('storeInvoice.store_id', $this->record->id)
+//            ->where('storeInvoice.user_id', $this->student->id);
+//    }
+
     public function getProductTableQuery(): EloquentBuilder
     {
         return StoreProduct::where('store_id', $this->record->id)
             ->where('class_id', $this->classId)
             ->where('academic_year_id', $this->academicYearId)
-            ->whereNotIn('id', $this->getCartItemsQuery()->pluck('store_product_id'));
+            ->where('is_multiple', true)
+            ->orWhereNotIn('id', $this->getCartItemsQuery()->pluck('store_product_id'))
+//            ->whereNotIn('id', $this->getInvoiceItemsQuery()->pluck('store_product_id'))
+            ;
     }
 
     public function table(Table $table): Table
