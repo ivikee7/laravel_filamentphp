@@ -17,8 +17,7 @@
                                     , {{ $this->invoice->user->state ?? '' }}
                                     , {{ $this->invoice->user->pin_code ?? '' }}</p>
                                 <p>Contact: {{ $this->invoice->user->primary_contact_number ?? '' }}</p>
-                                <p>
-                                    Class: {{ $this->invoice->user->student->classAssignment->class->name ?? '' }}</p>
+                                <p>Class: {{ $this->invoice->class->name ?? '' }}</p>
                             </div>
                         </td>
                         <td>
