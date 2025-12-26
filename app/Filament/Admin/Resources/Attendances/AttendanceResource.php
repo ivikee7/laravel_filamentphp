@@ -78,9 +78,9 @@ class AttendanceResource extends Resource
                     ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()
-                    ->sortable(),
+                    ->sortable()->searchable(true),
                 TextColumn::make('type')
-                    ->searchable(),
+                    ->searchable()->searchable(true),
                 TextColumn::make('creator.name')
                     ->numeric()
                     ->sortable()
