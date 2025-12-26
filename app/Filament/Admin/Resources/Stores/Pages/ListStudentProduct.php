@@ -104,19 +104,26 @@ class ListStudentProduct extends Page implements HasTable
         return StoreProduct::query()
             ->where('store_id', $this->record->id)
             ->where(function ($query) {
+                // Condition A: Always show if it's a multiple-use product
                 $query->where('is_multiple', true)
+
+                    // Condition B: Logic for single-use/specific products
                     ->orWhere(function ($subQuery) {
                         $subQuery->whereNotIn('id', $this->getCartItemsQuery()->pluck('store_product_id'))
                             ->whereNotIn('id', $this->getInvoiceItemsQuery()->pluck('store_product_id'))
-                            // Filter by Academic Year ONLY if the product has one assigned
+
+                            // Filter Academic Year:
+                            // If the product has a year, it MUST be the current one.
                             ->where(function ($q) {
-                                $q->whereNull('academic_year_id')
-                                    ->orWhere('academic_year_id', $this->academicYearId);
+                                $q->where('academic_year_id', $this->academicYearId)
+                                    ->orWhereNull('academic_year_id');
                             })
-                            // Filter by Class ONLY if the product has one assigned
+
+                            // Filter Class:
+                            // If the product has a class, it MUST be the current one.
                             ->where(function ($q) {
-                                $q->whereNull('class_id')
-                                    ->orWhere('class_id', $this->classId);
+                                $q->where('class_id', $this->classId)
+                                    ->orWhereNull('class_id');
                             });
                     });
             });
