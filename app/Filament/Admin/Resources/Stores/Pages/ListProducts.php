@@ -167,7 +167,6 @@ class ListProducts extends Page implements HasTable, HasForms
                                 ->relationship('studentClass', 'name', modifyQueryUsing: function (Builder $query, Get $get): Builder {
                                     return $query->when($get('academic_year_id'), fn(Builder $q) => $q->where('academic_year_id', $get('academic_year_id')));
                                 })
-                                ->required()
                                 ->visible(fn(Get $get) => filled($get('academic_year_id'))),
                         ])->columns(3),
                     ]),
