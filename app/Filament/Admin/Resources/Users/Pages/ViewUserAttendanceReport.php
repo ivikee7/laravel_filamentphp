@@ -32,8 +32,10 @@ class ViewUserAttendanceReport extends Page implements HasTable
             TextColumn::make('id')->label(__('#')),
             TextColumn::make('user.id')->label(__('ID')),
             TextColumn::make('user.name')->label(__('Name')),
-            TextColumn::make('created_at')->label(__('Created At')),
-            TextColumn::make('type')->label(__('Type')),
-        ])->defaultSort('created_at', 'desc');
+            TextColumn::make('created_at')->label(__('Created At'))
+                ->searchable(true),
+            TextColumn::make('type')->label(__('Type'))->searchable(true),
+        ])
+            ->defaultSort('created_at', 'desc');
     }
 }
