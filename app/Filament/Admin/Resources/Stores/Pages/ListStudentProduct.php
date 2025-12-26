@@ -102,23 +102,22 @@ class ListStudentProduct extends Page implements HasTable
 //                    });
 //            });
         return StoreProduct::query()
-            // 1. Store ID is always required
             ->where('store_id', $this->record->id)
             ->where(function ($query) {
                 $query->where('is_multiple', true)
-                    // 2. If is_multiple is true, display it regardless of cart/invoice status
                     ->orWhere(function ($subQuery) {
-                        // 3. If restricted: Must match the current Academic Year
-                        $subQuery->where('academic_year_id', $this->academicYearId)
-
-                            // 4. If a Class is assigned, it must also match the specific Class
-                            ->when($this->classId, function ($q) {
-                                return $q->where('class_id', $this->classId);
+                        $subQuery->whereNotIn('id', $this->getCartItemsQuery()->pluck('store_product_id'))
+                            ->whereNotIn('id', $this->getInvoiceItemsQuery()->pluck('store_product_id'))
+                            // Filter by Academic Year ONLY if the product has one assigned
+                            ->where(function ($q) {
+                                $q->whereNull('academic_year_id')
+                                    ->orWhere('academic_year_id', $this->academicYearId);
                             })
-
-                            // 5. Only display if NOT already in Cart or Invoice
-                            ->whereNotIn('id', $this->getCartItemsQuery()->pluck('store_product_id'))
-                            ->whereNotIn('id', $this->getInvoiceItemsQuery()->pluck('store_product_id'));
+                            // Filter by Class ONLY if the product has one assigned
+                            ->where(function ($q) {
+                                $q->whereNull('class_id')
+                                    ->orWhere('class_id', $this->classId);
+                            });
                     });
             });
     }
