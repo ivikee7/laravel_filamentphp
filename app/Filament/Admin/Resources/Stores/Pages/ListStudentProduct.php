@@ -102,29 +102,38 @@ class ListStudentProduct extends Page implements HasTable
 //                    });
 //            });
         return StoreProduct::query()
+            // 1. Store ID is always required
             ->where('store_id', $this->record->id)
             ->where(function ($query) {
-                // Condition A: Always show if it's a multiple-use product
+
+                // --- CASE 1: Has Academic Year but NO Class ---
+                $query->where(function ($q) {
+                    $q->whereNotNull('academic_year_id')
+                        ->whereNull('class_id')
+                        ->where('academic_year_id', $this->academicYearId);
+                })
+
+                    // --- CASE 2: Has Academic Year AND Class ---
+                    ->orWhere(function ($q) {
+                        $q->whereNotNull('academic_year_id')
+                            ->whereNotNull('class_id')
+                            ->where('academic_year_id', $this->academicYearId)
+                            ->where('class_id', $this->classId);
+                    })
+
+                    // --- CASE 3: No Academic Year AND No Class ---
+                    ->orWhere(function ($q) {
+                        $q->whereNull('academic_year_id')
+                            ->whereNull('class_id');
+                    });
+            })
+            // 2. Final check: If it's Multiple, show it.
+            // If NOT Multiple, it MUST NOT be in the cart/invoice.
+            ->where(function ($query) {
                 $query->where('is_multiple', true)
-
-                    // Condition B: Logic for single-use/specific products
-                    ->orWhere(function ($subQuery) {
-                        $subQuery->whereNotIn('id', $this->getCartItemsQuery()->pluck('store_product_id'))
-                            ->whereNotIn('id', $this->getInvoiceItemsQuery()->pluck('store_product_id'))
-
-                            // Filter Academic Year:
-                            // If the product has a year, it MUST be the current one.
-                            ->where(function ($q) {
-                                $q->where('academic_year_id', $this->academicYearId)
-                                    ->orWhereNull('academic_year_id');
-                            })
-
-                            // Filter Class:
-                            // If the product has a class, it MUST be the current one.
-                            ->where(function ($q) {
-                                $q->where('class_id', $this->classId)
-                                    ->orWhereNull('class_id');
-                            });
+                    ->orWhere(function ($q) {
+                        $q->whereNotIn('id', $this->getCartItemsQuery()->pluck('store_product_id'))
+                            ->whereNotIn('id', $this->getInvoiceItemsQuery()->pluck('store_product_id'));
                     });
             });
     }
