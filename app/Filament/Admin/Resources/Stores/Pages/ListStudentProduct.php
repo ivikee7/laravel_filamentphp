@@ -90,13 +90,33 @@ class ListStudentProduct extends Page implements HasTable
 
     public function getProductTableQuery(): EloquentBuilder
     {
+//        return StoreProduct::query()
+//            ->where('store_id', $this->record->id)
+//            ->where(function ($query) {
+//                $query->where('is_multiple', true)
+//                    ->orWhere(function ($subQuery) {
+//                        $subQuery->where('academic_year_id', $this->academicYearId)
+//                            ->where('class_id', $this->classId)
+//                            ->whereNotIn('id', $this->getCartItemsQuery()->pluck('store_product_id'))
+//                            ->whereNotIn('id', $this->getInvoiceItemsQuery()->pluck('store_product_id'));
+//                    });
+//            });
         return StoreProduct::query()
+            // 1. Store ID is always required
             ->where('store_id', $this->record->id)
             ->where(function ($query) {
                 $query->where('is_multiple', true)
+                    // 2. If is_multiple is true, display it regardless of cart/invoice status
                     ->orWhere(function ($subQuery) {
+                        // 3. If restricted: Must match the current Academic Year
                         $subQuery->where('academic_year_id', $this->academicYearId)
-                            ->where('class_id', $this->classId)
+
+                            // 4. If a Class is assigned, it must also match the specific Class
+                            ->when($this->classId, function ($q) {
+                                return $q->where('class_id', $this->classId);
+                            })
+
+                            // 5. Only display if NOT already in Cart or Invoice
                             ->whereNotIn('id', $this->getCartItemsQuery()->pluck('store_product_id'))
                             ->whereNotIn('id', $this->getInvoiceItemsQuery()->pluck('store_product_id'));
                     });
