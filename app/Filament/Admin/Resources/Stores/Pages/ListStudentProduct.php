@@ -91,12 +91,12 @@ class ListStudentProduct extends Page implements HasTable
     public function getProductTableQuery(): EloquentBuilder
     {
         return StoreProduct::query()
+            ->where('store_id', $this->record->id)
             ->where(function ($query) {
                 $query->where('is_multiple', true)
                     ->orWhere(function ($subQuery) {
-                        $subQuery->where('store_id', $this->record->id)
+                        $subQuery->where('academic_year_id', $this->academicYearId)
                             ->where('class_id', $this->classId)
-                            ->where('academic_year_id', $this->academicYearId)
                             ->whereNotIn('id', $this->getCartItemsQuery()->pluck('store_product_id'))
                             ->whereNotIn('id', $this->getInvoiceItemsQuery()->pluck('store_product_id'));
                     });
