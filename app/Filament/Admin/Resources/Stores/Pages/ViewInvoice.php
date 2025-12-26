@@ -191,7 +191,7 @@ class ViewInvoice extends Page implements HasTable, HasForms, HasInfolists
                         Action::make('make-payment')
                             ->label('Payment')
                             ->modalHeading('Invoice payment')
-//                            ->authorize(auth()->user()->can('create StoreInvoiceTransection'))
+                            ->authorize(auth()->user()->can('create StoreInvoiceTransaction'))
                             ->schema([
                                 Group::make([
                                     TextInput::make('amount')

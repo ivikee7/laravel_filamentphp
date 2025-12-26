@@ -13,7 +13,7 @@ class StoreInvoiceTransactionPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->checkPermissionTo('view-any StoreInvoiceTransection');
+        return $user->checkPermissionTo('view-any StoreInvoiceTransaction');
     }
 
     /**
