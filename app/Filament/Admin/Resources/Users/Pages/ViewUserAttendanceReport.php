@@ -29,7 +29,9 @@ class ViewUserAttendanceReport extends Page implements HasTable
         return $table->query(function () {
             return $this->record->attendances();
         })->columns([
-            TextColumn::make('id')->label(__('ID')),
+            TextColumn::make('id')->label(__('#')),
+            TextColumn::make('user.id')->label(__('ID')),
+            TextColumn::make('user.name')->label(__('Name')),
             TextColumn::make('created_at')->label(__('Created At')),
             TextColumn::make('type')->label(__('Type')),
         ])->defaultSort('created_at', 'desc');
