@@ -101,38 +101,71 @@ class ListStudentProduct extends Page implements HasTable
 //                            ->whereNotIn('id', $this->getInvoiceItemsQuery()->pluck('store_product_id'));
 //                    });
 //            });
+//        return StoreProduct::query()
+//            // 1. Store ID is always required
+//            ->where('store_id', $this->record->id)
+//            ->where(function ($query) {
+//
+//                // --- CASE 1: Has Academic Year but NO Class ---
+//                $query->where(function ($q) {
+//                    $q->whereNotNull('academic_year_id')
+//                        ->whereNull('class_id')
+//                        ->where('academic_year_id', $this->academicYearId);
+//                })
+//
+//                    // --- CASE 2: Has Academic Year AND Class ---
+//                    ->orWhere(function ($q) {
+//                        $q->whereNotNull('academic_year_id')
+//                            ->whereNotNull('class_id')
+//                            ->where('academic_year_id', $this->academicYearId)
+//                            ->where('class_id', $this->classId);
+//                    })
+//
+//                    // --- CASE 3: No Academic Year AND No Class ---
+//                    ->orWhere(function ($q) {
+//                        $q->whereNull('academic_year_id')
+//                            ->whereNull('class_id');
+//                    });
+//            })
+//            // 2. Final check: If it's Multiple, show it.
+//            // If NOT Multiple, it MUST NOT be in the cart/invoice.
+//            ->where(function ($query) {
+//                $query->where('is_multiple', true)
+//                    ->orWhere(function ($q) {
+//                        $q->whereNotIn('id', $this->getCartItemsQuery()->pluck('store_product_id'))
+//                            ->whereNotIn('id', $this->getInvoiceItemsQuery()->pluck('store_product_id'));
+//                    });
+//            });
         return StoreProduct::query()
-            // 1. Store ID is always required
             ->where('store_id', $this->record->id)
             ->where(function ($query) {
-
-                // --- CASE 1: Has Academic Year but NO Class ---
+                // --- 1. DETERMINE ELIGIBILITY (Year & Class Logic) ---
                 $query->where(function ($q) {
+                    // Scenario A: Year only (Matches year, any class)
                     $q->whereNotNull('academic_year_id')
                         ->whereNull('class_id')
                         ->where('academic_year_id', $this->academicYearId);
                 })
-
-                    // --- CASE 2: Has Academic Year AND Class ---
                     ->orWhere(function ($q) {
+                        // Scenario B: Year and Class (Matches both)
                         $q->whereNotNull('academic_year_id')
                             ->whereNotNull('class_id')
                             ->where('academic_year_id', $this->academicYearId)
                             ->where('class_id', $this->classId);
                     })
-
-                    // --- CASE 3: No Academic Year AND No Class ---
                     ->orWhere(function ($q) {
+                        // Scenario C: General (No year, no class)
                         $q->whereNull('academic_year_id')
                             ->whereNull('class_id');
                     });
             })
-            // 2. Final check: If it's Multiple, show it.
-            // If NOT Multiple, it MUST NOT be in the cart/invoice.
             ->where(function ($query) {
+                // --- 2. DETERMINE AVAILABILITY (Multiple vs Single Logic) ---
                 $query->where('is_multiple', true)
                     ->orWhere(function ($q) {
-                        $q->whereNotIn('id', $this->getCartItemsQuery()->pluck('store_product_id'))
+                        // If it's NOT multiple, it must not exist in cart or invoice
+                        $q->where('is_multiple', false)
+                            ->whereNotIn('id', $this->getCartItemsQuery()->pluck('store_product_id'))
                             ->whereNotIn('id', $this->getInvoiceItemsQuery()->pluck('store_product_id'));
                     });
             });
