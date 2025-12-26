@@ -20,10 +20,12 @@ class ViewUser extends ViewRecord
         return [
             EditAction::make(),
             Action::make('id-card')
-                ->url(fn (User $record): string => IDCard::getUrl(['record' => $record]))
-                ->visible(fn (): bool => Auth::user()->can('view Attendance'))
+                ->url(fn(User $record): string => IDCard::getUrl(['record' => $record]))
+                ->visible(fn(): bool => Auth::user()->can('view Attendance'))
                 ->icon('heroicon-o-identification')
                 ->color('info'),
+            Action::make('view-user-attendance-report')
+                ->url(fn(User $record): string => UserResource::getUrl('view-user-attendance-report', ['record' => $record])),
         ];
     }
 }

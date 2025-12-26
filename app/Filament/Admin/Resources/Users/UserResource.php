@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources\Users;
 
+use App\Filament\Admin\Resources\Users\Pages\ViewUserAttendanceReport;
 use Filament\Schemas\Schema;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Grid;
@@ -553,6 +554,7 @@ class UserResource extends Resource
             'create' => CreateUser::route('/create'),
             'view' => ViewUser::route('/{record}'),
             'edit' => EditUser::route('/{record}/edit'),
+            'view-user-attendance-report' => ViewUserAttendanceReport::route('/{record}/view-user-attendance-report'),
         ];
     }
 
