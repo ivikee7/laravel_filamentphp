@@ -97,13 +97,13 @@ class ListStudentProduct extends Page implements HasTable
 //            ->orWhereNotIn('id', $this->getCartItemsQuery()->pluck('store_product_id'))
 //            ->whereNotIn('id', $this->getInvoiceItemsQuery()->pluck('store_product_id'));
         return StoreProduct::query()
-            ->where('store_id', $this->record->id)
-            ->where('class_id', $this->classId)
-            ->where('academic_year_id', $this->academicYearId)
             ->where(function ($query) {
                 $query->where('is_multiple', true)
                     ->orWhere(function ($subQuery) {
-                        $subQuery->whereNotIn('id', $this->getCartItemsQuery()->pluck('store_product_id'))
+                        $subQuery->where('store_id', $this->record->id)
+                            ->where('class_id', $this->classId)
+                            ->where('academic_year_id', $this->academicYearId)
+                            ->whereNotIn('id', $this->getCartItemsQuery()->pluck('store_product_id'))
                             ->whereNotIn('id', $this->getInvoiceItemsQuery()->pluck('store_product_id'));
                     });
             });
