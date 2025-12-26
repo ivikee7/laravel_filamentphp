@@ -79,7 +79,6 @@ class ListProducts extends Page implements HasTable, HasForms
                         Select::make('academic_year_id')
                             ->label('Academic Year')
                             ->relationship('storeProducts.academicYear', 'name')
-//                            ->required()
                             ->reactive()
                             // CORRECTED: Clearing 'class_id' instead of 'student_class_id'
                             ->afterStateUpdated(function (Set $set) {
@@ -91,8 +90,8 @@ class ListProducts extends Page implements HasTable, HasForms
                                 // Ensure the query is scoped by the selected academic year ID
                                 return $query->when($get('academic_year_id'), fn(Builder $q) => $q->where('academic_year_id', $get('academic_year_id')));
                             })
-//                            ->reactive() // Make this field reactive to trigger dependent updates (though none are strictly needed here)
-                            ->required()
+                            ->reactive() // Make this field reactive to trigger dependent updates (though none are strictly needed here)
+
                             // Hide until an academic year is selected
                             ->visible(fn(Get $get) => filled($get('academic_year_id'))),
                     ])->columns(3),
