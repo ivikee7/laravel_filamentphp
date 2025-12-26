@@ -229,7 +229,7 @@ class ViewInvoice extends Page implements HasTable, HasForms, HasInfolists
                         Action::make('make-discount')
                             ->label('Discount')
                             ->modalHeading('Discount')
-                            ->authorize(auth()->user()->can('update StoreInvoice'))
+                            ->authorize(auth()->user()->can('discount StoreInvoice'))
                             ->schema([
                                 Group::make([
                                     TextInput::make('discount_amount')
