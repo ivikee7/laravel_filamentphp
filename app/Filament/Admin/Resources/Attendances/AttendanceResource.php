@@ -76,7 +76,7 @@ class AttendanceResource extends Resource
                 TextColumn::make('user.name')
                     ->sortable()
                     ->searchable(),
-                TextColumn::make('roles.name')
+                TextColumn::make('user.roles.name')
                     ->badge()
                     ->searchable()
                     ->sortable(),
