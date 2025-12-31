@@ -94,6 +94,7 @@ class AttendanceResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->poll('5s')
             ->defaultSort('created_at', 'desc')
             ->filters([
                 TrashedFilter::make(),
