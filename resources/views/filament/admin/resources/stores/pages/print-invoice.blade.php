@@ -111,11 +111,11 @@
         .grid-container {
             display: grid !important;
             grid-template-columns: 50% 1fr !important;
-            gap: 5px !important;
+            gap: 10px !important;
         }
 
         .item {
-            padding: 15px !important;
+            padding: 8px !important;
             border: 1px solid #ccc !important;
         }
 
