@@ -12,10 +12,12 @@
                                 <p>Invoice #: {{ $this->invoice->id }}</p>
                                 <h4>To:</h4>
                                 <p>Name: {{ $this->invoice->user->name ?? '' }}</p>
-                                <p>Address: {{ $this->invoice->user->address ?? '' }}
-                                    , {{ $this->invoice->user->city ?? '' }}
-                                    , {{ $this->invoice->user->state ?? '' }}
-                                    , {{ $this->invoice->user->pin_code ?? '' }}</p>
+{{--                                <p>--}}
+{{--                                    Address: {{ $this->invoice->user->address ?? '' }}--}}
+{{--                                    , {{ $this->invoice->user->city ?? '' }}--}}
+{{--                                    , {{ $this->invoice->user->state ?? '' }}--}}
+{{--                                    , {{ $this->invoice->user->pin_code ?? '' }}--}}
+{{--                                </p>--}}
                                 <p>Contact: {{ $this->invoice->user->primary_contact_number ?? '' }}</p>
                                 <p>Class: {{ $this->invoice->class->name ?? '' }}</p>
                             </div>
