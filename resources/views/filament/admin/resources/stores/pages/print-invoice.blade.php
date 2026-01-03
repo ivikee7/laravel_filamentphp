@@ -115,7 +115,7 @@
         }
 
         .item {
-            padding: 8px !important;
+            padding: 5px !important;
             border: 1px solid #ccc !important;
         }
 
