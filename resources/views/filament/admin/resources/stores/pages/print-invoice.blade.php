@@ -111,7 +111,7 @@
         .grid-container {
             display: grid !important;
             grid-template-columns: 50% 1fr !important;
-            gap: 10px !important;
+            gap: 5px !important;
         }
 
         .item {
