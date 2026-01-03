@@ -163,7 +163,7 @@
 
         // Add event listener for when printing is finished or canceled using modern API
         if (window.matchMedia) {
-            var mediaQueryList = window.matchMedia('print');
+            let mediaQueryList = window.matchMedia('print');
             mediaQueryList.addListener(function (mql) {
                 if (!mql.matches) {
                     // This fires when the user closes the print dialog
