@@ -52,9 +52,6 @@ class AttendanceResource extends Resource
                     ->preload(),
                 Forms\Components\DateTimePicker::make('created_at')
                     ->required(),
-                Select::make('creator_id')
-                    ->relationship('createdBy', 'name')
-                    ->default(null),
                 TextInput::make('type')
                     ->maxLength(20)
                     ->default(null),
