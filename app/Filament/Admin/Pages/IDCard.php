@@ -104,12 +104,12 @@ class IDCard extends Page implements HasInfolists, HasTable
                         Group::make([
                             TextEntry::make('email')->prefix('Email: ')
                                 ->hiddenLabel()->wrap(),
-                            TextEntry::make('primary_contact_number')->prefix('Primary Contact')
+                            TextEntry::make('primary_contact_number')->prefix('Primary Contact: ')
                                 ->hiddenLabel()->wrap(),
-                            TextEntry::make('secondary_contact_number')->prefix('Secondary Contact')
+                            TextEntry::make('secondary_contact_number')->prefix('Secondary Contact: ')
                                 ->hiddenLabel()->wrap(),
-                            TextEntry::make('father_name')->prefix('Father\'s name')->hiddenLabel()->wrap(),
-                            TextEntry::make('mother_name')->prefix('Mother\'s name')->hiddenLabel()->wrap(),
+                            TextEntry::make('father_name')->prefix('Father\'s name: ')->hiddenLabel()->wrap(),
+                            TextEntry::make('mother_name')->prefix('Mother\'s name: ')->hiddenLabel()->wrap(),
                             TextEntry::make('full_address')
                                 ->prefix('Address: ')->hiddenLabel()
                                 ->getStateUsing(function ($record): string {
