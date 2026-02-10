@@ -345,85 +345,130 @@ class StudentsTable
                 ])
                     ->label('Message'),
                 BulkActionGroup::make([
-                    BulkAction::make('update-promote')
+                    BulkAction::make('promote_students')
                         ->label('Promote Students')
-                        ->form([
+                        ->icon('heroicon-o-arrow-trending-up')
+                        ->color('success')
+                        ->schema([
                             Select::make('new_academic_year_id')
                                 ->label('Academic Year')
-                                ->options(
-                                    AcademicYear::where('is_active', true)
-                                        ->pluck('name', 'id')
-                                        ->toArray()
-                                )
-                                ->reactive()
-                                ->afterStateUpdated(fn(callable $set) => $set('new_class_id', null))
-                                ->searchable()
-                                ->required(),
+                                ->options(AcademicYear::where('is_active', true)->pluck('name', 'id'))
+                                ->required()
+                                ->live() // Faster and cleaner than reactive()
+                                ->afterStateUpdated(fn($set) => $set('new_class_id', null))
+                                ->searchable(),
 
                             Select::make('new_class_id')
                                 ->label('New Class')
-                                ->options(function (callable $get) {
-                                    $academicYearId = $get('new_academic_year_id');
-
-                                    if (!$academicYearId) return [];
-
-                                    return StudentClass::with('className')  // Eager load the related className
-                                    ->where('academic_year_id', $academicYearId)
-                                        ->get()
-                                        ->pluck('className.name', 'id')  // Pluck related className's name
-                                        ->toArray();
-                                })
-                                ->reactive()
-                                ->afterStateUpdated(fn(callable $set) => $set('new_section_id', null))
+                                ->placeholder(fn($get) => $get('new_academic_year_id') ? 'Select a class' : 'Select year first')
+                                ->options(fn($get) => StudentClass::where('academic_year_id', $get('new_academic_year_id'))
+                                    ->join('class_names', 'student_classes.class_name_id', '=', 'class_names.id')
+                                    ->pluck('class_names.name', 'student_classes.id')
+                                )
+                                ->required()
+                                ->live()
+                                ->afterStateUpdated(fn($set) => $set('new_section_id', null))
                                 ->searchable()
-                                ->required(),
+                                ->key('new_class_select'), // Helps Filament track state changes
 
                             Select::make('new_section_id')
                                 ->label('Section')
-                                ->options(function (callable $get) {
-                                    $classId = $get('new_class_id');
-
-                                    if (!$classId) return [];
-
-                                    return StudentSection::where('student_class_id', $classId)
-                                        ->pluck('name', 'id')
-                                        ->toArray();
-                                })
-                                ->searchable(),
+                                ->options(fn($get) => StudentSection::where('student_class_id', $get('new_class_id'))
+                                    ->pluck('name', 'id')
+                                )
+                                ->searchable()
+                                ->placeholder('Optional'),
                         ])
                         ->action(function (Collection $records, array $data) {
-                            foreach ($records as $user) {
-                                $student = $user->student;
+                            \DB::transaction(fn() => $records->each->promoteStudent($data));
 
-                                if (!$student) {
-                                    continue;
-                                }
-
-                                // Check if a record exists for the student and academic year.
-                                $existingAssignment = $student->classAssignments()
-                                    ->where('academic_year_id', $data['new_academic_year_id'])
-                                    ->first();
-
-                                if ($existingAssignment) {
-                                    // Update the existing record.
-                                    $existingAssignment->update([
-                                        'class_id' => $data['new_class_id'],
-                                        'section_id' => $data['new_section_id'],
-                                    ]);
-                                } else {
-                                    // Create a new record.
-                                    $student->classAssignments()->create([
-                                        'class_id' => $data['new_class_id'],
-                                        'section_id' => $data['new_section_id'],
-                                        'academic_year_id' => $data['new_academic_year_id'],
-                                        'is_promoted' => true,
-                                        'student_id' => $student->id,
-                                    ]);
-                                }
-                            }
+                            Notification::make()
+                                ->title('Promotion Successful')
+                                ->success()
+                                ->body("{$records->count()} students have been moved to the new academic year.")
+                                ->send();
                         })
-                        ->requiresConfirmation()
-                        ->deselectRecordsAfterCompletion(),
+                        ->deselectRecordsAfterCompletion()
+                        ->requiresConfirmation(),
+//                    BulkAction::make('update-promote')
+//                        ->label('Promote Students')
+//                        ->form([
+//                            Select::make('new_academic_year_id')
+//                                ->label('Academic Year')
+//                                ->options(
+//                                    AcademicYear::where('is_active', true)
+//                                        ->pluck('name', 'id')
+//                                        ->toArray()
+//                                )
+//                                ->reactive()
+//                                ->afterStateUpdated(fn(callable $set) => $set('new_class_id', null))
+//                                ->searchable()
+//                                ->required(),
+//
+//                            Select::make('new_class_id')
+//                                ->label('New Class')
+//                                ->options(function (callable $get) {
+//                                    $academicYearId = $get('new_academic_year_id');
+//
+//                                    if (!$academicYearId) return [];
+//
+//                                    return StudentClass::with('className')  // Eager load the related className
+//                                    ->where('academic_year_id', $academicYearId)
+//                                        ->get()
+//                                        ->pluck('className.name', 'id')  // Pluck related className's name
+//                                        ->toArray();
+//                                })
+//                                ->reactive()
+//                                ->afterStateUpdated(fn(callable $set) => $set('new_section_id', null))
+//                                ->searchable()
+//                                ->required(),
+//
+//                            Select::make('new_section_id')
+//                                ->label('Section')
+//                                ->options(function (callable $get) {
+//                                    $classId = $get('new_class_id');
+//
+//                                    if (!$classId) return [];
+//
+//                                    return StudentSection::where('student_class_id', $classId)
+//                                        ->pluck('name', 'id')
+//                                        ->toArray();
+//                                })
+//                                ->searchable(),
+//                        ])
+//                        ->action(function (Collection $records, array $data) {
+//                            foreach ($records as $user) {
+//                                $student = $user->student;
+//
+//                                if (!$student) {
+//                                    continue;
+//                                }
+//
+//                                // Check if a record exists for the student and academic year.
+//                                $existingAssignment = $student->classAssignments()
+//                                    ->where('academic_year_id', $data['new_academic_year_id'])
+//                                    ->first();
+//
+//                                if ($existingAssignment) {
+//                                    // Update the existing record.
+//                                    $existingAssignment->update([
+//                                        'class_id' => $data['new_class_id'],
+//                                        'section_id' => $data['new_section_id'],
+//                                    ]);
+//                                } else {
+//                                    // Create a new record.
+//                                    $student->classAssignments()->create([
+//                                        'class_id' => $data['new_class_id'],
+//                                        'section_id' => $data['new_section_id'],
+//                                        'academic_year_id' => $data['new_academic_year_id'],
+//                                        'is_promoted' => true,
+//                                        'student_id' => $student->id,
+//                                    ]);
+//                                }
+//                            }
+//                        })
+//                        ->requiresConfirmation()
+//                        ->deselectRecordsAfterCompletion(),
                     BulkAction::make('update-status')
                         ->label('Update Status') // Label for the action button
                         ->icon('heroicon-o-adjustments-horizontal') // Optional: Add an icon

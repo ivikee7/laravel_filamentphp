@@ -328,4 +328,24 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
     {
         return $this->hasRole('Super Admin');
     }
+
+    public function promoteStudent(array $data): bool
+    {
+        // Fail early if not a student
+        if (!$this->hasRole('Student') || !$this->student) {
+            return false;
+        }
+
+        // Update the assignment through the relationship
+        return (bool)$this->student->classAssignment()->updateOrCreate(
+            ['student_id' => $this->student->id],
+            [
+                'class_id' => $data['new_class_id'],
+                'academic_year_id' => $data['new_academic_year_id'],
+                'section_id' => $data['new_section_id'] ?? null,
+                'is_promoted' => true,
+                'updated_at' => now(),
+            ]
+        );
+    }
 }
