@@ -13,6 +13,7 @@ class AdmissionWidget extends ChartWidget
     protected ?string $heading = 'Admission Widget';
 
     protected static ?int $sort = 6;
+    protected int | string | array $columnSpan = 1;
 
     protected function getData(): array
     {

@@ -31,8 +31,7 @@ class TodayEnquiryWidget extends StatsOverviewWidget
             Stat::make('Today\'s Enquiries', $todayEnquiriesCount)
                 ->description('New students signed up today')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
-                ->color($color)
-                ->columnSpan(1),
+                ->color($color)->columnSpanFull(),
         ];
     }
 }

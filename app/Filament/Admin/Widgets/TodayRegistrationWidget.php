@@ -33,8 +33,7 @@ class TodayRegistrationWidget extends StatsOverviewWidget
             Stat::make('Today\'s Registrations', $todayRegistrationsCount)
                 ->description('New students signed up today')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
-                ->color($color)
-                ->columnSpan(1),
+                ->color($color)->columnSpanFull(),
         ];
     }
 }

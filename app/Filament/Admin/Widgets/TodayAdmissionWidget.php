@@ -12,6 +12,7 @@ class TodayAdmissionWidget extends StatsOverviewWidget
 
     protected static ?int $sort = 2;
 
+
     protected int|string|array $columnSpan = 1;
 
     protected function getStats(): array
@@ -33,8 +34,7 @@ class TodayAdmissionWidget extends StatsOverviewWidget
             Stat::make('Today\'s Admissions', $todayAdmissionsCount)
                 ->description('New students signed up today')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
-                ->color($color)
-                ->columnSpan(1),
+                ->color($color)->columnSpanFull(),
         ];
     }
 }

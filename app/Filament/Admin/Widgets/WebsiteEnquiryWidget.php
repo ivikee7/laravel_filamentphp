@@ -14,6 +14,8 @@ class WebsiteEnquiryWidget extends ChartWidget
 
     protected static ?int $sort = 8;
 
+    protected int | string | array $columnSpan = 1;
+
     protected function getData(): array
     {
         $startDate = Carbon::now()->subYears(4)->startOfYear();
