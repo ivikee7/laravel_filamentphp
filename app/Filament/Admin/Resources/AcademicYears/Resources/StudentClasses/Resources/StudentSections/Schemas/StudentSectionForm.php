@@ -27,7 +27,7 @@ class StudentSectionForm
                         }
 
                     })
-                    ->required(),
+                    ->default(null),
                 Select::make('teacher_id')
                     ->relationship('teacher', 'name')
                     ->default(null),
