@@ -55,9 +55,10 @@ class ListProducts extends Page implements HasTable, HasForms
                 ->modelLabel('Create Product')
                 ->authorize(auth()->user()->can('create StoreProduct'))
                 ->model(StoreProduct::class)
-                ->action(function (array $data, Model $record): void {
-                    $data['store_id'] = $record->id;
-                    $product = $record->storeProducts()->create($data);
+                ->action(function (array $data): void {
+                    // Access the store record directly from the page instance ($this)
+                    $store = $this->record;
+                    $product = $store->storeProducts()->create($data);
 
                     Notification::make()
                         ->title("Product {$product->name} at {$product->price} successfully created!")
@@ -78,7 +79,7 @@ class ListProducts extends Page implements HasTable, HasForms
                             ->helperText('Indicates if multiple quantities of this product can be purchased.'),
                         Select::make('academic_year_id')
                             ->label('Academic Year')
-                            ->relationship('storeProducts.academicYear', 'name')
+                            ->relationship('academicYear', 'name')
                             ->reactive()
                             // CORRECTED: Clearing 'class_id' instead of 'student_class_id'
                             ->afterStateUpdated(function (Set $set) {
@@ -86,7 +87,7 @@ class ListProducts extends Page implements HasTable, HasForms
                             }),
                         Select::make('class_id')
                             ->label('Class')
-                            ->relationship('storeProducts.studentClass', 'name', modifyQueryUsing: function (Builder $query, Get $get): Builder {
+                            ->relationship('studentClass', 'name', modifyQueryUsing: function (Builder $query, Get $get): Builder {
                                 // Ensure the query is scoped by the selected academic year ID
                                 return $query->when($get('academic_year_id'), fn(Builder $q) => $q->where('academic_year_id', $get('academic_year_id')));
                             })

@@ -16,7 +16,7 @@ return new class extends Migration
             //
             $table->string('name', 25);
             $table->foreignId('student_class_id');
-            $table->foreignId('room_id');
+            $table->foreignId('room_id')->nullable();
             $table->foreignId('teacher_id')->nullable();
             //
             $table->foreignId('created_by')->nullable();
