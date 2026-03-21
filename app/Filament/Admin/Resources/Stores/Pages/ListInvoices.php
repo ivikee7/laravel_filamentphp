@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources\Stores\Pages;
 
 use App\Filament\Admin\Resources\Stores\StoreResource;
 use Filament\Actions\Action;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Resources\Pages\Concerns\InteractsWithRecord;
@@ -12,6 +13,7 @@ use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -52,8 +54,38 @@ class ListInvoices extends Page implements HasTable, HasForms
                 TextColumn::make('total_amount')->label('Total'),
                 TextColumn::make('total_paid_amount')->label('Paid'),
                 TextColumn::make('total_due_amount')->label('Due'),
+                TextColumn::make('created_at')->label('Created At')->wrap()->sortable()->searchable()->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('createdBy.name')->label('Created By')->wrap()->sortable()->searchable()->toggleable(isToggledHiddenByDefault: true),
             ])
             ->defaultSort('id', 'desc')
+            ->filters([
+                Filter::make('created_at')
+                    ->schema([
+                        DatePicker::make('from')->label('From Date'),
+                        DatePicker::make('to')->label('To Date'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['from'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                            )
+                            ->when(
+                                $data['to'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                            );
+                    })
+                    ->indicateUsing(function (array $data): array {
+                        $indicators = [];
+                        if ($data['from'] ?? null) {
+                            $indicators[] = 'From ' . \Carbon\Carbon::parse($data['from'])->toFormattedDateString();
+                        }
+                        if ($data['to'] ?? null) {
+                            $indicators[] = 'Until ' . \Carbon\Carbon::parse($data['to'])->toFormattedDateString();
+                        }
+                        return $indicators;
+                    }),
+            ])
             ->recordActions([
                 Action::make('view-invoice')
                     ->label('View')
