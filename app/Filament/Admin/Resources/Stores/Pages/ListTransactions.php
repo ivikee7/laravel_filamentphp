@@ -50,6 +50,7 @@ class ListTransactions extends Page implements HasTable, HasForms
                 TextColumn::make('storeInvoice.user.name')->label('Name')->sortable()->searchable()->wrap(),
                 TextColumn::make('method')->label('Method')->sortable()->searchable()->wrap(),
                 TextColumn::make('amount')->label('Amount')->sortable()->searchable()->wrap(),
+                TextColumn::make('remarks')->label('Remarks')->sortable()->searchable()->wrap(),
                 TextColumn::make('createdBy.name')->toggleable(isToggledHiddenByDefault: false)->label('Created By')->wrap(),
                 TextColumn::make('updatedBy.name')->toggleable(isToggledHiddenByDefault: true)->label('Updated By')->wrap(),
                 TextColumn::make('deletedBy.name')->toggleable(isToggledHiddenByDefault: true)->label('Deleted By')->wrap(),
