@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources\Registrations\Tables;
 
 use App\Filament\Admin\Resources\Students\StudentResource;
 use App\Filament\Exports\RegistrationExporter;
+use App\Models\AcademicYear;
 use App\Models\Registration;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
@@ -17,8 +18,10 @@ use Filament\Actions\RestoreBulkAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class RegistrationsTable
@@ -121,6 +124,19 @@ class RegistrationsTable
             ->defaultSort('id', 'desc')
             ->filters([
                 TrashedFilter::make(),
+                SelectFilter::make('academic_year_id')
+                    ->label('Academic Year')
+                    ->relationship(
+                        name: 'academicYear',
+                        titleAttribute: 'name',
+                        // Sort the filter options by ID descending
+                        modifyQueryUsing: fn (Builder $query) => $query->orderBy('id', 'desc')
+                    )
+                    ->searchable() // Makes the filter dropdown searchable
+                    ->preload()
+                    ->default(function () {
+                        return AcademicYear::where('is_active', true)->first()?->id;
+                    }),
             ])
             ->recordActions([
                 ActionGroup::make([
