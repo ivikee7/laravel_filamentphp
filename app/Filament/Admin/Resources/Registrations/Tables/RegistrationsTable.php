@@ -137,7 +137,7 @@ class RegistrationsTable
                     ->default(function () {
                         return AcademicYear::where('is_active', true)->first()?->id;
                     }),
-            ])
+            ])->filtersFormColumns(2)
             ->recordActions([
                 ActionGroup::make([
                     ViewAction::make(),
