@@ -41,18 +41,44 @@ class ListRegistrations extends ListRecords
 
     public function getTabs(): array
     {
+        // Capture the selected Academic Year ID from the table filters
+        // 'academic_year_id' must match the name of your SelectFilter
+        $selectedYearId = $this->tableFilters['academic_year_id']['value'] ?? null;
+
         return [
-            'all' => Tab::make('All'),
+            'pending' => Tab::make('Pending')
+                ->modifyQueryUsing(fn (Builder $query) => $query
+                    ->when($selectedYearId, fn ($q) => $q->where('academic_year_id', $selectedYearId))
+                    ->whereDoesntHave('student')
+                )
+                ->badge(fn () => static::getResource()::getModel()::query()
+                    ->when($selectedYearId, fn ($q) => $q->where('academic_year_id', $selectedYearId))
+                    ->whereDoesntHave('student')
+                    ->count()
+                )
+                ->badgeColor('warning'),
 
             'completed' => Tab::make('Completed')
-                ->modifyQueryUsing(fn (Builder $query) => $query->whereHas('student'))
-                ->badge(static::getResource()::getModel()::whereHas('student')->count())
+                ->modifyQueryUsing(fn (Builder $query) => $query
+                    ->when($selectedYearId, fn ($q) => $q->where('academic_year_id', $selectedYearId))
+                    ->whereHas('student')
+                )
+                ->badge(fn () => static::getResource()::getModel()::query()
+                    ->when($selectedYearId, fn ($q) => $q->where('academic_year_id', $selectedYearId))
+                    ->whereHas('student')
+                    ->count()
+                )
                 ->badgeColor('success'),
 
-            'pending' => Tab::make('Pending')
-                ->modifyQueryUsing(fn (Builder $query) => $query->whereDoesntHave('student'))
-                ->badge(static::getResource()::getModel()::whereDoesntHave('student')->count())
-                ->badgeColor('warning'),
+            'all' => Tab::make('All')
+                ->modifyQueryUsing(fn (Builder $query) => $query
+                    ->when($selectedYearId, fn ($q) => $q->where('academic_year_id', $selectedYearId))
+                )
+                ->badge(fn () => static::getResource()::getModel()::query()
+                    ->when($selectedYearId, fn ($q) => $q->where('academic_year_id', $selectedYearId))
+                    ->count()
+                ),
         ];
     }
+
 }
