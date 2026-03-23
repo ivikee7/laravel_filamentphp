@@ -9,6 +9,7 @@ use App\Filament\Admin\Resources\Registrations\Widgets\RegistrationEnquiryCompar
 use App\Filament\Admin\Resources\Registrations\Widgets\RegistrationWidget;
 use App\Filament\Admin\Resources\Registrations\Widgets\RegistrationWithoutAdmissionWidget;
 use App\Filament\Admin\Resources\Website\Enquiries\Widgets\WebsiteEnquiryWidget;
+use App\Models\AcademicYear;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
@@ -41,18 +42,18 @@ class ListRegistrations extends ListRecords
 
     public function getTabs(): array
     {
-        // Capture the selected Academic Year ID from the table filters
-        // 'academic_year_id' must match the name of your SelectFilter
-        $selectedYearId = $this->tableFilters['academic_year_id']['value'] ?? null;
+        // 1. Get the filter value OR fallback to the default 'Active' year ID
+        $selectedYearId = $this->tableFilters['academic_year_id']['value']
+            ?? AcademicYear::where('is_active', true)->first()?->id;
 
         return [
             'pending' => Tab::make('Pending')
                 ->modifyQueryUsing(fn (Builder $query) => $query
-                    ->when($selectedYearId, fn ($q) => $q->where('academic_year_id', $selectedYearId))
+                    ->where('academic_year_id', $selectedYearId)
                     ->whereDoesntHave('student')
                 )
                 ->badge(fn () => static::getResource()::getModel()::query()
-                    ->when($selectedYearId, fn ($q) => $q->where('academic_year_id', $selectedYearId))
+                    ->where('academic_year_id', $selectedYearId)
                     ->whereDoesntHave('student')
                     ->count()
                 )
@@ -60,11 +61,11 @@ class ListRegistrations extends ListRecords
 
             'completed' => Tab::make('Completed')
                 ->modifyQueryUsing(fn (Builder $query) => $query
-                    ->when($selectedYearId, fn ($q) => $q->where('academic_year_id', $selectedYearId))
+                    ->where('academic_year_id', $selectedYearId)
                     ->whereHas('student')
                 )
                 ->badge(fn () => static::getResource()::getModel()::query()
-                    ->when($selectedYearId, fn ($q) => $q->where('academic_year_id', $selectedYearId))
+                    ->where('academic_year_id', $selectedYearId)
                     ->whereHas('student')
                     ->count()
                 )
@@ -72,10 +73,10 @@ class ListRegistrations extends ListRecords
 
             'all' => Tab::make('All')
                 ->modifyQueryUsing(fn (Builder $query) => $query
-                    ->when($selectedYearId, fn ($q) => $q->where('academic_year_id', $selectedYearId))
+                    ->where('academic_year_id', $selectedYearId)
                 )
                 ->badge(fn () => static::getResource()::getModel()::query()
-                    ->when($selectedYearId, fn ($q) => $q->where('academic_year_id', $selectedYearId))
+                    ->where('academic_year_id', $selectedYearId)
                     ->count()
                 ),
         ];
