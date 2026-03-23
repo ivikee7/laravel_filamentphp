@@ -107,7 +107,7 @@ class RegistrationsTable
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true)->wrap(),
-                TextColumn::make('status')
+                TextColumn::make('Admission')
                     ->badge()
                     ->getStateUsing(fn (Model $record): string => $record->student()->exists() ? 'Completed' : 'Pending')
                     ->color(fn (string $state): string => match ($state) {
