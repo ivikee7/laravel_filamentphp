@@ -97,6 +97,20 @@ class RegistrationsTable
                     ->label('Previous Class')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('academicYear.name')
+                    ->label('Academic Year')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('Admission')
+                    ->badge()
+                    ->getStateUsing(fn (Model $record): string => $record->student()->exists() ? 'Completed' : 'Pending')
+                    ->color(fn (string $state): string => match ($state) {
+                        'Completed' => 'success',
+                        'Pending' => 'warning',
+                        default => 'gray',
+                    })
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('created_at')->wrap()
                     ->dateTime()
                     ->sortable()
@@ -109,16 +123,6 @@ class RegistrationsTable
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true)->wrap(),
-                TextColumn::make('Admission')
-                    ->badge()
-                    ->getStateUsing(fn (Model $record): string => $record->student()->exists() ? 'Completed' : 'Pending')
-                    ->color(fn (string $state): string => match ($state) {
-                        'Completed' => 'success',
-                        'Pending' => 'warning',
-                        default => 'gray',
-                    })
-                    ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: false),
             ])
             ->defaultSort('id', 'desc')
             ->filters([
