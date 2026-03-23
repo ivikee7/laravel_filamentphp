@@ -5,16 +5,20 @@ namespace App\Filament\Admin\Resources\Stores\Pages;
 use App\Filament\Admin\Resources\Stores\StoreResource;
 use App\Models\StoreInvoiceTransaction;
 use Filament\Actions\Action;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\Concerns\InteractsWithRecord;
 use Filament\Resources\Pages\Page;
+use Filament\Schemas\Components\Group;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 class ListTransactions extends Page implements HasTable, HasForms
 {
@@ -57,7 +61,48 @@ class ListTransactions extends Page implements HasTable, HasForms
                 TextColumn::make('created_at')->toggleable(isToggledHiddenByDefault: false)->wrap(),
                 TextColumn::make('updated_at')->toggleable(isToggledHiddenByDefault: true)->wrap(),
                 TextColumn::make('deleted_at')->toggleable(isToggledHiddenByDefault: true)->wrap(),
-            ])->defaultSort('id', 'desc');
+            ])->defaultSort('id', 'desc')
+            ->recordActions([
+                Action::make('edit-store-invoice-transaction')
+                    ->label('Edit')
+                    ->modelLabel('Edit StoreInvoiceTransaction')
+                    ->authorize(auth()->user()->can('update StoreInvoiceTransaction'))
+                    ->model(StoreInvoiceTransaction::class)
+                    ->fillForm(fn(StoreInvoiceTransaction $record): array => $record->toArray())
+                    ->action(function (array $data, StoreInvoiceTransaction $record): void {
+                        $record->update([
+                            'amount' => $data['amount'],
+                            'remarks' => $data['remarks'],
+                            'method' => $data['method'],
+                            'updated_by' => auth()->id(),
+                        ]);
+
+                        Notification::make()
+                            ->title("Payment of {$data['amount']} was successful!")
+                            ->success()
+                            ->send();
+                    })
+                    ->schema([
+                        Group::make([
+                            TextInput::make('amount')
+                                ->label('Amount (₹)')
+                                ->minValue(1)
+                                ->maxValue(function (Model $record) {
+                                    return ($record->storeInvoice->subtotal_amount - $record->storeInvoice->discount_amount - $record->storeInvoice->total_paid_amount + $record->amount);
+                                })
+                                ->numeric()
+                                ->required(),
+                            Select::make('method')->options([
+                                'bank' => 'Bank',
+                                'cash' => 'Cash',
+                                'upi' => 'UPI',
+                            ])->required(),
+                            TextInput::make('remarks')
+                                ->label('Remarks')
+                                ->maxLength(100),
+                        ])->columns(2)
+                    ]),
+            ]);
     }
 
     protected function getTableQuery(): Builder

@@ -290,7 +290,48 @@ class ViewInvoice extends Page implements HasTable, HasForms, HasInfolists
                 TextColumn::make('deleted_at')->toggleable(isToggledHiddenByDefault: true)->wrap(),
             ])
             ->defaultSort('id', 'desc')
-            ->heading('Payment History');
+            ->heading('Payment History')
+            ->recordActions([
+                Action::make('edit-store-invoice-transaction')
+                    ->label('Edit')
+                    ->modelLabel('Edit StoreInvoiceTransaction')
+                    ->authorize(auth()->user()->can('update StoreInvoiceTransaction'))
+                    ->model(StoreInvoiceTransaction::class)
+                    ->fillForm(fn(StoreInvoiceTransaction $record): array => $record->toArray())
+                    ->action(function (array $data, StoreInvoiceTransaction $record): void {
+                        $record->update([
+                            'amount' => $data['amount'],
+                            'remarks' => $data['remarks'],
+                            'method' => $data['method'],
+                            'updated_by' => auth()->id(),
+                        ]);
+
+                        Notification::make()
+                            ->title("Payment of {$data['amount']} was successful!")
+                            ->success()
+                            ->send();
+                    })
+                    ->schema([
+                        Group::make([
+                            TextInput::make('amount')
+                                ->label('Amount (₹)')
+                                ->minValue(1)
+                                ->maxValue(function (Model $record) {
+                                    return ($record->storeInvoice->subtotal_amount - $record->storeInvoice->discount_amount - $record->storeInvoice->total_paid_amount + $record->amount);
+                                })
+                                ->numeric()
+                                ->required(),
+                            Select::make('method')->options([
+                                'bank' => 'Bank',
+                                'cash' => 'Cash',
+                                'upi' => 'UPI',
+                            ])->required(),
+                            TextInput::make('remarks')
+                                ->label('Remarks')
+                                ->maxLength(100),
+                        ])->columns(2)
+                    ]),
+            ]);
     }
 
     protected function getTableQuery(): Builder
