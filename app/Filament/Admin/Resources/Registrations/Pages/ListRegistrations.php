@@ -9,7 +9,6 @@ use App\Filament\Admin\Resources\Registrations\Widgets\RegistrationEnquiryCompar
 use App\Filament\Admin\Resources\Registrations\Widgets\RegistrationWidget;
 use App\Filament\Admin\Resources\Registrations\Widgets\RegistrationWithoutAdmissionWidget;
 use App\Filament\Admin\Resources\Website\Enquiries\Widgets\WebsiteEnquiryWidget;
-use App\Models\AcademicYear;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
@@ -42,44 +41,18 @@ class ListRegistrations extends ListRecords
 
     public function getTabs(): array
     {
-        // 1. Get the filter value OR fallback to the default 'Active' year ID
-        $selectedYearId = $this->tableFilters['academic_year_id']['value']
-            ?? AcademicYear::where('is_active', true)->first()?->id;
-
         return [
-            'pending' => Tab::make('Pending')
-                ->modifyQueryUsing(fn (Builder $query) => $query
-                    ->where('academic_year_id', $selectedYearId)
-                    ->whereDoesntHave('student')
-                )
-                ->badge(fn () => static::getResource()::getModel()::query()
-                    ->where('academic_year_id', $selectedYearId)
-                    ->whereDoesntHave('student')
-                    ->count()
-                )
-                ->badgeColor('warning'),
+            'all' => Tab::make('All'),
 
             'completed' => Tab::make('Completed')
-                ->modifyQueryUsing(fn (Builder $query) => $query
-                    ->where('academic_year_id', $selectedYearId)
-                    ->whereHas('student')
-                )
-                ->badge(fn () => static::getResource()::getModel()::query()
-                    ->where('academic_year_id', $selectedYearId)
-                    ->whereHas('student')
-                    ->count()
-                )
+                ->modifyQueryUsing(fn (Builder $query) => $query->whereHas('student'))
+                ->badge(static::getResource()::getModel()::whereHas('student')->count())
                 ->badgeColor('success'),
 
-            'all' => Tab::make('All')
-                ->modifyQueryUsing(fn (Builder $query) => $query
-                    ->where('academic_year_id', $selectedYearId)
-                )
-                ->badge(fn () => static::getResource()::getModel()::query()
-                    ->where('academic_year_id', $selectedYearId)
-                    ->count()
-                ),
+            'pending' => Tab::make('Pending')
+                ->modifyQueryUsing(fn (Builder $query) => $query->whereDoesntHave('student'))
+                ->badge(static::getResource()::getModel()::whereDoesntHave('student')->count())
+                ->badgeColor('warning'),
         ];
     }
-
 }
