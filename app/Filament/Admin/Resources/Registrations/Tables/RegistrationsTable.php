@@ -109,7 +109,6 @@ class RegistrationsTable
                         'Pending' => 'warning',
                         default => 'gray',
                     })
-                    ->searchable()
                     ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('created_at')->wrap()
                     ->dateTime()
