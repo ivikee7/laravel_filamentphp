@@ -21,7 +21,6 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class RegistrationsTable
@@ -126,18 +125,16 @@ class RegistrationsTable
                 TrashedFilter::make(),
                 SelectFilter::make('academic_year_id')
                     ->label('Academic Year')
-                    ->relationship(
-                        name: 'academicYear',
-                        titleAttribute: 'name',
-                        // Sort the filter options by ID descending
-                        modifyQueryUsing: fn (Builder $query) => $query->orderBy('id', 'desc')
-                    )
-                    ->searchable() // Makes the filter dropdown searchable
+                    // 1. Link to the relationship
+                    ->relationship('academicYear', 'name')
+                    // 2. Preload for better UX
                     ->preload()
+                    // 3. Set the active year as the default
                     ->default(function () {
+                        // Find the ID of the academic year marked as is_active
                         return AcademicYear::where('is_active', true)->first()?->id;
                     }),
-            ])->filtersFormColumns(2)
+            ])
             ->recordActions([
                 ActionGroup::make([
                     ViewAction::make(),
