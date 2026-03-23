@@ -19,6 +19,7 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 
 class RegistrationsTable
 {
@@ -106,6 +107,16 @@ class RegistrationsTable
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true)->wrap(),
+                TextColumn::make('status')
+                    ->badge()
+                    ->getStateUsing(fn (Model $record): string => $record->student()->exists() ? 'Completed' : 'Pending')
+                    ->color(fn (string $state): string => match ($state) {
+                        'Completed' => 'success',
+                        'Pending' => 'warning',
+                        default => 'gray',
+                    })
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: false),
             ])
             ->defaultSort('id', 'desc')
             ->filters([

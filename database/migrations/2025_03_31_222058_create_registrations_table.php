@@ -40,6 +40,7 @@ return new class extends Migration
             $table->foreignId('enquiry_id')->nullable();
             $table->date('placement_test_date')->nullable();
             $table->boolean('placement_test_status')->nullable();
+            $table->string('status', 20)->nullable();
             //
             $table->foreignId('created_by')->nullable();
             $table->foreignId('updated_by')->nullable();
