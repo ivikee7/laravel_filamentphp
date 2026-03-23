@@ -66,6 +66,6 @@ class RegistrationResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return Registration::count();
+        return Registration::whereDoesntHave('student')->count();
     }
 }
