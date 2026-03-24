@@ -64,6 +64,7 @@ class ListInvoices extends Page implements HasTable, HasForms
                 TextColumn::make('total_amount')->label('Total'),
                 TextColumn::make('total_paid_amount')->label('Paid'),
                 TextColumn::make('total_due_amount')->label('Due'),
+                TextColumn::make('remarks')->label('Remarks')->wrap()->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')->label('Created At')->wrap()->sortable()->searchable()->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('createdBy.name')->label('Created By')->wrap()->sortable()->searchable()->toggleable(isToggledHiddenByDefault: true),
             ])
