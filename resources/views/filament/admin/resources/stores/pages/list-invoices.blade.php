@@ -5,6 +5,7 @@
                 :active="$activeTab === $key"
                 wire:click="$set('activeTab', '{{ $key }}')"
                 :badge="$tab->getBadge()"
+                :badge-color="$tab->getBadgeColor()"
             >
                 {{ $tab->getLabel() }}
             </x-filament::tabs.item>

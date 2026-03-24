@@ -17,12 +17,13 @@ use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use function Laravel\Prompts\warning;
 
 class ListInvoices extends Page implements HasTable, HasForms
 {
     use InteractsWithRecord, InteractsWithTable, InteractsWithForms, HasTabs;
 
-    // Sync the trait's property to the URL
+    // Sync the trait's property to the browser URL
     protected $queryString = [
         'activeTab' => ['except' => 'all', 'as' => 'tab'],
     ];
@@ -35,6 +36,7 @@ class ListInvoices extends Page implements HasTable, HasForms
     {
         $this->record = $this->resolveRecord($record);
 
+        // Initialize if URL is empty
         $this->activeTab ??= 'all';
     }
 
@@ -112,7 +114,7 @@ class ListInvoices extends Page implements HasTable, HasForms
             $tabs = $this->getTabs();
 
             if (isset($tabs[$this->activeTab])) {
-                // This method exists in your Tab.php and handles the closure execution
+                // Using the exact method from your Tab.php source
                 $tabs[$this->activeTab]->modifyQuery($query);
             }
         }
@@ -135,10 +137,12 @@ class ListInvoices extends Page implements HasTable, HasForms
             'all' => Tab::make('All'),
             'due' => Tab::make('Has Due')
                 ->modifyQueryUsing(fn (Builder $query) => $query->whereRaw("{$dueCalcSql} > 0"))
-                ->badge($this->record->storeInvoices()->whereRaw("{$dueCalcSql} > 0")->count()),
+                ->badge($this->record->storeInvoices()->whereRaw("{$dueCalcSql} > 0")->count())
+                ->badgeColor('danger'),
             'paid' => Tab::make('Fully Paid')
                 ->modifyQueryUsing(fn (Builder $query) => $query->whereRaw("{$dueCalcSql} <= 0"))
-                ->badge($this->record->storeInvoices()->whereRaw("{$dueCalcSql} <= 0")->count()),
+                ->badge($this->record->storeInvoices()->whereRaw("{$dueCalcSql} <= 0")->count())
+                ->badgeColor('success'),
         ];
     }
 
