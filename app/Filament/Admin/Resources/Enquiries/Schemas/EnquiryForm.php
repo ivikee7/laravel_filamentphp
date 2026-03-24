@@ -26,7 +26,7 @@ class EnquiryForm
                             ->required(),
                         DatePicker::make('date_of_birth'),
                     ])->columns(3),
-                Section::make('Preveius School info')
+                Section::make('Previous School info')
                     ->schema([
                         TextInput::make('previous_school')
                             ->maxLength(50)
@@ -69,11 +69,14 @@ class EnquiryForm
                             ->minLength(10)
                             ->maxLength(10),
                     ])->columns(3),
-                Section::make('Mother info')
+                Section::make('Address')
                     ->schema([
-                        TextInput::make('address')
-                            ->maxLength(255)
-                            ->default(null),
+                        Textarea::make('address')
+                            ->maxLength(150)
+                            ->default(null)
+                            ->rows(3)
+                            ->cols(1)
+                            ->columnSpan(2),
                         TextInput::make('city')
                             ->maxLength(25)
                             ->default(null),
@@ -85,7 +88,7 @@ class EnquiryForm
                             ->rules(['digits:6'])
                             ->minLength(6)
                             ->maxLength(6),
-                    ])->columns(3),
+                    ])->columns(5),
                 Section::make('Other info')
                     ->schema([
                         Select::make('source')
