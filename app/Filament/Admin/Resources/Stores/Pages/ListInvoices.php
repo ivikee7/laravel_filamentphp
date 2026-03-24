@@ -143,6 +143,10 @@ class ListInvoices extends Page implements HasTable, HasForms
                 ->modifyQueryUsing(fn (Builder $query) => $query->whereRaw("{$dueCalcSql} <= 0"))
                 ->badge($this->record->storeInvoices()->whereRaw("{$dueCalcSql} <= 0")->count())
                 ->badgeColor('success'),
+            'discounted' => Tab::make('Discounted')
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('discount_amount', '>', 0))
+                ->badge($this->record->storeInvoices()->where('discount_amount', '>', 0)->count())
+                ->badgeColor('warning'),
         ];
     }
 
