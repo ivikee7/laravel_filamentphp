@@ -7,6 +7,7 @@ use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Resources\Concerns\HasTabs;
 use Filament\Resources\Pages\Concerns\InteractsWithRecord;
 use Filament\Resources\Pages\Page;
 use Filament\Schemas\Components\Tabs\Tab;
@@ -19,7 +20,12 @@ use Illuminate\Database\Eloquent\Builder;
 
 class ListInvoices extends Page implements HasTable, HasForms
 {
-    use InteractsWithRecord, InteractsWithTable, InteractsWithForms;
+    use InteractsWithRecord, InteractsWithTable, InteractsWithForms, HasTabs;
+
+    // Sync the trait's property to the URL
+    protected $queryString = [
+        'activeTab' => ['except' => 'all', 'as' => 'tab'],
+    ];
 
     protected static string $resource = StoreResource::class;
 
@@ -28,6 +34,8 @@ class ListInvoices extends Page implements HasTable, HasForms
     public function mount(int|string $record): void
     {
         $this->record = $this->resolveRecord($record);
+
+        $this->activeTab ??= 'all';
     }
 
     protected function getHeaderActions(): array
@@ -68,11 +76,11 @@ class ListInvoices extends Page implements HasTable, HasForms
                         return $query
                             ->when(
                                 $data['from'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                                fn(Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
                             )
                             ->when(
                                 $data['to'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                                fn(Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
                             );
                     })
                     ->indicateUsing(function (array $data): array {
@@ -98,7 +106,40 @@ class ListInvoices extends Page implements HasTable, HasForms
 
     protected function getTableQuery(): Builder
     {
-        return $this->record->storeInvoices()->getQuery();
+        $query = $this->record->storeInvoices()->getQuery();
+
+        if ($this->activeTab && $this->activeTab !== 'all') {
+            $tabs = $this->getTabs();
+
+            if (isset($tabs[$this->activeTab])) {
+                // This method exists in your Tab.php and handles the closure execution
+                $tabs[$this->activeTab]->modifyQuery($query);
+            }
+        }
+
+        return $query;
+    }
+
+
+    public function updatedActiveTab(): void
+    {
+        $this->resetTable();
+    }
+
+    public function getTabs(): array
+    {
+        $paidSumSql = '(SELECT COALESCE(SUM(amount), 0) FROM store_invoice_transactions WHERE store_invoice_id = store_invoices.id AND deleted_at IS NULL)';
+        $dueCalcSql = "subtotal_amount - {$paidSumSql} - discount_amount";
+
+        return [
+            'all' => Tab::make('All'),
+            'due' => Tab::make('Has Due')
+                ->modifyQueryUsing(fn (Builder $query) => $query->whereRaw("{$dueCalcSql} > 0"))
+                ->badge($this->record->storeInvoices()->whereRaw("{$dueCalcSql} > 0")->count()),
+            'paid' => Tab::make('Fully Paid')
+                ->modifyQueryUsing(fn (Builder $query) => $query->whereRaw("{$dueCalcSql} <= 0"))
+                ->badge($this->record->storeInvoices()->whereRaw("{$dueCalcSql} <= 0")->count()),
+        ];
     }
 
 }

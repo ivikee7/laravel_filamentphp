@@ -94,8 +94,8 @@ class EnquiryForm
                         Select::make('source')
                             ->options([
                                 'OTHER' => 'OTHER',
-                                'HOADING' => 'HOADING',
-                                'RELEVENT' => 'RELEVENT',
+                                'HOARDING' => 'HOARDING',
+                                'RELEVANT' => 'RELEVANT',
                                 'SOCIAL MEDIA' => 'SOCIAL MEDIA',
                                 'WEBSITE' => 'WEBSITE',
                             ])
