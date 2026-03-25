@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources\Stores\Pages;
 
 use App\Filament\Admin\Resources\Stores\StoreResource;
+use App\Models\AcademicYear;
 use App\Models\StoreProduct;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
@@ -23,6 +24,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -170,6 +172,13 @@ class ListProducts extends Page implements HasTable, HasForms
                                 ->visible(fn(Get $get) => filled($get('academic_year_id'))),
                         ])->columns(3),
                     ]),
+            ])
+            ->filters([
+                SelectFilter::make('academic_year_id')
+                    ->label('Academic Year')
+                    ->relationship('academicYear', 'name')
+                    ->preload()
+                    ->default(fn () => AcademicYear::where('is_active', true)->first()?->id),
             ]);
     }
 
