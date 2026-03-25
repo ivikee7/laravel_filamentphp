@@ -203,16 +203,24 @@ class StudentsTable
                         ->formats([
                             ExportFormat::Xlsx,
                         ])->label('Xlsx')
-                        ->columnMappingColumns(5) // Multi-column layout
-                        ->modalWidth('xxl') // Optional: Make the modal wider to fit columns
+                        // 1. Change layout to 3 columns
+                        ->columnMappingColumns(3)
+                        // 2. Make modal wider to fit columns
+                        ->modalWidth('4xl')
+                        // 3. "Check All" behavior
+                        // By default, Filament checks all. To match your table's current view:
                         ->enableVisibleTableColumnsByDefault(),
                     ExportBulkAction::make('export-csv')
                         ->exporter(StudentExporter::class)
                         ->formats([
                             ExportFormat::Csv,
                         ])->label('CSV')
-                        ->columnMappingColumns(5) // Multi-column layout
-                        ->modalWidth('xxl') // Optional: Make the modal wider to fit columns,
+                        // 1. Change layout to 3 columns
+                        ->columnMappingColumns(3)
+                        // 2. Make modal wider to fit columns
+                        ->modalWidth('4xl')
+                        // 3. "Check All" behavior
+                        // By default, Filament checks all. To match your table's current view:
                         ->enableVisibleTableColumnsByDefault(),
                 ])
                     ->label('Export'),
