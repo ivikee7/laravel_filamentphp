@@ -50,9 +50,9 @@ class StudentExporter extends Exporter
             ExportColumn::make('student.local_guardian_user_id.name')->label('Local Guardian User'),
             ExportColumn::make('student.local_guardian_relationship')->label('Local Guardian Relationship'),
             // Class
-            ExportColumn::make('student.currentClassAssignment.academicYear.name')->label('Academic Year'),
-            ExportColumn::make('student.currentClassAssignment.class.className.name')->label('Class'),
-            ExportColumn::make('student.currentClassAssignment.section.name')->label('Section'),
+            ExportColumn::make('student.classAssignment.academicYear.name')->label('Academic Year'),
+            ExportColumn::make('student.classAssignment.class.className.name')->label('Class'),
+            ExportColumn::make('student.classAssignment.section.name')->label('Section'),
             // Auth
             ExportColumn::make('createdBy.name')->label('Created By'),
             ExportColumn::make('updatedBy.name')->label('Updated By'),
