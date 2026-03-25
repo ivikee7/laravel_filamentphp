@@ -202,12 +202,18 @@ class StudentsTable
                         ->exporter(StudentExporter::class)
                         ->formats([
                             ExportFormat::Xlsx,
-                        ])->label('Xlsx'),
+                        ])->label('Xlsx')
+                        ->columnMappingColumns(5) // Multi-column layout
+                        ->modalWidth('xxl') // Optional: Make the modal wider to fit columns
+                        ->enableVisibleTableColumnsByDefault(),
                     ExportBulkAction::make('export-csv')
                         ->exporter(StudentExporter::class)
                         ->formats([
                             ExportFormat::Csv,
-                        ])->label('CSV'),
+                        ])->label('CSV')
+                        ->columnMappingColumns(5) // Multi-column layout
+                        ->modalWidth('xxl') // Optional: Make the modal wider to fit columns,
+                        ->enableVisibleTableColumnsByDefault(),
                 ])
                     ->label('Export'),
                 BulkActionGroup::make([
