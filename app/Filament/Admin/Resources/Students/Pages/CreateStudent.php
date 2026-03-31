@@ -80,12 +80,12 @@ class CreateStudent extends CreateRecord
                 ]),
             ]);
 
-        if ($registrationId) {
-            $registration = Registration::find($registrationId);
-            if ($registration) {
-                $registration->delete();
-            }
-        }
+//        if ($registrationId) {
+//            $registration = Registration::find($registrationId);
+//            if ($registration) {
+//                $registration->delete();
+//            }
+//        }
     }
 
     public static function generateGsuitePassword(array $data): string
