@@ -32,20 +32,28 @@ class ListEnquiries extends ListRecords
 
     public function getTabs(): array
     {
-        // Fetch unique statuses from the database dynamically
         $statuses = Enquiry::query()->distinct()->pluck('source');
 
         $tabs = [
             'all' => Tab::make('All Enquiries')
-                ->badge(Enquiry::query()->count()),
+                // Using a closure (fn) makes the badge dynamic/real-time
+                ->badge(fn() => $this->makeBadgeQuery()->count()),
         ];
 
         foreach ($statuses as $status) {
             $tabs[$status] = Tab::make(ucfirst($status))
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('source', $status))
-                ->badge(Enquiry::query()->where('source', $status)->count()); // Optional: Add a badge count
+                ->badge(fn() => $this->makeBadgeQuery()->where('source', $status)->count());
         }
 
         return $tabs;
+    }
+
+    /**
+     * Helper to apply active table filters to the badge query
+     */
+    protected function makeBadgeQuery(): Builder
+    {
+        return $this->applyFiltersToTableQuery(Enquiry::query());
     }
 }
