@@ -50,7 +50,7 @@ class WebsiteEnquiryController extends Controller
 
         // 3. Store in the 150-char notes field
         $data = $request->all();
-        $data['notes'] = substr("Source: " . $domain, 0, 150);
+        $data['notes'] = substr($domain, 0, 150);
 
         WebsiteEnquiry::create($data);
 
