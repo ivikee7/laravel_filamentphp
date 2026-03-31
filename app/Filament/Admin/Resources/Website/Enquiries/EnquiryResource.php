@@ -89,7 +89,7 @@ class EnquiryResource extends Resource
                     ->wrap()
                     ->searchable(),
                 TextColumn::make('notes')
-                    ->label('Follow-up notes')
+                    ->label('Source')
                     ->wrap()
                     ->searchable(),
                 TextColumn::make('created_by')
