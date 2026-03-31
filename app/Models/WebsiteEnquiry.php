@@ -19,6 +19,7 @@ class WebsiteEnquiry extends Model
         'contact_number',
         'email',
         'message',
+        'notes',
     ];
 
     public function getActivitylogOptions(): LogOptions

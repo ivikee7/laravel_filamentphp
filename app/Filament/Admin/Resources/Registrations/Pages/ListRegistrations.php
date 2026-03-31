@@ -9,6 +9,7 @@ use App\Filament\Admin\Resources\Registrations\Widgets\RegistrationEnquiryCompar
 use App\Filament\Admin\Resources\Registrations\Widgets\RegistrationWidget;
 use App\Filament\Admin\Resources\Registrations\Widgets\RegistrationWithoutAdmissionWidget;
 use App\Filament\Admin\Resources\Website\Enquiries\Widgets\WebsiteEnquiryWidget;
+use App\Models\Registration;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
@@ -42,17 +43,25 @@ class ListRegistrations extends ListRecords
     public function getTabs(): array
     {
         return [
-            'all' => Tab::make('All'),
+            'all' => Tab::make('All')
+                ->badge(fn() => $this->makeBadgeQuery()->count()),
 
             'completed' => Tab::make('Completed')
                 ->modifyQueryUsing(fn (Builder $query) => $query->whereHas('student'))
-                ->badge(static::getResource()::getModel()::whereHas('student')->count())
+                ->badge(fn() => $this->makeBadgeQuery()->whereHas('student')->count())
                 ->badgeColor('success'),
 
             'pending' => Tab::make('Pending')
                 ->modifyQueryUsing(fn (Builder $query) => $query->whereDoesntHave('student'))
-                ->badge(static::getResource()::getModel()::whereDoesntHave('student')->count())
+                ->badge(fn() => $this->makeBadgeQuery()->whereDoesntHave('student')->count())
                 ->badgeColor('warning'),
         ];
+    }
+
+
+    protected function makeBadgeQuery(): Builder
+    {
+        // This helper automatically applies any active table filters/search to the query
+        return $this->applyFiltersToTableQuery(Registration::query());
     }
 }
