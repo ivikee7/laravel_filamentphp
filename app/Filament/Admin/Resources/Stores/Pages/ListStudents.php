@@ -46,6 +46,7 @@ class ListStudents extends Page implements HasTable
                 TextColumn::make('student.classAssignment.section.name')->searchable()->label('Section')->wrap(),
                 TextColumn::make('father_name')->searchable()->label('Father Name')->wrap(),
                 TextColumn::make('mother_name')->searchable()->label('Mother Name')->wrap(),
+                TextColumn::make('student.quota')->searchable()->label('Quota')->wrap()->badge(),
             ])
             ->recordUrl((fn($record): string => StoreResource::getUrl('list-student-product', [$this->record->id, $record->id])))
             ->defaultSort('id', 'desc')
