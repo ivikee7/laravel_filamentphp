@@ -32,6 +32,7 @@ class EnquiriesTable
                     ->sortable(),
                 TextColumn::make('name')->wrap()
                     ->searchable()
+                    ->wrap()
                     ->sortable(),
                 TextColumn::make('class.name')->wrap()
                     ->label('Class')
