@@ -39,4 +39,24 @@ class ActivityLogResource extends Resource
             'view' => ViewActivityLog::route('/{record}'),
         ];
     }
+
+    public static function canViewAny(): bool
+    {
+        $user = auth()->user();
+        if (! $user) {
+            return false;
+        }
+
+        return $user->can('viewAny', static::$model);
+    }
+
+    public static function canView($record): bool
+    {
+        $user = auth()->user();
+        if (! $user) {
+            return false;
+        }
+
+        return $user->can('view', $record);
+    }
 }
