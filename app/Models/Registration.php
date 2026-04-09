@@ -121,4 +121,8 @@ class Registration extends Model
     public function academicYear(): BelongsTo{
         return $this->belongsTo(AcademicYear::class, 'academic_year_id');
     }
+
+    public function enquiry(): BelongsTo{
+        return $this->belongsTo(Enquiry::class, 'enquiry_id');
+    }
 }

@@ -25,13 +25,13 @@ class CreateRegistration extends CreateRecord
         return $data;
     }
 
-    protected function afterCreate(): void
-    {
-        if ($this->enquiryId) {
-            $enquiry = Enquiry::find($this->enquiryId);
-            if ($enquiry) {
-                $enquiry->delete();
-            }
-        }
-    }
+//    protected function afterCreate(): void
+//    {
+//        if ($this->enquiryId) {
+//            $enquiry = Enquiry::find($this->enquiryId);
+//            if ($enquiry) {
+//                $enquiry->delete();
+//            }
+//        }
+//    }
 }
