@@ -19,6 +19,7 @@ use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 class EnquiriesTable
 {
@@ -74,6 +75,15 @@ class EnquiriesTable
                     ->limit(100)
                     ->wrap()
                     ->searchable(),
+                TextColumn::make('Registration')
+                    ->badge()
+                    ->getStateUsing(fn (Model $record): string => $record->registration()->exists() ? 'Completed' : 'Pending')
+                    ->color(fn (string $state): string => match ($state) {
+                        'Completed' => 'success',
+                        'Pending' => 'warning',
+                        default => 'gray',
+                    })
+                    ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('source')->wrap()
                     ->searchable(),
                 TextColumn::make('previousClass.name')->wrap()
