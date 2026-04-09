@@ -38,7 +38,40 @@ class ActivityLogsTable
 
                 TextColumn::make('subject_type')
                     ->label('Subject Type')
+                    ->formatStateUsing(fn($state) => $state ? class_basename($state) : null)
                     ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('subject')
+                    ->label('Subject')
+                    ->getStateUsing(function ($record) {
+                        $s = $record->subject ?? null;
+                        if (! $s) {
+                            return null;
+                        }
+
+                        return $s->name ?? $s->title ?? ('#' . $s->getKey());
+                    })
+                    ->searchable()
+                    ->wrap()
+                    ->url(function ($record) {
+                        $s = $record->subject ?? null;
+                        if (! $s) {
+                            return null;
+                        }
+
+                        $base = class_basename(get_class($s));
+                        $resourceClass = "App\\Filament\\Admin\\Resources\\{$base}\\{$base}Resource";
+                        if (class_exists($resourceClass) && method_exists($resourceClass, 'getUrl')) {
+                            try {
+                                return $resourceClass::getUrl('view', ['record' => $s->getKey()]);
+                            } catch (\Throwable $e) {
+                                return null;
+                            }
+                        }
+
+                        return null;
+                    })
+                    ->openUrlInNewTab(),
 
                 TextColumn::make('properties')
                     ->label('Properties')
