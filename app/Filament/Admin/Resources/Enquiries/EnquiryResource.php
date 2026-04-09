@@ -68,6 +68,6 @@ class EnquiryResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return Enquiry::count();
+        return Enquiry::whereDoesntHave('registration')->count();
     }
 }
