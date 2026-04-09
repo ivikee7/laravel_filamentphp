@@ -7,11 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class SmsProvider extends Model
 {
-    use SoftDeletes;
-    use HasFactory;
+    use SoftDeletes, LogsActivity;
 
     protected $fillable = [
         'name',
@@ -32,6 +33,11 @@ class SmsProvider extends Model
         'headers' => 'array',
         'responses' => 'array',
     ];
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()->logFillable();
+    }
 
     protected static function boot()
     {

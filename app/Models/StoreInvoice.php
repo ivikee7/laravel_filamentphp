@@ -8,10 +8,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class StoreInvoice extends Model
 {
-    use softDeletes;
+    use softDeletes, LogsActivity;
 
     protected $fillable = [
         'user_id',
@@ -47,6 +49,11 @@ class StoreInvoice extends Model
             $model->deleted_by = null;
             $model->saveQuietly();
         });
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()->logFillable();
     }
 
     public function createdBy()

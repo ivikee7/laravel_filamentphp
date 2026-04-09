@@ -8,10 +8,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class StoreProduct extends Model
 {
-    use softDeletes;
+    use softDeletes, LogsActivity;
 
     protected $fillable = [
         'store_id',
@@ -46,6 +48,11 @@ class StoreProduct extends Model
             $model->deleted_by = null;
             $model->saveQuietly();
         });
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()->logFillable();
     }
 
     public function createdBy()

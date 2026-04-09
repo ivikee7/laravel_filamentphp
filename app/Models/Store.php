@@ -11,10 +11,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Store extends Model
 {
-    use softDeletes;
+    use softDeletes, LogsActivity;
 
     protected $fillable = [
         'name',
@@ -52,6 +54,12 @@ class Store extends Model
             $model->saveQuietly();
         });
     }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()->logFillable();
+    }
+    
 
     public function createdBy()
     {

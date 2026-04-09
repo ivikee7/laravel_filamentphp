@@ -4,9 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class RoleHasPermission extends Model
 {
+    use LogsActivity;
+
     protected $table = 'role_has_permissions';
     protected $primaryKey = null;
     public $incrementing = false;
@@ -16,6 +20,11 @@ class RoleHasPermission extends Model
         'permission_id',
         'role_id',
     ];
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()->logFillable();
+    }
 
     public function permissions(): BelongsTo
     {

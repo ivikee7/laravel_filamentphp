@@ -3,9 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class ModelHasPermission extends model
 {
+    use LogsActivity;
+
     protected $table = 'model_has_permissions';
     protected $primaryKey = null;
     public $incrementing = false;
@@ -14,4 +18,10 @@ class ModelHasPermission extends model
     protected $fillable = [
         'permission_id', 'model_id', 'model_type', 'team_id',
     ];
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()->logFillable();
+    }
+
 }

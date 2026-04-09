@@ -3,6 +3,8 @@
 namespace App\Filament\Admin\Resources\ActivityLogs;
 
 use App\Filament\Admin\Resources\ActivityLogs\Pages\ListActivityLogs;
+use App\Filament\Admin\Resources\ActivityLogs\Pages\ViewActivityLog;
+use App\Filament\Admin\Resources\ActivityLogs\Schemas\ActivityLogInfolist;
 use App\Filament\Admin\Resources\ActivityLogs\Tables\ActivityLogsTable;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -25,10 +27,16 @@ class ActivityLogResource extends Resource
         return ActivityLogsTable::configure($table);
     }
 
+    public static function infolist(Schema $schema): Schema
+    {
+        return ActivityLogInfolist::configure($schema);
+    }
+
     public static function getPages(): array
     {
         return [
             'index' => ListActivityLogs::route('/'),
+            'view' => ViewActivityLog::route('/{record}'),
         ];
     }
 }
