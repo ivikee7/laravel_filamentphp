@@ -48,12 +48,12 @@ class ListEnquiries extends ListRecords
                 ->badgeColor('warning'),
         ];
 
-        foreach ($statuses as $status) {
-            $tabs[$status] = Tab::make(ucfirst($status))
-                ->modifyQueryUsing(fn(Builder $query) => $query->where('source', $status))
-                ->badge(fn() => $this->makeBadgeQuery()->where('source', $status)->count())
-                ->badgeColor('danger');
-        }
+//        foreach ($statuses as $status) {
+//            $tabs[$status] = Tab::make(ucfirst($status))
+//                ->modifyQueryUsing(fn(Builder $query) => $query->where('source', $status))
+//                ->badge(fn() => $this->makeBadgeQuery()->where('source', $status)->count())
+//                ->badgeColor('danger');
+//        }
 
         return $tabs;
     }
