@@ -12,7 +12,9 @@ class Permission extends SpatiePermission
 
     public function getActivitylogOptions(): LogOptions
     {
-        return LogOptions::defaults()->logFillable();
+        return LogOptions::defaults()
+            ->logFillable()
+            ->dontSubmitEmptyLogs();
     }
 
 }

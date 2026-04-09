@@ -83,7 +83,10 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
 
     public function getActivitylogOptions(): LogOptions
     {
-        return LogOptions::defaults()->logFillable();
+        return LogOptions::defaults()
+            ->logFillable()
+            ->dontSubmitEmptyLogs()
+            ->logExcept(['password']);
     }
 
     public function canAccessPanel(Panel $panel): bool

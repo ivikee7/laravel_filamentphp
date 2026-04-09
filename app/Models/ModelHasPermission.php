@@ -21,7 +21,9 @@ class ModelHasPermission extends model
 
     public function getActivitylogOptions(): LogOptions
     {
-        return LogOptions::defaults()->logFillable();
+        return LogOptions::defaults()
+            ->logFillable()
+            ->dontSubmitEmptyLogs();
     }
 
 }

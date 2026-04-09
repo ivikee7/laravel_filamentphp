@@ -30,7 +30,9 @@ class Student extends Model
 
     public function getActivitylogOptions(): LogOptions
     {
-        return LogOptions::defaults()->logFillable();
+        return LogOptions::defaults()
+            ->logFillable()
+            ->dontSubmitEmptyLogs();
     }
 
     protected static function boot()
