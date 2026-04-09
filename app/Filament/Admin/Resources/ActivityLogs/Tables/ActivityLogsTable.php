@@ -38,6 +38,7 @@ class ActivityLogsTable
 
                 TextColumn::make('subject_type')
                     ->label('Subject Type')
+                    ->searchable()
                     ->formatStateUsing(fn($state) => $state ? class_basename($state) : null)
                     ->toggleable(isToggledHiddenByDefault: true),
 
@@ -51,7 +52,6 @@ class ActivityLogsTable
 
                         return $s->name ?? $s->title ?? ('#' . $s->getKey());
                     })
-                    ->searchable()
                     ->wrap()
                     ->url(function ($record) {
                         $s = $record->subject ?? null;
