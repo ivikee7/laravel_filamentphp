@@ -233,6 +233,7 @@ class ListStudentProduct extends Page implements HasTable
                     TextEntry::make('pin_code')->prefix('Pin Code: ')->hiddenLabel(),
                     TextEntry::make('student.classAssignment.class.name')->prefix('Class: ')->hiddenLabel(),
                     TextEntry::make('student.classAssignment.section.name')->prefix('Section: ')->hiddenLabel(),
+                    TextEntry::make('student.quota.name')->badge()->color('primary')->hiddenLabel(),
                 ])->columns(3)
             ]);
     }

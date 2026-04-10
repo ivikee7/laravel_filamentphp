@@ -103,6 +103,7 @@ class ViewInvoice extends Page implements HasTable, HasForms, HasInfolists
                             TextEntry::make('user.primary_contact_number')->prefix('Contact number: ')->hiddenLabel(),
                             TextEntry::make('user.email')->prefix('Email: ')->hiddenLabel(),
                             TextEntry::make('class.name')->prefix('Class: ')->hiddenLabel(),
+                            TextEntry::make('user.student.quota.name')->badge()->color('primary')->hiddenLabel(),
                         ]),
                         Group::make()->schema([
                             TextEntry::make('created_at')
