@@ -26,6 +26,12 @@ class TransportStoppage extends Model
         'updater_id',
     ];
 
+    protected $casts = [
+        'order' => 'integer',
+        'is_active' => 'boolean',
+    ];
+
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
@@ -72,8 +78,8 @@ class TransportStoppage extends Model
     }
 
 
-    public function route(): BelongsTo
+    public function transportRoute(): BelongsTo
     {
-        return $this->belongsTo(TransportRoute::class);
+        return $this->belongsTo(TransportRoute::class, 'route_id');
     }
 }

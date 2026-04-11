@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Activitylog\LogOptions;
@@ -18,8 +19,9 @@ class TransportAssignment extends Model
         'route_id',
         'stoppage_id',
         'bus_id',
-        'creator_id',
-        'updater_id',
+        'created_by',
+        'updated_by',
+        'deleted_by',
     ];
 
     public function getActivitylogOptions(): LogOptions
@@ -65,5 +67,18 @@ class TransportAssignment extends Model
     public function deletedBy()
     {
         return $this->belongsTo(User::class, 'deleted_by');
+    }
+
+    public function user(): BelongsTo{
+        return $this->belongsTo(User::class, 'user_id');
+    }
+    public function transportRoute(): BelongsTo{
+        return $this->belongsTo(TransportRoute::class, 'route_id');
+    }
+    public function transportBus(): BelongsTo{
+        return $this->belongsTo(TransportBus::class, 'bus_id');
+    }
+    public function transportStoppages(): BelongsTo{
+        return $this->belongsTo(TransportBus::class, 'stoppage_id');
     }
 }

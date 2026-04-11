@@ -82,4 +82,9 @@ class TransportBus extends Model
         return $this->belongsTo(User::class, 'conductor_id');
     }
 
+    public function transportFuelLogs()
+    {
+        return $this->hasMany(TransportFuelLog::class, 'bus_id');
+    }
+
 }

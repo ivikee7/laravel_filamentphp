@@ -72,9 +72,7 @@ class TransportFuelLog extends Model
     }
 
 
-
-
-    public function bus(): BelongsTo
+    public function transportBus(): BelongsTo
     {
         return $this->belongsTo(TransportBus::class);
     }

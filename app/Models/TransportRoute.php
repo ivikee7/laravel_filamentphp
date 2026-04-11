@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Activitylog\LogOptions;
@@ -67,6 +68,9 @@ class TransportRoute extends Model
         return $this->belongsTo(User::class, 'deleted_by');
     }
 
-
+    public function transportStoppages(): HasMany
+    {
+        return $this->hasMany(TransportStoppage::class, 'route_id');
+    }
 
 }
