@@ -78,7 +78,7 @@ class AdminPanelProvider extends PanelProvider
                         ->defaultPaginationPageOption(5);
                 });
             })
-            ->favicon(asset('logo_favicon.png'))
+            ->favicon(asset('storage/media/logo favicon.png'))
             ->passwordReset() // Password Reset
             ->profile() // Profile
             ->readOnlyRelationManagersOnResourceViewPagesByDefault(false);

@@ -111,8 +111,8 @@
 @foreach($records as $record)
     <div class="id-card-container">
         <div class="flex items-center justify-center">
-            <img src="{{asset('logo_50.png')}}" alt="School Logo" class="brand-logo">
-            <img src="{{asset('logo_name_150.png')}}" alt="School Name" class="brand-name">
+            <img src="{{asset('storage/media/logo_50.png')}}" alt="School Logo" class="brand-logo">
+            <img src="{{asset('storage/media/logo_name_150.png')}}" alt="School Name" class="brand-name">
         </div>
         <div class="flex items-center justify-center">
             <div class="text-center">
@@ -160,7 +160,7 @@
 
         <!-- The Footer - Positioned Absolutely -->
         <div class="id-card-footer absolute bottom-0 right-0 flex flex-col justify-end items-end p-2">
-            <img src="/signature/principal_signature.png" alt="Signature" class="h-8 w-auto mb-1 mr-2">
+            <img src="{{ asset('storage/media/signature/principal_signature.png') }}" alt="Signature" class="h-8 w-auto mb-1 mr-2">
             <p class="text-xs text-gray-700">Signature</p>
         </div>
     </div>

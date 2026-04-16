@@ -190,8 +190,8 @@
 <div class="id-card-container">
     <!-- Header Section -->
     <div class="flex items-center justify-center">
-        <img src="{{asset('logo_50.png')}}" alt="School Logo" class="school-logo">
-        <img src="{{asset('logo_name_150.png')}}" alt="School Name" class="school-name">
+        <img src="{{asset('storage/media/logo_50.png')}}" alt="School Logo" class="school-logo">
+        <img src="{{asset('storage/media/logo_name_150.png')}}" alt="School Name" class="school-name">
     </div>
     <div class="flex items-center justify-center border-b pb-1 mb-1">
         <div class="text-center">
