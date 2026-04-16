@@ -44,6 +44,7 @@ use App\Models\StudentClass;
 use App\Models\StudentSection;
 use App\Models\User;
 use App\Models\WhatsAppProvider;
+use App\Models\TransportStoppage;
 use App\Services\WhatsApp\WhatsAppService;
 use Filament\Actions;
 use Filament\Facades\Filament;
@@ -65,9 +66,9 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static string | \UnitEnum | null $navigationGroup = 'User';
+    protected static string|\UnitEnum|null $navigationGroup = 'User';
 
     public static function form(Schema $schema): Schema
     {
@@ -129,7 +130,7 @@ class UserResource extends Resource
                         Group::make()->schema([
                             DatePicker::make('date_of_birth')->required(),
                             TextInput::make('aadhaar_number')
-                                ->rules(['digits:12','min_digits:12','max_digits:12'])
+                                ->rules(['digits:12', 'min_digits:12', 'max_digits:12'])
                                 ->minLength(12)
                                 ->maxLength(12)
                                 ->required(),

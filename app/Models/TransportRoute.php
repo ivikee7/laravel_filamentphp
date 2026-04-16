@@ -70,7 +70,7 @@ class TransportRoute extends Model
 
     public function transportStoppages(): HasMany
     {
-        return $this->hasMany(TransportStoppage::class, 'route_id');
+        return $this->hasMany(TransportStoppage::class, 'transport_route_id');
     }
 
 }

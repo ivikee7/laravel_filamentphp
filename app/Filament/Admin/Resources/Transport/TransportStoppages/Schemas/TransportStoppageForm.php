@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources\Transport\TransportStoppages\Schemas;
 
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
@@ -14,9 +15,11 @@ class TransportStoppageForm
             ->components([
                 TextInput::make('name')
                     ->required(),
-                TextInput::make('route_id')
-                    ->required()
-                    ->numeric(),
+                Select::make('route_id')
+                    ->relationship('transportRoute', 'name')
+                    ->searchable()
+                    ->preload()
+                    ->required(),
                 TextInput::make('location')
                     ->default(null),
                 TextInput::make('order')
@@ -25,15 +28,6 @@ class TransportStoppageForm
                     ->default(0),
                 Toggle::make('is_active')
                     ->required(),
-                TextInput::make('created_by')
-                    ->numeric()
-                    ->default(null),
-                TextInput::make('updated_by')
-                    ->numeric()
-                    ->default(null),
-                TextInput::make('deleted_by')
-                    ->numeric()
-                    ->default(null),
             ]);
     }
 }

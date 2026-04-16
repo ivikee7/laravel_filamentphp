@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Activitylog\LogOptions;
@@ -19,7 +20,8 @@ class TransportStoppage extends Model
 
     protected $fillable = [
         'name',
-        'route_id',
+        'transport_route_id',
+        'transport_stoppage_id',
         'location',
         'order',
         'creator_id',
@@ -77,9 +79,10 @@ class TransportStoppage extends Model
         return $this->belongsTo(User::class, 'deleted_by');
     }
 
-
     public function transportRoute(): BelongsTo
     {
-        return $this->belongsTo(TransportRoute::class, 'route_id');
+        return $this->belongsTo(TransportRoute::class, 'transport_route_id');
     }
+
+
 }

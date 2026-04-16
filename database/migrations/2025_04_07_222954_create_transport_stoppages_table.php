@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             //
             $table->string('name');
-            $table->foreignId('route_id');
+            $table->foreignId('transport_route_id');
             $table->string('location')->nullable(); // Coordinates or address
             $table->unsignedInteger('order')->default(0)->index();
             $table->boolean('is_active')->default(true);

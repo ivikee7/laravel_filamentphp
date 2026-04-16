@@ -84,7 +84,7 @@ class TransportBus extends Model
 
     public function transportFuelLogs()
     {
-        return $this->hasMany(TransportFuelLog::class, 'bus_id');
+        return $this->hasMany(TransportFuelLog::class, 'transport_bus_id');
     }
 
 }

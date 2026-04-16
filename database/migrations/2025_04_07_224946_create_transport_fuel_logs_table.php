@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('transport_fuel_logs', function (Blueprint $table) {
             $table->id();
             //
-            $table->foreignId('bus_id');
+            $table->foreignId('transport_bus_id');
             $table->date('date');
             $table->decimal('liters', 8, 2);
             $table->decimal('cost', 10, 2);

@@ -16,9 +16,11 @@ class TransportAssignment extends Model
 
     protected $fillable = [
         'user_id',
-        'route_id',
-        'stoppage_id',
-        'bus_id',
+        'transport_route_id',
+        'transport_stoppage_id',
+        'transport_bus_id',
+        'contact_number',
+        'remarks',
         'created_by',
         'updated_by',
         'deleted_by',
@@ -56,29 +58,39 @@ class TransportAssignment extends Model
             $model->saveQuietly();
         });
     }
+
     public function createdBy()
     {
         return $this->belongsTo(User::class, 'created_by');
     }
+
     public function updatedBy()
     {
         return $this->belongsTo(User::class, 'updated_by');
     }
+
     public function deletedBy()
     {
         return $this->belongsTo(User::class, 'deleted_by');
     }
 
-    public function user(): BelongsTo{
+    public function user(): BelongsTo
+    {
         return $this->belongsTo(User::class, 'user_id');
     }
-    public function transportRoute(): BelongsTo{
-        return $this->belongsTo(TransportRoute::class, 'route_id');
+
+    public function transportRoute(): BelongsTo
+    {
+        return $this->belongsTo(TransportRoute::class, 'transport_route_id');
     }
-    public function transportBus(): BelongsTo{
-        return $this->belongsTo(TransportBus::class, 'bus_id');
+
+    public function transportBus(): BelongsTo
+    {
+        return $this->belongsTo(TransportBus::class, 'transport_bus_id');
     }
-    public function transportStoppages(): BelongsTo{
-        return $this->belongsTo(TransportBus::class, 'stoppage_id');
+
+    public function transportStoppage(): BelongsTo
+    {
+        return $this->belongsTo(TransportStoppage::class, 'transport_stoppage_id');
     }
 }

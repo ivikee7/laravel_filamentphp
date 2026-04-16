@@ -15,9 +15,10 @@ return new class extends Migration
             $table->id();
             //
             $table->foreignId('user_id'); // student or employee
-            $table->foreignId('route_id');
-            $table->foreignId('stoppage_id')->nullable();
-            $table->foreignId('bus_id')->nullable();
+            $table->foreignId('transport_route_id');
+            $table->foreignId('transport_stoppage_id')->nullable();
+            $table->string('contact_number', 15)->nullable();
+            $table->string('remarks', 100)->nullable();
             //
             $table->foreignId('created_by')->nullable();
             $table->foreignId('updated_by')->nullable();

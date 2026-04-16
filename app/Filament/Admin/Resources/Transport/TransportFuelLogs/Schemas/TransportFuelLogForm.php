@@ -23,17 +23,8 @@ class TransportFuelLogForm
                 TextInput::make('cost')
                     ->required()
                     ->numeric()
-                    ->prefix('$'),
+                    ->prefix('₹'),
                 TextInput::make('filled_by')
-                    ->default(null),
-                TextInput::make('created_by')
-                    ->numeric()
-                    ->default(null),
-                TextInput::make('updated_by')
-                    ->numeric()
-                    ->default(null),
-                TextInput::make('deleted_by')
-                    ->numeric()
                     ->default(null),
             ]);
     }

@@ -12,24 +12,24 @@ class TransportAssignmentInfolist
     {
         return $schema
             ->components([
-                TextEntry::make('user_id')
-                    ->numeric(),
-                TextEntry::make('route_id')
-                    ->numeric(),
-                TextEntry::make('stoppage_id')
-                    ->numeric()
+                TextEntry::make('user.name')
+                ->label('Name'),
+                TextEntry::make('transportRoute.name')
+                    ->label('Route name'),
+                TextEntry::make('transportStoppage.name')
                     ->placeholder('-'),
-                TextEntry::make('bus_id')
-                    ->numeric()
+                TextEntry::make('contact_number')
                     ->placeholder('-'),
-                TextEntry::make('created_by')
-                    ->numeric()
+                TextEntry::make('remarks')
                     ->placeholder('-'),
-                TextEntry::make('updated_by')
-                    ->numeric()
+                TextEntry::make('createdBy.name')
+                    ->label('Created by')
                     ->placeholder('-'),
-                TextEntry::make('deleted_by')
-                    ->numeric()
+                TextEntry::make('updatedBy.name')
+                    ->label('Updated by')
+                    ->placeholder('-'),
+                TextEntry::make('deletedBy.name')
+                    ->label('Deleted by')
                     ->placeholder('-'),
                 TextEntry::make('created_at')
                     ->dateTime()

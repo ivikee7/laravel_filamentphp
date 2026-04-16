@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Resources\Students\Schemas;
 use App\Models\BloodGroup;
 use App\Models\Gender;
 use App\Models\Registration;
+use App\Models\TransportStoppage;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
@@ -36,11 +37,11 @@ class StudentForm
                                 ->imageEditor()
                                 ->hiddenLabel()
                                 ->imagePreviewHeight(250)
+                                ->visibility('public')
+                                ->alignCenter()
                                 // disk
                                 ->disk('public')
-                                ->directory('media/avatar')
-                                ->visibility('public')
-                                ->alignCenter(),
+                                ->directory('media/avatar'),
                             Group::make()
                                 ->schema([
                                     Group::make()
@@ -215,6 +216,19 @@ class StudentForm
 //                            ->default(fn() => request()->query('registration_id')),
 //                    ])
                 // end only for deleteing registration after admission
+                Section::make('Address')
+                    ->schema([
+                        TextInput::make('address')->required(),
+                        TextInput::make('city')->required(),
+                        TextInput::make('state')->required(),
+                        TextInput::make('pin_code')
+                            ->numeric()
+                            ->rules(['digits:6'])
+                            ->minLength(6)
+                            ->maxLength(6)
+                            ->required(),
+                    ])->columns(2)
+                    ->columnSpanFull(),
             ]);
     }
 }

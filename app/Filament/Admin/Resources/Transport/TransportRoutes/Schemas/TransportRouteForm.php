@@ -20,15 +20,6 @@ class TransportRouteForm
                     ->columnSpanFull(),
                 Toggle::make('is_active')
                     ->required(),
-                TextInput::make('created_by')
-                    ->numeric()
-                    ->default(null),
-                TextInput::make('updated_by')
-                    ->numeric()
-                    ->default(null),
-                TextInput::make('deleted_by')
-                    ->numeric()
-                    ->default(null),
             ]);
     }
 }
