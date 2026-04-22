@@ -82,7 +82,7 @@ class AttendanceResource extends Resource
                     ->sortable()->searchable(true),
                 TextColumn::make('type')
                     ->searchable()->searchable(true),
-                TextColumn::make('creator.name')
+                TextColumn::make('createdBy.name')
                     ->numeric()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
