@@ -25,7 +25,7 @@ Route::get('/auth/google/callback', function () {
     }
 
     // Check if the user exists in your database via gSuiteUser relationship
-    $user = User::whereHas('gSuiteUser', function ($query) use ($googleUser) {
+    $user = \App\Models\User::whereHas('gSuiteUser', function ($query) use ($googleUser) {
         $query->where('email', $googleUser->email);
     })->first();
 
@@ -43,12 +43,37 @@ Route::get('/auth/google/callback', function () {
 
 Route::get('/admin/invoices/{invoice}/print', [\App\Http\Controllers\Admin\StoreManagementSystem\Invoice\InvoicePrintController::class, 'print'])->name('invoice.print');
 
-Route::get('/print-id-card/{user}', function (User $user) {
+Route::get('/print-id-card/{user}', function (\App\Models\User $user) {
     // Eager load any relationships needed for the ID card if they are not directly on User model
     // Example: if class and section are on a 'student' relationship:
     $user->load('student');
     return view('filament.admin.pages.i-d-cards.print-id-card', compact('user'));
 })->name('print.user.id_card');
+
+
+Route::get('/print-student-id-card/{user}', function (\App\Models\User $user) {
+    // Check if the user has the 'Student' role
+    if (!$user->hasRole('Student')) {
+        abort(403, 'User is not a student.');
+    }
+
+    // Wrap in a collection to keep your existing Blade view compatible
+    $records = collect([$user]);
+
+    return view('filament.admin.pages.i-d-cards.print-student-id-card', compact('records'));
+})->name('print.student_id_card');
+Route::get('/print-user-id-card/{user}', function (\App\Models\User $user) {
+    // Ensure the user is NOT a student, as per your query logic
+    if ($user->hasRole('Student')) {
+        abort(403, 'Students cannot use this print route.');
+    }
+
+    // Wrap the single user in a collection so your Blade @foreach still works
+    $records = collect([$user]);
+
+    return view('filament.admin.pages.i-d-cards.print-user-id-card', compact('records'));
+})->name('print.user_id_card');
+
 
 Route::get('/print-student-id-cards', function (\Illuminate\Http\Request $request) {
     $ids = $request->query('ids'); // Get IDs from URL query parameter

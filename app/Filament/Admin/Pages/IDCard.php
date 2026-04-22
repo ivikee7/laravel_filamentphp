@@ -128,6 +128,19 @@ class IDCard extends Page implements HasInfolists, HasTable
                         ])
                     ])
                     ->columns(2)
+                    ->headerActions([
+                        Action::make('print')
+                            ->label('Print ID Card')
+                            ->icon('heroicon-o-printer')
+                            ->color('success')
+                            // Using 'openUrlInNewTab' is better for printing
+                            // so the user doesn't lose their place in the admin panel
+                            ->url(fn ($record): string => route('print.student_id_card', ['user' => $record->id]), shouldOpenInNewTab: true)
+                            ->requiresConfirmation()
+                            ->modalHeading('Print Student ID Card?')
+                            ->modalDescription('Confirming will open the print preview for this student.')
+                            ->modalSubmitActionLabel('Yes, Print'),
+                    ])
                     ->footer([
                         Action::make('enteredInBus')
                             ->color('info')
