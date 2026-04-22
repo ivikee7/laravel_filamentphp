@@ -97,7 +97,8 @@ class StudentsTable
                     })
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('student.quota.name')
-                    ->searchable()->sortable()->wrap()->toggleable(isToggledHiddenByDefault: true),
+                    ->searchable()->sortable()->wrap()
+                    ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('bloodGroup.name')
                     ->searchable()
                     ->sortable()
