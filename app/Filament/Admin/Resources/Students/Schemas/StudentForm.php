@@ -41,7 +41,27 @@ class StudentForm
                                 ->alignCenter()
                                 // disk
                                 ->disk('public')
-                                ->directory('media/avatar'),
+                                ->directory('media/avatar')
+                                ->getUploadedFileNameForStorageUsing(
+                                    function ($file, $record, $get): string {
+                                        // 1. Get ID from record or fallback
+                                        $id = $record?->id ?? 'new';
+
+                                        // 2. Get the 'name' from the TextInput in your Group
+                                        // We slugify it to handle spaces and special characters
+                                        $recordName = str($get('name') ?? 'unnamed')->slug();
+
+                                        // 3. Understandable time
+                                        $time = now()->format('Y-m-d-His');
+
+                                        // 4. Extension
+                                        $ext = $file->getClientOriginalExtension();
+
+                                        // Result: 12-2024-05-20-143005-john-doe.jpg
+                                        return "{$id}_{$time}_{$recordName}.{$ext}";
+                                    }
+                                )
+                            ,
                             Group::make()
                                 ->schema([
                                     Group::make()
