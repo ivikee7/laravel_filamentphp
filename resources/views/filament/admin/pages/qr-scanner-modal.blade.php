@@ -1,4 +1,108 @@
-<div x-data="qrScannerModal()" x-init="init()" class="space-y-4 p-2">
+<div
+    x-data="{
+        scanner: null,
+        isScanning: false,
+        isLoadingLibrary: false,
+        lastScannedUrl: '',
+        scanError: '',
+        readerId: 'qr-reader-modal',
+        async init() {
+            // Delay a tick so scanner starts after modal is fully visible.
+            setTimeout(() => this.startScanning(), 150)
+        },
+        async loadLibrary() {
+            if (window.Html5QrcodeScanner) return
+            if (!window.qrCodeScannerLibraryPromise) {
+                window.qrCodeScannerLibraryPromise = new Promise((resolve, reject) => {
+                    const script = document.createElement('script')
+                    script.src = 'https://unpkg.com/html5-qrcode@2.3.7/dist/html5-qrcode.min.js'
+                    script.onload = resolve
+                    script.onerror = () => reject(new Error('Unable to load QR scanner library.'))
+                    document.head.appendChild(script)
+                })
+            }
+            this.isLoadingLibrary = true
+            try {
+                await window.qrCodeScannerLibraryPromise
+            } catch (error) {
+                this.scanError = error.message
+            } finally {
+                this.isLoadingLibrary = false
+            }
+        },
+        async startScanning() {
+            if (this.isScanning || this.scanner) return
+            this.scanError = ''
+            this.lastScannedUrl = ''
+            await this.$nextTick()
+            await this.loadLibrary()
+            if (!window.Html5QrcodeScanner) {
+                this.scanError = this.scanError || 'QR scanner library did not load.'
+                return
+            }
+            const reader = this.$refs.reader
+            if (!reader) {
+                this.scanError = 'Scanner element not found.'
+                return
+            }
+            reader.innerHTML = ''
+            try {
+                this.scanner = new Html5QrcodeScanner(
+                    this.readerId,
+                    {
+                        fps: 10,
+                        qrbox: { width: 250, height: 250 },
+                        aspectRatio: 1.77778,
+                        rememberLastUsedCamera: true,
+                        supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA],
+                        videoConstraints: { facingMode: 'environment' },
+                        showTorchButtonIfSupported: true,
+                    },
+                    false,
+                )
+                this.scanner.render(
+                    (decodedText) => this.onScanSuccess(decodedText),
+                    () => {},
+                )
+                this.isScanning = true
+            } catch (error) {
+                this.scanError = error?.message ?? 'Unable to access the camera.'
+                this.scanner = null
+                this.isScanning = false
+            }
+        },
+        async onScanSuccess(decodedText) {
+            this.lastScannedUrl = decodedText
+            if ('vibrate' in navigator) navigator.vibrate(150)
+            await this.stopScanning()
+            try {
+                window.location.href = new URL(decodedText, window.location.origin).toString()
+            } catch (error) {
+                this.scanError = 'The QR code does not contain a valid URL.'
+            }
+        },
+        async stopScanning() {
+            if (!this.scanner) {
+                this.isScanning = false
+                return
+            }
+            try {
+                await this.scanner.clear()
+            } catch (error) {
+                console.debug('QR scanner cleanup warning:', error)
+            } finally {
+                this.scanner = null
+                this.isScanning = false
+            }
+        },
+        async restartScanner() {
+            await this.stopScanning()
+            await this.startScanning()
+        },
+    }"
+    x-init="init()"
+    class="space-y-4 p-2"
+>
     <div
         x-ref="reader"
         id="qr-reader-modal"
@@ -41,140 +145,6 @@
         </button>
     </div>
 </div>
-
-<script>
-    window.qrScannerModal = window.qrScannerModal || function () {
-        return {
-            scanner: null,
-            isScanning: false,
-            isLoadingLibrary: false,
-            lastScannedUrl: '',
-            scanError: '',
-            readerId: 'qr-reader-modal',
-
-            async init() {
-                setTimeout(() => this.startScanning(), 150)
-            },
-
-            async loadLibrary() {
-                if (window.Html5QrcodeScanner) {
-                    return
-                }
-
-                if (! window.qrCodeScannerLibraryPromise) {
-                    window.qrCodeScannerLibraryPromise = new Promise((resolve, reject) => {
-                        const script = document.createElement('script')
-                        script.src = 'https://unpkg.com/html5-qrcode@2.3.7/dist/html5-qrcode.min.js'
-                        script.onload = resolve
-                        script.onerror = () => reject(new Error('Unable to load QR scanner library.'))
-                        document.head.appendChild(script)
-                    })
-                }
-
-                this.isLoadingLibrary = true
-
-                try {
-                    await window.qrCodeScannerLibraryPromise
-                } catch (error) {
-                    this.scanError = error.message
-                } finally {
-                    this.isLoadingLibrary = false
-                }
-            },
-
-            async startScanning() {
-                if (this.isScanning || this.scanner) {
-                    return
-                }
-
-                this.scanError = ''
-                this.lastScannedUrl = ''
-
-                await this.$nextTick()
-                await this.loadLibrary()
-
-                if (! window.Html5QrcodeScanner) {
-                    this.scanError = this.scanError || 'QR scanner library did not load.'
-                    return
-                }
-
-                const reader = this.$refs.reader
-
-                if (! reader) {
-                    this.scanError = 'Scanner element not found.'
-                    return
-                }
-
-                reader.innerHTML = ''
-
-                try {
-                    this.scanner = new Html5QrcodeScanner(
-                        this.readerId,
-                        {
-                            fps: 10,
-                            qrbox: { width: 250, height: 250 },
-                            aspectRatio: 1.77778,
-                            rememberLastUsedCamera: true,
-                            supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA],
-                            videoConstraints: { facingMode: 'environment' },
-                            showTorchButtonIfSupported: true,
-                        },
-                        false,
-                    )
-
-                    this.scanner.render(
-                        (decodedText) => this.onScanSuccess(decodedText),
-                        () => {},
-                    )
-
-                    this.isScanning = true
-                } catch (error) {
-                    this.scanError = error?.message ?? 'Unable to access the camera.'
-                    this.scanner = null
-                    this.isScanning = false
-                }
-            },
-
-            async onScanSuccess(decodedText) {
-                this.lastScannedUrl = decodedText
-
-                if ('vibrate' in navigator) {
-                    navigator.vibrate(150)
-                }
-
-                await this.stopScanning()
-
-                try {
-                    window.location.href = new URL(decodedText, window.location.origin).toString()
-                } catch (error) {
-                    this.scanError = 'The QR code does not contain a valid URL.'
-                }
-            },
-
-            async stopScanning() {
-                if (! this.scanner) {
-                    this.isScanning = false
-                    return
-                }
-
-                try {
-                    await this.scanner.clear()
-                } catch (error) {
-                    console.debug('QR scanner cleanup warning:', error)
-                } finally {
-                    this.scanner = null
-                    this.isScanning = false
-                }
-            },
-
-            async restartScanner() {
-                await this.stopScanning()
-                await this.startScanning()
-            },
-        }
-    }
-</script>
-
 <style>
     [x-cloak] { display: none !important; }
     #qr-reader-modal video { border-radius: 0.375rem; }
