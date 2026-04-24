@@ -1,3 +1,8 @@
+@php
+    use Filament\Support\Facades\FilamentAsset;
+    $qrScriptUrl = FilamentAsset::getScriptSrc('html5-qrcode');
+@endphp
+
 <div
     wire:ignore
     x-data="{
@@ -19,7 +24,8 @@
             if (!window.qrCodeScannerLibraryPromise) {
                 window.qrCodeScannerLibraryPromise = new Promise((resolve, reject) => {
                     const script = document.createElement('script')
-                    script.src = 'https://unpkg.com/html5-qrcode@2.3.8/dist/html5-qrcode.min.js'
+                    script.src = @js($qrScriptUrl)
+                    script.type = 'module'
                     script.onload = resolve
                     script.onerror = () => reject(new Error('Unable to load QR scanner library.'))
                     document.head.appendChild(script)

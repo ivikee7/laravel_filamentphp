@@ -2,6 +2,8 @@
 
 namespace App\Providers\Filament;
 
+use Filament\Support\Assets\Js;
+use Filament\Support\Facades\FilamentAsset;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -19,11 +21,21 @@ use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
+use Illuminate\Support\Facades\Vite;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class AdminPanelProvider extends PanelProvider
 {
+    public function boot(): void
+    {
+        FilamentAsset::register([
+            Js::make('html5-qrcode', Vite::asset('resources/js/filament/html5-qrcode.js'))
+                ->module()
+                ->loadedOnRequest(),
+        ]);
+    }
+
     public function panel(Panel $panel): Panel
     {
         return $panel
