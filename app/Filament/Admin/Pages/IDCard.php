@@ -2,13 +2,13 @@
 
 namespace App\Filament\Admin\Pages;
 
+
 use App\Models\Attendance;
 use App\Models\MessageTemplate;
 use App\Models\SmsProvider;
 use App\Models\User;
 use App\Services\SMSService;
 use Filament\Actions\Action;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Infolists\Components\ImageEntry;
@@ -17,8 +17,6 @@ use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
-use Filament\Resources\Pages\Concerns\InteractsWithRecord;
-use Filament\Schemas\Components\Actions;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
@@ -27,11 +25,11 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
-use Phiki\Phast\Text;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
-class IDCard extends Page implements HasInfolists, HasTable
+class IDCard extends Page implements HasInfolists, HasTable, HasForms
 {
+    use InteractsWithForms;
     use InteractsWithInfolists;
     use InteractsWithTable;
 
@@ -43,9 +41,27 @@ class IDCard extends Page implements HasInfolists, HasTable
 
     public ?User $record = null;
 
+    public array $attendanceRecords = [];
+
     public function mount($record): void
     {
         $this->record = $record;
+    }
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Action::make('scanQrCode')
+                ->label('Scan QR Code')
+                ->icon('heroicon-o-qr-code')
+                ->color('primary')
+                ->modalContent(view('filament.admin.pages.qr-scanner-modal'))
+                ->modalHeading('Scan QR Code')
+                ->modalDescription('Allow camera access, then scan an ID card QR code to open that page.')
+                ->modalSubmitAction(false)
+                ->modalCancelActionLabel('Close')
+                ->action(fn (): null => null),
+        ];
     }
 
     public function table(Table $table): Table
@@ -84,7 +100,7 @@ class IDCard extends Page implements HasInfolists, HasTable
                                         ->default(fn($record) => 'https://ui-avatars.com/api/?name=' . urlencode($record->name)),
                                     ImageEntry::make('qrcode')
                                         ->imageSize(150)
-                                        ->state(self::getQRCode())
+                                        ->state(fn () => $this->getQRCode())
                                         ->gap(false)
                                         ->square()
                                         ->hiddenLabel()
@@ -119,9 +135,9 @@ class IDCard extends Page implements HasInfolists, HasTable
                                         $record->state,
                                         $record->pin_code,
                                     ];
-                                    // Filter out any empty parts to avoid extra commas.
+
                                     $filteredParts = array_filter($addressParts);
-                                    // Join the parts with a comma and a space.
+
                                     return implode(', ', $filteredParts);
                                 })
                                 ->wrap(),
@@ -133,8 +149,6 @@ class IDCard extends Page implements HasInfolists, HasTable
                             ->label('Print ID Card')
                             ->icon('heroicon-o-printer')
                             ->color('success')
-                            // Using 'openUrlInNewTab' is better for printing
-                            // so the user doesn't lose their place in the admin panel
                             ->url(fn ($record): string => route('print.student_id_card', ['user' => $record->id]), shouldOpenInNewTab: true)
                             ->requiresConfirmation()
                             ->modalHeading('Print Student ID Card?')
@@ -151,11 +165,11 @@ class IDCard extends Page implements HasInfolists, HasTable
                             })
                             ->icon(function ($record): ?string {
                                 if (self::checkAttendance('enteredInBus', $record)) {
-                                    return 'heroicon-o-check-circle'; // Icon when true
+                                    return 'heroicon-o-check-circle';
                                 }
+
                                 return null;
                             }),
-
                         Action::make('enteredInCampus')
                             ->color('success')
                             ->action(function () {
@@ -165,11 +179,11 @@ class IDCard extends Page implements HasInfolists, HasTable
                             })
                             ->icon(function ($record): ?string {
                                 if (self::checkAttendance('enteredInCampus', $record)) {
-                                    return 'heroicon-o-check-circle'; // Icon when true
+                                    return 'heroicon-o-check-circle';
                                 }
+
                                 return null;
                             }),
-
                         Action::make('leaveFromCampus')
                             ->color('warning')
                             ->action(function () {
@@ -179,11 +193,11 @@ class IDCard extends Page implements HasInfolists, HasTable
                             })
                             ->icon(function ($record): ?string {
                                 if (self::checkAttendance('leaveFromCampus', $record)) {
-                                    return 'heroicon-o-check-circle'; // Icon when true
+                                    return 'heroicon-o-check-circle';
                                 }
+
                                 return null;
                             }),
-
                         Action::make('leaveFromBus')
                             ->color('danger')
                             ->action(function () {
@@ -193,8 +207,9 @@ class IDCard extends Page implements HasInfolists, HasTable
                             })
                             ->icon(function ($record): ?string {
                                 if (self::checkAttendance('leaveFromBus', $record)) {
-                                    return 'heroicon-o-check-circle'; // Icon when true
+                                    return 'heroicon-o-check-circle';
                                 }
+
                                 return null;
                             }),
                     ])
@@ -202,7 +217,7 @@ class IDCard extends Page implements HasInfolists, HasTable
             ]);
     }
 
-    public function checkAttendance($type, $record): string
+    public function checkAttendance($type, $record): bool
     {
         return Attendance::where('user_id', $record->id)
             ->whereDate('created_at', date('Y-m-d', strtotime(now())))
@@ -210,16 +225,17 @@ class IDCard extends Page implements HasInfolists, HasTable
             ->exists();
     }
 
-
     public function markAttendance(string $type): void
     {
-        if (!$this->record) {
+        if (! $this->record) {
             Notification::make()->title('Error: User not found')->danger()->send();
+
             return;
         }
 
         if ($this->record->id === auth()->id()) {
             Notification::make()->title('Error: You can only mark your own attendance')->danger()->send();
+
             return;
         }
 
@@ -228,7 +244,6 @@ class IDCard extends Page implements HasInfolists, HasTable
             'type' => $type,
         ]);
 
-        // ✅ Refresh attendance records immediately
         $this->updateAttendanceRecords();
 
         Notification::make()
@@ -240,12 +255,13 @@ class IDCard extends Page implements HasInfolists, HasTable
             ->where('is_active', true)
             ->first();
 
-        if (!$template) {
+        if (! $template) {
             Notification::make()
                 ->title('SMS Template Error ' . $type)
                 ->body('SMS template not found.')
                 ->danger()
                 ->send();
+
             return;
         }
 
@@ -253,23 +269,24 @@ class IDCard extends Page implements HasInfolists, HasTable
             ['{{name}}', '{{time}}'],
             [
                 $this->record->name,
-                $attendance->created_at
+                $attendance->created_at,
             ],
-            $template->content
+            $template->content,
         );
 
         $provider = SmsProvider::find($template->sms_provider_id);
 
-        if (!$provider || !$provider->is_active) {
+        if ((! $provider) || (! $provider->is_active)) {
             Notification::make()
                 ->title('SMS Provider Error')
                 ->body('SMS provider not found or inactive.')
                 ->danger()
                 ->send();
+
             return;
         }
 
-        $smsService = new SMSService($provider->toArray()); // assuming SMSService accepts provider
+        $smsService = new SMSService($provider->toArray());
 
         $smsService->sendSms($this->record->primary_contact_number, $message, $template);
 
@@ -296,11 +313,11 @@ class IDCard extends Page implements HasInfolists, HasTable
 
     public function getQRCode(): ?string
     {
-        if (!$this->record) {
+        if (! $this->record) {
             return null;
         }
 
-        $url = route('filament.admin.pages.id-cards.{record}', ['record' => $this->record->id]);
+        $url = static::getUrl(['record' => $this->record]);
         $svg = QrCode::size(100)->generate($url);
 
         return 'data:image/svg+xml;base64,' . base64_encode($svg);
