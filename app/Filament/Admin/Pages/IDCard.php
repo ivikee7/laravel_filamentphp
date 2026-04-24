@@ -55,7 +55,7 @@ class IDCard extends Page implements HasInfolists, HasTable, HasForms
                 ->label('Scan QR Code')
                 ->icon('heroicon-o-qr-code')
                 ->color('primary')
-                ->modalContent(view('filament.admin.pages.qr-scanner-modal'))
+                ->modalContent(fn () => view('filament.admin.pages.qr-scanner-modal'))
                 ->modalHeading('Scan QR Code')
                 ->modalDescription('Allow camera access, then scan an ID card QR code to open that page.')
                 ->modalSubmitAction(false)
