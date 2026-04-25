@@ -61,7 +61,9 @@ class ListTransactions extends Page implements HasTable, HasForms
                 TextColumn::make('created_at')->toggleable(isToggledHiddenByDefault: false)->wrap(),
                 TextColumn::make('updated_at')->toggleable(isToggledHiddenByDefault: true)->wrap(),
                 TextColumn::make('deleted_at')->toggleable(isToggledHiddenByDefault: true)->wrap(),
-            ])->defaultSort('id', 'desc')
+            ])
+            ->defaultSort('id', 'desc')
+            ->paginated([5, 10, 25, 50, 100, 500, 1000])
             ->recordActions([
                 Action::make('edit-store-invoice-transaction')
                     ->label('Edit')
