@@ -3,7 +3,10 @@
 namespace App\Filament\Admin\Resources\Stores\Pages;
 
 use App\Filament\Admin\Resources\Stores\StoreResource;
+use App\Filament\Exports\StoreInvoiceExporter;
 use Filament\Actions\Action;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\ExportBulkAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -108,6 +111,14 @@ class ListInvoices extends Page implements HasTable, HasForms
                         'record' => $this->record->id,
                         'invoiceId' => $record->id,
                     ])),
+            ])
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    ExportBulkAction::make()
+                        ->exporter(StoreInvoiceExporter::class)
+                        ->label('Export')
+                        ->columnMappingColumns(3),
+                    ])
             ]);
     }
 
