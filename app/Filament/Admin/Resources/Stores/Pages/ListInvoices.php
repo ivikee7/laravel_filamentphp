@@ -70,7 +70,7 @@ class ListInvoices extends Page implements HasTable, HasForms
                 TextColumn::make('created_at')->label('Created At')->wrap()->sortable()->searchable()->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('createdBy.name')->label('Created By')->wrap()->sortable()->searchable()->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->paginated([5, 10, 25, 50, 100, 500, 1000])
+//            ->paginated([5, 10, 25, 50, 100, 500, 1000])
             ->columnManagerColumns(4)
             ->defaultSort('id', 'desc')
             ->filters([
