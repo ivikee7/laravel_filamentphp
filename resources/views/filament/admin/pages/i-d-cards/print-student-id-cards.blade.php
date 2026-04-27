@@ -250,8 +250,8 @@
             <div class="body">
                 <div class="meta-row"
                      style="display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:700;margin-bottom:6px">
-                    <div class="meta-srcs auto-fit">SRCS#: {{ $record->id }}</div> <span aria-hidden="true">{{ __(' | ') }}</span>
-                    <div class="meta-session auto-fit">
+                    <div class="meta-srcs">SRCS#: {{ $record->id }}</div> {{ __(' | ') }}
+                    <div class="meta-session">
                         Session: {{ $record->student->classAssignment->academicYear->name ?? '-' }}</div>
                 </div>
 
@@ -271,7 +271,7 @@
                 </div>
 
                 <div class="details">
-                        <div class="student-name auto-fit">{{ strtoupper($record->name) }}</div>
+                        <div class="student-name">{{ strtoupper($record->name) }}</div>
                     <p><strong>Class:</strong> {{ $record->student->classAssignment->class->className->name ?? '-' }}
                     </p>
                     <p><strong>Sec:</strong> {{ $record->student->classAssignment->section->name ?? '-' }}</p>
@@ -287,44 +287,6 @@
         </div>
     @endforeach
 </div>
-
-<script>
-(function(){
-    // Auto-fit text: reduce font-size until content fits parent box. Runs on load/resize/print.
-    function fitElement(el, minFont=8){
-        var style = window.getComputedStyle(el);
-        var fontSize = parseFloat(style.fontSize) || 12;
-        // store original size
-        if (!el.dataset.originalFontSize) el.dataset.originalFontSize = fontSize;
-        // reset to original before measuring
-        el.style.fontSize = el.dataset.originalFontSize + 'px';
-
-        // shrink until fits (either width or height)
-        while (fontSize > minFont && (el.scrollWidth > el.clientWidth || el.scrollHeight > el.clientHeight)) {
-            fontSize = Math.max(minFont, fontSize - 0.5);
-            el.style.fontSize = fontSize + 'px';
-        }
-    }
-
-    function fitAll(){
-        document.querySelectorAll('.auto-fit').forEach(function(el){
-            // allow small tolerance by briefly forcing no wrap when measuring
-            var prevWhite = el.style.whiteSpace;
-            el.style.whiteSpace = 'nowrap';
-            fitElement(el, 7);
-            el.style.whiteSpace = prevWhite || '';
-        });
-    }
-
-    window.addEventListener('load', fitAll);
-    window.addEventListener('resize', fitAll);
-    if (window.matchMedia) {
-        try { window.matchMedia('print').addListener(fitAll); } catch(e){}
-    }
-    // fallback for print
-    window.addEventListener('beforeprint', fitAll);
-})();
-</script>
 
 </body>
 </html>
