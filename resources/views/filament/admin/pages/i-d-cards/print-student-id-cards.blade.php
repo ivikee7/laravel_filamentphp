@@ -112,7 +112,8 @@
             flex-wrap:nowrap;
         }
         /* prevent the SRCS / Session text from wrapping to next line */
-        .body .meta-row > * { white-space:nowrap; }
+        .body .meta-row > * { white-space:nowrap;
+            font-size: 9px; }
 
         .body .top-row {
             display: flex;
