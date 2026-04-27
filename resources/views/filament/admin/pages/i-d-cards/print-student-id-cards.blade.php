@@ -113,7 +113,7 @@
         }
         /* prevent the SRCS / Session text from wrapping to next line */
         .body .meta-row > * { white-space:nowrap;
-            font-size: 9px; }
+            font-size: 8px; }
 
         .body .top-row {
             display: flex;
