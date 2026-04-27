@@ -104,7 +104,15 @@
             background: #f3f4f6;
             border-radius: 8px;
             padding: 6px;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:6px;
+            /* keep both items on a single line */
+            flex-wrap:nowrap;
         }
+        /* prevent the SRCS / Session text from wrapping to next line */
+        .body .meta-row > * { white-space:nowrap; }
 
         .body .top-row {
             display: flex;
