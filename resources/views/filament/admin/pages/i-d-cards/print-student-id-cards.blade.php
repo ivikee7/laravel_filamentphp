@@ -242,7 +242,7 @@
             <div class="body">
                 <div class="meta-row"
                      style="display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:700;margin-bottom:6px">
-                    <div class="meta-srcs">SRCS#: {{ $record->id }}</div>
+                    <div class="meta-srcs">SRCS#: {{ $record->id }}</div> {{ __(' | ') }}
                     <div class="meta-session">
                         Session: {{ $record->student->classAssignment->academicYear->name ?? '-' }}</div>
                 </div>
