@@ -147,7 +147,7 @@ class MonthlyReport extends Page implements HasTable
                                 } else {
                                     $in = Carbon::parse($attendances->first()->created_at)->format('H:i');
                                     $out = Carbon::parse($attendances->last()->created_at)->format('H:i');
-                                    $row[$d] = $in . '\n' . $out;
+                                    $row[$d] = $in . "\n" . $out;
                                 }
                             }
 
