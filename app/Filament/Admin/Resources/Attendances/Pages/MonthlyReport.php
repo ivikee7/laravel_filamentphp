@@ -90,33 +90,69 @@ class MonthlyReport extends Page implements HasTable
                     ->icon('heroicon-o-printer')
                     ->color('primary')
                     ->action(function (Collection $records) {
-                        // Prepare a serializable print payload (simple arrays / strings only)
-                        $columns = [];
-                        $columnKeys = [];
-                        foreach ($this->getTable()->getColumns() as $col) {
-                            // Try to extract label & name defensively
-                            $label = null;
-                            $name = null;
-                            if (method_exists($col, 'getLabel')) {
-                                $label = $col->getLabel();
-                            } elseif (property_exists($col, 'label')) {
-                                $label = $col->label;
-                            }
-                            if (method_exists($col, 'getName')) {
-                                $name = $col->getName();
-                            } elseif (property_exists($col, 'name')) {
-                                $name = $col->name;
-                            }
-                            $columns[] = $label ?? $name ?? '';
-                            $columnKeys[] = $name ?? null;
+                        // Build date range
+                        $startDate = null;
+                        $endDate = null;
+
+                        if ($this->fromDate && $this->toDate) {
+                            $startDate = Carbon::parse($this->fromDate)->startOfDay();
+                            $endDate = Carbon::parse($this->toDate)->endOfDay();
+                        } else {
+                            $now = now();
+                            $startDate = Carbon::create($now->year, $now->month, 1)->startOfDay();
+                            $endDate = Carbon::create($now->year, $now->month, $now->daysInMonth)->endOfDay();
                         }
 
-                        $recordsArray = array_map(function ($r) use ($columnKeys) {
-                            // $r may be an array or model; normalize to array
-                            $row = is_array($r) ? $r : (is_object($r) && method_exists($r, 'toArray') ? $r->toArray() : (array)$r);
-                            // Keep whole row; view will access nested fields safely using data_get
-                            return $row;
-                        }, $records->toArray());
+                        $dates = [];
+                        $dateLabels = [];
+                        $cursor = $startDate->copy();
+                        while ($cursor <= $endDate) {
+                            $dates[] = $cursor->toDateString(); // Y-m-d
+                            $dateLabels[] = $cursor->format('d-m-Y');
+                            $cursor->addDay();
+                        }
+
+                        // Build header columns and keys
+                        $columns = ['ID', 'Name', 'Role', 'Class', 'Section'];
+                        $columnKeys = ['id', 'name', 'role', 'class', 'section'];
+                        foreach ($dateLabels as $label) {
+                            $columns[] = $label;
+                        }
+                        foreach ($dates as $d) {
+                            $columnKeys[] = $d; // use date string as key for row lookup
+                        }
+
+                        // Build rows by computing per-date values from each record's attendances
+                        $recordsArray = [];
+                        foreach ($records as $rec) {
+                            // rec is a User model (usually with attendances relation loaded)
+                            $row = [];
+                            $row['id'] = $rec->id;
+                            $row['name'] = $rec->name;
+                            $row['role'] = $rec->roles->pluck('name')->join(', ');
+                            $row['class'] = data_get($rec, 'student.classAssignment.class.name');
+                            $row['section'] = data_get($rec, 'student.classAssignment.section.name');
+
+                            foreach ($dates as $d) {
+                                // filter attendances for that date; if relation not loaded or empty, attempt query
+                                $attendances = collect();
+                                if ($rec->relationLoaded('attendances')) {
+                                    $attendances = collect($rec->attendances)->filter(fn($a) => Carbon::parse($a->created_at)->toDateString() === $d)->sortBy('created_at');
+                                } else {
+                                    $attendances = $rec->attendances()->whereDate('created_at', $d)->get()->sortBy('created_at');
+                                }
+
+                                if ($attendances->isEmpty()) {
+                                    $row[$d] = '-';
+                                } else {
+                                    $in = Carbon::parse($attendances->first()->created_at)->format('H:i');
+                                    $out = Carbon::parse($attendances->last()->created_at)->format('H:i');
+                                    $row[$d] = $in . '\n' . $out;
+                                }
+                            }
+
+                            $recordsArray[] = $row;
+                        }
 
                         $print_data = [
                             'start_date' => $this->fromDate,
