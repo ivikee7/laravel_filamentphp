@@ -156,8 +156,8 @@ class MonthlyReport extends Page implements HasTable
                         }
 
                         $print_data = [
-                            'start_date' => $this->fromDate,
-                            'end_date' => $this->toDate,
+                            'start_date' => Carbon::parse($this->fromDate)->format('YY-m-d'),
+                            'end_date' => Carbon::parse($this->toDate)->format('YY-m-d'),
                             'columns' => $columns,
                             'column_keys' => $columnKeys,
                             'records' => $recordsArray,
