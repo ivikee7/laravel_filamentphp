@@ -22,23 +22,58 @@
     </style>
 
     <button onclick="window.print()" class="print-button">Print Report</button>
-    <h2>Monthly Attendance Report ({{  $print_data[0]['start_data'] . ' to ' . $print_data[0]['end_date']  }})</h2>
+    <h2>Monthly Attendance Report ({{ $start_date ?? '' }} to {{ $end_date ?? '' }})</h2>
     <table>
         <thead>
         <tr>
-            @foreach($print_data[0]['columns'] as $label => $value)
-                <th>{{ $label }}</th>
+            @foreach($printColumns as $col)
+                <th>{{ $col }}</th>
             @endforeach
         </tr>
         </thead>
         <tbody>
-                @foreach($print_data[0]['records'] as $record)
-                    <tr>
-                        <td>{{ $record->id ?? '' }}</td>
-                        <td>{{ $record->name ?? '' }}</td>
-                        <td>{{ $record->roles ?? '' }}</td>
-                    </tr>
-                @endforeach
+            @foreach($printRecords as $record)
+                <tr>
+                    @foreach($printColumns as $index => $col)
+                        @php
+                            // Try to map column to a value in record. If column_keys exist, use keys; otherwise try common keys
+                            $value = null;
+                            if (!empty($printColumnKeys) && isset($printColumnKeys[$index]) && $printColumnKeys[$index]) {
+                                $value = data_get($record, $printColumnKeys[$index]);
+                            } else {
+                                // common fallback keys
+                                if (array_key_exists('id', $record)) {
+                                    $value = data_get($record, 'id');
+                                }
+                                if ($value === null && array_key_exists('name', $record)) {
+                                    $value = data_get($record, 'name');
+                                }
+                                if ($value === null && array_key_exists('roles', $record)) {
+                                    $value = data_get($record, 'roles');
+                                }
+                                // If column represents a date (format d-m-Y), try to fetch that date key
+                                if ($value === null) {
+                                    foreach ($record as $k => $v) {
+                                        if ($k === $col || $k === str_replace('-', '', $col) || $k === str_replace('-', '', str_replace('/', '', $col))) {
+                                            $value = $v;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        @endphp
+                        @php
+                            $valueStr = '';
+                            if (is_array($value)) {
+                                $valueStr = implode(', ', $value);
+                            } else {
+                                $valueStr = (string) ($value ?? '');
+                            }
+                        @endphp
+                        <td>{!! nl2br(e($valueStr)) !!}</td>
+                    @endforeach
+                </tr>
+            @endforeach
         </tbody>
     </table>
 

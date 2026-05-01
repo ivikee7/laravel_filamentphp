@@ -90,15 +90,44 @@ class MonthlyReport extends Page implements HasTable
                     ->icon('heroicon-o-printer')
                     ->color('primary')
                     ->action(function (Collection $records) {
-                        $print_data = array([
-                            'start_data' => $this->fromDate,
-                            'end_date' => $this->toDate,
-                            'columns' => $this->getTable()->getColumns(),
-                            'records' => $records->toArray(),
-                        ]);
+                        // Prepare a serializable print payload (simple arrays / strings only)
+                        $columns = [];
+                        $columnKeys = [];
+                        foreach ($this->getTable()->getColumns() as $col) {
+                            // Try to extract label & name defensively
+                            $label = null;
+                            $name = null;
+                            if (method_exists($col, 'getLabel')) {
+                                $label = $col->getLabel();
+                            } elseif (property_exists($col, 'label')) {
+                                $label = $col->label;
+                            }
+                            if (method_exists($col, 'getName')) {
+                                $name = $col->getName();
+                            } elseif (property_exists($col, 'name')) {
+                                $name = $col->name;
+                            }
+                            $columns[] = $label ?? $name ?? '';
+                            $columnKeys[] = $name ?? null;
+                        }
 
-                        // Store the data in the session
-                        Session::put('print_data', json_encode($print_data));
+                        $recordsArray = array_map(function ($r) use ($columnKeys) {
+                            // $r may be an array or model; normalize to array
+                            $row = is_array($r) ? $r : (is_object($r) && method_exists($r, 'toArray') ? $r->toArray() : (array)$r);
+                            // Keep whole row; view will access nested fields safely using data_get
+                            return $row;
+                        }, $records->toArray());
+
+                        $print_data = [
+                            'start_date' => $this->fromDate,
+                            'end_date' => $this->toDate,
+                            'columns' => $columns,
+                            'column_keys' => $columnKeys,
+                            'records' => $recordsArray,
+                        ];
+
+                        // Store the data in the session (store array, not JSON)
+                        Session::put('print_data', $print_data);
 
                         // Open the new page
                         $printUrl = url('/admin/attendances/print-monthly-report');
@@ -117,11 +146,11 @@ class MonthlyReport extends Page implements HasTable
             TextColumn::make('id')->label('ID')->sortable()->searchable(),
             TextColumn::make('name')->label('Name')->sortable()->searchable()->wrap(),
             TextColumn::make('roles.name')->label('Role')->sortable()->searchable()->wrap()
-                ->toggleable(isToggledHiddenByDefault: true),
+                ->toggleable(isToggledHiddenByDefault: false),
             TextColumn::make('student.classAssignment.class.name')->label('Class')->sortable()->searchable()->wrap()
                 ->toggleable(isToggledHiddenByDefault: true),
             TextColumn::make('student.classAssignment.section.name')->label('Section')->sortable()->searchable()->wrap()
-                ->toggleable(isToggledHiddenByDefault: false),
+                ->toggleable(isToggledHiddenByDefault: true),
         ];
 
         $startDate = null;
