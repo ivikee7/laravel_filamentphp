@@ -69,7 +69,7 @@ class PrintMonthlyReport extends Page
                     if ($att->isEmpty()) {
                         $row[$date] = '-';
                     } else {
-                        $row[$date] = $att->first()->created_at->format('H:i') . '\n' . $att->last()->created_at->format('H:i');
+                        $row[$date] = $att->first()->created_at->format('H:i') . "\n" . $att->last()->created_at->format('H:i');
                     }
                 }
                 $this->printRecords[] = $row;
