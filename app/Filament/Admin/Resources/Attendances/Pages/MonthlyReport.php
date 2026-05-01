@@ -109,7 +109,7 @@ class MonthlyReport extends Page implements HasTable
                         while ($cursor <= $endDate) {
                             $dates[] = $cursor->toDateString(); // Y-m-d
                             // use dmy format for compact heading (e.g. 010526)
-                            $dateLabels[] = $cursor->format('dmy');
+                            $dateLabels[] = $cursor->format('d-m');
                             $cursor->addDay();
                         }
 

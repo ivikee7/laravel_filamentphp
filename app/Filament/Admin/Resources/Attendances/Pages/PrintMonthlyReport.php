@@ -52,7 +52,7 @@ class PrintMonthlyReport extends Page
                 $end = Carbon::parse($to)->endOfDay();
                 while ($start <= $end) {
                     // use compact dmy format for column heading
-                    $this->printColumns[] = $start->format('dmy');
+                    $this->printColumns[] = $start->format('d-m');
                     $dates[] = $start->toDateString();
                     $start->addDay();
                 }
