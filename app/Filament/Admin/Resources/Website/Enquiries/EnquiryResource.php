@@ -32,7 +32,7 @@ class EnquiryResource extends Resource
 {
     protected static ?string $model = WebsiteEnquiry::class;
 
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-globe-alt';
 
     protected static ?string $modelLabel = 'Website Enquiry';
 
