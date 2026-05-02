@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Resources\AcademicYears\Resources\StudentClasses\Re
 use App\Filament\Admin\Resources\AcademicYears\Resources\StudentClasses\Resources\StudentSections\Pages\CreateStudentSection;
 use App\Filament\Admin\Resources\AcademicYears\Resources\StudentClasses\Resources\StudentSections\Pages\EditStudentSection;
 use App\Filament\Admin\Resources\AcademicYears\Resources\StudentClasses\Resources\StudentSections\Pages\ViewStudentSection;
+use App\Filament\Admin\Resources\AcademicYears\Resources\StudentClasses\Resources\StudentSections\RelationManagers\StudentsRelationManager;
 use App\Filament\Admin\Resources\AcademicYears\Resources\StudentClasses\Resources\StudentSections\Schemas\StudentSectionForm;
 use App\Filament\Admin\Resources\AcademicYears\Resources\StudentClasses\Resources\StudentSections\Schemas\StudentSectionInfolist;
 use App\Filament\Admin\Resources\AcademicYears\Resources\StudentClasses\Resources\StudentSections\Tables\StudentSectionsTable;
@@ -44,7 +45,7 @@ class StudentSectionResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            StudentsRelationManager::class,
         ];
     }
 
