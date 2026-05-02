@@ -23,7 +23,7 @@ class BloodGroupResource extends Resource
 {
     protected static ?string $model = BloodGroup::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::Tag;
 
     protected static string | UnitEnum | null $navigationGroup = "School Management System";
 

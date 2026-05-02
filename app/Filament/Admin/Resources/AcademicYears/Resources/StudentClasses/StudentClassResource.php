@@ -28,6 +28,8 @@ class StudentClassResource extends Resource
 
     protected static ?string $parentResource = AcademicYearResource::class;
 
+    protected static ?string $modelLabel = 'Class';
+
     public static function form(Schema $schema): Schema
     {
         return StudentClassForm::configure($schema);

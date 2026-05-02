@@ -27,6 +27,8 @@ class StudentSectionResource extends Resource
 
     protected static ?string $parentResource = StudentClassResource::class;
 
+    protected static ?string $modelLabel = 'Section';
+
     public static function form(Schema $schema): Schema
     {
         return StudentSectionForm::configure($schema);
