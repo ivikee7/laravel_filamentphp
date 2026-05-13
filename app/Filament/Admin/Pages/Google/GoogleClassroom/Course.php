@@ -320,9 +320,8 @@ class Course extends Page implements HasTable
 
             $teacherResponse = $classroom->courses_teachers->listCoursesTeachers($this->courseId, ['pageSize' => 500]);
             foreach ($teacherResponse->getTeachers() ?? [] as $teacher) {
-                $googleId = (string) $teacher->getUserId();
                 $email = $this->resolveRosterEmail(
-                    userId: $googleId,
+                    userId: (string) $teacher->getUserId(),
                     emailFromProfile: $teacher->getProfile()?->getEmailAddress(),
                 );
 
@@ -331,14 +330,13 @@ class Course extends Page implements HasTable
                 }
 
                 $appUser = \App\Models\User::where('email', $email)->first();
-                GSuiteUser::updateOrCreate(['email' => $email], ['user_id' => $appUser?->id, 'google_id' => $googleId]);
+                GSuiteUser::updateOrCreate(['email' => $email], ['user_id' => $appUser?->id]);
             }
 
             $studentResponse = $classroom->courses_students->listCoursesStudents($this->courseId, ['pageSize' => 500]);
             foreach ($studentResponse->getStudents() ?? [] as $student) {
-                $googleId = (string) $student->getUserId();
                 $email = $this->resolveRosterEmail(
-                    userId: $googleId,
+                    userId: (string) $student->getUserId(),
                     emailFromProfile: $student->getProfile()?->getEmailAddress(),
                 );
 
@@ -347,7 +345,7 @@ class Course extends Page implements HasTable
                 }
 
                 $appUser = \App\Models\User::where('email', $email)->first();
-                GSuiteUser::updateOrCreate(['email' => $email], ['user_id' => $appUser?->id, 'google_id' => $googleId]);
+                GSuiteUser::updateOrCreate(['email' => $email], ['user_id' => $appUser?->id]);
             }
 
             Notification::make()->title('Roster synced')->success()->send();
@@ -620,14 +618,12 @@ class Course extends Page implements HasTable
             return $this->resolvedEmailsByUserId[$userId];
         }
 
-        $email = GSuiteUser::query()
-            ->where('google_id', $userId)
-            ->value('email');
+        $email = null;
 
-        if (blank($email)) {
+        if (str($userId)->contains('@')) {
             $email = GSuiteUser::query()
                 ->where('email', $userId)
-                ->value('email');
+                ->value('email') ?? $userId;
         }
 
         if (blank($email)) {

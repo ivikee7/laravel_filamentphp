@@ -19,6 +19,7 @@ class GSuiteUser extends Model
         'user_id',
         'email',
         'password',
+        'google_id',
     ];
 
 

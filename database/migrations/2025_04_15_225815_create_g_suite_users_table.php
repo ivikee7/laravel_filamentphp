@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('email', 50)->nullable();
             $table->string('password', 20)->nullable();
             //
-
             $table->string('google_id')->nullable()->index();
             $table->json('google_access_token')->nullable();
             $table->timestamp('google_token_expires_at')->nullable();

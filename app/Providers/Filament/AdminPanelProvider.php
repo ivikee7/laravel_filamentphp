@@ -26,11 +26,10 @@ class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
-        return $panel
+        $panel = $panel
             ->default()
             ->id('admin')
             ->path('/admin')
-            ->viteTheme('resources/css/filament/admin/theme.css')
             ->login()
             ->colors([
                 'primary' => Color::Amber,
@@ -83,5 +82,11 @@ class AdminPanelProvider extends PanelProvider
             ->passwordReset() // Password Reset
             ->profile() // Profile
             ->readOnlyRelationManagersOnResourceViewPagesByDefault(false);
+
+        if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot'))) {
+            $panel->viteTheme('resources/css/filament/admin/theme.css');
+        }
+
+        return $panel;
     }
 }
