@@ -40,7 +40,7 @@ return [
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
         'redirect' => env('GOOGLE_REDIRECT_URI'),
         // Path to service account JSON for server-to-server (domain wide delegation)
-        'service_account_json' => env('GOOGLE_SERVICE_ACCOUNT_JSON'),
+        'service_account_json' => env('GOOGLE_SERVICE_ACCOUNT_JSON', 'storage/app/gsuite/service-account.json'),
         'project_id' => env('GOOGLE_PROJECT_ID'),
         // optional default impersonation email (admin) used by service account
         'admin_impersonate' => env('GOOGLE_ADMIN_IMPERSONATE_EMAIL'),

@@ -12,6 +12,11 @@ class GoogleService
     protected GoogleClient $client;
 
     /**
+     * @var array<int, string>
+     */
+    protected array $lastResolvedPathCandidates = [];
+
+    /**
      * Create a GoogleService instance.
      *
      * @param string|null $subject Email to impersonate (domain-wide delegation)
@@ -19,10 +24,15 @@ class GoogleService
      */
     public function __construct(string $subject = null, array $scopes = [])
     {
-        $jsonPath = config('services.google.service_account_json') ?? null;
+        $jsonPath = $this->resolveServiceAccountJsonPath(config('services.google.service_account_json'));
 
-        if (! $jsonPath || ! file_exists($jsonPath)) {
-            throw new \RuntimeException("Google service account JSON not found at {$jsonPath}");
+        if (! $jsonPath) {
+            $configured = (string) (config('services.google.service_account_json') ?? '');
+
+            throw new \RuntimeException(
+                'Google service account JSON not found. Configured GOOGLE_SERVICE_ACCOUNT_JSON="' . $configured . '". '
+                . 'Checked paths: ' . implode(' | ', $this->lastResolvedPathCandidates)
+            );
         }
 
         $this->client = new GoogleClient();
@@ -45,6 +55,43 @@ class GoogleService
         }
 
         $this->client->setApplicationName(config('app.name') . ' - Google API');
+    }
+
+    protected function resolveServiceAccountJsonPath(?string $configuredPath): ?string
+    {
+        $configuredPath = is_string($configuredPath) ? trim($configuredPath) : null;
+
+        if (blank($configuredPath)) {
+            $this->lastResolvedPathCandidates = [];
+
+            return null;
+        }
+
+        $normalized = str_replace('\\', '/', $configuredPath);
+
+        $candidates = array_values(array_unique(array_filter([
+            $normalized,
+            '/' . ltrim($normalized, '/'),
+            base_path($normalized),
+            public_path($normalized),
+            storage_path($normalized),
+            str_starts_with($normalized, 'storage/') ? base_path($normalized) : null,
+            str_starts_with($normalized, 'app/') ? storage_path(substr($normalized, 4)) : null,
+            str_starts_with($normalized, 'domains/') ? '/' . ltrim($normalized, '/') : null,
+            str_starts_with($normalized, '/domains/') ? '/home/' . ltrim($normalized, '/') : null,
+            str_starts_with($normalized, 'public/') ? base_path($normalized) : null,
+            str_starts_with($normalized, 'public/') ? public_path(substr($normalized, 7)) : null,
+        ])));
+
+        $this->lastResolvedPathCandidates = $candidates;
+
+        foreach ($candidates as $candidate) {
+            if (is_file($candidate) && is_readable($candidate)) {
+                return $candidate;
+            }
+        }
+
+        return null;
     }
 
     public function client(): GoogleClient
