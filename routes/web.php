@@ -41,6 +41,13 @@ Route::get('/auth/google/callback', function () {
     return redirect('/admin');
 });
 
+// Per-user Google OAuth connect (for Drive/Classroom access)
+Route::middleware(['auth'])->group(function () {
+    Route::get('/google/connect', [\App\Http\Controllers\GoogleOAuthController::class, 'redirectToGoogle'])->name('google.connect');
+    Route::get('/google/connect/callback', [\App\Http\Controllers\GoogleOAuthController::class, 'handleGoogleCallback'])->name('google.connect.callback');
+    Route::post('/google/disconnect', [\App\Http\Controllers\GoogleOAuthController::class, 'disconnect'])->name('google.disconnect');
+});
+
 Route::get('/admin/invoices/{invoice}/print', [\App\Http\Controllers\Admin\StoreManagementSystem\Invoice\InvoicePrintController::class, 'print'])->name('invoice.print');
 
 Route::get('/print-id-card/{user}', function (\App\Models\User $user) {

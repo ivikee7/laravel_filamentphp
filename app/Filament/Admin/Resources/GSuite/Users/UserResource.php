@@ -39,7 +39,7 @@ class UserResource extends Resource
     protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $modelLabel = 'G-Suite Users';
-    protected static string | \UnitEnum | null $navigationGroup = 'G-Suite';
+    protected static string | \UnitEnum | null $navigationGroup = 'Google';
 
     public static function form(Schema $schema): Schema
     {

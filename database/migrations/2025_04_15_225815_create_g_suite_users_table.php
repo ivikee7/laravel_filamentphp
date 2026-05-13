@@ -18,6 +18,13 @@ return new class extends Migration
             $table->string('email', 50)->nullable();
             $table->string('password', 20)->nullable();
             //
+
+            $table->string('google_id')->nullable()->index();
+            $table->json('google_access_token')->nullable();
+            $table->timestamp('google_token_expires_at')->nullable();
+            $table->text('google_token_scopes')->nullable();
+            $table->timestamp('google_last_synced_at')->nullable();
+            //
             $table->foreignId('created_by')->nullable();
             $table->foreignId('updated_by')->nullable();
             $table->foreignId('deleted_by')->nullable();
