@@ -23,12 +23,15 @@ use Filament\Tables\Table;
 
 class Courses extends Page implements HasTable
 {
-    use HasTabs;
+    use HasTabs {
+        updatedActiveTab as protected updatedActiveTabFromHasTabs;
+    }
     use InteractsWithTable;
 
     protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-academic-cap';
     protected static string | \UnitEnum | null $navigationGroup = 'Google';
-    protected static ?string $navigationLabel = 'Courses';
+    protected static ?string $navigationLabel = 'Google Classroom';
+
 
     protected static ?string $slug = 'google/classroom/courses';
 
@@ -73,6 +76,12 @@ class Courses extends Page implements HasTable
             'all' => Tab::make('All')
                 ->badge(fn (): int => count($this->courses)),
         ];
+    }
+
+    public function updatedActiveTab(): void
+    {
+        $this->updatedActiveTabFromHasTabs();
+        $this->resetTable();
     }
 
     protected function getHeaderActions(): array
@@ -194,9 +203,9 @@ class Courses extends Page implements HasTable
                 ->all())
             ->columns([
                 TextColumn::make('name')->label('Course')->searchable(),
-                TextColumn::make('owner')->label('Owner')->searchable()->placeholder('-'),
                 TextColumn::make('section')->placeholder('-'),
-                TextColumn::make('courseState')->label('State')->badge()->toggleable(),
+                TextColumn::make('owner')->label('Owner')->searchable()->placeholder('-'),
+                TextColumn::make('courseState')->label('State')->badge()->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('ownerId')->label('Owner ID')->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('id')->label('Course ID')->toggleable(isToggledHiddenByDefault: true),
             ])

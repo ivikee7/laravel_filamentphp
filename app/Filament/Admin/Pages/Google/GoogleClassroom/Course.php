@@ -309,7 +309,7 @@ class Course extends Page implements HasTable
 
     public function updatedRosterTab(): void
     {
-        $this->flushCachedTableRecords();
+        $this->resetTable();
     }
 
     public function syncRosterToLocal(): void
