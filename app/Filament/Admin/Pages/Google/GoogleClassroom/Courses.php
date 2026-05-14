@@ -38,7 +38,7 @@ class Courses extends Page implements HasTable
     public array $courses = [];
 
     /**
-     * @var array<string, string>
+     * @var array<string, array{name: string|null, email: string|null, search: string}>
      */
     protected array $resolvedOwnersByUserId = [];
 
@@ -192,6 +192,8 @@ class Courses extends Page implements HasTable
                     'id' => (string) ($course['id'] ?? ''),
                     'name' => (string) ($course['name'] ?? 'Untitled course'),
                     'owner' => (string) ($course['owner'] ?? '-'),
+                    'ownerName' => (string) ($course['ownerName'] ?? ($course['owner'] ?? '-')),
+                    'ownerEmail' => (string) ($course['ownerEmail'] ?? ''),
                     'ownerId' => (string) ($course['ownerId'] ?? ''),
                     'section' => (string) ($course['section'] ?? ''),
                     'descriptionHeading' => (string) ($course['descriptionHeading'] ?? ''),
@@ -204,7 +206,17 @@ class Courses extends Page implements HasTable
             ->columns([
                 TextColumn::make('name')->label('Course')->searchable(),
                 TextColumn::make('section')->placeholder('-'),
-                TextColumn::make('owner')->label('Owner')->searchable()->placeholder('-'),
+                TextColumn::make('ownerName')
+                    ->label('Owner')
+                    ->description(fn (array $record): string => $record['ownerEmail'] ?? '')
+                    ->searchable(fn (array $records, string $search): array => array_filter(
+                        $records,
+                        fn (array $record): bool => str_contains(
+                            strtolower((string) ($record['owner'] ?? '')),
+                            strtolower($search)
+                        )
+                    ))
+                    ->placeholder('-'),
                 TextColumn::make('courseState')->label('State')->badge()->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('ownerId')->label('Owner ID')->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('id')->label('Course ID')->toggleable(isToggledHiddenByDefault: true),
@@ -323,11 +335,14 @@ class Courses extends Page implements HasTable
 
                 foreach ($res->getCourses() ?? [] as $course) {
                     $ownerId = (string) ($course->getOwnerId() ?? '');
+                    $ownerData = $this->resolveCourseOwner($ownerId);
 
                     $courses[] = [
                         'id' => $course->getId(),
                         'name' => $course->getName(),
-                        'owner' => $this->resolveCourseOwner($ownerId),
+                        'owner' => $ownerData['search'],
+                        'ownerName' => $ownerData['name'] ?? $ownerData['search'],
+                        'ownerEmail' => $ownerData['email'] ?? '',
                         'ownerId' => $ownerId,
                         'section' => $course->getSection(),
                         'descriptionHeading' => $course->getDescriptionHeading(),
@@ -448,10 +463,13 @@ class Courses extends Page implements HasTable
         }
     }
 
-    protected function resolveCourseOwner(string $ownerId): string
+    /**
+     * @return array{name: string|null, email: string|null, search: string}
+     */
+    protected function resolveCourseOwner(string $ownerId): array
     {
         if (blank($ownerId)) {
-            return '-';
+            return ['name' => null, 'email' => null, 'search' => '-'];
         }
 
         if (array_key_exists($ownerId, $this->resolvedOwnersByUserId)) {
@@ -459,20 +477,44 @@ class Courses extends Page implements HasTable
         }
 
         if (str($ownerId)->contains('@')) {
-            $resolved = GSuiteUser::query()->where('email', $ownerId)->value('email') ?? $ownerId;
+            $localUserName = GSuiteUser::query()
+                ->where('email', $ownerId)
+                ->with('user:id,name')
+                ->first()
+                ?->user
+                ?->name;
+
+            $name = is_string($localUserName) ? trim($localUserName) : null;
+            $email = trim($ownerId);
+            $resolved = [
+                'name' => $name,
+                'email' => $email,
+                'search' => $this->formatOwnerDisplay(name: $name, email: $email, fallback: $ownerId),
+            ];
+
             $this->resolvedOwnersByUserId[$ownerId] = $resolved;
 
             return $resolved;
         }
 
-        $email = $this->resolveOwnerEmailFromDirectory($ownerId);
-        $resolved = filled($email) ? (string) $email : $ownerId;
+        $ownerProfile = $this->resolveOwnerProfileFromDirectory($ownerId);
+        $name = isset($ownerProfile['name']) ? trim((string) $ownerProfile['name']) : null;
+        $email = isset($ownerProfile['email']) ? trim((string) $ownerProfile['email']) : null;
+        $resolved = [
+            'name' => filled($name) ? $name : null,
+            'email' => filled($email) ? $email : null,
+            'search' => $this->formatOwnerDisplay(name: $name, email: $email, fallback: $ownerId),
+        ];
+
         $this->resolvedOwnersByUserId[$ownerId] = $resolved;
 
         return $resolved;
     }
 
-    protected function resolveOwnerEmailFromDirectory(string $ownerId): ?string
+    /**
+     * @return array{name: string|null, email: string|null}|null
+     */
+    protected function resolveOwnerProfileFromDirectory(string $ownerId): ?array
     {
         try {
             $directory = $this->directoryService();
@@ -482,13 +524,36 @@ class Courses extends Page implements HasTable
             }
 
             $user = $directory->users->get($ownerId, [
-                'projection' => 'BASIC',
+                'projection' => 'FULL',
             ]);
 
-            return $user->getPrimaryEmail();
+            return [
+                'name' => $user->getName()?->getFullName(),
+                'email' => $user->getPrimaryEmail(),
+            ];
         } catch (\Throwable) {
             return null;
         }
+    }
+
+    protected function formatOwnerDisplay(?string $name, ?string $email, string $fallback): string
+    {
+        $name = is_string($name) ? trim($name) : null;
+        $email = is_string($email) ? trim($email) : null;
+
+        if (filled($name) && filled($email)) {
+            return $name . ' (' . $email . ')';
+        }
+
+        if (filled($name)) {
+            return $name;
+        }
+
+        if (filled($email)) {
+            return $email;
+        }
+
+        return $fallback;
     }
 
     protected function directoryService(): ?\Google\Service\Directory
