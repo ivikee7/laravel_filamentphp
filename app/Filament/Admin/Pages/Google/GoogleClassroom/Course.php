@@ -247,6 +247,11 @@ class Course extends Page implements HasTable
                 'id' => $course->getId(),
                 'name' => $course->getName(),
                 'section' => $course->getSection(),
+                'ownerId' => (string) ($course->getOwnerId() ?? ''),
+                'ownerEmail' => $this->resolveRosterEmail(
+                    userId: (string) ($course->getOwnerId() ?? ''),
+                    emailFromProfile: null,
+                ),
             ];
         } catch (\Exception $e) {
             Notification::make()->title('Failed to load course')->danger()->body($e->getMessage())->send();
@@ -522,17 +527,19 @@ class Course extends Page implements HasTable
         $classroom = $service->classroomService();
 
         foreach ($identifiers as $identifier) {
-            try {
-                if ($role === 'teachers') {
-                    $classroom->courses_teachers->delete($this->courseId, $identifier);
-                } else {
-                    $classroom->courses_students->delete($this->courseId, $identifier);
-                }
+            $error = $this->removeCoursePerson(
+                classroom: $classroom,
+                role: $role,
+                identifier: $identifier,
+            );
 
+            if ($error === null) {
                 $successCount++;
-            } catch (\Exception $e) {
-                $failed[] = $identifier . ': ' . $e->getMessage();
+
+                continue;
             }
+
+            $failed[] = $identifier . ': ' . $error;
         }
 
         if ($successCount > 0) {
@@ -579,6 +586,11 @@ class Course extends Page implements HasTable
     {
         $label = $role === 'teachers' ? 'teacher(s)' : 'student(s)';
         $failedCount = count($failed);
+        $actionBase = match ($action) {
+            'added' => 'add',
+            'removed' => 'remove',
+            default => $action,
+        };
 
         if (($successCount > 0) && ($failedCount === 0)) {
             Notification::make()
@@ -591,7 +603,7 @@ class Course extends Page implements HasTable
 
         if (($successCount === 0) && ($failedCount > 0)) {
             Notification::make()
-                ->title("Failed to {$action} {$label}")
+                ->title("Failed to {$actionBase} {$label}")
                 ->danger()
                 ->body(implode("\n", array_slice($failed, 0, 5)))
                 ->send();
@@ -604,6 +616,160 @@ class Course extends Page implements HasTable
             ->warning()
             ->body(implode("\n", array_slice($failed, 0, 5)))
             ->send();
+    }
+
+    protected function removeCoursePerson(\Google\Service\Classroom $classroom, string $role, string $identifier): ?string
+    {
+        if (blank($identifier) || blank($this->courseId)) {
+            return 'Invalid identifier.';
+        }
+
+        try {
+            $this->deleteCoursePersonByIdentifier($classroom, $role, $identifier);
+
+            return null;
+        } catch (\Throwable $error) {
+            $retryIdentifier = $this->resolveRetryIdentifier($role, $identifier);
+
+            if (filled($retryIdentifier) && ($retryIdentifier !== $identifier)) {
+                try {
+                    $this->deleteCoursePersonByIdentifier($classroom, $role, $retryIdentifier);
+
+                    return null;
+                } catch (\Throwable $retryError) {
+                    $error = $retryError;
+                }
+            }
+
+            if ($this->isNotFoundError($error)) {
+                // Already removed or no longer enrolled.
+                return null;
+            }
+
+            if ($role === 'students' && $this->isUnenrollPermissionError($error)) {
+                if ($this->removeStudentWithPrivilegedSubjects($identifier)) {
+                    return null;
+                }
+
+                return 'Permission denied to unenroll this student. Use a delegated account that is a course teacher/owner or Classroom admin.';
+            }
+
+            if ($this->isPermissionDeniedError($error)) {
+                return 'Permission denied by Google Classroom API for this operation.';
+            }
+
+            return $this->formatGoogleApiError($error);
+        }
+    }
+
+    protected function deleteCoursePersonByIdentifier(\Google\Service\Classroom $classroom, string $role, string $identifier): void
+    {
+        if ($role === 'teachers') {
+            $classroom->courses_teachers->delete($this->courseId, $identifier);
+
+            return;
+        }
+
+        $classroom->courses_students->delete($this->courseId, $identifier);
+    }
+
+    protected function resolveRetryIdentifier(string $role, string $identifier): ?string
+    {
+        if (str($identifier)->contains('@')) {
+            return null;
+        }
+
+        $source = $role === 'teachers' ? $this->teachers : $this->students;
+
+        $person = collect($source)
+            ->first(fn (array $item): bool => ((string) ($item['userId'] ?? '')) === $identifier);
+
+        if (! is_array($person)) {
+            return null;
+        }
+
+        $email = is_string($person['email'] ?? null) ? trim((string) $person['email']) : null;
+
+        return filled($email) && str($email)->contains('@') ? $email : null;
+    }
+
+    protected function isNotFoundError(\Throwable $error): bool
+    {
+        if ((int) $error->getCode() === 404) {
+            return true;
+        }
+
+        $message = strtolower($error->getMessage());
+
+        return str_contains($message, 'not found') || str_contains($message, 'notfound');
+    }
+
+    protected function isPermissionDeniedError(\Throwable $error): bool
+    {
+        if ((int) $error->getCode() === 403) {
+            return true;
+        }
+
+        $message = strtolower($error->getMessage());
+
+        return str_contains($message, 'permission_denied') || str_contains($message, 'forbidden');
+    }
+
+    protected function isUnenrollPermissionError(\Throwable $error): bool
+    {
+        $message = strtolower($error->getMessage());
+
+        return str_contains($message, 'usercannotunenrollfromcourse')
+            || str_contains($message, 'cannot unenroll from the course');
+    }
+
+    protected function formatGoogleApiError(\Throwable $error): string
+    {
+        $message = trim($error->getMessage());
+        $decoded = json_decode($message, true);
+
+        if (is_array($decoded)) {
+            $apiMessage = (string) data_get($decoded, 'error.message', 'Unknown Google API error');
+            $status = (string) data_get($decoded, 'error.status', '');
+
+            return filled($status) ? ($apiMessage . ' [' . $status . ']') : $apiMessage;
+        }
+
+        return filled($message) ? $message : 'Unknown error';
+    }
+
+    protected function removeStudentWithPrivilegedSubjects(string $identifier): bool
+    {
+        if (blank($this->courseId)) {
+            return false;
+        }
+
+        $subjects = collect([
+            is_string($this->course['ownerEmail'] ?? null) ? trim((string) $this->course['ownerEmail']) : null,
+            ...collect($this->teachers)
+                ->map(fn (array $teacher): ?string => is_string($teacher['email'] ?? null) ? trim((string) $teacher['email']) : null)
+                ->all(),
+        ])
+            ->filter(fn (?string $email): bool => filled($email) && str($email)->contains('@'))
+            ->unique()
+            ->values();
+
+        foreach ($subjects as $subjectEmail) {
+            try {
+                $classroom = (new GoogleService((string) $subjectEmail))->classroomService();
+                $classroom->courses_students->delete($this->courseId, $identifier);
+
+                return true;
+            } catch (\Throwable $error) {
+                if ($this->isNotFoundError($error)) {
+                    return true;
+                }
+
+                continue;
+            }
+        }
+
+        return false;
     }
 
     protected function resolveRosterEmail(string $userId, ?string $emailFromProfile): string
