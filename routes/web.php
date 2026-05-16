@@ -47,45 +47,6 @@ Route::get('/qrcode/{id}', function ($id) {
         ->header('Content-Disposition', 'attachment; filename="' . $safeFilename . '"');
 })->name('qrcode.generate');
 
-Route::get('/qrcode-preview/{id}', function ($id) {
-    // 1. Fetch the database record with relationships
-    $data_record = \App\Models\User::role('Student')
-        ->where('id', $id)
-        ->where('is_active', true)
-        ->select('id', 'name', 'father_name')
-        ->with([
-            'student.classAssignment.class:id,name',
-            'student.classAssignment.section:id,name'
-        ])
-        ->first();
-
-    // 2. Format the string output or apply fallback
-    if ($data_record) {
-        $className = data_get($data_record, 'student.classAssignment.class.name', 'N/A');
-        $sectionName = data_get($data_record, 'student.classAssignment.section.name', 'N/A');
-
-        $data = "Name: " . $data_record->name . "\n" .
-            "Father Name: " . $data_record->father_name . "\n" .
-            "Class: " . $className . "\n" .
-            "Section: " . $sectionName;
-
-        $filename = 'student_' . $id . '.svg';
-    } else {
-        $data = 'Invalid QR Code';
-        $filename = 'invalid_qrcode.svg';
-    }
-
-    // 3. Generate SVG strings natively (Requires zero server extensions)
-    $qrCodeSvg = QrCode::format('svg')
-        ->size(200)
-        ->generate($data);
-
-    // 4. Send headers directly to force user download
-    return response($qrCodeSvg)
-        ->header('Content-Type', 'image/svg+xml')
-        ->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
-})->name('qrcode.generate');
-
 
 Route::get('/auth/google', function () {
     return Socialite::driver('google')->redirect();
