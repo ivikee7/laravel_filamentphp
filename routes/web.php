@@ -10,16 +10,26 @@ Route::get('/login', \Filament\Auth\Pages\Login::class)->name('login');
 //QRCode
 Route::get('/qrcode/{id}', function ($id) {
 
-    $data = \App\Models\User::select('id', 'name', 'father_name')
+    $data_record = \App\Models\User::role('Student')
+        ->where('id', $id)
+        ->where('is_active', true)
+        ->select('id', 'name', 'father_name')
         ->with([
             'student.classAssignment.class:id,name',
             'student.classAssignment.section:id,name'
         ])
-        ->role('Student')
-        ->where('id', $id)
-        ->where('is_active', true)
         ->first();
-    if (!$data) {
+    if ($data_record) {
+        // Safely extract deeply nested relations using optional() or the data_get() helper
+        $className = data_get($data_record, 'student.classAssignment.class.name', 'N/A');
+        $sectionName = data_get($data_record, 'student.classAssignment.section.name', 'N/A');
+
+        // Concatenate each piece of data onto a new line
+        $data = "Name: " . $data_record->name . "\n" .
+            "Father Name: " . $data_record->father_name . "\n" .
+            "Class: " . $className . "\n" .
+            "Section: " . $sectionName;
+    } else {
         $data = 'Invalid QR Code';
     }
 
