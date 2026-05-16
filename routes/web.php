@@ -8,44 +8,6 @@ Route::redirect('/admin/login', '/login');
 Route::get('/login', \Filament\Auth\Pages\Login::class)->name('login');
 
 //QRCode
-//Route::get('/qrcode/{id}', function ($id) {
-//
-//    $data_record = \App\Models\User::role('Student')
-//        ->where('id', $id)
-//        ->where('is_active', true)
-//        ->select('id', 'name', 'father_name')
-//        ->with([
-//            'student.classAssignment.class:id,name',
-//            'student.classAssignment.section:id,name'
-//        ])
-//        ->first();
-//    if ($data_record) {
-//        // Safely extract deeply nested relations using optional() or the data_get() helper
-//        $className = data_get($data_record, 'student.classAssignment.class.name', 'N/A');
-//        $sectionName = data_get($data_record, 'student.classAssignment.section.name', 'N/A');
-//
-//        // Concatenate each piece of data onto a new line
-//        $data = "Name: " . $data_record->name . "\n" .
-//            "Father Name: " . $data_record->father_name . "\n" .
-//            "Class: " . $className . "\n" .
-//            "Section: " . $sectionName;
-//    } else {
-//        $data = 'Invalid QR Code';
-//    }
-//
-//    // Generate native SVG QR code (Requires NO extensions like Imagick or GD)
-//    $qrCodeSvg = QrCode::format('svg')
-//        ->size(200)
-//        ->generate($data);
-//
-//    // Sanitize the text input to form a safe file name
-//    $safeFilename = preg_replace('/[^A-Za-z0-9\-]/', '_', $data) . '.svg';
-//
-//    // Force browser download with accurate SVG headers
-//    return response($qrCodeSvg)
-//        ->header('Content-Type', 'image/svg+xml')
-//        ->header('Content-Disposition', 'attachment; filename="' . $safeFilename . '"');
-//})->name('qrcode.generate');
 Route::get('/qrcode/{id}', function ($id) {
 
     $data_record = \App\Models\User::role('Student')
