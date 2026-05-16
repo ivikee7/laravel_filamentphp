@@ -8,7 +8,7 @@ Route::redirect('/admin/login', '/login');
 Route::get('/login', \Filament\Auth\Pages\Login::class)->name('login');
 
 //QRCode
-Route::get('/qrcode//{id}', function ($id) {
+Route::get('/qrcode/{id}', function ($id) {
 
     $data = \App\Models\User::select('id', 'name', 'father_name')
         ->with([
