@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Laravel\Socialite\Facades\Socialite;
 
+<<<<<<< Updated upstream
 //Route::get('/', function () {
 //    return view('welcome');
 //});
@@ -10,6 +11,10 @@ use Laravel\Socialite\Facades\Socialite;
 Route::redirect('/', '/admin');
 Route::redirect('/admin/login', '/login');
 Route::get('/login', \Filament\Auth\Pages\Login::class)->name('login');
+=======
+//Route::redirect('/admin/login', '/login');
+//Route::get('/login', \Filament\Auth\Pages\Login::class)->name('login');
+>>>>>>> Stashed changes
 
 
 Route::get('/auth/google', function () {

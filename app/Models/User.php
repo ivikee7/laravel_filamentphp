@@ -88,9 +88,20 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return $this->where('is_active', true)->exists();
-        // Example: Allow users with the "admin" role
-        // return $this->hasRole(['Super Admin', 'Owner', 'Admin', 'Teacher']); // Replace 'admin' with your role
+        if (!$this->is_active) {
+            return false;
+        }
+
+        if ($this->isSuperAdmin()) {
+            return true;
+        }
+
+        if ($panel->getId() === 'student') {
+            return $this->hasRole('Student') || $this->student()->exists();
+        }
+
+        // Admin panel — staff only
+        return $this->hasRole(['Owner', 'Admin', 'Teacher', 'Staff']);
     }
 
     public function getFilamentAvatarUrl(): ?string

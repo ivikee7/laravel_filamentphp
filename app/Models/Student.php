@@ -140,4 +140,34 @@ class Student extends Model
     {
         return $this->belongsToMany(User::class, 'student_siblings', 'student_id', 'sibling_id');
     }
+
+    public function enrollments(): HasMany
+    {
+        return $this->hasMany(CourseEnrollment::class);
+    }
+
+    public function examSubmissions(): HasMany
+    {
+        return $this->hasMany(ExamSubmission::class);
+    }
+
+    public function examResults(): HasMany
+    {
+        return $this->hasMany(ExamResult::class);
+    }
+
+    public function studentFeeProfile(): HasOne
+    {
+        return $this->hasOne(StudentFeeProfile::class);
+    }
+
+    public function feeInvoices(): HasMany
+    {
+        return $this->hasMany(FeeInvoice::class);
+    }
+
+    public function feeTransactions(): HasMany
+    {
+        return $this->hasMany(FeeTransaction::class);
+    }
 }

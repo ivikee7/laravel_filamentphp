@@ -49,7 +49,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('library_books');
         Schema::dropIfExists('library_book_author');
+        Schema::dropIfExists('library_books');
     }
 };

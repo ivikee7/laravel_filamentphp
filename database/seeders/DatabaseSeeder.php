@@ -27,6 +27,9 @@ class DatabaseSeeder extends Seeder
 //            'email' => 'test@example.com',
 //        ]);
 
+        // Seed website data (pages, menus, settings, etc.)
+        $this->call(WebsiteSeeder::class);
+
         Role::create(['name' => 'Super Admin']);
         Role::create(['name' => 'Owner']);
         Role::create(['name' => 'Principal']);
@@ -123,6 +126,8 @@ class DatabaseSeeder extends Seeder
             // 'exit_reason',
             'created_by' => 1,
         ]);
+
+        $this->call(PaymentGatewaySeeder::class);
 
     }
 }

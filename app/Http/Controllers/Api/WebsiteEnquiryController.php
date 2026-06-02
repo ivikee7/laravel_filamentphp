@@ -32,7 +32,37 @@ class WebsiteEnquiryController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
+<<<<<<< Updated upstream
         WebsiteEnquiry::create($request->all());
+=======
+        // Check if an exact match already exists
+        $exists = WebsiteEnquiry::where('name', $request->name)
+            ->where('contact_number', $request->contact_number)
+            ->where('email', $request->email)
+            ->where('message', $request->message)
+            ->exists();
+
+        if ($exists) {
+            return response()->json([
+                'errors' => ['duplicate' => ['This exact enquiry has already been submitted.']]
+            ], 422);
+        }
+
+        $data = $request->all();
+
+        // Get the calling source from headers.
+        $source = $request->headers->get('origin')
+            ?? $request->headers->get('referer')
+            ?? 'Direct/Unknown';
+
+        // Extract just the host (for compact storage in notes field).
+        $domain = parse_url($source, PHP_URL_HOST) ?? $source;
+
+        $data['notes'] = substr((string) $domain, 0, 150);
+
+        WebsiteEnquiry::create($data);
+
+>>>>>>> Stashed changes
         return response()->json(['success' => true], 201);
     }
 }

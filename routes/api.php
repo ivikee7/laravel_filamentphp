@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\WebsiteEnquiryController;
+use App\Http\Controllers\Api\Payments\GatewayWebhookController;
 use App\Http\Controllers\WhatsApp\WebhookController;
 use Illuminate\Support\Facades\Route;
 
@@ -13,6 +14,8 @@ Route::post('/hikvision/attendance', [\App\Http\Controllers\Api\Hikvision\Biomet
 Route::post('/whatsapp/webhook', [WebhookController::class, 'handle']);
 // Route::get('/whatsapp/webhook', [WebhookController::class, 'verify']);
 Route::match(['GET', 'POST'], '/whatsapp/webhook', [WebhookController::class, 'verify']);
+
+Route::post('/payments/webhook/{driver}', GatewayWebhookController::class);
 
 
 
