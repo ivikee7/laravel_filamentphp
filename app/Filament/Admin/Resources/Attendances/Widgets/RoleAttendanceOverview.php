@@ -40,6 +40,7 @@ class RoleAttendanceOverview extends StatsOverviewWidget
             ->join('users', 'model_has_roles.model_id', '=', 'users.id')
             ->where('model_has_roles.model_type', User::class)
             ->whereNotIn('roles.name', ['Super Admin', 'Principal', 'Director', 'Owner'])
+            ->where('users.is_active', true)
             ->leftJoin('attendances', function ($join) use ($targetDate) {
                 $join->on('users.id', '=', 'attendances.user_id')
                     ->whereDate('attendances.created_at', $targetDate);
