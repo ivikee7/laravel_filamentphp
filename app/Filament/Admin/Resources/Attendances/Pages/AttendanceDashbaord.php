@@ -18,12 +18,15 @@ use Filament\Schemas\Schema;
 
 class AttendanceDashbaord extends Page
 {
-    use HasFiltersAction; // <-- Activates header layout injection
+    use HasFiltersAction;
 
     protected static string $resource = AttendanceResource::class;
 
     protected string $view = 'filament.admin.resources.attendances.pages.attendance-dashbaord';
 
+
+    // 1. MANDATORY: Add this public property to hold the active header filters state
+    public array $status = [];
 
     /**
      * Move the filter logic strictly into the Page Header actions zone
@@ -36,6 +39,8 @@ class AttendanceDashbaord extends Page
                     DatePicker::make('filter_date')
                         ->label('Attendance Date')
                         ->default(Carbon::today())
+                        ->native(false)
+                        ->live() // 2. MANDATORY: Forces an instantaneous live refresh on value modification
                         ->required(),
                 ]),
         ];

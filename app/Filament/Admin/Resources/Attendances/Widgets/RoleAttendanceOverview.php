@@ -14,7 +14,9 @@ class RoleAttendanceOverview extends StatsOverviewWidget
 {
     protected function getStats(): array
     {
-        $selectedFilterDate = $this->pageFilters['filter_date'] ?? null;
+        // Check for dashboard filters, fallback to custom status data array, or default to null
+        $selectedFilterDate = $this->pageFilters['filter_date'] ?? ($this->status['filter_date'] ?? null);
+
         $targetDate = $selectedFilterDate ? Carbon::parse($selectedFilterDate)->toDateString() : Carbon::today()->toDateString();
 
         // High-performance query for active users, excluding Super Admin
@@ -42,7 +44,6 @@ class RoleAttendanceOverview extends StatsOverviewWidget
             $roleLabel = ucfirst($row->role_name);
             $absentCount = $row->total_users - $row->present_users;
 
-            // One clean card per role layout
             $stats[] = Stat::make("{$roleLabel}", "{$row->present_users} Present")
                 ->description("{$absentCount} Absent (Total Active: {$row->total_users})")
                 ->descriptionIcon('heroicon-m-calendar-days')
