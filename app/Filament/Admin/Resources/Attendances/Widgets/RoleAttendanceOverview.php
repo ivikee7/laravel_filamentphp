@@ -59,7 +59,7 @@ class RoleAttendanceOverview extends StatsOverviewWidget
             $absentCount = $row->total_users - $row->present_users;
 
             $stats[] = Stat::make("{$roleLabel}", "{$row->present_users} Present")
-                ->description("{$absentCount} Absent (Total Active: {$row->total_users})")
+                ->description("{$absentCount} Absent (Total : {$row->total_users})")
                 ->descriptionIcon('heroicon-m-calendar-days')
                 ->color($row->present_users === $row->total_users ? 'success' : 'warning');
         }
