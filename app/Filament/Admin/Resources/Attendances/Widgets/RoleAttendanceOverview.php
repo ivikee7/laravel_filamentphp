@@ -42,7 +42,8 @@ class RoleAttendanceOverview extends StatsOverviewWidget
             ->whereNotIn('roles.name', ['Super Admin', 'Principal', 'Director', 'Owner'])
             ->leftJoin('attendances', function ($join) use ($targetDate) {
                 $join->on('users.id', '=', 'attendances.user_id')
-                    ->where('is_active', true)
+                    ->where('users.is_active', true)
+                    ->where('users.created_at', '<=', $targetDate)
                     ->whereDate('attendances.created_at', $targetDate);
             })
             ->select(
