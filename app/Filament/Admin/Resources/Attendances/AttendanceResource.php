@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources\Attendances;
 
+use App\Filament\Admin\Resources\Attendances\Pages\AttendanceDashbaord;
 use App\Filament\Admin\Resources\Attendances\Pages\AttendanceRTSP;
 use App\Filament\Admin\Resources\Attendances\Pages\PrintMonthlyReport;
 use Filament\Schemas\Schema;
@@ -123,6 +124,7 @@ class AttendanceResource extends Resource
             'create' => CreateAttendance::route('/create'),
             'monthly-report' => MonthlyReport::route('monthly-report'),
             'print-monthly-report' => PrintMonthlyReport::route('print-monthly-report'),
+            'attendance-dashboard' => AttendanceDashbaord::route('attendance-dashboard'),
             'view' => ViewAttendance::route('/{record}'),
             'edit' => EditAttendance::route('/{record}/edit'),
         ];

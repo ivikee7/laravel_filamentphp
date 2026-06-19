@@ -16,17 +16,13 @@ class ListAttendances extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
+            Action::make('dashboard')
+                ->url(fn() => AttendanceResource::getUrl('attendance-dashboard')),
             CreateAction::make(),
-            ActionGroup::make([
-                Action::make('monthlyReport')
-                    ->label('Monthly Report')
-                    ->icon('heroicon-o-chart-bar')
-                    ->url(fn() => AttendanceResource::getUrl('monthly-report')),
-            ])
-                ->label('Attendance Reports') // ✅ This will show if dropdown is enabled
+            Action::make('monthlyReport')
+                ->label('Monthly Report')
                 ->icon('heroicon-o-chart-bar')
-                ->dropdown(), // ✅ This turns it into a labeled dropdown
-
+                ->url(fn() => AttendanceResource::getUrl('monthly-report')),
         ];
     }
 }
