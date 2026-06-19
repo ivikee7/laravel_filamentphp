@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Resources\Attendances\Pages;
 use App\Filament\Admin\Resources\Attendances\AttendanceResource;
 use App\Filament\Admin\Resources\Attendances\Widgets\RoleAttendanceOverview;
 use Carbon\Carbon;
+use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -18,31 +19,42 @@ use Filament\Schemas\Schema;
 
 class AttendanceDashbaord extends Page
 {
-    use HasFiltersAction;
-
     protected static string $resource = AttendanceResource::class;
 
     protected string $view = 'filament.admin.resources.attendances.pages.attendance-dashbaord';
 
+    // This automatically captures the selection from the page's query string
+    #[Url(keep: true)]
+    public ?string $filter_date = null;
 
-    // 1. MANDATORY: Add this public property to hold the active header filters state
-    public array $status = [];
+    public function mount(): void
+    {
+        if (!$this->filter_date) {
+            $this->filter_date = Carbon::today()->toDateString();
+        }
+    }
 
     /**
-     * Move the filter logic strictly into the Page Header actions zone
+     * Display a beautiful action drop-button in your page header container
      */
     protected function getHeaderActions(): array
     {
         return [
-            FilterAction::make()
-                ->schema([
-                    DatePicker::make('filter_date')
-                        ->label('Attendance Date')
-                        ->default(Carbon::today())
+            Action::make('filter')
+                ->label(fn() => 'Date: ' . Carbon::parse($this->filter_date)->format('M d, Y'))
+                ->icon('heroicon-m-funnel')
+                ->color('gray')
+                ->mountUsing(fn($form) => $form->fill(['date' => $this->filter_date]))
+                ->form([
+                    DatePicker::make('date')
+                        ->label('Select Attendance Date')
                         ->native(false)
-                        ->live() // 2. MANDATORY: Forces an instantaneous live refresh on value modification
                         ->required(),
-                ]),
+                ])
+                ->action(function (array $data): void {
+                    // Update state, mutating the URL parameter and refreshing the entire page loop
+                    $this->filter_date = Carbon::parse($data['date'])->toDateString();
+                }),
         ];
     }
 
@@ -50,6 +62,18 @@ class AttendanceDashbaord extends Page
     {
         return [
             RoleAttendanceOverview::class,
+        ];
+    }
+
+    /**
+     * MANDATORY: Forwards the active page URL filter straight into the widget properties
+     */
+    protected function getHeaderWidgetsProperties(): array
+    {
+        return [
+            RoleAttendanceOverview::class => [
+                'selectedDate' => $this->filter_date ?? Carbon::today()->toDateString(),
+            ],
         ];
     }
 

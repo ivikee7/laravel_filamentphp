@@ -12,12 +12,13 @@ use Illuminate\Support\Facades\DB;
 
 class RoleAttendanceOverview extends StatsOverviewWidget
 {
+    // 1. Declare the public property to automatically receive data from getHeaderWidgetsProperties()
+    public ?string $selectedDate = null;
+
     protected function getStats(): array
     {
-        // Check for dashboard filters, fallback to custom status data array, or default to null
-        $selectedFilterDate = $this->pageFilters['filter_date'] ?? ($this->status['filter_date'] ?? null);
-
-        $targetDate = $selectedFilterDate ? Carbon::parse($selectedFilterDate)->toDateString() : Carbon::today()->toDateString();
+        // 2. Fetch directly from the verified parameter state
+        $targetDate = $this->selectedDate ? Carbon::parse($this->selectedDate)->toDateString() : Carbon::today()->toDateString();
 
         // High-performance query for active users, excluding Super Admin
         $roleStats = DB::table('roles')
