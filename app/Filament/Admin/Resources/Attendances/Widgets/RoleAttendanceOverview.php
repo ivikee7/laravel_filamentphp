@@ -12,12 +12,26 @@ use Illuminate\Support\Facades\DB;
 
 class RoleAttendanceOverview extends StatsOverviewWidget
 {
-    // 1. Declare the public property to automatically receive data from getHeaderWidgetsProperties()
     public ?string $selectedDate = null;
+
+    // 1. MANDATORY: Tell Livewire to execute updates when this event name is triggered
+    protected $listeners = [
+        'refreshAttendanceWidget' => 'updateWidgetDate'
+    ];
+
+    /**
+     * Intercept the custom date payload and trigger a sub-component reactive cycle
+     */
+    public function updateWidgetDate(string $selectedDate): void
+    {
+        $this->selectedDate = $selectedDate;
+
+        // This forces Livewire to clear old stats and re-run getStats() immediately
+        $this->render();
+    }
 
     protected function getStats(): array
     {
-        // 2. Fetch directly from the verified parameter state
         $targetDate = $this->selectedDate ? Carbon::parse($this->selectedDate)->toDateString() : Carbon::today()->toDateString();
 
         // High-performance query for active users, excluding Super Admin

@@ -23,28 +23,29 @@ class AttendanceDashbaord extends Page
 
     protected string $view = 'filament.admin.resources.attendances.pages.attendance-dashbaord';
 
-    // This automatically captures the selection from the page's query string
     #[Url(keep: true)]
     public ?string $filter_date = null;
 
+    // 1. Listen for Livewire updates to the URL query strings
+    protected $listeners = [
+        'urlQueryStringUpdated' => '$refresh',
+    ];
+
     public function mount(): void
     {
-        if (!$this->filter_date) {
+        if (! $this->filter_date) {
             $this->filter_date = Carbon::today()->toDateString();
         }
     }
 
-    /**
-     * Display a beautiful action drop-button in your page header container
-     */
     protected function getHeaderActions(): array
     {
         return [
             Action::make('filter')
-                ->label(fn() => 'Date: ' . Carbon::parse($this->filter_date)->format('M d, Y'))
+                ->label(fn () => 'Date: ' . Carbon::parse($this->filter_date)->format('M d, Y'))
                 ->icon('heroicon-m-funnel')
                 ->color('gray')
-                ->mountUsing(fn($form) => $form->fill(['date' => $this->filter_date]))
+                ->mountUsing(fn ($form) => $form->fill(['date' => $this->filter_date]))
                 ->form([
                     DatePicker::make('date')
                         ->label('Select Attendance Date')
@@ -52,8 +53,10 @@ class AttendanceDashbaord extends Page
                         ->required(),
                 ])
                 ->action(function (array $data): void {
-                    // Update state, mutating the URL parameter and refreshing the entire page loop
                     $this->filter_date = Carbon::parse($data['date'])->toDateString();
+
+                    // 2. Broadcast the fresh target date directly to any listening widgets
+                    $this->dispatch('refreshAttendanceWidget', selectedDate: $this->filter_date);
                 }),
         ];
     }
@@ -65,9 +68,6 @@ class AttendanceDashbaord extends Page
         ];
     }
 
-    /**
-     * MANDATORY: Forwards the active page URL filter straight into the widget properties
-     */
     protected function getHeaderWidgetsProperties(): array
     {
         return [
