@@ -42,11 +42,12 @@ class AttendanceDashbaord extends Page
     {
         return [
             Action::make('filter')
+                ->disabled()
                 ->label(fn () => 'Date: ' . Carbon::parse($this->filter_date)->format('M d, Y'))
                 ->icon('heroicon-m-funnel')
                 ->color('gray')
                 ->mountUsing(fn ($form) => $form->fill(['date' => $this->filter_date]))
-                ->form([
+                ->schema([
                     DatePicker::make('date')
                         ->label('Select Attendance Date')
                         ->native(false)
