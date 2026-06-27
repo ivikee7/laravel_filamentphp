@@ -265,7 +265,6 @@
                     <p> <strong> Role: </strong> {{ $record->roles->first()->name }}</p>
                     <p><strong> Blood Group: </strong> {{ $record->bloodGroup->name ?? '' }}</p>
                     <p><strong> Date of Birth: </strong>{{ $record->date_of_birth ?? '' }}</p>
-                    <p><strong> Email: </strong>{{ $record->gSuite->email ?? '' }}</p>
                 </div>
             </div>
 
