@@ -13,7 +13,7 @@
         /* Custom styles for the ID card layout */
         body {
             font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-            background-color: #f7fafc; /* Tailwind gray-100 */
+            background-color: #ffffff; /* Tailwind gray-100 */
             display: flex;
             justify-content: center;
             align-items: center;

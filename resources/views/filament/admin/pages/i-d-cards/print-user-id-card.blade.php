@@ -101,7 +101,7 @@
             overflow: visible
         }
         .body .meta-row{
-            background: #f3f4f6;
+            background: #ffffff;
             border-radius: 8px;
             padding: 6px;
         }

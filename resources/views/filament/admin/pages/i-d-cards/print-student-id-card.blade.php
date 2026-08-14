@@ -19,7 +19,7 @@
 
         body {
             margin: 10px;
-            background: #f8fafc;
+            background: #ffffff;
             font-family: Arial, Helvetica, sans-serif;
             -webkit-font-smoothing: antialiased;
         }

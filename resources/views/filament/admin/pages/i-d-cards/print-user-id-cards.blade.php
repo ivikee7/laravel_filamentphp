@@ -19,7 +19,7 @@
 
         body {
             margin: 10px;
-            background: #f8fafc;
+            background: #ffffff;
             font-family: Arial, Helvetica, sans-serif;
             -webkit-font-smoothing: antialiased;
         }
@@ -101,7 +101,7 @@
             overflow: visible
         }
         .body .meta-row{
-            background: #f3f4f6;
+            background: #ffffff;
             border-radius: 8px;
             padding: 6px;
         }
