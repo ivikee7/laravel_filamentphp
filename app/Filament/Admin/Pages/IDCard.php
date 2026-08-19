@@ -161,6 +161,7 @@ class IDCard extends Page implements HasInfolists, HasTable
 //                            })->hidden(fn ($record) => !$this->isStudent($record)),
 
                         Action::make('enteredInCampus')
+                            ->label('Arrived on campus')
                             ->color('success')
                             ->action(function () {
                                 self::markAttendance('enteredInCampus');
@@ -175,6 +176,7 @@ class IDCard extends Page implements HasInfolists, HasTable
                             })->hidden(fn ($record) => !$this->isStudent($record)),
 
                         Action::make('leaveFromCampus')
+                            ->label('Left the campus')
                             ->color('warning')
                             ->action(function () {
                                 self::markAttendance('leaveFromCampus');
