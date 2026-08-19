@@ -160,31 +160,31 @@ class IDCard extends Page implements HasInfolists, HasTable
 //                                return null;
 //                            })->hidden(fn ($record) => !$this->isStudent($record)),
 
-                        Action::make('enteredInCampus')
+                        Action::make('arrivedOnCampus')
                             ->label('Arrived on campus')
                             ->color('success')
                             ->action(function () {
-                                self::markAttendance('enteredInCampus');
+                                self::markAttendance('arrivedOnCampus');
                             })->disabled(function ($record) {
-                                return self::checkAttendance('enteredInCampus', $record);
+                                return self::checkAttendance('arrivedOnCampus', $record);
                             })
                             ->icon(function ($record): ?string {
-                                if (self::checkAttendance('enteredInCampus', $record)) {
+                                if (self::checkAttendance('arrivedOnCampus', $record)) {
                                     return 'heroicon-o-check-circle'; // Icon when true
                                 }
                                 return null;
                             })->hidden(fn ($record) => !$this->isStudent($record)),
 
-                        Action::make('leaveFromCampus')
+                        Action::make('leftTheCampus')
                             ->label('Left the campus')
                             ->color('warning')
                             ->action(function () {
-                                self::markAttendance('leaveFromCampus');
+                                self::markAttendance('leftTheCampus');
                             })->disabled(function ($record) {
-                                return self::checkAttendance('leaveFromCampus', $record);
+                                return self::checkAttendance('leftTheCampus', $record);
                             })
                             ->icon(function ($record): ?string {
-                                if (self::checkAttendance('leaveFromCampus', $record)) {
+                                if (self::checkAttendance('leftTheCampus', $record)) {
                                     return 'heroicon-o-check-circle'; // Icon when true
                                 }
                                 return null;
