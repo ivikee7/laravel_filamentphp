@@ -25,7 +25,7 @@ class TransportFuelLogsTable
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('cost')
-                    ->money()
+                    ->money(env('currency')?? 'USD')
                     ->sortable(),
                 TextColumn::make('filled_by')
                     ->searchable(),

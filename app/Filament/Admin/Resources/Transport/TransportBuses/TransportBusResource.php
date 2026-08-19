@@ -6,10 +6,12 @@ use App\Filament\Admin\Resources\Transport\TransportBuses\Pages\CreateTransportB
 use App\Filament\Admin\Resources\Transport\TransportBuses\Pages\EditTransportBus;
 use App\Filament\Admin\Resources\Transport\TransportBuses\Pages\ListTransportBuses;
 use App\Filament\Admin\Resources\Transport\TransportBuses\Pages\ViewTransportBus;
+use App\Filament\Admin\Resources\Transport\TransportBuses\RelationManagers\RoutesRelationManager;
 use App\Filament\Admin\Resources\Transport\TransportBuses\RelationManagers\TransportFuelLogsRelationManager;
 use App\Filament\Admin\Resources\Transport\TransportBuses\Schemas\TransportBusForm;
 use App\Filament\Admin\Resources\Transport\TransportBuses\Schemas\TransportBusInfolist;
 use App\Filament\Admin\Resources\Transport\TransportBuses\Tables\TransportBusesTable;
+use App\Filament\Admin\Resources\Transport\TransportRoutes\RelationManagers\StoppageRelationManager;
 use App\Models\TransportBus;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -46,7 +48,7 @@ class TransportBusResource extends Resource
     public static function getRelations(): array
     {
         return [
-            'TransportFuelLogs' => TransportFuelLogsRelationManager::class,
+            TransportFuelLogsRelationManager::class,
         ];
     }
 

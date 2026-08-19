@@ -35,7 +35,9 @@ return new class extends Migration
             $table->date('date_of_birth')->nullable();
             $table->string('place_of_birth', 50)->nullable();
             $table->string('notes', 100)->nullable();
+            $table->date('joining_date')->nullable();
             $table->date('termination_date')->nullable();
+            $table->string('termination_note', 100)->nullable();
             //
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');

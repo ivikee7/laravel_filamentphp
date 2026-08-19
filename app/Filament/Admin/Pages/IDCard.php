@@ -275,11 +275,11 @@ class IDCard extends Page implements HasInfolists, HasTable
 
         $smsService = new SMSService($provider->toArray()); // assuming SMSService accepts provider
 
-        $smsService->sendSms($this->record->primary_contact_number, $message, $template);
+        $response = $smsService->sendSms($this->record->primary_contact_number, $message, $template);
 
         Notification::make()
-            ->title('Message successfully sent')
-            ->success()
+            ->title('Message: '.$response['state'])
+            ->body('Message: '.$response['description'])
             ->send();
     }
 

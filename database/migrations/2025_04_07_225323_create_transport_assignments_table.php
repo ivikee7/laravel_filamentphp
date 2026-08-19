@@ -14,11 +14,14 @@ return new class extends Migration
         Schema::create('transport_assignments', function (Blueprint $table) {
             $table->id();
             //
-            $table->foreignId('user_id'); // student or employee
+            $table->foreignId('user_id');
             $table->foreignId('transport_route_id');
             $table->foreignId('transport_stoppage_id')->nullable();
             $table->string('contact_number', 15)->nullable();
             $table->string('remarks', 100)->nullable();
+            $table->date('date_of_join')->nullable();
+            $table->date('date_of_terminate')->nullable();
+            $table->boolean('is_active')->nullable();
             //
             $table->foreignId('created_by')->nullable();
             $table->foreignId('updated_by')->nullable();

@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources\Transport\TransportAssignments\Schemas;
 
 use App\Models\TransportStoppage;
 use App\Models\User;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
@@ -125,10 +126,9 @@ class TransportAssignmentForm
                     ->preload()
                     ->reactive()
                     ->default(null),
-                TextInput::make('contact_number')
-                    ->default(null),
-                TextInput::make('remarks')
-                    ->default(null),
+                TextInput::make('contact_number')->nullable(),
+                DatePicker::make('date_of_join')->nullable(),
+                TextInput::make('remarks')->nullable(),
             ]);
     }
 }
