@@ -146,19 +146,19 @@ class IDCard extends Page implements HasInfolists, HasTable
                             ->modalSubmitActionLabel('Yes, Print'),
                     ])
                     ->footer([
-                        Action::make('enteredInBus')
-                            ->color('info')
-                            ->action(function () {
-                                self::markAttendance('enteredInBus');
-                            })->disabled(function ($record) {
-                                return self::checkAttendance('enteredInBus', $record);
-                            })
-                            ->icon(function ($record): ?string {
-                                if (self::checkAttendance('enteredInBus', $record)) {
-                                    return 'heroicon-o-check-circle'; // Icon when true
-                                }
-                                return null;
-                            }),
+//                        Action::make('enteredInBus')
+//                            ->color('info')
+//                            ->action(function () {
+//                                self::markAttendance('enteredInBus');
+//                            })->disabled(function ($record) {
+//                                return self::checkAttendance('enteredInBus', $record);
+//                            })
+//                            ->icon(function ($record): ?string {
+//                                if (self::checkAttendance('enteredInBus', $record)) {
+//                                    return 'heroicon-o-check-circle'; // Icon when true
+//                                }
+//                                return null;
+//                            })->hidden(fn ($record) => !$this->isStudent($record)),
 
                         Action::make('enteredInCampus')
                             ->color('success')
@@ -172,7 +172,7 @@ class IDCard extends Page implements HasInfolists, HasTable
                                     return 'heroicon-o-check-circle'; // Icon when true
                                 }
                                 return null;
-                            }),
+                            })->hidden(fn ($record) => !$this->isStudent($record)),
 
                         Action::make('leaveFromCampus')
                             ->color('warning')
@@ -186,21 +186,21 @@ class IDCard extends Page implements HasInfolists, HasTable
                                     return 'heroicon-o-check-circle'; // Icon when true
                                 }
                                 return null;
-                            }),
+                            })->hidden(fn ($record) => !$this->isStudent($record)),
 
-                        Action::make('leaveFromBus')
-                            ->color('danger')
-                            ->action(function () {
-                                self::markAttendance('leaveFromBus');
-                            })->disabled(function ($record) {
-                                return self::checkAttendance('leaveFromBus', $record);
-                            })
-                            ->icon(function ($record): ?string {
-                                if (self::checkAttendance('leaveFromBus', $record)) {
-                                    return 'heroicon-o-check-circle'; // Icon when true
-                                }
-                                return null;
-                            }),
+//                        Action::make('leaveFromBus')
+//                            ->color('danger')
+//                            ->action(function () {
+//                                self::markAttendance('leaveFromBus');
+//                            })->disabled(function ($record) {
+//                                return self::checkAttendance('leaveFromBus', $record);
+//                            })
+//                            ->icon(function ($record): ?string {
+//                                if (self::checkAttendance('leaveFromBus', $record)) {
+//                                    return 'heroicon-o-check-circle'; // Icon when true
+//                                }
+//                                return null;
+//                            })->hidden(fn ($record) => !$this->isStudent($record)),
                     ])
                     ->columnSpanFull()
             ]);
@@ -214,6 +214,10 @@ class IDCard extends Page implements HasInfolists, HasTable
             ->exists();
     }
 
+    public function isStudent($record)
+    {
+        return $record->hasRole('Student');
+    }
 
     public function markAttendance(string $type): void
     {
