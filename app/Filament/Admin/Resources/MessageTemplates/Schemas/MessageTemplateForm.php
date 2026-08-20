@@ -29,7 +29,7 @@ class MessageTemplateForm
                         ->maxLength(255),
                     Textarea::make('content')
                         ->label('Template')
-                        ->hint('Use placeholders like {{name}}, {{date}}')
+                        ->hint('Use placeholders like {{name}}, {{time}}')
                         ->reactive()
                         ->helperText(fn($state) => strlen($state) . ' / 160 characters') // Live count
                         ->required()
