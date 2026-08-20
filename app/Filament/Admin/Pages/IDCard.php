@@ -263,7 +263,7 @@ class IDCard extends Page implements HasInfolists, HasTable
             ['{{name}}', '{{time}}'],
             [
                 $this->record->name,
-                $attendance->created_at->format('H:i')
+                $attendance->created_at->format('h:i A')
             ],
             $template->content
         );
