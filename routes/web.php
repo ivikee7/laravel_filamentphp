@@ -134,6 +134,20 @@ Route::get('/print-student-id-cards', function (\Illuminate\Http\Request $reques
 
     return view('filament.admin.pages.i-d-cards.print-student-id-cards', compact('records'));
 })->name('print.student_id_cards');
+Route::get('/print-parent-id-cards', function (\Illuminate\Http\Request $request) {
+    $ids = $request->query('ids'); // Get IDs from URL query parameter
+    $records = collect();
+
+    if ($ids) {
+        $records = App\Models\User::whereIn('id', explode(',', $ids))
+            ->whereHas('roles', function (\Illuminate\Database\Eloquent\Builder $query) {
+                $query->whereIn('name', ['Student']);
+            })
+            ->get();
+    }
+
+    return view('filament.admin.pages.i-d-cards.print-parent-id-cards', compact('records'));
+})->name('print.parent_id_cards');
 Route::get('/print-user-id-cards', function (\Illuminate\Http\Request $request) {
     $ids = $request->query('ids'); // Get IDs from URL query parameter
     $records = collect();
