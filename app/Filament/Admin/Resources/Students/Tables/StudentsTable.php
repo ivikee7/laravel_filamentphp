@@ -198,6 +198,66 @@ class StudentsTable
                     DeleteBulkAction::make(),
                     ForceDeleteBulkAction::make(),
                     RestoreBulkAction::make(),
+                    ActionGroup::make([
+                        ActionGroup::make([
+                            BulkAction::make('printStudentIdCards')
+                                ->label('Student ID')
+                                ->icon('heroicon-o-user')
+                                ->action(function (Collection $records) {
+                                    if ($records->isEmpty()) {
+                                        Notification::make()
+                                            ->title('No records selected for printing.')
+                                            ->warning()
+                                            ->send();
+                                        return null;
+                                    }
+
+                                    // Get IDs of selected records
+                                    $ids = $records->pluck('id')->implode(',');
+
+                                    // Redirect to a new tab/window to trigger print
+                                    // Use 'new_tab' or similar if you want it to open in a new tab
+                                    // (this might be browser-dependent for instant print)
+                                    return redirect()->to(route('print.student_id_cards', ['ids' => $ids]));
+                                })
+                                ->deselectRecordsAfterCompletion()
+                                ->requiresConfirmation()
+                                ->modalHeading('Print Selected ID Cards?')
+                                ->modalDescription('This will open a new window to print ID cards. Please ensure your printer is ready.')
+                                ->modalSubmitActionLabel('Yes, Print')
+                                ->color('success'),
+                            BulkAction::make('printParentIdCards')
+                                ->label('Parent ID')
+                                ->icon('heroicon-o-user-group')
+                                ->action(function (Collection $records) {
+                                    if ($records->isEmpty()) {
+                                        Notification::make()
+                                            ->title('No records selected for printing.')
+                                            ->warning()
+                                            ->send();
+                                        return null;
+                                    }
+
+                                    // Get IDs of selected records
+                                    $ids = $records->pluck('id')->implode(',');
+
+                                    // Redirect to a new tab/window to trigger print
+                                    // Use 'new_tab' or similar if you want it to open in a new tab
+                                    // (this might be browser-dependent for instant print)
+                                    return redirect()->to(route('print.parent_id_cards', ['ids' => $ids]));
+                                })
+                                ->deselectRecordsAfterCompletion()
+                                ->requiresConfirmation()
+                                ->modalHeading('Print Selected ID Cards?')
+                                ->modalDescription('This will open a new window to print ID cards. Please ensure your printer is ready.')
+                                ->modalSubmitActionLabel('Yes, Print')
+                                ->color('success'),
+                        ])
+                            ->icon('heroicon-o-identification')
+                            ->label('ID Cards'),
+                    ])
+                        ->icon('heroicon-o-printer')
+                        ->label('Print'),
                 ]),
                 BulkActionGroup::make([
                     ExportBulkAction::make('export-xlsx')
@@ -226,60 +286,7 @@ class StudentsTable
                         ->enableVisibleTableColumnsByDefault(),
                 ])
                     ->label('Export'),
-                BulkActionGroup::make([
-                    BulkAction::make('printIdCards')
-                        ->label('Print ID Cards')
-                        ->icon('heroicon-o-printer')
-                        ->action(function (Collection $records) {
-                            if ($records->isEmpty()) {
-                                Notification::make()
-                                    ->title('No records selected for printing.')
-                                    ->warning()
-                                    ->send();
-                                return;
-                            }
 
-                            // Get IDs of selected records
-                            $ids = $records->pluck('id')->implode(',');
-
-                            // Redirect to a new tab/window to trigger print
-                            // Use 'new_tab' or similar if you want it to open in a new tab
-                            // (this might be browser-dependent for instant print)
-                            return redirect()->to(route('print.student_id_cards', ['ids' => $ids]));
-                        })
-                        ->deselectRecordsAfterCompletion()
-                        ->requiresConfirmation()
-                        ->modalHeading('Print Selected ID Cards?')
-                        ->modalDescription('This will open a new window to print ID cards. Please ensure your printer is ready.')
-                        ->modalSubmitActionLabel('Yes, Print')
-                        ->color('success'),
-                    BulkAction::make('printParentIdCards')
-                        ->label('Print Parent ID Cards')
-                        ->icon('heroicon-o-printer')
-                        ->action(function (Collection $records) {
-                            if ($records->isEmpty()) {
-                                Notification::make()
-                                    ->title('No records selected for printing.')
-                                    ->warning()
-                                    ->send();
-                                return;
-                            }
-
-                            // Get IDs of selected records
-                            $ids = $records->pluck('id')->implode(',');
-
-                            // Redirect to a new tab/window to trigger print
-                            // Use 'new_tab' or similar if you want it to open in a new tab
-                            // (this might be browser-dependent for instant print)
-                            return redirect()->to(route('print.parent_id_cards', ['ids' => $ids]));
-                        })
-                        ->deselectRecordsAfterCompletion()
-                        ->requiresConfirmation()
-                        ->modalHeading('Print Selected ID Cards?')
-                        ->modalDescription('This will open a new window to print ID cards. Please ensure your printer is ready.')
-                        ->modalSubmitActionLabel('Yes, Print')
-                        ->color('success'),
-                ])->label('Print'),
                 BulkActionGroup::make([
                     BulkAction::make('send_bulk_sms')
                         ->label('Send Bulk SMS')
