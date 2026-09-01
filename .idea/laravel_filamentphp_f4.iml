@@ -18,6 +18,7 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/php-debugbar/php-debugbar" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/php-debugbar/symfony-bridge" />
       <excludeFolder url="file://$MODULE_DIR$/bootstrap/cache" />
+      <excludeFolder url="file://$MODULE_DIR$/storage/pail" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
