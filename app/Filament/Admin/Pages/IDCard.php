@@ -30,10 +30,9 @@ use Filament\Tables\Table;
 use Phiki\Phast\Text;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
-class IDCard extends Page implements HasInfolists, HasTable
+class IDCard extends Page implements HasInfolists
 {
     use InteractsWithInfolists;
-    use InteractsWithTable;
 
     protected string $view = 'filament.admin.pages.i-d-card';
 
@@ -48,22 +47,22 @@ class IDCard extends Page implements HasInfolists, HasTable
         $this->record = $record;
     }
 
-    public function table(Table $table): Table
-    {
-        return $table
-            ->query(Attendance::where('user_id', $this->record->id))
-            ->columns([
-                TextColumn::make('created_at')
-                    ->searchable()
-                    ->label('Created at'),
-                TextColumn::make('type')
-                    ->searchable()
-                    ->label('Type'),
-                TextColumn::make('createdBy.name')
-                    ->searchable()
-                    ->label('Created By')
-            ])->defaultSort('id', 'desc');
-    }
+//    public function table(Table $table): Table
+//    {
+//        return $table
+//            ->query(Attendance::where('user_id', $this->record->id))
+//            ->columns([
+//                TextColumn::make('created_at')
+//                    ->searchable()
+//                    ->label('Created at'),
+//                TextColumn::make('type')
+//                    ->searchable()
+//                    ->label('Type'),
+//                TextColumn::make('createdBy.name')
+//                    ->searchable()
+//                    ->label('Created By')
+//            ])->defaultSort('id', 'desc');
+//    }
 
     public function infolist(Schema $schema): Schema
     {
