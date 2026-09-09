@@ -82,15 +82,15 @@ class IDCard extends Page implements HasInfolists, HasTable
                                         ->hiddenLabel()
                                         ->alignCenter()
                                         ->default(fn($record) => 'https://ui-avatars.com/api/?name=' . urlencode($record->name)),
-                                    ImageEntry::make('qrcode')
-                                        ->imageSize(150)
-                                        ->state(self::getQRCode())
-                                        ->gap(false)
-                                        ->square()
-                                        ->hiddenLabel()
-                                        ->alignCenter(),
+//                                    ImageEntry::make('qrcode')
+//                                        ->imageSize(150)
+//                                        ->state(self::getQRCode())
+//                                        ->gap(false)
+//                                        ->square()
+//                                        ->hiddenLabel()
+//                                        ->alignCenter(),
                                 ])
-                                ->columns(['sm' => 2, 'md' => 2]),
+                                ->columns(1),
                             TextEntry::make('name')
                                 ->extraAttributes(['style' => 'font-size:2rem;'])
                                 ->alignCenter()
