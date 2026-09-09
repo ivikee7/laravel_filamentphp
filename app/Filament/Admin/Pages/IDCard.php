@@ -144,6 +144,14 @@ class IDCard extends Page implements HasInfolists, HasTable
                             ->modalHeading('Print Student ID Card?')
                             ->modalDescription('Confirming will open the print preview for this student.')
                             ->modalSubmitActionLabel('Yes, Print'),
+                        Action::make('openQrScanner')
+                            ->label('Scan QR Code')
+                            ->icon('heroicon-o-qr-code')
+                            ->color('info')
+                            ->modalHeading('Scan User QR Code')
+                            ->modalContent(view('filament.admin.actions.scan-qr-modal'))
+                            ->modalSubmitAction(false) // Hide default submit button since the scanner redirects automatically
+                            ->modalCancelActionLabel('Close'),
                     ])
                     ->footer([
 //                        Action::make('enteredInBus')
@@ -314,6 +322,20 @@ class IDCard extends Page implements HasInfolists, HasTable
         $svg = QrCode::size(100)->generate($url);
 
         return 'data:image/svg+xml;base64,' . base64_encode($svg);
+    }
+
+    #[On('handleScannedCodeFromModal')]
+    public function handleScannedCodeFromModal(string $code): void
+    {
+        // If the QR code contains a URL, your component already handles redirection via window.location.href.
+        // However, if it contains a raw user ID or routing slug, you can handle it here:
+
+        Notification::make()
+            ->title('Scanned Code: ' . $code)
+            ->success()
+            ->send();
+
+        // Example: if code is a URL, redirect manually if needed, or let the component do it.
     }
 
     public static function canAccess(): bool
