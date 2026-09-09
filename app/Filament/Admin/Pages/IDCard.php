@@ -76,7 +76,7 @@ class IDCard extends Page implements HasInfolists, HasTable
                             Grid::make(2)
                                 ->schema([
                                     ImageEntry::make('avatar')
-                                        ->imageSize(150)
+                                        ->imageSize(200)
                                         ->disk('public')
                                         ->square()
                                         ->hiddenLabel()
