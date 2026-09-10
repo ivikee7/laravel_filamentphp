@@ -3,6 +3,6 @@
         Position the QR code inside the camera frame to scan and open the user profile automatically.
     </p>
 
-    <!-- Using your custom QrScanner component -->
+    <!-- Uses your reusable component -->
     <x-qr-scanner dispatch-to="handleScannedCodeFromModal" />
 </div>
