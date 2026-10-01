@@ -14,6 +14,7 @@ class AdmissionWidget extends ChartWidget
     protected static ?int $sort = 6;
     protected int | string | array $columnSpan = 1;
     protected ?string $pollingInterval = '60s';
+    public ?string $filter = '1';
 
     protected function getFilters(): ?array
     {
