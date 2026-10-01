@@ -10,16 +10,25 @@ use Illuminate\Support\Facades\DB;
 
 class EnquiryWidget extends ChartWidget
 {
-    protected ?string $heading = 'Enquiry Widget';
-
+    protected ?string $heading = 'Enquiries Trend';
     protected static ?int $sort = 7;
-
     protected int | string | array $columnSpan = 1;
+    protected ?string $pollingInterval = '60s';
+
+    protected function getFilters(): ?array
+    {
+        return [
+            '1' => 'Past 1 Year',
+            '2' => 'Past 2 Years',
+            '3' => 'Past 3 Years',
+        ];
+    }
 
     protected function getData(): array
     {
-        $startDate = Carbon::now()->subYears(4)->startOfYear();
-        // 1. Fetch data grouped by year and month
+        $activeFilter = $this->filter ?? '2';
+        $startDate = Carbon::now()->subYears((int)$activeFilter)->startOfYear();
+
         $data = Enquiry::query()
             ->select(
                 DB::raw('count(id) as count'),
@@ -32,37 +41,34 @@ class EnquiryWidget extends ChartWidget
             ->orderBy('year', 'asc')
             ->orderBy('month', 'asc')
             ->get()
-            ->groupBy('year'); // Group the results by year for easier processing
+            ->groupBy('year');
 
-        // 2. Prepare datasets for Chart.js
         $datasets = [];
-        $colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF']; // Example colors
+        $colors = ['#f59e0b', '#3b82f6', '#10b981', '#ef4444', '#8b5cf6'];
 
         foreach ($data as $year => $monthlyRecords) {
-            // Initialize data points for all 12 months with 0
             $monthlyDataPoints = array_fill(1, 12, 0);
 
-            // Fill in the actual counts where data exists
             foreach ($monthlyRecords as $record) {
                 $monthlyDataPoints[$record->month] = $record->count;
             }
 
-            // Get a color from our array, cycle through them using Arr::get
             $color = Arr::get($colors, count($datasets) % count($colors));
 
             $datasets[] = [
-                'label' => $year, // Label the line with the year
-                'data' => array_values($monthlyDataPoints), // Use just the counts
-                'backgroundColor' => $color . '40', // light background fill
+                'label' => (string) $year,
+                'data' => array_values($monthlyDataPoints),
+                'backgroundColor' => $color . '15',
                 'borderColor' => $color,
-                'tension' => 0.4,
-                'borderWidth' => 2,
+                'fill' => true,
+                'tension' => 0.35,
+                'borderWidth' => 2.5,
+                'pointRadius' => 3,
             ];
         }
 
         return [
             'datasets' => $datasets,
-            // The labels on the X-axis are fixed Jan-Dec
             'labels' => ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
         ];
     }

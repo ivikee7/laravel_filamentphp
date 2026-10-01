@@ -9,32 +9,51 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class TodayAdmissionWidget extends StatsOverviewWidget
 {
-
     protected static ?int $sort = 2;
-
-
     protected int|string|array $columnSpan = 1;
+    protected ?string $pollingInterval = '30s';
 
     protected function getStats(): array
     {
-        // Get today's date range (start of day to end of day)
         $todayStart = Carbon::today()->startOfDay();
         $todayEnd = Carbon::today()->endOfDay();
 
-        // Query the User model for today's count with the 'student' relationship
-        $todayAdmissionsCount = User::query()
-            ->has('student') // Ensure the user is a student
+        $yesterdayStart = Carbon::yesterday()->startOfDay();
+        $yesterdayEnd = Carbon::yesterday()->endOfDay();
+
+        $todayCount = User::query()
+            ->has('student')
             ->whereBetween('created_at', [$todayStart, $todayEnd])
             ->count();
 
-        $color = ($todayAdmissionsCount > 0) ? 'success' : 'warning';
+        $yesterdayCount = User::query()
+            ->has('student')
+            ->whereBetween('created_at', [$yesterdayStart, $yesterdayEnd])
+            ->count();
 
-        // Format the count into a Filament Stat card
+        $difference = $todayCount - $yesterdayCount;
+        $percentageChange = $yesterdayCount > 0 ? round(($difference / $yesterdayCount) * 100, 1) : ($todayCount > 0 ? 100 : 0);
+
+        $isPositive = $percentageChange >= 0;
+        $trendIcon = $isPositive ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down';
+        $trendDescription = ($isPositive ? '+' : '') . $percentageChange . '% vs yesterday';
+        $color = $todayCount > 0 ? 'success' : 'warning';
+
+        $chartData = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $date = Carbon::today()->subDays($i);
+            $chartData[] = User::query()
+                ->has('student')
+                ->whereDate('created_at', $date)
+                ->count();
+        }
+
         return [
-            Stat::make('Today\'s Admissions', $todayAdmissionsCount)
-                ->description('New students signed up today')
-                ->descriptionIcon('heroicon-m-arrow-trending-up')
-                ->color($color)->columnSpanFull(),
+            Stat::make("Today's Admissions", $todayCount)
+                ->description($trendDescription)
+                ->descriptionIcon($trendIcon)
+                ->color($color)
+                ->chart($chartData),
         ];
     }
 }
