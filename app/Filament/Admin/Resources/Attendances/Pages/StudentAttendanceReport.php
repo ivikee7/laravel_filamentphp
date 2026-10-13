@@ -34,19 +34,19 @@ class StudentAttendanceReport extends Page
         $this->absentCount = (clone $query)->where('type', 'absent')->count();
         $this->lateCount = (clone $query)->where('type', 'late')->count();
 
-        // Fetch recent attendances with nested student and current class assignment relationships
+        // Fetch recent attendances using the available classAssignment relationship
         $this->recentAttendances = $query->with([
-            'user.student.currentClassAssignment.studentClass.className',
-            'user.student.currentClassAssignment.section'
+            'user.student.classAssignment.class',
+            'user.student.classAssignment.section'
         ])->latest('created_at')->take(10)->get();
 
         // Group dynamically by class and section from relationships
         $this->classSectionBreakdown = $query->with([
-            'user.student.currentClassAssignment.studentClass.className',
-            'user.student.currentClassAssignment.section'
+            'user.student.classAssignment.class',
+            'user.student.classAssignment.section'
         ])->get()->groupBy(function ($attendance) {
-            $assignment = $attendance->user?->student?->currentClassAssignment;
-            $className = $assignment?->studentClass?->className?->name ?? $assignment?->studentClass?->name ?? 'Unassigned Class';
+            $assignment = $attendance->user?->student?->classAssignment;
+            $className = $assignment?->class?->name ?? 'Unassigned Class';
             $sectionName = $assignment?->section?->name ?? 'General';
 
             return $className . ' - ' . $sectionName;
