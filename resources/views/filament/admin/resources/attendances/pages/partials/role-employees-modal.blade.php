@@ -11,7 +11,6 @@
                     <th scope="col" class="px-4 py-3">ID</th>
                     <th scope="col" class="px-4 py-3">Employee Name</th>
                     <th scope="col" class="px-4 py-3">Role</th>
-                    <th scope="col" class="px-4 py-3">Email</th>
                     <th scope="col" class="px-4 py-3">Status / Time</th>
                 </tr>
                 </thead>
@@ -29,9 +28,6 @@
                         </td>
                         <td class="px-4 py-3">
                             {{ $user->roles->pluck('name')->implode(', ') ?: 'N/A' }}
-                        </td>
-                        <td class="px-4 py-3">
-                            {{ $user->email ?? 'N/A' }}
                         </td>
                         <td class="px-4 py-3">
                             @if($attendance)
