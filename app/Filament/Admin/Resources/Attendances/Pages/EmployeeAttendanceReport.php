@@ -75,7 +75,6 @@ class EmployeeAttendanceReport extends Page
             ->get();
     }
 
-    // Native Filament Action to view employee records per role in a modal
     public function viewRoleEmployeesAction(): Action
     {
         return Action::make('viewRoleEmployees')
@@ -84,7 +83,8 @@ class EmployeeAttendanceReport extends Page
                 $roleKey = $arguments['roleKey'] ?? '';
                 $type = $arguments['type'] ?? 'total';
 
-                $employees = $this->getEmployeesForRole($roleKey, $type);
+                // Sorted alphabetically by name
+                $employees = $this->getEmployeesForRole($roleKey, $type)->sortBy('name');
 
                 return view('filament.admin.resources.attendances.pages.partials.role-employees-modal', [
                     'employees' => $employees,

@@ -73,7 +73,6 @@ class StudentAttendanceReport extends Page
             ->get();
     }
 
-    // Native Filament Action loading your view using standard dot notation
     public function viewClassStudentsAction(): Action
     {
         return Action::make('viewClassStudents')
@@ -82,7 +81,8 @@ class StudentAttendanceReport extends Page
                 $classKey = $arguments['classKey'] ?? '';
                 $type = $arguments['type'] ?? 'total';
 
-                $students = $this->getStudentsForClassSection($classKey, $type);
+                // Sorted alphabetically by name
+                $students = $this->getStudentsForClassSection($classKey, $type)->sortBy('name');
 
                 return view('filament.admin.resources.attendances.pages.partials.class-students-modal', [
                     'students' => $students,
