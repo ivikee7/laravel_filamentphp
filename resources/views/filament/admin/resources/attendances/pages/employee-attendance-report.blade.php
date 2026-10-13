@@ -43,6 +43,26 @@
             </div>
         </div>
 
+        <!-- Role-Wise Bifurcation Section -->
+        <div class="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10 mt-6">
+            <h3 class="text-lg font-semibold text-gray-950 dark:text-white mb-4">Role-Wise Employee Breakdown (Today)</h3>
+            @if($roleBreakdown->isEmpty())
+                <p class="text-sm text-gray-500 dark:text-gray-400 py-4 text-center">No employee records available for today.</p>
+            @else
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    @foreach($roleBreakdown as $roleName => $stats)
+                        <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700">
+                            <div class="font-medium text-gray-900 dark:text-white capitalize">Role: {{ $roleName }}</div>
+                            <div class="mt-2 text-sm text-gray-500 dark:text-gray-400 flex justify-between">
+                                <span>Total: <strong>{{ $stats['total'] }}</strong></span>
+                                <span class="text-success-600">Present: <strong>{{ $stats['present'] }}</strong></span>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @endif
+        </div>
+
         <!-- Recent Activity Feed -->
         <div class="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10">
             <h3 class="text-lg font-semibold text-gray-950 dark:text-white mb-4">Recent Employee Activity (Today)</h3>
@@ -73,24 +93,6 @@
                 </div>
             @endif
         </div>
-        <!-- Role-Wise Bifurcation Section -->
-        <div class="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10 mt-6">
-            <h3 class="text-lg font-semibold text-gray-950 dark:text-white mb-4">Role-Wise Employee Breakdown (Today)</h3>
-            @if($roleBreakdown->isEmpty())
-                <p class="text-sm text-gray-500 dark:text-gray-400 py-4 text-center">No employee records available for today.</p>
-            @else
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    @foreach($roleBreakdown as $roleName => $stats)
-                        <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700">
-                            <div class="font-medium text-gray-900 dark:text-white capitalize">Role: {{ $roleName }}</div>
-                            <div class="mt-2 text-sm text-gray-500 dark:text-gray-400 flex justify-between">
-                                <span>Total: <strong>{{ $stats['total'] }}</strong></span>
-                                <span class="text-success-600">Present: <strong>{{ $stats['present'] }}</strong></span>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            @endif
-        </div>
+
     </div>
 </x-filament-panels::page>
