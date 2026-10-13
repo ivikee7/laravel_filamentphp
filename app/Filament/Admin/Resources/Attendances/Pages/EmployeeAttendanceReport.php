@@ -6,6 +6,7 @@ use App\Filament\Admin\Resources\Attendances\AttendanceResource;
 use App\Models\Attendance;
 use BackedEnum;
 use Carbon\Carbon;
+use Filament\Actions\Action;
 use Filament\Resources\Pages\Page;
 
 class EmployeeAttendanceReport extends Page
@@ -50,5 +51,19 @@ class EmployeeAttendanceReport extends Page
         });
 
         $this->recentAttendances = $query->with('user.roles')->latest('created_at')->take(10)->get();
+    }
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Action::make('students')
+                ->url(fn() => AttendanceResource::getUrl('students')),
+            Action::make('monthlyReport')
+                ->label('Monthly Report')
+                ->icon('heroicon-o-chart-bar')
+                ->url(fn() => AttendanceResource::getUrl('monthly-report')),
+            Action::make('Log')
+                ->url(fn() => AttendanceResource::getUrl('index')),
+        ];
     }
 }

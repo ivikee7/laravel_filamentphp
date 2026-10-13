@@ -6,6 +6,8 @@ use App\Filament\Admin\Resources\Attendances\AttendanceResource;
 use App\Models\Attendance;
 use BackedEnum;
 use Carbon\Carbon;
+use Filament\Actions\Action;
+use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\Page;
 
 class StudentAttendanceReport extends Page
@@ -56,5 +58,19 @@ class StudentAttendanceReport extends Page
                 'present' => $group->where('type', 'present')->count(),
             ];
         });
+    }
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Action::make('employees')
+                ->url(fn() => AttendanceResource::getUrl('employees')),
+            Action::make('monthlyReport')
+                ->label('Monthly Report')
+                ->icon('heroicon-o-chart-bar')
+                ->url(fn() => AttendanceResource::getUrl('monthly-report')),
+            Action::make('Log')
+                ->url(fn() => AttendanceResource::getUrl('index')),
+        ];
     }
 }
