@@ -21,6 +21,7 @@ class EmployeeAttendanceReport extends Page
     public int $presentCount = 0;
     public int $absentCount = 0;
     public int $lateCount = 0;
+    public $roleBreakdown = [];
     public $recentAttendances;
 
     public function mount(): void
@@ -35,6 +36,19 @@ class EmployeeAttendanceReport extends Page
         $this->absentCount = (clone $query)->where('type', 'absent')->count();
         $this->lateCount = (clone $query)->where('type', 'late')->count();
 
-        $this->recentAttendances = $query->with('user')->latest('created_at')->take(10)->get();
+        // Calculate role-wise counts using Spatie roles via user relationship
+        $employeeQuery = (clone $query)->with('user.roles');
+        $allAttendances = $employeeQuery->get();
+
+        $this->roleBreakdown = $allAttendances->groupBy(function($attendance) {
+            return $attendance->user->roles->pluck('name')->implode(', ') ?: 'Staff / No Role';
+        })->map(function($group) {
+            return [
+                'total' => $group->count(),
+                'present' => $group->where('type', 'present')->count(),
+            ];
+        });
+
+        $this->recentAttendances = $query->with('user.roles')->latest('created_at')->take(10)->get();
     }
 }
