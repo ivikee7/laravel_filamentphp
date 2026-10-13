@@ -1,28 +1,62 @@
 <div class="print-container">
     <style>
-        /* Styles needed for the report itself */
-        table {
-            width: 100%;
-            border-collapse: collapse;
+        @page {
+            size: A4 landscape;
+            margin: 8mm;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            color: #000;
+        }
+
+        .print-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 1.1rem;
             margin: 0;
         }
 
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 5px;
+        }
+
         th, td {
-            border: 1px solid #000;
-            padding: 5px;
+            border: 1px solid #333;
+            padding: 4px 6px;
             text-align: center;
-            font-size: 0.8em;
+            font-size: 0.75rem;
+            white-space: pre-line;
+        }
+
+        th {
+            background-color: #f2f2f2 !important;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #fafafa;
         }
 
         @media print {
             .print-button {
-                display: none;
+                display: none !important;
             }
         }
     </style>
 
-    <button onclick="window.print()" class="print-button">Print Report</button>
-    <h2>Monthly Attendance Report ({{ $start_date ?? '' }} to {{ $end_date ?? '' }})</h2>
+    <div class="print-header">
+        <h2>Monthly Attendance Report ({{ $start_date ?? '' }} to {{ $end_date ?? '' }})</h2>
+        <button onclick="window.print()" class="print-button" style="padding: 6px 12px; cursor: pointer;">Print Report</button>
+    </div>
+
     <table>
         <thead>
         <tr>
@@ -32,54 +66,31 @@
         </tr>
         </thead>
         <tbody>
-            @foreach($printRecords as $record)
-                <tr>
-                    @foreach($printColumns as $index => $col)
-                        @php
-                            // Try to map column to a value in record. If column_keys exist, use keys; otherwise try common keys
-                            $value = null;
-                            if (!empty($printColumnKeys) && isset($printColumnKeys[$index]) && $printColumnKeys[$index]) {
-                                $value = data_get($record, $printColumnKeys[$index]);
-                            } else {
-                                // common fallback keys
-                                if (array_key_exists('id', $record)) {
-                                    $value = data_get($record, 'id');
-                                }
-                                if ($value === null && array_key_exists('name', $record)) {
-                                    $value = data_get($record, 'name');
-                                }
-                                if ($value === null && array_key_exists('roles', $record)) {
-                                    $value = data_get($record, 'roles');
-                                }
-                                // If column represents a date (format d-m-Y), try to fetch that date key
-                                if ($value === null) {
-                                    foreach ($record as $k => $v) {
-                                        if ($k === $col || $k === str_replace('-', '', $col) || $k === str_replace('-', '', str_replace('/', '', $col))) {
-                                            $value = $v;
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-                        @endphp
-                        @php
-                            $valueStr = '';
-                            if (is_array($value)) {
-                                $valueStr = implode(', ', $value);
-                            } else {
-                                $valueStr = (string) ($value ?? '');
-                            }
-                        @endphp
-                        <td>{!! nl2br(e($valueStr)) !!}</td>
-                    @endforeach
-                </tr>
-            @endforeach
+        @forelse($printRecords as $record)
+            <tr>
+                @foreach($printColumnKeys as $key)
+                    @php
+                        $value = data_get($record, $key, '-');
+                        if (is_array($value)) {
+                            $value = implode(', ', $value);
+                        }
+                    @endphp
+                    <td>{!! nl2br(e((string) $value)) !!}</td>
+                @endforeach
+            </tr>
+        @empty
+            <tr>
+                <td colspan="{{ count($printColumns) }}" style="text-align: center; padding: 20px;">No records available for printing.</td>
+            </tr>
+        @endforelse
         </tbody>
     </table>
 
     <script>
-        setTimeout(function () {
-            window.print();
-        }, 500);
+        window.addEventListener('load', function () {
+            setTimeout(function () {
+                window.print();
+            }, 400);
+        });
     </script>
 </div>

@@ -27,13 +27,11 @@ class PrintMonthlyReport extends Page
 
     public function mount(Request $request): void
     {
-        // Prefer query params (printRecords opens URL with query params)
         $userIds = $request->query('user_ids');
         $from = $request->query('from_date') ?: null;
         $to = $request->query('to_date') ?: null;
 
         if ($userIds) {
-            // Build print data from query
             $ids = is_array($userIds) ? $userIds : explode(',', $userIds);
             $users = User::whereIn('id', $ids)
                 ->with(['roles', 'attendances' => function ($q) use ($from, $to) {
@@ -41,29 +39,32 @@ class PrintMonthlyReport extends Page
                     if ($to) $q->whereDate('created_at', '<=', $to);
                 }])->get();
 
-            // Build columns: id, name, role, then date columns between from/to
-            $this->start_date = $from;
-            $this->end_date = $to;
+            $this->start_date = $from ? Carbon::parse($from)->format('d-m-Y') : null;
+            $this->end_date = $to ? Carbon::parse($to)->format('d-m-Y') : null;
 
-            $this->printColumns = ['ID', 'Name', 'Role'];
+            // Define columns and corresponding row keys explicitly
+            $this->printColumns = ['ID', 'Name', 'Role', 'Class', 'Section'];
+            $this->printColumnKeys = ['id', 'name', 'role', 'class', 'section'];
+
             $dates = [];
             if ($from && $to) {
                 $start = Carbon::parse($from)->startOfDay();
                 $end = Carbon::parse($to)->endOfDay();
                 while ($start <= $end) {
-                    // use compact dmy format for column heading
                     $this->printColumns[] = $start->format('d-m');
                     $dates[] = $start->toDateString();
+                    $this->printColumnKeys[] = $start->toDateString();
                     $start->addDay();
                 }
             }
 
-            // Build records
             foreach ($users as $user) {
                 $row = [
                     'id' => $user->id,
                     'name' => $user->name,
                     'role' => $user->roles->pluck('name')->join(', '),
+                    'class' => data_get($user, 'student.classAssignment.class.name', '-'),
+                    'section' => data_get($user, 'student.classAssignment.section.name', '-'),
                 ];
                 foreach ($dates as $date) {
                     $att = $user->attendances->filter(fn($a) => Carbon::parse($a->created_at)->toDateString() === $date)->sortBy('created_at');
@@ -79,16 +80,14 @@ class PrintMonthlyReport extends Page
             return;
         }
 
-        // Fallback: load from session
+        // Fallback: load from session[cite: 40]
         $getData = Session::get('print_data');
         if ($getData && is_array($getData)) {
-            // Expecting array with keys: start_date, end_date, columns, column_keys, records
-            $data = $getData;
-            $this->start_date = $data['start_date'] ?? null;
-            $this->end_date = $data['end_date'] ?? null;
-            $this->printColumns = $data['columns'] ?? [];
-            $this->printColumnKeys = $data['column_keys'] ?? [];
-            $this->printRecords = $data['records'] ?? [];
+            $this->start_date = $getData['start_date'] ?? null;
+            $this->end_date = $getData['end_date'] ?? null;
+            $this->printColumns = $getData['columns'] ?? [];
+            $this->printColumnKeys = $getData['column_keys'] ?? [];
+            $this->printRecords = $getData['records'] ?? [];
         }
     }
 }

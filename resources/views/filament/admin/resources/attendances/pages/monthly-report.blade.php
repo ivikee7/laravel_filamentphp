@@ -6,15 +6,18 @@
             div {
                 visibility: hidden !important;
             }
-            .fi-ta-selection-cell, .fi-ta-selection-cell{
+
+            .fi-ta-selection-cell, .fi-ta-selection-cell {
                 visibility: hidden !important;
             }
+
             * {
-                margin:0;
-                padding:0;
+                margin: 0;
+                padding: 0;
                 position: relative;
             }
-            table, tr, td{
+
+            table, tr, td {
                 border: 1px solid black;
                 color: black;
             }
