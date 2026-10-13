@@ -1,6 +1,6 @@
 <x-filament-panels::page>
     <div class="space-y-6">
-        <!-- Interactive Stats Grid -->
+        <!-- Interactive Top Stats Grid -->
         <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
             <div class="overflow-hidden rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10">
                 <div class="flex items-center justify-between">
@@ -43,11 +43,11 @@
             </div>
         </div>
 
-        <!-- Role-Wise Bifurcation Section with Progress Bars -->
+        <!-- Role-Wise Bifurcation Section with Granular Status Metrics -->
         <div class="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10 mt-6">
             <h3 class="text-lg font-semibold text-gray-950 dark:text-white mb-4">Role-Wise Employee Breakdown (Today)</h3>
             @if(empty($roleBreakdown) || $roleBreakdown->isEmpty())
-                <p class="text-sm text-gray-500 dark:text-gray-400 py-4 text-center">No employee records available for today.</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400 py-4 text-center">No employee records available.</p>
             @else
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     @foreach($roleBreakdown as $roleName => $stats)
@@ -61,9 +61,11 @@
                             <div class="w-full bg-gray-200 rounded-full h-2 dark:bg-gray-700">
                                 <div class="bg-success-500 h-2 rounded-full" style="width: {{ $stats['percentage'] }}%"></div>
                             </div>
-                            <div class="text-xs text-gray-500 dark:text-gray-400 flex justify-between pt-1">
-                                <span>Total Staff: <strong>{{ $stats['total'] }}</strong></span>
-                                <span class="text-success-600 dark:text-success-400">Present: <strong>{{ $stats['present'] }}</strong></span>
+                            <div class="text-xs text-gray-500 dark:text-gray-400 grid grid-cols-4 gap-1 pt-1 text-center">
+                                <span class="bg-gray-100 dark:bg-gray-700 rounded p-1">Total: <strong>{{ $stats['total'] }}</strong></span>
+                                <span class="bg-success-50 text-success-700 dark:bg-success-500/10 dark:text-success-400 rounded p-1">Pres: <strong>{{ $stats['present'] }}</strong></span>
+                                <span class="bg-danger-50 text-danger-700 dark:bg-danger-500/10 dark:text-danger-400 rounded p-1">Abs: <strong>{{ $stats['absent'] }}</strong></span>
+                                <span class="bg-warning-50 text-warning-700 dark:bg-warning-500/10 dark:text-warning-400 rounded p-1">Late: <strong>{{ $stats['late'] }}</strong></span>
                             </div>
                         </div>
                     @endforeach

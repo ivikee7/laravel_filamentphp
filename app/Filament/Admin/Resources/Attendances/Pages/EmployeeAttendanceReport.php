@@ -28,11 +28,10 @@ class EmployeeAttendanceReport extends Page
 
     public function mount(): void
     {
-        // 1. Total base employees (users without student records)
-        $employeeBaseQuery = User::doesntHave('student');
-        $this->totalEmployees = (clone $employeeBaseQuery)->count();
+        // Total base employees (users without student records)
+        $this->totalEmployees = User::doesntHave('student')->count();
 
-        // 2. Today's attendance query
+        // Today's attendance query
         $attendanceQuery = Attendance::whereDate('created_at', Carbon::today())
             ->whereHas('user', function ($q) {
                 $q->doesntHave('student');
@@ -42,7 +41,7 @@ class EmployeeAttendanceReport extends Page
         $this->absentCount = (clone $attendanceQuery)->where('type', 'absent')->count();
         $this->lateCount = (clone $attendanceQuery)->where('type', 'late')->count();
 
-        // 3. Role-wise breakdown across all system employees with today's attendance metrics mapped
+        // Role-wise breakdown mapping total staff vs today's status per role
         $allEmployees = User::doesntHave('student')->with(['roles', 'attendances' => function($q) {
             $q->whereDate('created_at', Carbon::today());
         }])->get();
@@ -51,12 +50,15 @@ class EmployeeAttendanceReport extends Page
             return $user->roles->pluck('name')->implode(', ') ?: 'Staff / No Role';
         })->map(function($group) {
             $total = $group->count();
-            // Check today's attendance type within the group
             $present = $group->filter(fn($user) => $user->attendances->where('type', 'present')->isNotEmpty())->count();
+            $absent = $group->filter(fn($user) => $user->attendances->where('type', 'absent')->isNotEmpty())->count();
+            $late = $group->filter(fn($user) => $user->attendances->where('type', 'late')->isNotEmpty())->count();
 
             return [
                 'total' => $total,
                 'present' => $present,
+                'absent' => $absent,
+                'late' => $late,
                 'percentage' => $total > 0 ? round(($present / $total) * 100) : 0,
             ];
         });
