@@ -61,40 +61,10 @@
                             <div class="w-full bg-gray-200 rounded-full h-2 dark:bg-gray-700">
                                 <div class="bg-success-500 h-2 rounded-full" style="width: {{ $stats['percentage'] }}%"></div>
                             </div>
-                            <div class="text-xs text-gray-500 dark:text-gray-400 flex justify-between pt-1">
-                                <span>Total Students: <strong>{{ $stats['total'] }}</strong></span>
-                                <span class="text-success-600 dark:text-success-400">Present: <strong>{{ $stats['present'] }}</strong></span>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            @endif
-        </div>
-
-        <!-- Recent Activity Feed -->
-        <div class="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10">
-            <h3 class="text-lg font-semibold text-gray-950 dark:text-white mb-4">Recent Student Activity (Today)</h3>
-
-            @if($recentAttendances->isEmpty())
-                <p class="text-sm text-gray-500 dark:text-gray-400 py-4 text-center">No student attendance records found for today.</p>
-            @else
-                <div class="divide-y divide-gray-200 dark:divide-gray-800">
-                    @foreach($recentAttendances as $attendance)
-                        <div class="flex items-center justify-between py-3">
-                            <div class="flex items-center space-x-3">
-                                <div>
-                                    <div class="font-medium text-gray-900 dark:text-white">{{ $attendance->user->name ?? 'Unknown' }}</div>
-                                    <div class="text-xs text-gray-500 dark:text-gray-400">Admission No: {{ $attendance->user->id ?? 'N/A' }}</div>
-                                </div>
-                            </div>
-                            <div class="flex items-center space-x-4">
-                                <span class="text-xs text-gray-400">{{ $attendance->created_at?->format('h:i A') }}</span>
-                                <span class="inline-flex items-center rounded-md px-2.5 py-0.5 text-xs font-medium
-                                    @if($attendance->type === 'present') bg-success-50 text-success-700 dark:bg-success-500/10 dark:text-success-400
-                                    @elseif($attendance->type === 'absent') bg-danger-50 text-danger-700 dark:bg-danger-500/10 dark:text-danger-400
-                                    @else bg-warning-50 text-warning-700 dark:bg-warning-500/10 dark:text-warning-400 @endif">
-                                    {{ ucfirst($attendance->type) }}
-                                </span>
+                            <div class="text-xs text-gray-500 dark:text-gray-400 grid grid-cols-3 gap-1 pt-1 text-center">
+                                <span class="bg-gray-100 dark:bg-gray-700 rounded p-1">Total: <strong>{{ $stats['total'] }}</strong></span>
+                                <span class="bg-success-50 text-success-700 dark:bg-success-500/10 dark:text-success-400 rounded p-1">Pres: <strong>{{ $stats['present'] }}</strong></span>
+                                <span class="bg-danger-50 text-danger-700 dark:bg-danger-500/10 dark:text-danger-400 rounded p-1">Abs: <strong>{{ $stats['absent'] }}</strong></span>
                             </div>
                         </div>
                     @endforeach

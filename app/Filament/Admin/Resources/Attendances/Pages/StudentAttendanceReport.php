@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources\Attendances\Pages;
 
 use App\Filament\Admin\Resources\Attendances\AttendanceResource;
 use App\Models\Attendance;
+use App\Models\User;
 use BackedEnum;
 use Carbon\Carbon;
 use Filament\Actions\Action;
@@ -22,47 +23,58 @@ class StudentAttendanceReport extends Page
     public int $presentCount = 0;
     public int $absentCount = 0;
     public int $lateCount = 0;
-    public $classSectionBreakdown;
+    public $classSectionBreakdown = [];
     public $recentAttendances;
 
     public function mount(): void
     {
-        $query = Attendance::whereDate('created_at', Carbon::today())
-            ->whereHas('user.student');
+        // 1. Fetch active students with class assignments, classes, sections, and today's attendance
+        $allStudents = User::where('is_active', true)
+            ->has('student')
+            ->with([
+                'student.classAssignment.class',
+                'student.classAssignment.section',
+                'attendances' => function ($q) {
+                    $q->whereDate('created_at', Carbon::today());
+                }
+            ])
+            ->get();
 
-        $this->totalStudents = (clone $query)->count();
-        $this->presentCount = (clone $query)->where('type', 'present')->count();
-        $this->absentCount = (clone $query)->where('type', 'absent')->count();
-        $this->lateCount = (clone $query)->where('type', 'late')->count();
+        $this->totalStudents = $allStudents->count();
 
-        // Fetch recent attendances using the classAssignment relationship
-        $this->recentAttendances = $query->with([
-            'user.student.classAssignment.class',
-            'user.student.classAssignment.section',
-            'user.student'
-        ])->latest('created_at')->take(10)->get();
+        // 2. Compute present vs absent counts for today
+        $presentStudents = $allStudents->filter(fn($user) => $user->attendances->isNotEmpty());
+        $this->presentCount = $presentStudents->count();
+        $this->absentCount = $this->totalStudents - $this->presentCount;
+        $this->lateCount = 0;
 
-        // Group dynamically by class and section with percentages
-        $this->classSectionBreakdown = $query->with([
-            'user.student.classAssignment.class',
-            'user.student.classAssignment.section'
-        ])->get()->groupBy(function ($attendance) {
-            $assignment = $attendance->user?->student?->classAssignment;
+        // 3. Class & Section breakdown mapping total students vs present count per class/section
+        $this->classSectionBreakdown = $allStudents->groupBy(function ($user) {
+            $assignment = $user->student?->classAssignment;
             $className = $assignment?->class?->name ?? 'Unassigned Class';
             $sectionName = $assignment?->section?->name ?? 'General';
 
             return $className . ' - ' . $sectionName;
         })->map(function ($group) {
             $total = $group->count();
-            $present = $group->where('type', 'present')->count();
+            $present = $group->filter(fn($user) => $user->attendances->isNotEmpty())->count();
+            $absent = $total - $present;
+
             return [
                 'total' => $total,
                 'present' => $present,
-                'absent' => $group->where('type', 'absent')->count(),
-                'late' => $group->where('type', 'late')->count(),
+                'absent' => $absent,
                 'percentage' => $total > 0 ? round(($present / $total) * 100) : 0,
             ];
         });
+
+        // 4. Recent activity feed for today's student check-ins
+        $this->recentAttendances = Attendance::whereDate('created_at', Carbon::today())
+            ->whereHas('user.student')
+            ->with(['user.student.classAssignment.class', 'user.student.classAssignment.section', 'user.student'])
+            ->latest('created_at')
+            ->take(10)
+            ->get();
     }
 
     protected function getHeaderActions(): array
