@@ -4,7 +4,9 @@ namespace App\Filament\Admin\Resources\Attendances;
 
 use App\Filament\Admin\Resources\Attendances\Pages\AttendanceDashbaord;
 use App\Filament\Admin\Resources\Attendances\Pages\AttendanceRTSP;
+use App\Filament\Admin\Resources\Attendances\Pages\EmployeeAttendanceReport;
 use App\Filament\Admin\Resources\Attendances\Pages\PrintMonthlyReport;
+use App\Filament\Admin\Resources\Attendances\Pages\StudentAttendanceReport;
 use Filament\Schemas\Schema;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -125,6 +127,8 @@ class AttendanceResource extends Resource
             'monthly-report' => MonthlyReport::route('monthly-report'),
             'print-monthly-report' => PrintMonthlyReport::route('print-monthly-report'),
             'attendance-dashboard' => AttendanceDashbaord::route('attendance-dashboard'),
+            'students' => StudentAttendanceReport::route('/students'),
+            'employees' => EmployeeAttendanceReport::route('/employees'),
             'view' => ViewAttendance::route('/{record}'),
             'edit' => EditAttendance::route('/{record}/edit'),
         ];

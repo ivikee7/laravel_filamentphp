@@ -18,6 +18,10 @@ class ListAttendances extends ListRecords
         return [
             Action::make('dashboard')
                 ->url(fn() => AttendanceResource::getUrl('attendance-dashboard')),
+            Action::make('students')
+                ->url(fn() => AttendanceResource::getUrl('students')),
+            Action::make('employees')
+                ->url(fn() => AttendanceResource::getUrl('employees')),
             CreateAction::make(),
             Action::make('monthlyReport')
                 ->label('Monthly Report')
