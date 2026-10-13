@@ -8,8 +8,9 @@
             <table class="w-full text-left text-sm text-gray-500 dark:text-gray-400">
                 <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-800 dark:text-gray-300">
                 <tr>
+                    <th scope="col" class="px-4 py-3">ID</th>
                     <th scope="col" class="px-4 py-3">Student Name</th>
-                    <th scope="col" class="px-4 py-3">Admission No</th>
+                    <th scope="col" class="px-4 py-3">Father's Name</th>
                     <th scope="col" class="px-4 py-3">Status / Time</th>
                 </tr>
                 </thead>
@@ -19,11 +20,14 @@
                         $attendance = $user->attendances->first();
                     @endphp
                     <tr class="bg-white dark:bg-gray-900">
+                        <td class="px-4 py-3">
+                            {{ $user->student?->id ?? 'N/A' }}
+                        </td>
                         <td class="px-4 py-3 font-medium text-gray-900 dark:text-white">
                             {{ $user->name }}
                         </td>
                         <td class="px-4 py-3">
-                            {{ $user->student?->admission_number ?? 'N/A' }}
+                            {{ $user->father_name ?? 'N/A' }}
                         </td>
                         <td class="px-4 py-3">
                             @if($attendance)
