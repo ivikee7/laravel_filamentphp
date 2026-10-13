@@ -29,7 +29,7 @@ class EmployeeAttendanceReport extends Page
     public function mount(): void
     {
         // 1. Total base employees (users without student records)
-        $allEmployees = User::doesntHave('student')->with(['roles', 'attendances' => function($q) {
+        $allEmployees = User::where('is_active', true)->doesntHave('student')->with(['roles', 'attendances' => function($q) {
             $q->whereDate('created_at', Carbon::today());
         }])->get();
 
