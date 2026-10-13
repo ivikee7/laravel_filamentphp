@@ -126,7 +126,6 @@ class AttendanceResource extends Resource
             'create' => CreateAttendance::route('/create'),
             'monthly-report' => MonthlyReport::route('monthly-report'),
             'print-monthly-report' => PrintMonthlyReport::route('print-monthly-report'),
-            'attendance-dashboard' => AttendanceDashbaord::route('attendance-dashboard'),
             'students' => StudentAttendanceReport::route('/students'),
             'employees' => EmployeeAttendanceReport::route('/employees'),
             'view' => ViewAttendance::route('/{record}'),

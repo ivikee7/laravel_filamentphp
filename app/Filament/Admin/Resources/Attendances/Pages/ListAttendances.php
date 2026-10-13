@@ -16,8 +16,6 @@ class ListAttendances extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Action::make('dashboard')
-                ->url(fn() => AttendanceResource::getUrl('attendance-dashboard')),
             Action::make('students')
                 ->url(fn() => AttendanceResource::getUrl('students')),
             Action::make('employees')
