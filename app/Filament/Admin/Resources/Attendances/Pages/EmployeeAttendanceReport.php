@@ -28,7 +28,6 @@ class EmployeeAttendanceReport extends Page
 
     public function mount(): void
     {
-        // 1. Fetch active employees, excluding students, and omitting the 'Super Admin' role
         $allEmployees = User::where('is_active', true)
             ->doesntHave('student')
             ->whereDoesntHave('roles', function ($query) {
@@ -41,14 +40,12 @@ class EmployeeAttendanceReport extends Page
 
         $this->totalEmployees = $allEmployees->count();
 
-        // 2. Filter who checked in today vs who is absent
         $presentEmployees = $allEmployees->filter(fn($user) => $user->attendances->isNotEmpty());
 
         $this->presentCount = $presentEmployees->count();
         $this->absentCount = $this->totalEmployees - $this->presentCount;
         $this->lateCount = 0;
 
-        // 3. Role-wise breakdown mapping total staff vs present count per role
         $this->roleBreakdown = $allEmployees->groupBy(function($user) {
             return $user->roles->pluck('name')->implode(', ') ?: 'Staff / No Role';
         })->map(function($group) {
@@ -64,7 +61,6 @@ class EmployeeAttendanceReport extends Page
             ];
         });
 
-        // 4. Recent activity feed for today (excluding students and Super Admin role)
         $this->recentAttendances = Attendance::whereDate('created_at', Carbon::today())
             ->whereHas('user', function ($q) {
                 $q->where('is_active', true)
@@ -77,6 +73,52 @@ class EmployeeAttendanceReport extends Page
             ->latest('created_at')
             ->take(10)
             ->get();
+    }
+
+    // Native Filament Action to view employee records per role in a modal
+    public function viewRoleEmployeesAction(): Action
+    {
+        return Action::make('viewRoleEmployees')
+            ->modalHeading(fn (array $arguments) => ucwords($arguments['type'] ?? 'total') . ' Employees: ' . ($arguments['roleKey'] ?? ''))
+            ->modalContent(function (array $arguments) {
+                $roleKey = $arguments['roleKey'] ?? '';
+                $type = $arguments['type'] ?? 'total';
+
+                $employees = $this->getEmployeesForRole($roleKey, $type);
+
+                return view('filament.admin.resources.attendances.pages.partials.role-employees-modal', [
+                    'employees' => $employees,
+                    'type' => $type,
+                ]);
+            })
+            ->modalSubmitAction(false)
+            ->modalCancelActionLabel('Close');
+    }
+
+    public function getEmployeesForRole(string $roleKey, string $type)
+    {
+        $allEmployees = User::where('is_active', true)
+            ->doesntHave('student')
+            ->whereDoesntHave('roles', function ($query) {
+                $query->where('name', 'Super Admin');
+            })
+            ->with(['roles', 'attendances' => function($q) {
+                $q->whereDate('created_at', Carbon::today());
+            }])
+            ->get();
+
+        $group = $allEmployees->filter(function ($user) use ($roleKey) {
+            $userRole = $user->roles->pluck('name')->implode(', ') ?: 'Staff / No Role';
+            return $userRole === $roleKey;
+        });
+
+        if ($type === 'present') {
+            return $group->filter(fn($user) => $user->attendances->isNotEmpty());
+        } elseif ($type === 'absent') {
+            return $group->filter(fn($user) => $user->attendances->isEmpty());
+        }
+
+        return $group;
     }
 
     protected function getHeaderActions(): array

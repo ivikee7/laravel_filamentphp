@@ -28,7 +28,6 @@ class StudentAttendanceReport extends Page
 
     public function mount(): void
     {
-        // 1. Fetch active students with class assignments, classes, sections, and today's attendance
         $allStudents = User::where('is_active', true)
             ->has('student')
             ->with([
@@ -42,13 +41,11 @@ class StudentAttendanceReport extends Page
 
         $this->totalStudents = $allStudents->count();
 
-        // 2. Compute present vs absent counts for today
         $presentStudents = $allStudents->filter(fn($user) => $user->attendances->isNotEmpty());
         $this->presentCount = $presentStudents->count();
         $this->absentCount = $this->totalStudents - $this->presentCount;
         $this->lateCount = 0;
 
-        // 3. Class & Section breakdown mapping total students vs present count per class/section
         $this->classSectionBreakdown = $allStudents->groupBy(function ($user) {
             $assignment = $user->student?->classAssignment;
             $className = $assignment?->class?->name ?? 'Unassigned Class';
@@ -68,13 +65,62 @@ class StudentAttendanceReport extends Page
             ];
         });
 
-        // 4. Recent activity feed for today's student check-ins
         $this->recentAttendances = Attendance::whereDate('created_at', Carbon::today())
             ->whereHas('user.student')
             ->with(['user.student.classAssignment.class', 'user.student.classAssignment.section', 'user.student'])
             ->latest('created_at')
             ->take(10)
             ->get();
+    }
+
+    // Native Filament Action loading your view using standard dot notation
+    public function viewClassStudentsAction(): Action
+    {
+        return Action::make('viewClassStudents')
+            ->modalHeading(fn (array $arguments) => ucwords($arguments['type'] ?? 'total') . ' Students: ' . ($arguments['classKey'] ?? ''))
+            ->modalContent(function (array $arguments) {
+                $classKey = $arguments['classKey'] ?? '';
+                $type = $arguments['type'] ?? 'total';
+
+                $students = $this->getStudentsForClassSection($classKey, $type);
+
+                return view('filament.admin.resources.attendances.pages.partials.class-students-modal', [
+                    'students' => $students,
+                    'type' => $type,
+                ]);
+            })
+            ->modalSubmitAction(false)
+            ->modalCancelActionLabel('Close');
+    }
+
+    public function getStudentsForClassSection(string $classKey, string $type)
+    {
+        $allStudents = User::where('is_active', true)
+            ->has('student')
+            ->with([
+                'student.classAssignment.class',
+                'student.classAssignment.section',
+                'student',
+                'attendances' => function ($q) {
+                    $q->whereDate('created_at', Carbon::today());
+                }
+            ])
+            ->get();
+
+        $group = $allStudents->filter(function ($user) use ($classKey) {
+            $assignment = $user->student?->classAssignment;
+            $className = $assignment?->class?->name ?? 'Unassigned Class';
+            $sectionName = $assignment?->section?->name ?? 'General';
+            return ($className . ' - ' . $sectionName) === $classKey;
+        });
+
+        if ($type === 'present') {
+            return $group->filter(fn($user) => $user->attendances->isNotEmpty());
+        } elseif ($type === 'absent') {
+            return $group->filter(fn($user) => $user->attendances->isEmpty());
+        }
+
+        return $group;
     }
 
     protected function getHeaderActions(): array

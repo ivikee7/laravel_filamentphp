@@ -43,7 +43,7 @@
             </div>
         </div>
 
-        <!-- Class & Section Bifurcation Section with Progress Bars -->
+        <!-- Class & Section Breakdown Section with Interactive View Buttons -->
         <div class="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10 mt-6">
             <h3 class="text-lg font-semibold text-gray-950 dark:text-white mb-4">Class & Section Breakdown (Today)</h3>
             @if(empty($classSectionBreakdown) || $classSectionBreakdown->isEmpty())
@@ -62,9 +62,24 @@
                                 <div class="bg-success-500 h-2 rounded-full" style="width: {{ $stats['percentage'] }}%"></div>
                             </div>
                             <div class="text-xs text-gray-500 dark:text-gray-400 grid grid-cols-3 gap-1 pt-1 text-center">
-                                <span class="bg-gray-100 dark:bg-gray-700 rounded p-1">Total: <strong>{{ $stats['total'] }}</strong></span>
-                                <span class="bg-success-50 text-success-700 dark:bg-success-500/10 dark:text-success-400 rounded p-1">Pres: <strong>{{ $stats['present'] }}</strong></span>
-                                <span class="bg-danger-50 text-danger-700 dark:bg-danger-500/10 dark:text-danger-400 rounded p-1">Abs: <strong>{{ $stats['absent'] }}</strong></span>
+                                <!-- Total Clickable Badge -->
+                                <button wire:click="mountAction('viewClassStudents', { classKey: '{{ $label }}', type: 'total' })"
+                                        class="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 rounded p-1 transition flex items-center justify-center space-x-1 cursor-pointer">
+                                    <span>Tot: <strong>{{ $stats['total'] }}</strong></span>
+                                    <x-filament::icon icon="heroicon-m-eye" class="h-3 w-3 text-gray-500" />
+                                </button>
+                                <!-- Present Clickable Badge -->
+                                <button wire:click="mountAction('viewClassStudents', { classKey: '{{ $label }}', type: 'present' })"
+                                        class="bg-success-50 text-success-700 dark:bg-success-500/10 dark:text-success-400 hover:bg-success-100 rounded p-1 transition flex items-center justify-center space-x-1 cursor-pointer">
+                                    <span>Pres: <strong>{{ $stats['present'] }}</strong></span>
+                                    <x-filament::icon icon="heroicon-m-eye" class="h-3 w-3 text-success-600" />
+                                </button>
+                                <!-- Absent Clickable Badge -->
+                                <button wire:click="mountAction('viewClassStudents', { classKey: '{{ $label }}', type: 'absent' })"
+                                        class="bg-danger-50 text-danger-700 dark:bg-danger-500/10 dark:text-danger-400 hover:bg-danger-100 rounded p-1 transition flex items-center justify-center space-x-1 cursor-pointer">
+                                    <span>Abs: <strong>{{ $stats['absent'] }}</strong></span>
+                                    <x-filament::icon icon="heroicon-m-eye" class="h-3 w-3 text-danger-600" />
+                                </button>
                             </div>
                         </div>
                     @endforeach
@@ -73,4 +88,7 @@
         </div>
 
     </div>
+
+    <!-- Required to render Filament action modals -->
+    <x-filament-actions::modals />
 </x-filament-panels::page>
