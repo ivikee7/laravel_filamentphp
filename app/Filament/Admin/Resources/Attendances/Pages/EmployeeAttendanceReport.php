@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources\Attendances\Pages;
 
 use App\Filament\Admin\Resources\Attendances\AttendanceResource;
 use App\Models\Attendance;
+use App\Models\User;
 use BackedEnum;
 use Carbon\Carbon;
 use Filament\Actions\Action;
@@ -27,35 +28,40 @@ class EmployeeAttendanceReport extends Page
 
     public function mount(): void
     {
-        $query = Attendance::whereDate('created_at', Carbon::today())
+        // 1. Total base employees (users without student records)
+        $employeeBaseQuery = User::doesntHave('student');
+        $this->totalEmployees = (clone $employeeBaseQuery)->count();
+
+        // 2. Today's attendance query
+        $attendanceQuery = Attendance::whereDate('created_at', Carbon::today())
             ->whereHas('user', function ($q) {
                 $q->doesntHave('student');
             });
 
-        $this->totalEmployees = (clone $query)->count();
-        $this->presentCount = (clone $query)->where('type', 'present')->count();
-        $this->absentCount = (clone $query)->where('type', 'absent')->count();
-        $this->lateCount = (clone $query)->where('type', 'late')->count();
+        $this->presentCount = (clone $attendanceQuery)->where('type', 'present')->count();
+        $this->absentCount = (clone $attendanceQuery)->where('type', 'absent')->count();
+        $this->lateCount = (clone $attendanceQuery)->where('type', 'late')->count();
 
-        // Calculate role-wise counts using Spatie roles via user relationship
-        $employeeQuery = (clone $query)->with('user.roles');
-        $allAttendances = $employeeQuery->get();
+        // 3. Role-wise breakdown across all system employees with today's attendance metrics mapped
+        $allEmployees = User::doesntHave('student')->with(['roles', 'attendances' => function($q) {
+            $q->whereDate('created_at', Carbon::today());
+        }])->get();
 
-        $this->roleBreakdown = $allAttendances->groupBy(function($attendance) {
-            return $attendance->user->roles->pluck('name')->implode(', ') ?: 'Staff / No Role';
+        $this->roleBreakdown = $allEmployees->groupBy(function($user) {
+            return $user->roles->pluck('name')->implode(', ') ?: 'Staff / No Role';
         })->map(function($group) {
             $total = $group->count();
-            $present = $group->where('type', 'present')->count();
+            // Check today's attendance type within the group
+            $present = $group->filter(fn($user) => $user->attendances->where('type', 'present')->isNotEmpty())->count();
+
             return [
                 'total' => $total,
                 'present' => $present,
-                'absent' => $group->where('type', 'absent')->count(),
-                'late' => $group->where('type', 'late')->count(),
                 'percentage' => $total > 0 ? round(($present / $total) * 100) : 0,
             ];
         });
 
-        $this->recentAttendances = $query->with('user.roles')->latest('created_at')->take(10)->get();
+        $this->recentAttendances = $attendanceQuery->with('user.roles')->latest('created_at')->take(10)->get();
     }
 
     protected function getHeaderActions(): array
