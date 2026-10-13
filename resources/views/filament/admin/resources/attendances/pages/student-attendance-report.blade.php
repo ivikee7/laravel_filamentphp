@@ -84,7 +84,7 @@
                             <div class="flex items-center space-x-3">
                                 <div>
                                     <div class="font-medium text-gray-900 dark:text-white">{{ $attendance->user->name ?? 'Unknown' }}</div>
-                                    <div class="text-xs text-gray-500 dark:text-gray-400">Admission No: {{ $attendance->user->student->id ?? 'N/A' }}</div>
+                                    <div class="text-xs text-gray-500 dark:text-gray-400">Admission No: {{ $attendance->user->id ?? 'N/A' }}</div>
                                 </div>
                             </div>
                             <div class="flex items-center space-x-4">
