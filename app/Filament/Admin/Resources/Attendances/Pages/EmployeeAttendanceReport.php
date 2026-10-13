@@ -28,42 +28,45 @@ class EmployeeAttendanceReport extends Page
 
     public function mount(): void
     {
-        // Total base employees (users without student records)
-        $this->totalEmployees = User::doesntHave('student')->count();
-
-        // Today's attendance query
-        $attendanceQuery = Attendance::whereDate('created_at', Carbon::today())
-            ->whereHas('user', function ($q) {
-                $q->doesntHave('student');
-            });
-
-        $this->presentCount = (clone $attendanceQuery)->where('type', 'present')->count();
-        $this->absentCount = (clone $attendanceQuery)->where('type', 'absent')->count();
-        $this->lateCount = (clone $attendanceQuery)->where('type', 'late')->count();
-
-        // Role-wise breakdown mapping total staff vs today's status per role
+        // 1. Total base employees (users without student records)
         $allEmployees = User::doesntHave('student')->with(['roles', 'attendances' => function($q) {
             $q->whereDate('created_at', Carbon::today());
         }])->get();
 
+        $this->totalEmployees = $allEmployees->count();
+
+        // 2. Filter who checked in today vs who is absent
+        $presentEmployees = $allEmployees->filter(fn($user) => $user->attendances->isNotEmpty());
+
+        $this->presentCount = $presentEmployees->count();
+        $this->absentCount = $this->totalEmployees - $this->presentCount;
+        $this->lateCount = 0; // If you don't track late separately, keep it 0
+
+        // 3. Role-wise breakdown mapping total staff vs present count per role
         $this->roleBreakdown = $allEmployees->groupBy(function($user) {
             return $user->roles->pluck('name')->implode(', ') ?: 'Staff / No Role';
         })->map(function($group) {
             $total = $group->count();
-            $present = $group->filter(fn($user) => $user->attendances->where('type', 'present')->isNotEmpty())->count();
-            $absent = $group->filter(fn($user) => $user->attendances->where('type', 'absent')->isNotEmpty())->count();
-            $late = $group->filter(fn($user) => $user->attendances->where('type', 'late')->isNotEmpty())->count();
+            $present = $group->filter(fn($user) => $user->attendances->isNotEmpty())->count();
+            $absent = $total - $present;
 
             return [
                 'total' => $total,
                 'present' => $present,
                 'absent' => $absent,
-                'late' => $late,
                 'percentage' => $total > 0 ? round(($present / $total) * 100) : 0,
             ];
         });
 
-        $this->recentAttendances = $attendanceQuery->with('user.roles')->latest('created_at')->take(10)->get();
+        // 4. Recent activity feed for today
+        $this->recentAttendances = Attendance::whereDate('created_at', Carbon::today())
+            ->whereHas('user', function ($q) {
+                $q->doesntHave('student');
+            })
+            ->with('user.roles')
+            ->latest('created_at')
+            ->take(10)
+            ->get();
     }
 
     protected function getHeaderActions(): array
