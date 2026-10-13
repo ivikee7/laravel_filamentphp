@@ -28,10 +28,16 @@ class EmployeeAttendanceReport extends Page
 
     public function mount(): void
     {
-        // 1. Total base employees (users without student records)
-        $allEmployees = User::where('is_active', true)->doesntHave(['student','Super Admin'])->with(['roles', 'attendances' => function($q) {
-            $q->whereDate('created_at', Carbon::today());
-        }])->get();
+        // 1. Fetch active employees, excluding students, and omitting the 'Super Admin' role
+        $allEmployees = User::where('is_active', true)
+            ->doesntHave('student')
+            ->whereDoesntHave('roles', function ($query) {
+                $query->where('name', 'Super Admin');
+            })
+            ->with(['roles', 'attendances' => function($q) {
+                $q->whereDate('created_at', Carbon::today());
+            }])
+            ->get();
 
         $this->totalEmployees = $allEmployees->count();
 
@@ -40,7 +46,7 @@ class EmployeeAttendanceReport extends Page
 
         $this->presentCount = $presentEmployees->count();
         $this->absentCount = $this->totalEmployees - $this->presentCount;
-        $this->lateCount = 0; // If you don't track late separately, keep it 0
+        $this->lateCount = 0;
 
         // 3. Role-wise breakdown mapping total staff vs present count per role
         $this->roleBreakdown = $allEmployees->groupBy(function($user) {
@@ -58,10 +64,14 @@ class EmployeeAttendanceReport extends Page
             ];
         });
 
-        // 4. Recent activity feed for today
+        // 4. Recent activity feed for today (excluding students and Super Admin role)
         $this->recentAttendances = Attendance::whereDate('created_at', Carbon::today())
             ->whereHas('user', function ($q) {
-                $q->doesntHave('student');
+                $q->where('is_active', true)
+                    ->doesntHave('student')
+                    ->whereDoesntHave('roles', function ($subQ) {
+                        $subQ->where('name', 'Super Admin');
+                    });
             })
             ->with('user.roles')
             ->latest('created_at')
