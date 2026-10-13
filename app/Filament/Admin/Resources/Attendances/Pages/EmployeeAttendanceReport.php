@@ -44,9 +44,14 @@ class EmployeeAttendanceReport extends Page
         $this->roleBreakdown = $allAttendances->groupBy(function($attendance) {
             return $attendance->user->roles->pluck('name')->implode(', ') ?: 'Staff / No Role';
         })->map(function($group) {
+            $total = $group->count();
+            $present = $group->where('type', 'present')->count();
             return [
-                'total' => $group->count(),
-                'present' => $group->where('type', 'present')->count(),
+                'total' => $total,
+                'present' => $present,
+                'absent' => $group->where('type', 'absent')->count(),
+                'late' => $group->where('type', 'late')->count(),
+                'percentage' => $total > 0 ? round(($present / $total) * 100) : 0,
             ];
         });
 
@@ -57,12 +62,16 @@ class EmployeeAttendanceReport extends Page
     {
         return [
             Action::make('students')
+                ->label('Student Dashboard')
+                ->icon('heroicon-o-academic-cap')
                 ->url(fn() => AttendanceResource::getUrl('students')),
             Action::make('monthlyReport')
                 ->label('Monthly Report')
                 ->icon('heroicon-o-chart-bar')
                 ->url(fn() => AttendanceResource::getUrl('monthly-report')),
             Action::make('Log')
+                ->label('All Logs')
+                ->icon('heroicon-o-table-cells')
                 ->url(fn() => AttendanceResource::getUrl('index')),
         ];
     }

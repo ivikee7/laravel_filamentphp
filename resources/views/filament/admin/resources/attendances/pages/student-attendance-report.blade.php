@@ -43,19 +43,27 @@
             </div>
         </div>
 
-        <!-- Class & Section Bifurcation Section -->
+        <!-- Class & Section Bifurcation Section with Progress Bars -->
         <div class="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10 mt-6">
             <h3 class="text-lg font-semibold text-gray-950 dark:text-white mb-4">Class & Section Breakdown (Today)</h3>
-            @if($classSectionBreakdown->isEmpty())
+            @if(empty($classSectionBreakdown) || $classSectionBreakdown->isEmpty())
                 <p class="text-sm text-gray-500 dark:text-gray-400 py-4 text-center">No class records available for today.</p>
             @else
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     @foreach($classSectionBreakdown as $label => $stats)
-                        <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700">
-                            <div class="font-medium text-gray-900 dark:text-white">{{ $label }}</div>
-                            <div class="mt-2 text-sm text-gray-500 dark:text-gray-400 flex justify-between">
-                                <span>Total: <strong>{{ $stats['total'] }}</strong></span>
-                                <span class="text-success-600">Present: <strong>{{ $stats['present'] }}</strong></span>
+                        <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 space-y-3">
+                            <div class="flex justify-between items-center">
+                                <span class="font-semibold text-gray-900 dark:text-white text-sm">{{ $label }}</span>
+                                <span class="text-xs font-medium px-2 py-0.5 rounded bg-primary-50 text-primary-700 dark:bg-primary-500/10 dark:text-primary-400">
+                                    {{ $stats['percentage'] }}% Present
+                                </span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2 dark:bg-gray-700">
+                                <div class="bg-success-500 h-2 rounded-full" style="width: {{ $stats['percentage'] }}%"></div>
+                            </div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400 flex justify-between pt-1">
+                                <span>Total Students: <strong>{{ $stats['total'] }}</strong></span>
+                                <span class="text-success-600 dark:text-success-400">Present: <strong>{{ $stats['present'] }}</strong></span>
                             </div>
                         </div>
                     @endforeach
@@ -82,10 +90,10 @@
                             <div class="flex items-center space-x-4">
                                 <span class="text-xs text-gray-400">{{ $attendance->created_at?->format('h:i A') }}</span>
                                 <span class="inline-flex items-center rounded-md px-2.5 py-0.5 text-xs font-medium
-                                    @if($attendance->status === 'present') bg-success-50 text-success-700 dark:bg-success-500/10 dark:text-success-400
-                                    @elseif($attendance->status === 'absent') bg-danger-50 text-danger-700 dark:bg-danger-500/10 dark:text-danger-400
+                                    @if($attendance->type === 'present') bg-success-50 text-success-700 dark:bg-success-500/10 dark:text-success-400
+                                    @elseif($attendance->type === 'absent') bg-danger-50 text-danger-700 dark:bg-danger-500/10 dark:text-danger-400
                                     @else bg-warning-50 text-warning-700 dark:bg-warning-500/10 dark:text-warning-400 @endif">
-                                    {{ ucfirst($attendance->status) }}
+                                    {{ ucfirst($attendance->type) }}
                                 </span>
                             </div>
                         </div>

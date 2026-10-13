@@ -7,7 +7,6 @@ use App\Models\Attendance;
 use BackedEnum;
 use Carbon\Carbon;
 use Filament\Actions\Action;
-use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\Page;
 
 class StudentAttendanceReport extends Page
@@ -36,13 +35,14 @@ class StudentAttendanceReport extends Page
         $this->absentCount = (clone $query)->where('type', 'absent')->count();
         $this->lateCount = (clone $query)->where('type', 'late')->count();
 
-        // Fetch recent attendances using the available classAssignment relationship
+        // Fetch recent attendances using the classAssignment relationship
         $this->recentAttendances = $query->with([
             'user.student.classAssignment.class',
-            'user.student.classAssignment.section'
+            'user.student.classAssignment.section',
+            'user.student'
         ])->latest('created_at')->take(10)->get();
 
-        // Group dynamically by class and section from relationships
+        // Group dynamically by class and section with percentages
         $this->classSectionBreakdown = $query->with([
             'user.student.classAssignment.class',
             'user.student.classAssignment.section'
@@ -53,9 +53,14 @@ class StudentAttendanceReport extends Page
 
             return $className . ' - ' . $sectionName;
         })->map(function ($group) {
+            $total = $group->count();
+            $present = $group->where('type', 'present')->count();
             return [
-                'total' => $group->count(),
-                'present' => $group->where('type', 'present')->count(),
+                'total' => $total,
+                'present' => $present,
+                'absent' => $group->where('type', 'absent')->count(),
+                'late' => $group->where('type', 'late')->count(),
+                'percentage' => $total > 0 ? round(($present / $total) * 100) : 0,
             ];
         });
     }
@@ -64,12 +69,16 @@ class StudentAttendanceReport extends Page
     {
         return [
             Action::make('employees')
+                ->label('Employee Dashboard')
+                ->icon('heroicon-o-briefcase')
                 ->url(fn() => AttendanceResource::getUrl('employees')),
             Action::make('monthlyReport')
                 ->label('Monthly Report')
                 ->icon('heroicon-o-chart-bar')
                 ->url(fn() => AttendanceResource::getUrl('monthly-report')),
             Action::make('Log')
+                ->label('All Logs')
+                ->icon('heroicon-o-table-cells')
                 ->url(fn() => AttendanceResource::getUrl('index')),
         ];
     }
