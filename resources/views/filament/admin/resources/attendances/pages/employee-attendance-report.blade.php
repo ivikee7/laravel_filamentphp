@@ -71,34 +71,5 @@
                 </div>
             @endif
         </div>
-
-        <!-- Recent Activity Feed -->
-        <div class="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10">
-            <h3 class="text-lg font-semibold text-gray-950 dark:text-white mb-4">Recent Employee Activity (Today)</h3>
-
-            @if($recentAttendances->isEmpty())
-                <p class="text-sm text-gray-500 dark:text-gray-400 py-4 text-center">No employee check-ins recorded for today yet.</p>
-            @else
-                <div class="divide-y divide-gray-200 dark:divide-gray-800">
-                    @foreach($recentAttendances as $attendance)
-                        <div class="flex items-center justify-between py-3">
-                            <div class="flex items-center space-x-3">
-                                <div>
-                                    <div class="font-medium text-gray-900 dark:text-white">{{ $attendance->user->name ?? 'Unknown' }}</div>
-                                    <div class="text-xs text-gray-500 dark:text-gray-400">Email: {{ $attendance->user->email ?? 'N/A' }}</div>
-                                </div>
-                            </div>
-                            <div class="flex items-center space-x-4">
-                                <span class="text-xs text-gray-400">{{ $attendance->created_at?->format('h:i A') }}</span>
-                                <span class="inline-flex items-center rounded-md px-2.5 py-0.5 text-xs font-medium bg-success-50 text-success-700 dark:bg-success-500/10 dark:text-success-400">
-                                    Present
-                                </span>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            @endif
-        </div>
-
     </div>
 </x-filament-panels::page>
