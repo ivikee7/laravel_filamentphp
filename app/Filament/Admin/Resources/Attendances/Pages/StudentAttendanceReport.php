@@ -28,6 +28,12 @@ class StudentAttendanceReport extends Page
 
     public function mount(): void
     {
+        $this->loadAttendanceData();
+    }
+
+    // Called automatically by wire:poll to refresh student data live
+    public function loadAttendanceData(): void
+    {
         $allStudents = User::where('is_active', true)
             ->has('student')
             ->with([
@@ -81,7 +87,6 @@ class StudentAttendanceReport extends Page
                 $classKey = $arguments['classKey'] ?? '';
                 $type = $arguments['type'] ?? 'total';
 
-                // Sorted alphabetically by name
                 $students = $this->getStudentsForClassSection($classKey, $type)->sortBy('name');
 
                 return view('filament.admin.resources.attendances.pages.partials.class-students-modal', [

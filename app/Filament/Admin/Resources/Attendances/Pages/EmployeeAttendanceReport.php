@@ -28,6 +28,12 @@ class EmployeeAttendanceReport extends Page
 
     public function mount(): void
     {
+        $this->loadAttendanceData();
+    }
+
+    // Called automatically by wire:poll to refresh data live
+    public function loadAttendanceData(): void
+    {
         $allEmployees = User::where('is_active', true)
             ->doesntHave('student')
             ->whereDoesntHave('roles', function ($query) {
@@ -83,7 +89,6 @@ class EmployeeAttendanceReport extends Page
                 $roleKey = $arguments['roleKey'] ?? '';
                 $type = $arguments['type'] ?? 'total';
 
-                // Sorted alphabetically by name
                 $employees = $this->getEmployeesForRole($roleKey, $type)->sortBy('name');
 
                 return view('filament.admin.resources.attendances.pages.partials.role-employees-modal', [
