@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources\Students\Schemas;
 
 use App\Models\Student;
 use App\Models\User;
+use Filament\Actions\Action;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
@@ -20,6 +21,21 @@ class StudentInfolist
         return $schema
             ->components([
                 Section::make('Student info')
+                    ->headerActions([
+                        Action::make('suspend')
+                            ->label('Suspend')
+                            ->color('warning')
+                            ->icon('heroicon-o-lock-closed')
+                            ->visible(fn (User $record): bool => $record->is_active)
+                            ->action(fn (User $record) => $record->update(['is_active' => false])),
+
+                        Action::make('activate')
+                            ->label('Activate')
+                            ->color('success')
+                            ->icon('heroicon-o-lock-open')
+                            ->visible(fn (User $record): bool => ! $record->is_active)
+                            ->action(fn (User $record) => $record->update(['is_active' => true])),
+                    ])
                     ->schema([
                         Group::make()
                             ->schema([
@@ -38,14 +54,12 @@ class StudentInfolist
                                             ->label('Status')
                                             ->badge() // Display as a colored badge
                                             ->color(fn(string $state): string => match ($state) {
-                                                '0' => 'danger',
                                                 '1' => 'success',
-                                                default => 'gray',
+                                                default => 'danger',
                                             })
                                             ->formatStateUsing(fn(string $state): string => match ($state) {
-                                                '0' => 'Suspended',
                                                 '1' => 'Active',
-                                                default => 'Unknown',
+                                                default => 'Suspended',
                                             }),
                                         TextEntry::make('gSuiteUser.email'),
                                         TextEntry::make('gSuiteUser.password'),

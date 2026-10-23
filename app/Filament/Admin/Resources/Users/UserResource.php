@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources\Users;
 
 use App\Filament\Admin\Resources\Users\Pages\ViewUserAttendanceReport;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Grid;
@@ -75,6 +76,21 @@ class UserResource extends Resource
         return $schema
             ->components([
                 Section::make('User info')
+                    ->headerActions([
+                        Action::make('suspend')
+                            ->label('Suspend')
+                            ->color('warning')
+                            ->icon('heroicon-o-lock-closed')
+                            ->visible(fn (User $record): bool => $record->is_active)
+                            ->action(fn (User $record) => $record->update(['is_active' => false])),
+
+                        Action::make('activate')
+                            ->label('Activate')
+                            ->color('success')
+                            ->icon('heroicon-o-lock-open')
+                            ->visible(fn (User $record): bool => ! $record->is_active)
+                            ->action(fn (User $record) => $record->update(['is_active' => true])),
+                    ])
                     ->schema([
                         Grid::make(2) // Create a 2-column layout
                         ->schema([
@@ -100,7 +116,20 @@ class UserResource extends Resource
                             // Right Column: Other Input Fields
                             Group::make()
                                 ->schema([
+                                    Group::make([
                                     TextInput::make('name')->required(),
+                                    TextEntry::make('is_active')
+                                        ->label('Status')
+                                        ->badge() // Display as a colored badge
+                                        ->color(fn(string $state): string => match ($state) {
+                                            '1' => 'success',
+                                            default => 'danger',
+                                        })
+                                        ->formatStateUsing(fn(string $state): string => match ($state) {
+                                            '1' => 'Active',
+                                            default => 'Suspended',
+                                        }),
+                                    ])->columns(2),
                                     Group::make([
                                         TextInput::make('email')
                                             ->label('GSuite Email')
@@ -235,7 +264,7 @@ class UserResource extends Resource
 
                                 return $query;
                             }),
-                        Toggle::make('is_active')->inline(false)->required(),
+                        Toggle::make('is_active')->label('Is Active')->inline(false)->required()->disabled(),
                     ])->columns(2),
                 Section::make('Record creation info')
                     ->schema([
