@@ -17,7 +17,7 @@ class PrintInvoice extends Page
 
     public $invoice; // Make sure this property is public
 
-    public function mount(int|string $record, int|string $invoiceId = null): void
+    public function mount(int|string $record, int|string|null $invoiceId = null): void
     {
         $this->record = $this->resolveRecord($record);
 
