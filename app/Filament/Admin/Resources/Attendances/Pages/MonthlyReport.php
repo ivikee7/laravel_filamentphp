@@ -2,7 +2,9 @@
 
 namespace App\Filament\Admin\Resources\Attendances\Pages;
 
+use Filament\Actions\Action;
 use Filament\Actions\BulkAction;
+use Filament\Actions\CreateAction;
 use Filament\Tables\Columns\TextColumn;
 use App\Filament\Admin\Resources\Attendances\AttendanceResource;
 use App\Models\User;
@@ -40,6 +42,21 @@ class MonthlyReport extends Page implements HasTable
         if (!$this->toDate) {
             $this->toDate = now()->endOfMonth()->toDateString();
         }
+    }
+
+    public function getHeaderActions(): array{
+        return [
+            Action::make('students')
+                ->icon('heroicon-o-academic-cap')
+                ->url(fn() => AttendanceResource::getUrl('students')),
+            Action::make('employees')
+                ->icon('heroicon-o-briefcase')
+                ->url(fn() => AttendanceResource::getUrl('employees')),
+            Action::make('Log')
+                ->label('All Logs')
+                ->icon('heroicon-o-table-cells')
+                ->url(fn() => AttendanceResource::getUrl('index')),
+        ];
     }
 
     public function table(Table $table): Table

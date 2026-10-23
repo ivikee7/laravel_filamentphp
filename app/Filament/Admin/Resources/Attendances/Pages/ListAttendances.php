@@ -22,11 +22,11 @@ class ListAttendances extends ListRecords
             Action::make('employees')
                 ->icon('heroicon-o-briefcase')
                 ->url(fn() => AttendanceResource::getUrl('employees')),
-            CreateAction::make(),
             Action::make('monthlyReport')
                 ->label('Monthly Report')
                 ->icon('heroicon-o-chart-bar')
                 ->url(fn() => AttendanceResource::getUrl('monthly-report')),
+            CreateAction::make(),
         ];
     }
 }
