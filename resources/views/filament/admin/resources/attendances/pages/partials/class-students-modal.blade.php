@@ -24,7 +24,18 @@
                             {{ $user->student?->id ?? 'N/A' }}
                         </td>
                         <td class="px-4 py-3 font-medium text-gray-900 dark:text-white">
-                            {{ $user->name }}
+                            <div class="inline-flex items-center gap-1.5">
+                                <span>{{ $user->name }}</span>
+
+                                <!-- View Profile Icon Link using Filament's Heroicon component -->
+                                <a href="{{ App\Filament\Admin\Resources\Students\StudentResource::getUrl('view', ['record' => $user->student->id]) }}"
+                                   class="text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition"
+                                   title="View Profile">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                                    </svg>
+                                </a>
+                            </div>
                         </td>
                         <td class="px-4 py-3">
                             {{ $user->father_name ?? 'N/A' }}
