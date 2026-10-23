@@ -92,7 +92,7 @@ class MonthlyReport extends Page implements HasTable
             ->columns($this->getAttendanceColumns())
             ->filters([
                 Filter::make('date_range')
-                    ->form([
+                    ->schema([
                         DatePicker::make('from_date')
                             ->label('From Date')
                             ->default(now()->startOfMonth())
