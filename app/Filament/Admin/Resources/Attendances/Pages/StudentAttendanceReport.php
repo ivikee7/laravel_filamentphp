@@ -132,7 +132,7 @@ class StudentAttendanceReport extends Page
     {
         return [
             Action::make('employees')
-                ->label('Employee Dashboard')
+                ->label('Employee')
                 ->icon('heroicon-o-briefcase')
                 ->url(fn() => AttendanceResource::getUrl('employees')),
             Action::make('monthlyReport')

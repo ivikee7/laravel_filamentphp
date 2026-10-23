@@ -17,8 +17,10 @@ class ListAttendances extends ListRecords
     {
         return [
             Action::make('students')
+                ->icon('heroicon-o-academic-cap')
                 ->url(fn() => AttendanceResource::getUrl('students')),
             Action::make('employees')
+                ->icon('heroicon-o-briefcase')
                 ->url(fn() => AttendanceResource::getUrl('employees')),
             CreateAction::make(),
             Action::make('monthlyReport')
