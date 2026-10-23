@@ -70,7 +70,6 @@ class EmployeeAttendanceReport extends Page
         $this->recentAttendances = Attendance::whereDate('created_at', Carbon::today())
             ->whereHas('user', function ($q) {
                 $q->where('is_active', true)
-                    ->doesntHave('student')
                     ->whereDoesntHave('roles', function ($subQ) {
                         $subQ->where('name', 'Super Admin');
                     });

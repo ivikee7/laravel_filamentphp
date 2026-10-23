@@ -21,14 +21,14 @@
                     @endphp
                     <tr class="bg-white dark:bg-gray-900">
                         <td class="px-4 py-3">
-                            {{ $user->student?->id ?? 'N/A' }}
+                            {{ $user->id ?? 'N/A' }}
                         </td>
                         <td class="px-4 py-3 font-medium text-gray-900 dark:text-white">
                             <div class="inline-flex items-center gap-1.5">
                                 <span>{{ $user->name }}</span>
 
                                 <!-- View Profile Icon Link using Filament's Heroicon component -->
-                                <a href="{{ App\Filament\Admin\Resources\Students\StudentResource::getUrl('view', ['record' => $user->student->id]) }}"
+                                <a href="{{ App\Filament\Admin\Resources\Students\StudentResource::getUrl('view', ['record' => $user->id]) }}"
                                    class="text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition"
                                    title="View Profile">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
