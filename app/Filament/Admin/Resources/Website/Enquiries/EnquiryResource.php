@@ -91,7 +91,8 @@ class EnquiryResource extends Resource
                 TextColumn::make('notes')
                     ->label('Source')
                     ->wrap()
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_by')
                     ->numeric()
                     ->sortable()
