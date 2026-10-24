@@ -37,7 +37,7 @@ class EmployeeAttendanceReport extends Page
         $allEmployees = User::where('is_active', true)
             ->doesntHave('student')
             ->whereDoesntHave('roles', function ($query) {
-                $query->where('name', 'Super Admin');
+                $query->whereIn('name', ['Super Admin', 'Owner', 'Director', 'Principal']);
             })
             ->with(['roles', 'attendances' => function($q) {
                 $q->whereDate('created_at', Carbon::today());
