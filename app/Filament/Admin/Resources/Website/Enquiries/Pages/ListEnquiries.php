@@ -18,11 +18,4 @@ class ListEnquiries extends ListRecords
             CreateAction::make(),
         ];
     }
-
-    protected function getFooterWidgets(): array
-    {
-        return [
-          WebsiteEnquiryWidget::class,
-        ];
-    }
 }

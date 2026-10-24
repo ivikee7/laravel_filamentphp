@@ -23,13 +23,6 @@ class ListEnquiries extends ListRecords
         ];
     }
 
-    protected function getFooterWidgets(): array
-    {
-        return [
-            EnquiryWidget::class,
-        ];
-    }
-
     public function getTabs(): array
     {
         $statuses = Enquiry::query()->distinct()->pluck('source');
