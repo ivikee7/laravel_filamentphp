@@ -77,19 +77,19 @@ class UserResource extends Resource
             ->components([
                 Section::make('User info')
                     ->headerActions([
-//                        Action::make('suspend')
-//                            ->label('Suspend')
-//                            ->color('warning')
-//                            ->icon('heroicon-o-lock-closed')
-//                            ->visible(fn (User $record): bool => $record->is_active)
-//                            ->action(fn (User $record) => $record->update(['is_active' => false])),
-//
-//                        Action::make('activate')
-//                            ->label('Activate')
-//                            ->color('success')
-//                            ->icon('heroicon-o-lock-open')
-//                            ->visible(fn (User $record): bool => ! $record->is_active)
-//                            ->action(fn (User $record) => $record->update(['is_active' => true])),
+                        Action::make('suspend')
+                            ->label('Suspend')
+                            ->color('warning')
+                            ->icon('heroicon-o-lock-closed')
+                            ->visible(fn (?User $record): bool => $record && $record->is_active)
+                            ->action(fn (User $record) => $record->update(['is_active' => false])),
+
+                        Action::make('activate')
+                            ->label('Activate')
+                            ->color('success')
+                            ->icon('heroicon-o-lock-open')
+                            ->visible(fn (?User $record): bool => $record && ! $record->is_active)
+                            ->action(fn (User $record) => $record->update(['is_active' => true])),
                     ])
                     ->schema([
                         Grid::make(2) // Create a 2-column layout
@@ -117,18 +117,18 @@ class UserResource extends Resource
                             Group::make()
                                 ->schema([
                                     Group::make([
-                                    TextInput::make('name')->required(),
-                                    TextEntry::make('is_active')
-                                        ->label('Status')
-                                        ->badge() // Display as a colored badge
-                                        ->color(fn(string $state): string => match ($state) {
-                                            '1' => 'success',
-                                            default => 'danger',
-                                        })
-                                        ->formatStateUsing(fn(string $state): string => match ($state) {
-                                            '1' => 'Active',
-                                            default => 'Suspended',
-                                        }),
+                                        TextInput::make('name')->required(),
+                                        TextEntry::make('is_active')
+                                            ->label('Status')
+                                            ->badge() // Display as a colored badge
+                                            ->color(fn(string $state): string => match ($state) {
+                                                '1' => 'success',
+                                                default => 'danger',
+                                            })
+                                            ->formatStateUsing(fn(string $state): string => match ($state) {
+                                                '1' => 'Active',
+                                                default => 'Suspended',
+                                            }),
                                     ])->columns(2),
                                     Group::make([
                                         TextInput::make('email')
