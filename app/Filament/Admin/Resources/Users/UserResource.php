@@ -77,19 +77,19 @@ class UserResource extends Resource
             ->components([
                 Section::make('User info')
                     ->headerActions([
-                        Action::make('suspend')
-                            ->label('Suspend')
-                            ->color('warning')
-                            ->icon('heroicon-o-lock-closed')
-                            ->visible(fn (User $record): bool => $record->is_active)
-                            ->action(fn (User $record) => $record->update(['is_active' => false])),
-
-                        Action::make('activate')
-                            ->label('Activate')
-                            ->color('success')
-                            ->icon('heroicon-o-lock-open')
-                            ->visible(fn (User $record): bool => ! $record->is_active)
-                            ->action(fn (User $record) => $record->update(['is_active' => true])),
+//                        Action::make('suspend')
+//                            ->label('Suspend')
+//                            ->color('warning')
+//                            ->icon('heroicon-o-lock-closed')
+//                            ->visible(fn (User $record): bool => $record->is_active)
+//                            ->action(fn (User $record) => $record->update(['is_active' => false])),
+//
+//                        Action::make('activate')
+//                            ->label('Activate')
+//                            ->color('success')
+//                            ->icon('heroicon-o-lock-open')
+//                            ->visible(fn (User $record): bool => ! $record->is_active)
+//                            ->action(fn (User $record) => $record->update(['is_active' => true])),
                     ])
                     ->schema([
                         Grid::make(2) // Create a 2-column layout
